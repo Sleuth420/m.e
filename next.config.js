@@ -5,7 +5,7 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: '/m.e',
-  assetPrefix: '/m.e/',
+  assetPrefix: 'https://sleuth420.github.io/m.e',
   trailingSlash: true,
 }
 
