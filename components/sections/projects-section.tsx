@@ -12,7 +12,7 @@ export default function ProjectsSection() {
       links: [{ type: "github" as const, label: "In Progress", url: "#" }],
     },
     {
-      title: "Glazey.com",
+      title: "GlazeyJewellery.com",
       description:
         "Collaborated on this Shopify-based jewellery online store, implementing custom features and optimizing the checkout process.",
       image: "/placeholder.svg?height=400&width=600",
