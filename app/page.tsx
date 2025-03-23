@@ -5,10 +5,11 @@ import HeroSection from "@/components/sections/hero-section"
 import AboutSection from "@/components/sections/about-section"
 import ProjectsSection from "@/components/sections/projects-section"
 import ContactSection from "@/components/sections/contact-section"
+import { siteMetadata } from "@/lib/data"
 
 export const metadata: Metadata = {
-  title: "Ricky - OakCodeAndTechSolutions",
-  description: "Full-stack developer & electrician specializing in modern web technologies",
+  title: siteMetadata.title,
+  description: siteMetadata.description,
 }
 
 export default function Home() {

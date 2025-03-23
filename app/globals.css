@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 142.1 76.2% 36.3%;
+    --primary: 24 95% 53%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 5.9% 10%;
     --secondary-foreground: 0 0% 98%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 142.1 76.2% 36.3%;
+    --ring: 24 95% 53%;
     --radius: 0.5rem;
   }
 
@@ -33,8 +33,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144.9 80.4% 10%;
+    --primary: 24 90% 58%;
+    --primary-foreground: 24 92% 18%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -45,7 +45,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 142.4 71.8% 29.2%;
+    --ring: 24 88% 50%;
   }
 }
 
@@ -60,15 +60,15 @@
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-emerald-600 via-green-700 to-teal-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent;
   }
 
   .gradient-bg {
-    @apply bg-gradient-to-r from-emerald-600 to-green-700;
+    @apply bg-gradient-to-r from-orange-600 to-amber-600;
   }
 
   .gradient-border {
-    @apply border border-emerald-600;
+    @apply border border-orange-600;
   }
 }
 
