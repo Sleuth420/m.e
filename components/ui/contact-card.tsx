@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { IconSelector } from "@/components/ui/icon-selector";
-import { motion } from "framer-motion";
-import { itemFadeIn } from "@/lib/animations";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { IconSelector } from '@/components/ui/icon-selector';
+import { motion } from 'framer-motion';
+import { itemFadeIn } from '@/lib/animations';
 
 interface ContactCardProps {
   title: string;
@@ -37,4 +37,4 @@ export function ContactCard({ title, content, icon, actionLabel, actionUrl }: Co
       </Card>
     </motion.div>
   );
-} 
+}

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { particles } from "@/lib/animations";
+import { motion } from 'framer-motion';
+import { particles } from '@/lib/animations';
 
 export function ParticlesAnimation() {
   return (
@@ -19,10 +19,10 @@ export function ParticlesAnimation() {
           transition={{
             duration: particle.duration,
             repeat: Infinity,
-            ease: "linear",
+            ease: 'linear',
           }}
         />
       ))}
     </div>
   );
-} 
+}

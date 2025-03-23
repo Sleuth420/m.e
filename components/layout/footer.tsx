@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { Github, Zap } from "lucide-react"
+import Link from 'next/link';
+import { Github, Zap } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -13,8 +13,13 @@ export default function Footer() {
             <span className="inline-block font-bold gradient-text">Ricky</span>
           </Link>
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            Built with ❤️ by{" "}
-            <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-4">
+            Built with ❤️ by{' '}
+            <Link
+              href="https://github.com/Sleuth420"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium underline underline-offset-4"
+            >
               OakCodeAndTechSolutions
             </Link>
             .
@@ -28,6 +33,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
-

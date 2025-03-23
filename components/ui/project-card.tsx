@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { IconSelector, getProjectIcon } from "@/components/ui/icon-selector"
-import type { Project } from "@/lib/data"
-import { itemFadeIn } from "@/lib/animations"
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { IconSelector, getProjectIcon } from '@/components/ui/icon-selector';
+import type { Project } from '@/lib/data';
+import { itemFadeIn } from '@/lib/animations';
 
 interface ProjectCardProps {
-  project: Project
-  index: number
+  project: Project;
+  index: number;
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
@@ -22,9 +22,9 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         delay: index * 0.1,
       },
     },
-  }
+  };
 
-  const iconName = getProjectIcon(project.title)
+  const iconName = getProjectIcon(project.title);
 
   return (
     <motion.div
@@ -40,28 +40,41 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
       <div className="flex flex-col flex-grow p-6 -mt-8 relative">
         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">{project.description}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
+          {project.description}
+        </p>
         <div className="flex gap-2">
           {project.links.map((link, i) =>
-            link.type === "github" ? (
-              <Button key={i} variant="default" size="sm" className="bg-orange-600 hover:bg-orange-700" asChild>
+            link.type === 'github' ? (
+              <Button
+                key={i}
+                variant="default"
+                size="sm"
+                className="bg-orange-600 hover:bg-orange-700"
+                asChild
+              >
                 <Link href={link.url} target="_blank" rel="noopener noreferrer">
                   <IconSelector name="Github" className="mr-2 h-4 w-4" />
                   {link.label}
                 </Link>
               </Button>
             ) : (
-              <Button key={i} variant="outline" size="sm" className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-950/30" asChild>
+              <Button
+                key={i}
+                variant="outline"
+                size="sm"
+                className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-950/30"
+                asChild
+              >
                 <Link href={link.url} target="_blank" rel="noopener noreferrer">
                   <IconSelector name="ExternalLink" className="mr-2 h-4 w-4" />
                   {link.label}
                 </Link>
               </Button>
-            ),
+            )
           )}
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
-

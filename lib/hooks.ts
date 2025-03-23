@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import type { RefObject } from "react";
+import { useEffect, useState } from 'react';
+import type { RefObject } from 'react';
 
 export function useScrollPosition() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,8 +11,8 @@ export function useScrollPosition() {
       setIsScrolled(window.scrollY > 10);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return isScrolled;
@@ -23,7 +23,7 @@ export function useSmoothScroll() {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -32,10 +32,10 @@ export function useSmoothScroll() {
 
 export function useHasMounted() {
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   return mounted;
-} 
+}

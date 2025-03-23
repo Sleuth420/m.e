@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 interface SectionBackgroundProps {
-  variant?: "dots" | "grid" | "diagonal" | "none";
+  variant?: 'dots' | 'grid' | 'diagonal' | 'none';
   children: React.ReactNode;
 }
 
-export function SectionBackground({ variant = "grid", children }: SectionBackgroundProps) {
+export function SectionBackground({ variant = 'grid', children }: SectionBackgroundProps) {
   return (
     <div className="relative w-full">
       {/* No background elements at all - removed entirely */}
@@ -13,4 +13,4 @@ export function SectionBackground({ variant = "grid", children }: SectionBackgro
       {children}
     </div>
   );
-} 
+}

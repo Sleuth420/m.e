@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { IconSelector } from "@/components/ui/icon-selector"; 
-import { motion } from "framer-motion";
-import type { Skill } from "@/lib/data";
-import { itemFadeIn } from "@/lib/animations";
+import { Card, CardContent } from '@/components/ui/card';
+import { IconSelector } from '@/components/ui/icon-selector';
+import { motion } from 'framer-motion';
+import type { Skill } from '@/lib/data';
+import { itemFadeIn } from '@/lib/animations';
 
 interface SkillCardProps {
   skill: Skill;
@@ -26,4 +26,4 @@ export function SkillCard({ skill }: SkillCardProps) {
       </Card>
     </motion.div>
   );
-} 
+}

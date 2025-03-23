@@ -13,7 +13,7 @@ export const particles = [
   { x: 35, y: 65, scale: 0.6, duration: 22 },
   { x: 65, y: 35, scale: 0.9, duration: 24 },
   { x: 15, y: 85, scale: 0.5, duration: 26 },
-  { x: 85, y: 15, scale: 0.7, duration: 23 }
+  { x: 85, y: 15, scale: 0.7, duration: 23 },
 ];
 
 export const staggerContainer = {
@@ -28,16 +28,16 @@ export const staggerContainer = {
 
 export const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
+  show: {
+    opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5
-    }
+      duration: 0.5,
+    },
   },
 };
 
 export const itemFadeIn = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
-}; 
+};

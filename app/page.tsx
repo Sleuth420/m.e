@@ -1,16 +1,16 @@
-import type { Metadata } from "next"
-import Header from "@/components/layout/header"
-import Footer from "@/components/layout/footer"
-import HeroSection from "@/components/sections/hero-section"
-import AboutSection from "@/components/sections/about-section"
-import ProjectsSection from "@/components/sections/projects-section"
-import ContactSection from "@/components/sections/contact-section"
-import { siteMetadata } from "@/lib/data"
+import type { Metadata } from 'next';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
+import HeroSection from '@/components/sections/hero-section';
+import AboutSection from '@/components/sections/about-section';
+import ProjectsSection from '@/components/sections/projects-section';
+import ContactSection from '@/components/sections/contact-section';
+import { siteMetadata } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: siteMetadata.title,
   description: siteMetadata.description,
-}
+};
 
 export default function Home() {
   return (
@@ -24,6 +24,5 @@ export default function Home() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
-

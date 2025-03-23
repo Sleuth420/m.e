@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import { fadeInUp } from "@/lib/animations";
+import { motion } from 'framer-motion';
+import { fadeInUp } from '@/lib/animations';
 
 interface SectionHeadingProps {
   badge: string;
@@ -43,4 +43,4 @@ export function SectionHeading({ badge, title, description }: SectionHeadingProp
       </motion.p>
     </div>
   );
-} 
+}

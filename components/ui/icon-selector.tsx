@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { 
-  Code, 
-  Shield, 
-  Wrench, 
-  Store, 
-  Zap, 
-  Heart, 
-  Database, 
-  ExternalLink, 
-  Github 
-} from "lucide-react";
+import {
+  Code,
+  Shield,
+  Wrench,
+  Store,
+  Zap,
+  Heart,
+  Database,
+  ExternalLink,
+  Github,
+} from 'lucide-react';
 
-type IconName = 
-  | "Code" 
-  | "Shield" 
-  | "Wrench" 
-  | "Store" 
-  | "Zap" 
-  | "Heart" 
-  | "Database" 
-  | "ExternalLink"
-  | "Github";
+type IconName =
+  | 'Code'
+  | 'Shield'
+  | 'Wrench'
+  | 'Store'
+  | 'Zap'
+  | 'Heart'
+  | 'Database'
+  | 'ExternalLink'
+  | 'Github';
 
 interface IconSelectorProps {
   name: IconName;
@@ -29,7 +29,7 @@ interface IconSelectorProps {
   size?: number;
 }
 
-export function IconSelector({ name, className = "", size = 24 }: IconSelectorProps) {
+export function IconSelector({ name, className = '', size = 24 }: IconSelectorProps) {
   const icons = {
     Code: <Code size={size} className={className} />,
     Shield: <Shield size={size} className={className} />,
@@ -39,18 +39,18 @@ export function IconSelector({ name, className = "", size = 24 }: IconSelectorPr
     Heart: <Heart size={size} className={className} />,
     Database: <Database size={size} className={className} />,
     ExternalLink: <ExternalLink size={size} className={className} />,
-    Github: <Github size={size} className={className} />
+    Github: <Github size={size} className={className} />,
   };
 
   return icons[name] || null;
 }
 
 export function getProjectIcon(title: string): IconName {
-  if (title.toLowerCase().includes("electrician")) return "Zap";
-  if (title.toLowerCase().includes("glazey")) return "Store";
-  if (title.toLowerCase().includes("electrovision")) return "Zap";
-  if (title.toLowerCase().includes("reaching out")) return "Heart";
-  if (title.toLowerCase().includes("pokedex")) return "Database";
-  if (title.toLowerCase().includes("cybersecurity")) return "Shield";
-  return "Code";
-} 
+  if (title.toLowerCase().includes('electrician')) return 'Zap';
+  if (title.toLowerCase().includes('glazey')) return 'Store';
+  if (title.toLowerCase().includes('electrovision')) return 'Zap';
+  if (title.toLowerCase().includes('reaching out')) return 'Heart';
+  if (title.toLowerCase().includes('pokedex')) return 'Database';
+  if (title.toLowerCase().includes('cybersecurity')) return 'Shield';
+  return 'Code';
+}
