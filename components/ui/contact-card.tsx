@@ -7,10 +7,13 @@ import { IconSelector } from '@/components/ui/icon-selector';
 import { motion } from 'framer-motion';
 import { itemFadeIn } from '@/lib/animations';
 
+// Import the IconName type from icon-selector
+import { type IconName } from '@/components/ui/icon-selector';
+
 interface ContactCardProps {
   title: string;
   content: string;
-  icon: string;
+  icon: IconName;
   actionLabel?: string;
   actionUrl?: string;
 }

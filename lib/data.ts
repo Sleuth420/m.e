@@ -1,3 +1,5 @@
+import { type IconName } from '@/components/ui/icon-selector';
+
 export interface ProjectLink {
   type: 'github' | 'external';
   label: string;
@@ -59,7 +61,7 @@ export const projects: Project[] = [
 
 export interface Skill {
   title: string;
-  icon: string;
+  icon: IconName;
   description: string;
 }
 

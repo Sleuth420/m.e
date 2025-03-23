@@ -10,9 +10,11 @@ import {
   Database,
   ExternalLink,
   Github,
+  Mail,
+  MapPin
 } from 'lucide-react';
 
-type IconName =
+export type IconName =
   | 'Code'
   | 'Shield'
   | 'Wrench'
@@ -21,7 +23,9 @@ type IconName =
   | 'Heart'
   | 'Database'
   | 'ExternalLink'
-  | 'Github';
+  | 'Github'
+  | 'Mail'
+  | 'MapPin';
 
 interface IconSelectorProps {
   name: IconName;
@@ -40,6 +44,8 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
     Database: <Database size={size} className={className} />,
     ExternalLink: <ExternalLink size={size} className={className} />,
     Github: <Github size={size} className={className} />,
+    Mail: <Mail size={size} className={className} />,
+    MapPin: <MapPin size={size} className={className} />
   };
 
   return icons[name] || null;
