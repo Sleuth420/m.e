@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Github, Zap } from 'lucide-react';
+import { Github, Zap, Coffee } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Footer() {
   return (
@@ -25,8 +26,18 @@ export default function Footer() {
             .
           </p>
         </div>
-        <div className="flex gap-4">
-          <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer">
+        <div className="flex items-center gap-4">
+          <Button 
+            size="sm" 
+            className="bg-amber-500 hover:bg-amber-600 text-white"
+            asChild
+          >
+            <Link href="https://www.buymeacoffee.com/oakcodeandtechsolutions" target="_blank" rel="noopener noreferrer">
+              <Coffee className="mr-2 h-4 w-4" />
+              Buy Me a Coffee
+            </Link>
+          </Button>
+          <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">
             <Github className="h-4 w-4" />
             <span className="sr-only">GitHub</span>
           </Link>
