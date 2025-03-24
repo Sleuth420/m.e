@@ -9,7 +9,7 @@ import { staggerContainer } from '@/lib/animations';
 
 export default function AboutSection() {
   return (
-    <section id="about" className="w-full py-8 md:py-12 lg:py-24 relative">
+    <section id="about" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="dots">
         <div className="mx-auto px-4 sm:px-6 md:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
           <SectionHeading
@@ -25,7 +25,7 @@ export default function AboutSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3"
+            className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mt-8"
           >
             {skills.map((skill, index) => (
               <SkillCard key={index} skill={skill} />

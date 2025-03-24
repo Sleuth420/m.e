@@ -11,7 +11,8 @@ import {
   ExternalLink,
   Github,
   Mail,
-  MapPin
+  MapPin,
+  Microchip
 } from 'lucide-react';
 
 export type IconName =
@@ -25,7 +26,8 @@ export type IconName =
   | 'ExternalLink'
   | 'Github'
   | 'Mail'
-  | 'MapPin';
+  | 'MapPin'
+  | 'Microchip';
 
 interface IconSelectorProps {
   name: IconName;
@@ -45,7 +47,8 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
     ExternalLink: <ExternalLink size={size} className={className} />,
     Github: <Github size={size} className={className} />,
     Mail: <Mail size={size} className={className} />,
-    MapPin: <MapPin size={size} className={className} />
+    MapPin: <MapPin size={size} className={className} />,
+    Microchip: <Microchip size={size} className={className} />
   };
 
   return icons[name] || null;

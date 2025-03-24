@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AvailableForWorkPopup } from '@/components/ui/available-for-work-popup';
+import { BuyMeCoffeePopup } from '@/components/ui/buy-me-coffee-popup';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,10 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
+          <AvailableForWorkPopup />
+          <BuyMeCoffeePopup coffeeLink="https://www.buymeacoffee.com/oakcodeandtechsolutions" />
         </ThemeProvider>
       </body>
     </html>
   );
 }
-
-import './globals.css';

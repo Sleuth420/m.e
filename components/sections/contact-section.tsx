@@ -9,7 +9,7 @@ import { staggerContainer } from '@/lib/animations';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="w-full py-16 md:py-24 lg:py-32 relative">
+    <section id="contact" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="diagonal">
         <div className="mx-auto px-4 sm:px-6 md:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
           <SectionHeading

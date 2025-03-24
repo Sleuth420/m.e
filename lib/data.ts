@@ -17,14 +17,14 @@ export const projects: Project[] = [
   {
     title: 'Electrician Management App',
     description:
-      'A Vue.js + Django REST full-stack application for electricians to manage jobs, streamline on-site calculations and repetitive day-to-day tasks.',
+      'A Vue.js + Django REST full-stack application for electricians consisting of feature based tools to manage jobs, streamline on-site calculations and repetitive day-to-day tasks. Complete with Stripe integration and secure practices such as OTP and 2fa',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'github', label: 'In Progress', url: '#' }],
   },
   {
     title: 'GlazeyJewellery.com',
     description:
-      'Collaborated on this Shopify-based jewellery online store, implementing custom features and optimizing the checkout process.',
+      'Collaborated on this Shopify-based jewellery online store, implementing custom features and optimizing the checkout process. Design by others',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
   },
@@ -69,12 +69,17 @@ export const skills: Skill[] = [
   {
     title: 'Web Development',
     icon: 'Code',
-    description: 'Vue.js, React, Django, WordPress, Shopify',
+    description: 'Vue.js, React, Django, WordPress, Shopify, Tailwind CSS, Node.js, Next.js',
   },
   {
     title: 'Cybersecurity',
     icon: 'Shield',
-    description: 'Network Security, Penetration Testing, Secure Coding',
+    description: 'Network Security, Penetration Testing, Secure Coding, OWASP Top 10',
+  },
+  {
+    title: 'IoT and Embedded Systems',
+    icon: 'Microchip',
+    description: 'Arduino, Raspberry Pi, ESP32, Linux',
   },
   {
     title: 'Electrical',
