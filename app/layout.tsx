@@ -6,19 +6,22 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AvailableForWorkPopup } from '@/components/ui/available-for-work-popup';
 import { BuyMeCoffeePopup } from '@/components/ui/buy-me-coffee-popup';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: 'Ricky - OakCodeAndTechSolutions',
   description: 'Full-stack developer & electrician specializing in modern web technologies',
+  metadataBase: new URL('https://profile.oakcodeandtechsolutions.com'),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <base href="/m.e/" />
-      </head>
+      <head />
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
