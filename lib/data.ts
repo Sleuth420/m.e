@@ -22,6 +22,19 @@ export const projects: Project[] = [
     links: [{ type: 'github', label: 'In Progress', url: '#' }],
   },
   {
+    title: 'Reaching Out In The Inner West',
+    description:
+      'WordPress website for a Melbourne-based non-profit organization, featuring donation integration and event management.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [
+      {
+        type: 'external',
+        label: 'Visit Site',
+        url: 'https://reachingoutintheinnerwestofmelbourne.com.au',
+      },
+    ],
+  },
+  {
     title: 'GlazeyJewellery.com',
     description:
       'Collaborated on this Shopify-based jewellery online store, implementing custom features and optimizing the checkout process. Design by others',
@@ -36,19 +49,6 @@ export const projects: Project[] = [
     links: [{ type: 'external', label: 'Visit Site', url: '#' }],
   },
   {
-    title: 'Reaching Out In The Inner West',
-    description:
-      'WordPress website for a Melbourne-based non-profit organization, featuring donation integration and event management.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [
-      {
-        type: 'external',
-        label: 'Visit Site',
-        url: 'https://reachingoutintheinnerwestofmelbourne.com.au',
-      },
-    ],
-  },
-  {
     title: 'ZegaMame Pokedex',
     description:
       'Python-Tkinter Pokedex application built on a ZegaMame board with custom Linux ROM, showcasing embedded systems skills and a passion for retro gaming.',
@@ -56,6 +56,12 @@ export const projects: Project[] = [
     links: [
       { type: 'github', label: 'Code', url: 'https://github.com/Sleuth420/Python-Tkinter-Pokedex' },
     ],
+  },
+  {
+    title: 'Perfect Circle',
+    description: 'A Simple game written by AI using React and Next.js',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' }],
   },
 ];
 

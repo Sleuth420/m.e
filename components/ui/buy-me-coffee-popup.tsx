@@ -14,34 +14,59 @@ export function BuyMeCoffeePopup({
   className,
   coffeeLink = "https://www.buymeacoffee.com" // Replace with your actual Buy Me a Coffee link
 }: BuyMeCoffeePopupProps) {
-  const [isVisible, setIsVisible] = React.useState(true);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [isFading, setIsFading] = React.useState(false);
   
   // Only hide for the current session
   const dismissPopup = () => {
-    setIsVisible(false);
-    sessionStorage.setItem('coffeePopupDismissed', 'true');
+    setIsFading(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      setIsFading(false);
+      sessionStorage.setItem('coffeePopupDismissed', 'true');
+    }, 300); // Duration of fade-out animation
   };
   
-  // Check if the popup was previously dismissed in this session
   React.useEffect(() => {
     const isDismissed = sessionStorage.getItem('coffeePopupDismissed') === 'true';
-    if (isDismissed) {
-      setIsVisible(false);
-    }
 
     // Show this popup with a slight delay after page load
-    const timer = setTimeout(() => {
-      setIsVisible(true);
+    const initialTimer = setTimeout(() => {
+      if (!isDismissed) {
+        setIsVisible(true);
+      }
     }, 2000);
 
-    return () => clearTimeout(timer);
-  }, []);
+    // Auto-dismiss after 30 seconds
+    let dismissTimer: NodeJS.Timeout;
+    if (isVisible) {
+      dismissTimer = setTimeout(() => {
+        dismissPopup();
+      }, 30000);
+    }
+
+    // Reappear after 3 minutes if not manually dismissed
+    const reappearTimer = setInterval(() => {
+      const currentDismissed = sessionStorage.getItem('coffeePopupDismissed') === 'true';
+      if (!currentDismissed && !isVisible) {
+        setIsVisible(true);
+      }
+    }, 180000); // 3 minutes
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearTimeout(dismissTimer);
+      clearInterval(reappearTimer);
+    };
+  }, [isVisible]);
   
   if (!isVisible) return null;
   
   return (
     <div className={cn(
-      "fixed bottom-4 left-4 max-w-[280px] rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 p-1 shadow-lg z-50 animate-fade-in animate-slide-in-from-bottom",
+      "fixed bottom-4 left-4 max-w-[280px] rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 p-1 shadow-lg z-50",
+      "animate-fade-in animate-slide-in-from-bottom",
+      isFading && "animate-fade-out",
       className
     )}>
       <div className="relative rounded-md bg-background p-4">

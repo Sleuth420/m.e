@@ -11,28 +11,60 @@ interface AvailableForWorkPopupProps {
 }
 
 export function AvailableForWorkPopup({ className }: AvailableForWorkPopupProps) {
-  const [isVisible, setIsVisible] = React.useState(true);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [isFading, setIsFading] = React.useState(false);
   const scrollToSection = useSmoothScroll();
   
   // Only hide for the current session
   const dismissPopup = () => {
-    setIsVisible(false);
-    sessionStorage.setItem('availablePopupDismissed', 'true');
+    setIsFading(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      setIsFading(false);
+      sessionStorage.setItem('availablePopupDismissed', 'true');
+    }, 300); // Duration of fade-out animation
   };
   
-  // Check if the popup was previously dismissed in this session
   React.useEffect(() => {
     const isDismissed = sessionStorage.getItem('availablePopupDismissed') === 'true';
-    if (isDismissed) {
-      setIsVisible(false);
+    
+    // Initial display with a slight delay
+    const initialTimer = setTimeout(() => {
+      if (!isDismissed) {
+        setIsVisible(true);
+      }
+    }, 1000);
+
+    // Auto-dismiss after 30 seconds
+    let dismissTimer: NodeJS.Timeout;
+    if (isVisible) {
+      dismissTimer = setTimeout(() => {
+        dismissPopup();
+      }, 30000);
     }
-  }, []);
+
+    // Reappear after 3 minutes if not manually dismissed
+    const reappearTimer = setInterval(() => {
+      const currentDismissed = sessionStorage.getItem('availablePopupDismissed') === 'true';
+      if (!currentDismissed && !isVisible) {
+        setIsVisible(true);
+      }
+    }, 180000); // 3 minutes
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearTimeout(dismissTimer);
+      clearInterval(reappearTimer);
+    };
+  }, [isVisible]);
   
   if (!isVisible) return null;
   
   return (
     <div className={cn(
-      "fixed bottom-4 right-4 max-w-[320px] rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 p-1 shadow-lg z-50 animate-fade-in animate-slide-in-from-bottom",
+      "fixed bottom-4 right-4 max-w-[320px] rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 p-1 shadow-lg z-50",
+      "animate-fade-in animate-slide-in-from-bottom",
+      isFading && "animate-fade-out",
       className
     )}>
       <div className="relative rounded-md bg-background p-4">

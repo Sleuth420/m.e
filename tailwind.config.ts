@@ -80,6 +80,10 @@ const config = {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
+        'fade-out': {
+          from: { opacity: '1' },
+          to: { opacity: '0' },
+        },
         'slide-in-from-bottom': {
           from: { transform: 'translateY(100%)' },
           to: { transform: 'translateY(0)' },
@@ -91,6 +95,7 @@ const config = {
         'rotate-slow': 'rotate-360 60s linear infinite',
         'rotate-slow-reverse': 'rotate-360-reverse 60s linear infinite',
         'fade-in': 'fade-in 0.3s ease-out',
+        'fade-out': 'fade-out 0.3s ease-out',
         'slide-in-from-bottom': 'slide-in-from-bottom 0.3s ease-out',
       },
     },
