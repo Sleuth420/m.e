@@ -16,9 +16,17 @@ interface ContactCardProps {
   icon: IconName;
   actionLabel?: string;
   actionUrl?: string;
+  onClick?: () => void;
 }
 
-export function ContactCard({ title, content, icon, actionLabel, actionUrl }: ContactCardProps) {
+export function ContactCard({ title, content, icon, actionLabel, actionUrl, onClick }: ContactCardProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <motion.div variants={itemFadeIn}>
       <Card className="overflow-hidden border-0 shadow-lg shadow-orange-100/30 dark:shadow-orange-900/20 hover:shadow-orange-200/40 dark:hover:shadow-orange-800/30 transition-all duration-300 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm h-full">
@@ -28,12 +36,17 @@ export function ContactCard({ title, content, icon, actionLabel, actionUrl }: Co
           </div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300">{content}</p>
-          {actionLabel && actionUrl && (
+          {actionLabel && (
             <Button
               className="w-full gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 mt-4"
-              asChild
+              asChild={!!actionUrl}
+              onClick={handleClick}
             >
-              <Link href={actionUrl}>{actionLabel}</Link>
+              {actionUrl ? (
+                <Link href={actionUrl}>{actionLabel}</Link>
+              ) : (
+                <span>{actionLabel}</span>
+              )}
             </Button>
           )}
         </CardContent>

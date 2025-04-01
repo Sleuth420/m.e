@@ -4,10 +4,14 @@ import { motion } from 'framer-motion';
 import { ContactCard } from '@/components/ui/contact-card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
+import { QuestionnaireModal } from '@/components/ui/questionnaire-modal';
 import { contactInfo } from '@/lib/data';
 import { staggerContainer } from '@/lib/animations';
+import { useState } from 'react';
 
 export default function ContactSection() {
+  const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
+
   return (
     <section id="contact" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="diagonal">
@@ -34,15 +38,22 @@ export default function ContactSection() {
             />
 
             <ContactCard
-              title="Connect"
-              content={contactInfo.location}
-              icon="MapPin"
-              actionLabel="GitHub"
-              actionUrl={contactInfo.github}
+              title="Service Questionnaire"
+              content="Tell me about your project needs"
+              icon="Database"
+              actionLabel="Fill Questionnaire"
+              actionUrl="#"
+              onClick={() => setIsQuestionnaireOpen(true)}
             />
           </motion.div>
         </div>
       </SectionBackground>
+
+      <QuestionnaireModal
+        isOpen={isQuestionnaireOpen}
+        onClose={() => setIsQuestionnaireOpen(false)}
+        formUrl="https://docs.google.com/forms/d/e/1FAIpQLScuB908j5bTUTUHTLsTvSWZjIZoSmrULlquicVSaSuPo52DmA/viewform?embedded=true"
+      />
     </section>
   );
 }

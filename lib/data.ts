@@ -19,7 +19,7 @@ export const projects: Project[] = [
     description:
       'A Vue.js + Django REST full-stack application for electricians consisting of feature based tools to manage jobs, streamline on-site calculations and repetitive day-to-day tasks. Complete with Stripe integration and secure practices such as OTP and 2fa',
     image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'github', label: 'In Progress', url: '#' }],
+    links: [{ type: 'external', label: 'In Progress', url: 'https://ohmsweetohm.xyz' }],
   },
   {
     title: 'Reaching Out In The Inner West',
