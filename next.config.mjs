@@ -13,9 +13,4 @@ const nextConfig = {
   trailingSlash: true,
 };
 
-// Configure for GitHub Pages with custom domain
-if (process.env.NODE_ENV === 'production') {
-  nextConfig.assetPrefix = 'https://profile.oakcodeandtechsolutions.com';
-}
-
 export default nextConfig;
