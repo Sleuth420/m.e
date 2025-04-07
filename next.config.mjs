@@ -13,9 +13,8 @@ const nextConfig = {
   trailingSlash: true,
 };
 
-// Configure for GitHub Pages deployment
+// Configure for GitHub Pages with custom domain
 if (process.env.NODE_ENV === 'production') {
-  // If deploying to GitHub Pages with custom domain
   nextConfig.assetPrefix = 'https://profile.oakcodeandtechsolutions.com';
 }
 
