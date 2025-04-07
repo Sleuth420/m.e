@@ -13,10 +13,10 @@ const nextConfig = {
   trailingSlash: true,
 };
 
-// Only add basePath and assetPrefix when building for production/GitHub Pages
+// Configure for GitHub Pages deployment
 if (process.env.NODE_ENV === 'production') {
-  nextConfig.basePath = '/m.e';
-  nextConfig.assetPrefix = 'https://sleuth420.github.io/m.e';
+  // If deploying to GitHub Pages with custom domain
+  nextConfig.assetPrefix = 'https://profile.oakcodeandtechsolutions.com';
 }
 
 export default nextConfig;
