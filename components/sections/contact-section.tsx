@@ -8,9 +8,27 @@ import { QuestionnaireModal } from '@/components/ui/questionnaire-modal';
 import { contactInfo } from '@/lib/data';
 import { staggerContainer } from '@/lib/animations';
 import { useState } from 'react';
+import { usePostHog } from '@/lib/hooks/usePostHog';
 
 export default function ContactSection() {
   const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
+  const { trackEvent } = usePostHog();
+
+  const handleQuestionnaireOpen = () => {
+    trackEvent('questionnaire_opened', {
+      source: 'contact_section',
+      timestamp: new Date().toISOString()
+    });
+    setIsQuestionnaireOpen(true);
+  };
+
+  const handleEmailClick = () => {
+    trackEvent('email_clicked', {
+      email: contactInfo.email,
+      source: 'contact_section',
+      timestamp: new Date().toISOString()
+    });
+  };
 
   return (
     <section id="contact" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
@@ -35,6 +53,7 @@ export default function ContactSection() {
               icon="Mail"
               actionLabel="Send Email"
               actionUrl={`mailto:${contactInfo.email}`}
+              onClick={handleEmailClick}
             />
 
             <ContactCard
@@ -43,7 +62,7 @@ export default function ContactSection() {
               icon="Database"
               actionLabel="Fill Questionnaire"
               actionUrl="#"
-              onClick={() => setIsQuestionnaireOpen(true)}
+              onClick={handleQuestionnaireOpen}
             />
           </motion.div>
         </div>
