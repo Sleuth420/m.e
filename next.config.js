@@ -9,7 +9,7 @@ const nextConfig = {
 
 // Configure for production with custom domain
 if (process.env.NODE_ENV === 'production') {
-  nextConfig.assetPrefix = 'https://profile.oakcodeandtechsolutions.com';
+  nextConfig.assetPrefix = 'https://profile.oakcodeandtechsolutions.com/';
 }
 
 module.exports = nextConfig; 
