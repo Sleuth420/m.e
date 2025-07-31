@@ -32,6 +32,13 @@ export default function Header() {
               About
             </Link>
             <Link
+              href="#services"
+              onClick={(e) => scrollToSection(e, 'services')}
+              className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"
+            >
+              Services
+            </Link>
+            <Link
               href="#projects"
               onClick={(e) => scrollToSection(e, 'projects')}
               className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"

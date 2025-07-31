@@ -12,7 +12,11 @@ import {
   Github,
   Mail,
   MapPin,
-  Microchip
+  Microchip,
+  Home,
+  Palette,
+  Camera,
+  Building
 } from 'lucide-react';
 
 export type IconName =
@@ -27,7 +31,11 @@ export type IconName =
   | 'Github'
   | 'Mail'
   | 'MapPin'
-  | 'Microchip';
+  | 'Microchip'
+  | 'Home'
+  | 'Palette'
+  | 'Camera'
+  | 'Building';
 
 interface IconSelectorProps {
   name: IconName;
@@ -48,7 +56,11 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
     Github: <Github size={size} className={className} />,
     Mail: <Mail size={size} className={className} />,
     MapPin: <MapPin size={size} className={className} />,
-    Microchip: <Microchip size={size} className={className} />
+    Microchip: <Microchip size={size} className={className} />,
+    Home: <Home size={size} className={className} />,
+    Palette: <Palette size={size} className={className} />,
+    Camera: <Camera size={size} className={className} />,
+    Building: <Building size={size} className={className} />
   };
 
   return icons[name] || null;
@@ -61,5 +73,7 @@ export function getProjectIcon(title: string): IconName {
   if (title.toLowerCase().includes('reaching out')) return 'Heart';
   if (title.toLowerCase().includes('pokedex')) return 'Database';
   if (title.toLowerCase().includes('cybersecurity')) return 'Shield';
+  if (title.toLowerCase().includes('wedding')) return 'Heart';
+  if (title.toLowerCase().includes('max trans')) return 'Home';
   return 'Code';
 }

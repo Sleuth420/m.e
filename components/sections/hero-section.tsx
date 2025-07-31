@@ -71,11 +71,16 @@ export default function HeroSection() {
           animate="show"
           variants={fadeInUp}
           transition={{ delay: 0.3 }}
-          className="flex gap-4"
+          className="flex gap-4 flex-wrap justify-center"
         >
           <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
+            <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
+              View Services <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
             <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
-              View My Projects <ArrowRight className="ml-2 h-4 w-4" />
+              View Projects <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button

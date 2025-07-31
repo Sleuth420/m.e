@@ -49,6 +49,20 @@ export const projects: Project[] = [
     links: [{ type: 'external', label: 'Visit Site', url: '#' }],
   },
   {
+    title: 'Wedding & RSVP Website',
+    description:
+      'Custom wedding website with RSVP functionality, guest management, and beautiful design for a special day celebration.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Private Project', url: '#' }],
+  },
+  {
+    title: 'Max Trans Portable Homes',
+    description:
+      'Website for a portable homes company showcasing their modular housing solutions and enabling customer inquiries.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au' }],
+  },
+  {
     title: 'ZegaMame Pokedex',
     description:
       'Python-Tkinter Pokedex application built on a ZegaMame board with custom Linux ROM, showcasing embedded systems skills and a passion for retro gaming.',
@@ -91,6 +105,52 @@ export const skills: Skill[] = [
     title: 'Electrical',
     icon: 'Wrench',
     description: 'Licensed Electrician, Industrial Systems, Smart Home Integration',
+  },
+];
+
+export interface Service {
+  title: string;
+  icon: IconName;
+  description: string;
+  category: 'tech' | 'electrical' | 'creative';
+}
+
+export const services: Service[] = [
+  {
+    title: 'Custom Websites',
+    icon: 'Code',
+    description: 'Modern, responsive websites built with the latest technologies',
+    category: 'tech',
+  },
+  {
+    title: 'WordPress Development',
+    icon: 'Code',
+    description: 'Custom WordPress themes, plugins, and site management',
+    category: 'tech',
+  },
+  {
+    title: 'Embedded Systems',
+    icon: 'Microchip',
+    description: 'IoT solutions, Arduino, Raspberry Pi, and custom electronics',
+    category: 'tech',
+  },
+  {
+    title: 'Electrical Services',
+    icon: 'Zap',
+    description: 'Licensed electrical work, installations, and smart home integration',
+    category: 'electrical',
+  },
+  {
+    title: '3D Visuals & CAD',
+    icon: 'Palette',
+    description: '3D modeling, CAD drawings, and technical visualizations',
+    category: 'creative',
+  },
+  {
+    title: 'Marketing & Branding',
+    icon: 'Camera',
+    description: 'Company branding, product marketing, and visual content',
+    category: 'creative',
   },
 ];
 
