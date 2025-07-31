@@ -21,7 +21,7 @@ export const trackPageView = (path: string) => {
   }
 };
 
-export const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+export const trackEvent = (eventName: string, properties?: Record<string, unknown>) => {
   if (typeof window !== 'undefined') {
     posthogClient.capture(eventName, properties);
   }

@@ -83,7 +83,7 @@ export function AvailableForWorkPopup({ className }: AvailableForWorkPopupProps)
           </div>
           
           <p className="text-sm text-muted-foreground">
-            Looking for a skilled developer? I'm currently open to new opportunities and freelance projects.
+            Looking for a skilled developer? I&apos;m currently open to new opportunities and freelance projects.
           </p>
           
           <div className="flex gap-2">

@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 import { Button } from './button';
-import { cn } from '@/lib/utils';
 
 interface QuestionnaireModalProps {
   isOpen: boolean;

@@ -53,7 +53,7 @@ export default function HeroSection() {
           transition={{ delay: 0.1 }}
           className="font-heading text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl !leading-tight text-white"
         >
-          Hi, I'm Ricky
+          Hi, I&apos;m Ricky
         </motion.h1>
         <motion.p
           initial="hidden"

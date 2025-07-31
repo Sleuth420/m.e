@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { RefObject } from 'react';
 
 export function useScrollPosition() {
   const [isScrolled, setIsScrolled] = useState(false);

@@ -5,7 +5,7 @@ interface SectionBackgroundProps {
   children: React.ReactNode;
 }
 
-export function SectionBackground({ variant = 'grid', children }: SectionBackgroundProps) {
+export function SectionBackground({ children }: SectionBackgroundProps) {
   return (
     <div className="relative w-full">
       {/* No background elements at all - removed entirely */}
