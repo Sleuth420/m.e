@@ -25,7 +25,10 @@ export default function AboutSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mt-8"
+            className="mx-auto grid gap-4 sm:gap-6 mt-8"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            }}
           >
             {skills.map((skill, index) => (
               <SkillCard key={index} skill={skill} />
@@ -37,9 +40,9 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="mx-auto text-center md:max-w-[58rem] mt-12"
+            className="mx-auto text-center md:max-w-[58rem] mt-12 px-4"
           >
-            <p className="leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            <p className="leading-normal text-muted-foreground text-base sm:text-lg sm:leading-7">
               My background as an electrician gives me a unique perspective on technology projects,
               especially those involving IoT, embedded systems, and industrial applications.
             </p>

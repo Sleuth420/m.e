@@ -5,15 +5,15 @@ import { Button } from '@/components/ui/button';
 export default function Footer() {
   return (
     <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+      <div className="container flex flex-col items-center justify-between gap-6 py-8 md:h-24 md:flex-row md:py-0 px-4 sm:px-6">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:gap-2">
           <Link href="/" className="flex items-center space-x-2">
             <div className="rounded-full bg-orange-600 p-1">
               <Zap className="h-4 w-4 text-white" />
             </div>
             <span className="inline-block font-bold gradient-text">Ricky</span>
           </Link>
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+          <p className="text-center text-xs sm:text-sm leading-loose text-muted-foreground md:text-left">
             Built with ❤️ by{' '}
             <Link
               href="https://github.com/Sleuth420"
@@ -26,19 +26,20 @@ export default function Footer() {
             .
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Button 
             size="sm" 
-            className="bg-amber-500 hover:bg-amber-600 text-white"
+            className="bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm"
             asChild
           >
             <Link href="https://www.buymeacoffee.com/oakcodeandtechsolutions" target="_blank" rel="noopener noreferrer">
-              <Coffee className="mr-2 h-4 w-4" />
-              Buy Me a Coffee
+              <Coffee className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Buy Me a Coffee</span>
+              <span className="sm:hidden">Coffee</span>
             </Link>
           </Button>
-          <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">
-            <Github className="h-4 w-4" />
+          <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors p-2">
+            <Github className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="sr-only">GitHub</span>
           </Link>
         </div>

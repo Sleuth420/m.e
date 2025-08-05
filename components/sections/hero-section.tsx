@@ -37,12 +37,12 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center">
+      <div className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center px-4 sm:px-6">
         <motion.span
           initial="hidden"
           animate="show"
           variants={fadeInUp}
-          className="rounded-full bg-orange-100/10 px-3 py-1 text-sm text-orange-200 ring-1 ring-orange-300/20"
+          className="rounded-full bg-orange-100/10 px-3 py-1 text-xs sm:text-sm text-orange-200 ring-1 ring-orange-300/20"
         >
           Developer - Electrician - Friend
         </motion.span>
@@ -51,7 +51,7 @@ export default function HeroSection() {
           animate="show"
           variants={fadeInUp}
           transition={{ delay: 0.1 }}
-          className="font-heading text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl !leading-tight text-white"
+          className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl !leading-tight text-white"
         >
           Hi, I&apos;m Ricky
         </motion.h1>
@@ -60,7 +60,7 @@ export default function HeroSection() {
           animate="show"
           variants={fadeInUp}
           transition={{ delay: 0.2 }}
-          className="max-w-[42rem] leading-normal text-slate-300 sm:text-xl sm:leading-8"
+          className="max-w-[42rem] leading-normal text-slate-300 text-base sm:text-lg md:text-xl sm:leading-8"
         >
           Full-stack developer at{' '}
           <span className="font-semibold text-orange-400">OakCodeAndTechSolutions</span>, combining
@@ -71,21 +71,21 @@ export default function HeroSection() {
           animate="show"
           variants={fadeInUp}
           transition={{ delay: 0.3 }}
-          className="flex gap-4 flex-wrap justify-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
         >
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto" asChild>
             <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
               View Services <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto" asChild>
             <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
               View Projects <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button
             variant="outline"
-            className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40"
+            className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 w-full sm:w-auto"
             asChild
           >
             <Link href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>

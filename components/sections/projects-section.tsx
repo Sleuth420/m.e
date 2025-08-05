@@ -23,9 +23,9 @@ export default function ProjectsSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid justify-center gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-8"
+            className="mx-auto grid gap-6 sm:gap-8 mt-8"
             style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             }}
           >
             {projects.map((project, index) => (

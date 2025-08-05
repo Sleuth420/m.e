@@ -22,7 +22,7 @@ export default function ServicesSection() {
             description="From web development to electrical work, I provide comprehensive solutions that bridge technology and practical expertise."
           />
 
-          <div className="space-y-16 mt-12">
+          <div className="space-y-12 sm:space-y-16 mt-12">
             {/* Technology Services */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -30,13 +30,16 @@ export default function ServicesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Technology Solutions</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 gradient-text">Technology Solutions</h3>
               <motion.div
                 variants={staggerContainer}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid justify-center gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                className="mx-auto grid gap-4 sm:gap-6"
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                }}
               >
                 {techServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />
@@ -51,13 +54,16 @@ export default function ServicesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Electrical Services</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 gradient-text">Electrical Services</h3>
               <motion.div
                 variants={staggerContainer}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid justify-center gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                className="mx-auto grid gap-4 sm:gap-6"
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                }}
               >
                 {electricalServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />
@@ -72,13 +78,16 @@ export default function ServicesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <h3 className="text-2xl font-bold text-center mb-8 gradient-text">Creative & Design</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 gradient-text">Creative & Design</h3>
               <motion.div
                 variants={staggerContainer}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid justify-center gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                className="mx-auto grid gap-4 sm:gap-6"
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                }}
               >
                 {creativeServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />

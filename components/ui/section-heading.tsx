@@ -11,13 +11,13 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ badge, title, description }: SectionHeadingProps) {
   return (
-    <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+    <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-3 sm:space-y-4 text-center px-4">
       <motion.span
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
         variants={fadeInUp}
-        className="rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800 dark:bg-orange-900/60 dark:text-orange-200"
+        className="rounded-full bg-orange-100 px-3 py-1 text-xs sm:text-sm text-orange-800 dark:bg-orange-900/60 dark:text-orange-200"
       >
         {badge}
       </motion.span>
@@ -27,7 +27,7 @@ export function SectionHeading({ badge, title, description }: SectionHeadingProp
         viewport={{ once: true }}
         variants={fadeInUp}
         transition={{ delay: 0.1 }}
-        className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl font-bold gradient-text"
+        className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] font-bold gradient-text"
       >
         {title}
       </motion.h2>
@@ -37,7 +37,7 @@ export function SectionHeading({ badge, title, description }: SectionHeadingProp
         viewport={{ once: true }}
         variants={fadeInUp}
         transition={{ delay: 0.2 }}
-        className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7"
+        className="max-w-[85%] leading-normal text-muted-foreground text-base sm:text-lg sm:leading-7"
       >
         {description}
       </motion.p>

@@ -1,61 +1,93 @@
 'use client';
 
 import Link from 'next/link';
-import { Zap } from 'lucide-react';
+import { Zap, Menu, X } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useScrollPosition, useSmoothScroll } from '@/lib/hooks';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function Header() {
   const isScrolled = useScrollPosition();
   const scrollToSection = useSmoothScroll();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string) => {
+    scrollToSection(e, section);
+    setIsMobileMenuOpen(false);
+  };
+
+  const navItems = [
+    { href: '#about', label: 'About' },
+    { href: '#services', label: 'Services' },
+    { href: '#projects', label: 'Projects' },
+    { href: '#contact', label: 'Contact' },
+  ];
 
   return (
     <header
       className={`sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-shadow duration-300 ${isScrolled ? 'shadow-md' : ''}`}
     >
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-        <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="rounded-full bg-orange-600 p-1">
-              <Zap className="h-6 w-6 text-white" />
-            </div>
-            <span className="inline-block font-bold gradient-text">Ricky</span>
-          </Link>
-        </div>
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-1">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-6">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="rounded-full bg-orange-600 p-1">
+            <Zap className="h-6 w-6 text-white" />
+          </div>
+          <span className="inline-block font-bold gradient-text">Ricky</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1">
+          {navItems.map((item) => (
             <Link
-              href="#about"
-              onClick={(e) => scrollToSection(e, 'about')}
-              className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"
+              key={item.href}
+              href={item.href}
+              onClick={(e) => scrollToSection(e, item.href.slice(1))}
+              className="px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600"
             >
-              About
+              {item.label}
             </Link>
-            <Link
-              href="#services"
-              onClick={(e) => scrollToSection(e, 'services')}
-              className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"
-            >
-              Services
-            </Link>
-            <Link
-              href="#projects"
-              onClick={(e) => scrollToSection(e, 'projects')}
-              className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"
-            >
-              Projects
-            </Link>
-            <Link
-              href="#contact"
-              onClick={(e) => scrollToSection(e, 'contact')}
-              className="hidden px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600 sm:inline-block"
-            >
-              Contact
-            </Link>
-            <ThemeToggle />
-          </nav>
+          ))}
+          <ThemeToggle />
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <div className="flex items-center space-x-2 md:hidden">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t bg-background/95 backdrop-blur">
+          <nav className="container px-4 py-4 space-y-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={(e) => handleNavClick(e, item.href.slice(1))}
+                className="block px-4 py-3 text-sm font-medium transition-colors hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/20 rounded-md"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

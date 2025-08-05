@@ -45,7 +45,10 @@ export default function ContactSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid gap-8 sm:grid-cols-2 md:max-w-[64rem] mt-12"
+            className="mx-auto grid gap-6 sm:gap-8 mt-12"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            }}
           >
             <ContactCard
               title="Email Me"
