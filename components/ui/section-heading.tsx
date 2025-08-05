@@ -11,7 +11,7 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ badge, title, description }: SectionHeadingProps) {
   return (
-    <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-3 sm:space-y-4 text-center px-4">
+    <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-3 sm:space-y-4 text-center">
       <motion.span
         initial="hidden"
         whileInView="show"

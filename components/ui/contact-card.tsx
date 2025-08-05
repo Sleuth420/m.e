@@ -38,7 +38,7 @@ export function ContactCard({ title, content, icon, actionLabel, actionUrl, onCl
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{content}</p>
           {actionLabel && (
             <Button
-              className="w-full gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 mt-3 sm:mt-4 text-sm sm:text-base"
+              className="gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 mt-3 sm:mt-4 text-sm sm:text-base"
               asChild={!!actionUrl}
               onClick={handleClick}
             >

@@ -28,7 +28,7 @@ export default function Header() {
     <header
       className={`sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-shadow duration-300 ${isScrolled ? 'shadow-md' : ''}`}
     >
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-6">
+      <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <div className="rounded-full bg-orange-600 p-1">
@@ -74,7 +74,7 @@ export default function Header() {
       {/* Mobile Navigation Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t bg-background/95 backdrop-blur">
-          <nav className="container px-4 py-4 space-y-2">
+          <nav className="container py-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.href}

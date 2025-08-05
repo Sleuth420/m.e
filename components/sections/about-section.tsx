@@ -11,7 +11,7 @@ export default function AboutSection() {
   return (
     <section id="about" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="dots">
-        <div className="mx-auto px-4 sm:px-6 md:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
+        <div className="container mx-auto">
           <SectionHeading
             badge="Who I Am"
             title="About Me"
@@ -40,7 +40,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="mx-auto text-center md:max-w-[58rem] mt-12 px-4"
+            className="mx-auto text-center md:max-w-[58rem] mt-12"
           >
             <p className="leading-normal text-muted-foreground text-base sm:text-lg sm:leading-7">
               My background as an electrician gives me a unique perspective on technology projects,

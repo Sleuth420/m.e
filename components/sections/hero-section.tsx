@@ -37,7 +37,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center px-4 sm:px-6">
+      <div className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center">
         <motion.span
           initial="hidden"
           animate="show"
@@ -71,21 +71,21 @@ export default function HeroSection() {
           animate="show"
           variants={fadeInUp}
           transition={{ delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
         >
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto" asChild>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
             <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
               View Services <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto" asChild>
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
             <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
               View Projects <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button
             variant="outline"
-            className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 w-full sm:w-auto"
+            className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40"
             asChild
           >
             <Link href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>

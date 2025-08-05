@@ -11,7 +11,7 @@ export default function ProjectsSection() {
   return (
     <section id="projects" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="grid">
-        <div className="mx-auto px-4 sm:px-6 md:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
+        <div className="container mx-auto">
           <SectionHeading
             badge="My Work"
             title="Projects"

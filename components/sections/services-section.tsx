@@ -15,7 +15,7 @@ export default function ServicesSection() {
   return (
     <section id="services" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="dots">
-        <div className="mx-auto px-4 sm:px-6 md:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
+        <div className="container mx-auto">
           <SectionHeading
             badge="What I Offer"
             title="Services"
