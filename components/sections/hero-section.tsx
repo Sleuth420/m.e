@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useSmoothScroll } from '@/lib/hooks';
-import { fadeInUp } from '@/lib/animations';
+import { textReveal, scaleIn, hoverScale } from '@/lib/animations';
 
 export default function HeroSection() {
   const scrollToSection = useSmoothScroll();
@@ -37,11 +37,22 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center">
+      <motion.div 
+        className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center"
+        animate={{ 
+          y: [0, -10, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
         <motion.span
           initial="hidden"
           animate="show"
-          variants={fadeInUp}
+          variants={textReveal}
+          transition={{ delay: 0.2 }}
           className="rounded-full bg-orange-100/10 px-3 py-1 text-xs sm:text-sm text-orange-200 ring-1 ring-orange-300/20"
         >
           Developer - Electrician - Friend
@@ -49,8 +60,8 @@ export default function HeroSection() {
         <motion.h1
           initial="hidden"
           animate="show"
-          variants={fadeInUp}
-          transition={{ delay: 0.1 }}
+          variants={textReveal}
+          transition={{ delay: 0.4 }}
           className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl !leading-tight text-white"
         >
           Hi, I&apos;m Ricky
@@ -58,8 +69,8 @@ export default function HeroSection() {
         <motion.p
           initial="hidden"
           animate="show"
-          variants={fadeInUp}
-          transition={{ delay: 0.2 }}
+          variants={textReveal}
+          transition={{ delay: 0.6 }}
           className="max-w-[42rem] leading-normal text-slate-300 text-base sm:text-lg md:text-xl sm:leading-8"
         >
           Full-stack developer at{' '}
@@ -69,29 +80,35 @@ export default function HeroSection() {
         <motion.div
           initial="hidden"
           animate="show"
-          variants={fadeInUp}
-          transition={{ delay: 0.3 }}
+          variants={scaleIn}
+          transition={{ delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
         >
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
-            <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
-              View Services <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
-            <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
-              View Projects <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40"
-            asChild
-          >
-            <Link href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>
-              Contact Me
-            </Link>
-          </Button>
+          <motion.div whileHover="hover" variants={hoverScale}>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300" asChild>
+              <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
+                View Services <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+          <motion.div whileHover="hover" variants={hoverScale}>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300" asChild>
+              <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
+                View Projects <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+          <motion.div whileHover="hover" variants={hoverScale}>
+            <Button
+              variant="outline"
+              className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 transition-all duration-300"
+              asChild
+            >
+              <Link href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>
+                Contact Me
+              </Link>
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>

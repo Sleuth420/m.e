@@ -1,0 +1,22 @@
+# Security Policy for OakCodeAndTechSolutions
+# https://profile.oakcodeandtechsolutions.com/.well-known/security.txt
+
+Contact: mailto:oakcodeandtechsolutions@gmail.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://profile.oakcodeandtechsolutions.com/.well-known/security.txt
+Policy: https://profile.oakcodeandtechsolutions.com/security-policy
+
+# Security Scope
+# This security.txt covers the main portfolio website and any associated services
+# operated by OakCodeAndTechSolutions
+
+# Reporting Guidelines
+# - Please provide detailed information about the vulnerability
+# - Include steps to reproduce the issue
+# - Allow reasonable time for response and remediation
+# - Follow responsible disclosure practices
+
+# Response Time
+# We aim to respond to security reports within 48 hours
+# Critical issues will be addressed immediately 

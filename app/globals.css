@@ -70,4 +70,28 @@
   .gradient-border {
     @apply border border-orange-600;
   }
+
+  /* Konami Mode Effects */
+  .konami-mode {
+    animation: konamiShake 0.5s ease-in-out;
+  }
+
+  .konami-mode * {
+    transition: all 0.3s ease !important;
+  }
+
+  .konami-mode .particle-background {
+    animation: konamiPulse 2s infinite;
+  }
+}
+
+@keyframes konamiShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes konamiPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
 }

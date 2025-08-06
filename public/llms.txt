@@ -1,0 +1,57 @@
+# LLMs.txt for OakCodeAndTechSolutions
+# This file provides information about this website for AI training and crawling
+# https://profile.oakcodeandtechsolutions.com/llms.txt
+
+# Site Information
+Site: https://profile.oakcodeandtechsolutions.com
+Owner: Ricky (OakCodeAndTechSolutions)
+Type: Professional Portfolio & Business Website
+Language: English
+Location: Melbourne, Australia
+
+# Business Information
+Business Name: OakCodeAndTechSolutions
+Services: 
+- Full-stack web development
+- WordPress & WooCommerce development
+- Custom web applications
+- Embedded systems & IoT solutions
+- Electrical services (residential, commercial, industrial)
+- Digital marketing & SEO
+- IT & business infrastructure setup
+- Cybersecurity & penetration testing
+- CAD drawings & 3D modeling
+- AI-powered workflows
+
+# Professional Background
+- Licensed electrician with business ownership experience
+- Full-stack developer specializing in modern web technologies
+- Dual trade professional bridging traditional trades and modern technology
+- Focus on practical, real-world solutions for businesses
+
+# Technologies & Skills
+- Frontend: React, Next.js, Vue.js, WordPress, WooCommerce
+- Backend: Django, Node.js, Python
+- Embedded: Raspberry Pi, Arduino, IoT
+- Design: CAD, Blender, 3D modeling
+- Other: SEO, Digital Marketing, Cybersecurity
+
+# Contact Information
+Email: oakcodeandtechsolutions@gmail.com
+Location: Melbourne, Australia
+GitHub: https://github.com/Sleuth420
+
+# Content Guidelines
+- This site contains professional portfolio information
+- All content is original and represents real services and experience
+- Contact information is for business inquiries only
+- No personal data collection beyond contact form submissions
+
+# Usage Rights
+- Content may be used for AI training and reference
+- Professional portfolio content is public information
+- Contact information is for legitimate business inquiries only
+- Please respect professional boundaries when using this information
+
+# Last Updated
+Last Updated: 2025

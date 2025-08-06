@@ -12,36 +12,100 @@ interface SeoProps {
 }
 
 export const generateSeoMetadata = ({
-  title = 'Ricky - OakCodeAndTechSolutions',
-  description = 'Full-stack developer specializing in modern web technologies',
+  title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
+  description = 'Dual trade professional: Full-stack developer and licensed electrician. Specializing in WordPress, custom web development, embedded systems, and electrical services. Bridge the gap between traditional trades and modern technology.',
   image = 'https://profile.oakcodeandtechsolutions.com/placeholder-user.jpg',
   type = 'profile',
   publishedTime,
   modifiedTime,
   author = 'Ricky',
-  keywords = ['Full-stack developer',
-    'Electrician',
-    'Web Development',
+  keywords = [
+    // Core identity
+    'OakCode',
     'OakCodeAndTechSolutions',
+    'Ricky',
     'Ricky Oakley',
-    'Wordpress Developer',
-    'Wordpress',
-    'Web Developer',
-    'Web Design',
-    'Full-stack Developer',
-    'Full Stack',
-    'Vue.js Developer',
-    'Vue.js',
-    'Vue',
-    'React Developer',
+    
+    // Professional roles
+    'Full-stack developer',
+    'Full stack developer',
+    'Electrician',
+    'Licensed electrician',
+    'Dual trade',
+    'Business owner',
+    
+    // Web development
+    'Web developer',
+    'Web development',
+    'WordPress developer',
+    'WordPress',
+    'WooCommerce',
+    'Custom web development',
+    'React developer',
     'React',
-    'Node.js Developer',
-    'Node.js',
-    'Python Developer',
-    'Python',
-    'Django Developer',
+    'Next.js',
+    'Vue.js developer',
+    'Vue.js',
+    'Django developer',
     'Django',
-    'Django Rest Framework',    
+    'Python developer',
+    'Python',
+    'Node.js developer',
+    'Node.js',
+    
+    // Services
+    'Embedded systems',
+    'Raspberry Pi',
+    'IoT solutions',
+    'Electrical services',
+    'Residential electrical',
+    'Commercial electrical',
+    'Industrial electrical',
+    'Smart home integration',
+    'Digital marketing',
+    'SEO services',
+    'Content writing',
+    'IT setup',
+    'Business infrastructure',
+    'Cybersecurity',
+    'Penetration testing',
+    'CAD drawings',
+    '3D modeling',
+    'Blender',
+    'AI workflows',
+    
+    // Location
+    'Melbourne',
+    'Australia',
+    'Melbourne developer',
+    'Melbourne electrician',
+    
+    // Industry terms
+    'Technology solutions',
+    'Business solutions',
+    'Problem solving',
+    'Customer focused',
+    'Practical solutions',
+    'Real-world experience',
+    
+    // Long-tail keywords
+    'WordPress developer Melbourne',
+    'Electrician who codes',
+    'Developer electrician',
+    'Custom website development',
+    'Business website design',
+    'E-commerce development',
+    'WordPress WooCommerce',
+    'Embedded systems development',
+    'IoT project development',
+    'Electrical contracting services',
+    'Smart home automation',
+    'Digital marketing Melbourne',
+    'SEO optimization services',
+    'Business IT setup',
+    'Cybersecurity consulting',
+    '3D modeling services',
+    'CAD design services',
   ],
 }: SeoProps = {}): Metadata => {
   const baseUrl = 'https://profile.oakcodeandtechsolutions.com';
@@ -85,6 +149,16 @@ export const generateSeoMetadata = ({
     },
     alternates: {
       canonical: baseUrl,
+    },
+    // Additional metadata for better SEO
+    authors: [{ name: author }],
+    creator: author,
+    publisher: 'OakCodeAndTechSolutions',
+    category: 'Technology',
+    classification: 'Business',
+    other: {
+      'google-site-verification': 'your-verification-code', // Add your Google Search Console verification
+      'msvalidate.01': 'your-bing-verification-code', // Add your Bing Webmaster Tools verification
     },
   };
 }; 

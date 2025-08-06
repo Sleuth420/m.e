@@ -17,11 +17,11 @@ export const particles = [
 ];
 
 export const staggerContainer = {
-  hidden: { opacity: 0 },
+  hidden: {},
   show: {
-    opacity: 1,
     transition: {
       staggerChildren: 0.1,
+      delayChildren: 0.3,
     },
   },
 };
@@ -39,5 +39,96 @@ export const fadeInUp = {
 
 export const itemFadeIn = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
+export const slideInFromLeft = {
+  hidden: { opacity: 0, x: -50 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const slideInFromRight = {
+  hidden: { opacity: 0, x: 50 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const scaleIn = {
+  hidden: { opacity: 0, scale: 0.8 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Hover animations
+export const hoverScale = {
+  scale: 1.05,
+  transition: {
+    duration: 0.2,
+    ease: 'easeInOut',
+  },
+};
+
+export const hoverLift = {
+  y: -5,
+  transition: {
+    duration: 0.2,
+    ease: 'easeInOut',
+  },
+};
+
+export const hoverGlow = {
+  boxShadow: '0 10px 30px rgba(255, 165, 0, 0.3)',
+  transition: {
+    duration: 0.3,
+    ease: 'easeInOut',
+  },
+};
+
+// Text animations
+export const textReveal = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const typewriter = {
+  hidden: { width: 0 },
+  show: {
+    width: '100%',
+    transition: {
+      duration: 1.5,
+      ease: 'easeInOut',
+    },
+  },
 };
