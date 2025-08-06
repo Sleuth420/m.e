@@ -16,7 +16,7 @@ import {
   Home,
   Palette,
   Camera,
-  Building
+  Building,
 } from 'lucide-react';
 
 export type IconName =
@@ -60,7 +60,7 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
     Home: <Home size={size} className={className} />,
     Palette: <Palette size={size} className={className} />,
     Camera: <Camera size={size} className={className} />,
-    Building: <Building size={size} className={className} />
+    Building: <Building size={size} className={className} />,
   };
 
   return icons[name] || null;

@@ -17,14 +17,14 @@ export default function ContactSection() {
     trackEvent('email_clicked', {
       email: contactInfo.email,
       source: 'contact_section',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   };
 
   const handleFormSuccess = () => {
     trackEvent('contact_form_submitted', {
       source: 'contact_section',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   };
 
@@ -32,7 +32,7 @@ export default function ContactSection() {
     trackEvent('contact_form_error', {
       error,
       source: 'contact_section',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   };
 
@@ -62,10 +62,7 @@ export default function ContactSection() {
               onClick={handleEmailClick}
             />
 
-            <SecureContactForm
-              onSuccess={handleFormSuccess}
-              onError={handleFormError}
-            />
+            <SecureContactForm onSuccess={handleFormSuccess} onError={handleFormError} />
           </motion.div>
         </div>
       </SectionBackground>

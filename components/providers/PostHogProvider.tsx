@@ -12,4 +12,4 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return <>{children}</>;
-} 
+}

@@ -5,33 +5,40 @@ export function useKonamiCode() {
   const [sequence, setSequence] = useState<string[]>([]);
 
   const konamiCode = [
-    'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-    'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-    'KeyB', 'KeyA'
+    'ArrowUp',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowLeft',
+    'ArrowRight',
+    'KeyB',
+    'KeyA',
   ];
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.code;
-      
-      setSequence(prev => {
+
+      setSequence((prev) => {
         const newSequence = [...prev, key];
-        
+
         // Keep only the last 10 keys
         if (newSequence.length > 10) {
           newSequence.shift();
         }
-        
+
         // Check if Konami code is entered
         if (newSequence.length === 10) {
           const isKonami = newSequence.every((k, i) => k === konamiCode[i]);
           if (isKonami && !konamiActivated) {
             setKonamiActivated(true);
             console.log('🎮 Konami Code Activated! 🎮');
-            
+
             // Fun effect - add a class to body for CSS animations
             document.body.classList.add('konami-mode');
-            
+
             // Remove after 10 seconds
             setTimeout(() => {
               document.body.classList.remove('konami-mode');
@@ -39,7 +46,7 @@ export function useKonamiCode() {
             }, 10000);
           }
         }
-        
+
         return newSequence;
       });
     };
@@ -49,4 +56,4 @@ export function useKonamiCode() {
   }, [konamiActivated]);
 
   return { konamiActivated };
-} 
+}

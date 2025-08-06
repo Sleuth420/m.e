@@ -94,4 +94,4 @@ export function ParticleBackground() {
       style={{ opacity: 0.3 }} // Very subtle
     />
   );
-} 
+}

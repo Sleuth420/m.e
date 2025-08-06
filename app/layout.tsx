@@ -21,65 +21,67 @@ export const metadata: Metadata = generateSeoMetadata();
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Easter egg hint
   if (typeof window !== 'undefined') {
-    console.log('%c🎮 Try the Konami Code! (↑↑↓↓←→←→BA)', 'color: #f97316; font-size: 14px; font-weight: bold;');
+    console.log(
+      '%c🎮 Try the Konami Code! (↑↑↓↓←→←→BA)',
+      'color: #f97316; font-size: 14px; font-weight: bold;'
+    );
   }
 
   // Structured data for SEO
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Ricky",
-    "alternateName": "Ricky Oakley",
-    "jobTitle": "Full-Stack Developer & Licensed Electrician",
-    "worksFor": {
-      "@type": "Organization",
-      "name": "OakCodeAndTechSolutions"
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Ricky',
+    alternateName: 'Ricky Oakley',
+    jobTitle: 'Full-Stack Developer & Licensed Electrician',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'OakCodeAndTechSolutions',
     },
-    "description": "Dual trade professional: Full-stack developer and licensed electrician specializing in WordPress, custom web development, embedded systems, and electrical services.",
-    "url": "https://profile.oakcodeandtechsolutions.com",
-    "image": "https://profile.oakcodeandtechsolutions.com/placeholder-user.jpg",
-    "email": "oakcodeandtechsolutions@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Melbourne",
-      "addressCountry": "Australia"
+    description:
+      'Dual trade professional: Full-stack developer and licensed electrician specializing in WordPress, custom web development, embedded systems, and electrical services.',
+    url: 'https://profile.oakcodeandtechsolutions.com',
+    image: 'https://profile.oakcodeandtechsolutions.com/placeholder-user.jpg',
+    email: 'oakcodeandtechsolutions@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Melbourne',
+      addressCountry: 'Australia',
     },
-    "knowsAbout": [
-      "Web Development",
-      "WordPress",
-      "React",
-      "Vue.js",
-      "Django",
-      "Python",
-      "Node.js",
-      "Embedded Systems",
-      "IoT",
-      "Electrical Services",
-      "Digital Marketing",
-      "Cybersecurity",
-      "CAD Design",
-      "3D Modeling"
+    knowsAbout: [
+      'Web Development',
+      'WordPress',
+      'React',
+      'Vue.js',
+      'Django',
+      'Python',
+      'Node.js',
+      'Embedded Systems',
+      'IoT',
+      'Electrical Services',
+      'Digital Marketing',
+      'Cybersecurity',
+      'CAD Design',
+      '3D Modeling',
     ],
-    "hasOccupation": [
+    hasOccupation: [
       {
-        "@type": "Occupation",
-        "name": "Full-Stack Developer",
-        "description": "Specializing in modern web technologies and custom applications"
+        '@type': 'Occupation',
+        name: 'Full-Stack Developer',
+        description: 'Specializing in modern web technologies and custom applications',
       },
       {
-        "@type": "Occupation", 
-        "name": "Licensed Electrician",
-        "description": "Residential, commercial, and industrial electrical services"
-      }
+        '@type': 'Occupation',
+        name: 'Licensed Electrician',
+        description: 'Residential, commercial, and industrial electrical services',
+      },
     ],
-    "sameAs": [
-      "https://github.com/Sleuth420"
-    ]
+    sameAs: ['https://github.com/Sleuth420'],
   };
 
   return (
     <html lang="en" suppressHydrationWarning>
-            <head>
+      <head>
         {/* Structured Data */}
         <script
           type="application/ld+json"
@@ -94,7 +96,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         <PostHogProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
             <ParticleBackground />
             <KonamiEasterEgg />
             {children}

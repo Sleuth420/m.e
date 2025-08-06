@@ -75,7 +75,9 @@ export const projects: Project[] = [
     title: 'Perfect Circle',
     description: 'A Simple game written by AI using React and Next.js',
     image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' }],
+    links: [
+      { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
+    ],
   },
 ];
 

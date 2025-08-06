@@ -6,7 +6,6 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { useScrollPosition, useSmoothScroll } from '@/lib/hooks';
 import { useState } from 'react';
 
-
 export default function Header() {
   const isScrolled = useScrollPosition();
   const scrollToSection = useSmoothScroll();
@@ -60,11 +59,7 @@ export default function Header() {
             className="p-2 text-foreground hover:text-orange-600 transition-colors rounded-md hover:bg-orange-50 dark:hover:bg-orange-950/20"
             aria-label="Toggle mobile menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>

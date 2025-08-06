@@ -19,7 +19,14 @@ interface ContactCardProps {
   onClick?: () => void;
 }
 
-export function ContactCard({ title, content, icon, actionLabel, actionUrl, onClick }: ContactCardProps) {
+export function ContactCard({
+  title,
+  content,
+  icon,
+  actionLabel,
+  actionUrl,
+  onClick,
+}: ContactCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
       e.preventDefault();
@@ -35,18 +42,16 @@ export function ContactCard({ title, content, icon, actionLabel, actionUrl, onCl
             <IconSelector name={icon} className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{content}</p>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            {content}
+          </p>
           {actionLabel && (
             <Button
               className="gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 mt-3 sm:mt-4 text-sm sm:text-base"
               asChild={!!actionUrl}
               onClick={handleClick}
             >
-              {actionUrl ? (
-                <Link href={actionUrl}>{actionLabel}</Link>
-              ) : (
-                <span>{actionLabel}</span>
-              )}
+              {actionUrl ? <Link href={actionUrl}>{actionLabel}</Link> : <span>{actionLabel}</span>}
             </Button>
           )}
         </CardContent>

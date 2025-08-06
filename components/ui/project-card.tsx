@@ -37,14 +37,16 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
       <div className="flex flex-col flex-grow p-4 sm:p-6">
-        <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
+        <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
+          {project.title}
+        </h3>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow leading-relaxed">
           {project.description}
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           {project.links.map((link, i) =>
             link.type === 'github' ? (
-              link.label === "In Progress" ? (
+              link.label === 'In Progress' ? (
                 <Button
                   key={i}
                   variant="default"

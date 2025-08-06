@@ -18,15 +18,17 @@ export default function ServicesSection() {
       services: [
         {
           name: 'WordPress Sites',
-          description: 'Custom WordPress websites, WooCommerce stores, blogs, and business sites with full customization and optimization.',
-          features: ['Custom themes', 'WooCommerce integration', 'Blog setup', 'Business websites']
+          description:
+            'Custom WordPress websites, WooCommerce stores, blogs, and business sites with full customization and optimization.',
+          features: ['Custom themes', 'WooCommerce integration', 'Blog setup', 'Business websites'],
         },
         {
           name: 'Custom Code Development',
-          description: 'Full-stack custom development with complete control and unlimited customization possibilities.',
-          features: ['React/Next.js', 'Vue.js/Django', 'Full customization', 'Modern frameworks']
-        }
-      ]
+          description:
+            'Full-stack custom development with complete control and unlimited customization possibilities.',
+          features: ['React/Next.js', 'Vue.js/Django', 'Full customization', 'Modern frameworks'],
+        },
+      ],
     },
     {
       id: 2,
@@ -37,9 +39,14 @@ export default function ServicesSection() {
         {
           name: 'Raspberry Pi Projects',
           description: 'Custom embedded systems, IoT solutions, and hardware integration projects.',
-          features: ['IoT solutions', 'Hardware integration', 'Custom electronics', 'Automation systems']
-        }
-      ]
+          features: [
+            'IoT solutions',
+            'Hardware integration',
+            'Custom electronics',
+            'Automation systems',
+          ],
+        },
+      ],
     },
     {
       id: 3,
@@ -49,10 +56,16 @@ export default function ServicesSection() {
       services: [
         {
           name: 'Residential & Commercial',
-          description: 'Licensed electrical work for homes, businesses, and industrial applications.',
-          features: ['Smart home integration', 'Commercial installations', 'Industrial systems', 'Licensed work']
-        }
-      ]
+          description:
+            'Licensed electrical work for homes, businesses, and industrial applications.',
+          features: [
+            'Smart home integration',
+            'Commercial installations',
+            'Industrial systems',
+            'Licensed work',
+          ],
+        },
+      ],
     },
     {
       id: 4,
@@ -62,10 +75,16 @@ export default function ServicesSection() {
       services: [
         {
           name: 'Marketing & SEO',
-          description: 'Comprehensive digital marketing, SEO optimization, and content creation services.',
-          features: ['SEO optimization', 'Content writing', 'Marketing strategies', 'Brand development']
-        }
-      ]
+          description:
+            'Comprehensive digital marketing, SEO optimization, and content creation services.',
+          features: [
+            'SEO optimization',
+            'Content writing',
+            'Marketing strategies',
+            'Brand development',
+          ],
+        },
+      ],
     },
     {
       id: 5,
@@ -75,10 +94,16 @@ export default function ServicesSection() {
       services: [
         {
           name: 'Business Infrastructure',
-          description: 'Complete IT setup including email domains, servers, and business administration systems.',
-          features: ['Email setup', 'Domain management', 'Server configuration', 'Business systems']
-        }
-      ]
+          description:
+            'Complete IT setup including email domains, servers, and business administration systems.',
+          features: [
+            'Email setup',
+            'Domain management',
+            'Server configuration',
+            'Business systems',
+          ],
+        },
+      ],
     },
     {
       id: 6,
@@ -89,9 +114,14 @@ export default function ServicesSection() {
         {
           name: 'Penetration Testing',
           description: 'Comprehensive security testing and vulnerability assessment services.',
-          features: ['Security audits', 'Vulnerability testing', 'Network security', 'Security consulting']
-        }
-      ]
+          features: [
+            'Security audits',
+            'Vulnerability testing',
+            'Network security',
+            'Security consulting',
+          ],
+        },
+      ],
     },
     {
       id: 7,
@@ -101,11 +131,12 @@ export default function ServicesSection() {
       services: [
         {
           name: 'CAD & 3D Modeling',
-          description: 'Technical drawings, 3D modeling with Blender, and AI-powered design workflows.',
-          features: ['CAD drawings', '3D modeling', 'Blender projects', 'AI workflows']
-        }
-      ]
-    }
+          description:
+            'Technical drawings, 3D modeling with Blender, and AI-powered design workflows.',
+          features: ['CAD drawings', '3D modeling', 'Blender projects', 'AI workflows'],
+        },
+      ],
+    },
   ];
 
   return (
@@ -145,9 +176,14 @@ export default function ServicesSection() {
                     whileTap={{ scale: 0.98 }}
                   >
                     {/* Gradient Header */}
-                    <div className={`relative h-20 sm:h-24 overflow-hidden bg-gradient-to-r ${category.color}`}>
+                    <div
+                      className={`relative h-20 sm:h-24 overflow-hidden bg-gradient-to-r ${category.color}`}
+                    >
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <IconSelector name={category.icon as any} className="w-10 h-10 sm:w-12 sm:h-12 text-white/90" />
+                        <IconSelector
+                          name={category.icon as any}
+                          className="w-10 h-10 sm:w-12 sm:h-12 text-white/90"
+                        />
                       </div>
                     </div>
 
@@ -165,19 +201,22 @@ export default function ServicesSection() {
                             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
                               {service.description}
                             </p>
-                            
+
                             <motion.div
                               initial={false}
-                              animate={{ 
+                              animate={{
                                 height: activeCard === category.id ? 'auto' : '0px',
-                                opacity: activeCard === category.id ? 1 : 0
+                                opacity: activeCard === category.id ? 1 : 0,
                               }}
                               transition={{ duration: 0.3 }}
                               className="overflow-hidden"
                             >
                               <ul className="space-y-1 mt-2">
                                 {service.features.map((feature, featureIndex) => (
-                                  <li key={featureIndex} className="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                                  <li
+                                    key={featureIndex}
+                                    className="flex items-center text-xs text-slate-500 dark:text-slate-400"
+                                  >
                                     <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2 flex-shrink-0"></span>
                                     {feature}
                                   </li>
@@ -216,7 +255,8 @@ export default function ServicesSection() {
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
                 <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                  Need a custom solution? I specialize in bridging gaps between different technologies and industries.
+                  Need a custom solution? I specialize in bridging gaps between different
+                  technologies and industries.
                 </p>
               </div>
             </motion.div>
@@ -225,4 +265,4 @@ export default function ServicesSection() {
       </SectionBackground>
     </section>
   );
-} 
+}

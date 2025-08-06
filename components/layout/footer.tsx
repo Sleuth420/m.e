@@ -27,18 +27,27 @@ export default function Footer() {
           </p>
         </div>
         <div className="flex items-center gap-3 sm:gap-4">
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             className="bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm"
             asChild
           >
-            <Link href="https://www.buymeacoffee.com/oakcodeandtechsolutions" target="_blank" rel="noopener noreferrer">
+            <Link
+              href="https://www.buymeacoffee.com/oakcodeandtechsolutions"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Coffee className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">Buy Me a Coffee</span>
               <span className="sm:hidden">Coffee</span>
             </Link>
           </Button>
-          <Link href="https://github.com/Sleuth420" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors p-2">
+          <Link
+            href="https://github.com/Sleuth420"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-muted-foreground transition-colors p-2"
+          >
             <Github className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="sr-only">GitHub</span>
           </Link>

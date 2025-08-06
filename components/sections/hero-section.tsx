@@ -37,15 +37,15 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <motion.div 
+      <motion.div
         className="container relative flex max-w-[64rem] flex-col items-center gap-4 text-center"
-        animate={{ 
+        animate={{
           y: [0, -10, 0],
         }}
         transition={{
           duration: 6,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut' as const,
         }}
       >
         <motion.span
@@ -84,21 +84,27 @@ export default function HeroSection() {
           transition={{ delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
         >
-          <motion.div whileHover="hover" variants={hoverScale}>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300" asChild>
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+            <Button
+              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300"
+              asChild
+            >
               <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
                 View Services <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
-          <motion.div whileHover="hover" variants={hoverScale}>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300" asChild>
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+            <Button
+              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300"
+              asChild
+            >
               <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
                 View Projects <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
-          <motion.div whileHover="hover" variants={hoverScale}>
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
             <Button
               variant="outline"
               className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 transition-all duration-300"
@@ -110,7 +116,7 @@ export default function HeroSection() {
             </Button>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

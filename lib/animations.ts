@@ -55,7 +55,7 @@ export const slideInFromLeft = {
     x: 0,
     transition: {
       duration: 0.6,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   },
 };
@@ -67,7 +67,7 @@ export const slideInFromRight = {
     x: 0,
     transition: {
       duration: 0.6,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   },
 };
@@ -79,7 +79,7 @@ export const scaleIn = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   },
 };
@@ -89,7 +89,7 @@ export const hoverScale = {
   scale: 1.05,
   transition: {
     duration: 0.2,
-    ease: 'easeInOut',
+    ease: 'easeInOut' as const,
   },
 };
 
@@ -97,7 +97,7 @@ export const hoverLift = {
   y: -5,
   transition: {
     duration: 0.2,
-    ease: 'easeInOut',
+    ease: 'easeInOut' as const,
   },
 };
 
@@ -105,7 +105,7 @@ export const hoverGlow = {
   boxShadow: '0 10px 30px rgba(255, 165, 0, 0.3)',
   transition: {
     duration: 0.3,
-    ease: 'easeInOut',
+    ease: 'easeInOut' as const,
   },
 };
 
@@ -117,7 +117,7 @@ export const textReveal = {
     y: 0,
     transition: {
       duration: 0.8,
-      ease: 'easeOut',
+      ease: 'easeOut' as const,
     },
   },
 };
@@ -128,7 +128,7 @@ export const typewriter = {
     width: '100%',
     transition: {
       duration: 1.5,
-      ease: 'easeInOut',
+      ease: 'easeInOut' as const,
     },
   },
 };

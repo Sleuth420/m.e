@@ -24,20 +24,22 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     name: '',
     email: '',
     message: '',
-    project_type: ''
+    project_type: '',
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   // Rate limiting
   const lastSubmissionRef = useRef<number>(0);
   const RATE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Reset status when user starts typing
     if (submitStatus !== 'idle') {
       setSubmitStatus('idle');
@@ -50,144 +52,162 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     if (!formData.email.trim()) return 'Email is required';
     if (!formData.message.trim()) return 'Message is required';
     if (!formData.project_type) return 'Project type is required';
-    
+
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) return 'Please enter a valid email';
-    
+
     // Message length check
     if (formData.message.length < 10) return 'Message must be at least 10 characters';
-    
+
     return null;
   };
 
   const checkRateLimit = () => {
     const now = Date.now();
     if (now - lastSubmissionRef.current < RATE_LIMIT_MS) {
-      const remainingTime = Math.ceil((RATE_LIMIT_MS - (now - lastSubmissionRef.current)) / 1000 / 60);
+      const remainingTime = Math.ceil(
+        (RATE_LIMIT_MS - (now - lastSubmissionRef.current)) / 1000 / 60
+      );
       return `Please wait ${remainingTime} minutes before submitting again`;
     }
     return null;
   };
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Rate limiting check
-    const rateLimitError = checkRateLimit();
-    if (rateLimitError) {
-      setErrorMessage(rateLimitError);
-      setSubmitStatus('error');
-      onError?.(rateLimitError);
-      return;
-    }
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Form validation
-    const validationError = validateForm();
-    if (validationError) {
-      setErrorMessage(validationError);
-      setSubmitStatus('error');
-      onError?.(validationError);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-
-    try {
-      // Check if reCAPTCHA is available
-      if (typeof window === 'undefined') {
-        throw new Error('reCAPTCHA can only run in the browser');
+      // Rate limiting check
+      const rateLimitError = checkRateLimit();
+      if (rateLimitError) {
+        setErrorMessage(rateLimitError);
+        setSubmitStatus('error');
+        onError?.(rateLimitError);
+        return;
       }
 
-      // Debug info
-      console.log('reCAPTCHA check:', {
-        grecaptcha: !!window.grecaptcha,
-        ready: !!window.grecaptcha?.ready,
-        siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.substring(0, 10) + '...'
-      });
-
-      // Wait for reCAPTCHA to be available
-      let attempts = 0;
-      const maxAttempts = 20; // Increased from 10
-      
-      while (!window.grecaptcha && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        attempts++;
+      // Form validation
+      const validationError = validateForm();
+      if (validationError) {
+        setErrorMessage(validationError);
+        setSubmitStatus('error');
+        onError?.(validationError);
+        return;
       }
 
-      if (!window.grecaptcha) {
-        throw new Error('reCAPTCHA script failed to load. Please check your internet connection and try again.');
-      }
+      setIsSubmitting(true);
+      setSubmitStatus('idle');
 
-      // Execute reCAPTCHA with better error handling
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      if (!siteKey) {
-        throw new Error('reCAPTCHA site key is not configured');
-      }
-
-      const token = await new Promise<string>((resolve, reject) => {
-        try {
-          window.grecaptcha.ready(() => {
-            try {
-              window.grecaptcha.execute(siteKey, { action: 'contact_form' })
-                .then(resolve)
-                .catch((error) => {
-                  console.error('reCAPTCHA execute error:', error);
-                  reject(new Error(`reCAPTCHA execution failed: ${error.message || 'Unknown error'}`));
-                });
-            } catch (error) {
-              console.error('reCAPTCHA ready callback error:', error);
-              reject(new Error(`reCAPTCHA ready callback failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
-            }
-          });
-        } catch (error) {
-          console.error('reCAPTCHA ready error:', error);
-          reject(new Error(`reCAPTCHA ready failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      try {
+        // Check if reCAPTCHA is available
+        if (typeof window === 'undefined') {
+          throw new Error('reCAPTCHA can only run in the browser');
         }
-      });
 
-      if (!token) {
-        throw new Error('reCAPTCHA verification failed. Please try again.');
+        // Debug info
+        console.log('reCAPTCHA check:', {
+          grecaptcha: !!window.grecaptcha,
+          ready: !!window.grecaptcha?.ready,
+          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.substring(0, 10) + '...',
+        });
+
+        // Wait for reCAPTCHA to be available
+        let attempts = 0;
+        const maxAttempts = 20; // Increased from 10
+
+        while (!window.grecaptcha && attempts < maxAttempts) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          attempts++;
+        }
+
+        if (!window.grecaptcha) {
+          throw new Error(
+            'reCAPTCHA script failed to load. Please check your internet connection and try again.'
+          );
+        }
+
+        // Execute reCAPTCHA with better error handling
+        const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+        if (!siteKey) {
+          throw new Error('reCAPTCHA site key is not configured');
+        }
+
+        const token = await new Promise<string>((resolve, reject) => {
+          try {
+            window.grecaptcha.ready(() => {
+              try {
+                window.grecaptcha
+                  .execute(siteKey, { action: 'contact_form' })
+                  .then(resolve)
+                  .catch((error) => {
+                    console.error('reCAPTCHA execute error:', error);
+                    reject(
+                      new Error(`reCAPTCHA execution failed: ${error.message || 'Unknown error'}`)
+                    );
+                  });
+              } catch (error) {
+                console.error('reCAPTCHA ready callback error:', error);
+                reject(
+                  new Error(
+                    `reCAPTCHA ready callback failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+                  )
+                );
+              }
+            });
+          } catch (error) {
+            console.error('reCAPTCHA ready error:', error);
+            reject(
+              new Error(
+                `reCAPTCHA ready failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+              )
+            );
+          }
+        });
+
+        if (!token) {
+          throw new Error('reCAPTCHA verification failed. Please try again.');
+        }
+
+        console.log('reCAPTCHA token obtained successfully');
+
+        // EmailJS send
+        const emailjs = await import('@emailjs/browser');
+
+        const templateParams = {
+          name: formData.name,
+          email: formData.email,
+          project_type: formData.project_type,
+          message: formData.message,
+          time: new Date().toLocaleString(),
+          recaptcha_token: token, // Include in email for verification if needed
+        };
+
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+          templateParams,
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+        );
+
+        // Success
+        setSubmitStatus('success');
+        lastSubmissionRef.current = Date.now();
+        setFormData({ name: '', email: '', message: '', project_type: '' });
+        onSuccess?.();
+      } catch (error) {
+        console.error('Form submission error:', error);
+        const errorMsg =
+          error instanceof Error ? error.message : 'Failed to send message. Please try again.';
+        setErrorMessage(errorMsg);
+        setSubmitStatus('error');
+        onError?.(errorMsg);
+      } finally {
+        setIsSubmitting(false);
       }
-
-      console.log('reCAPTCHA token obtained successfully');
-      
-      // EmailJS send
-      const emailjs = await import('@emailjs/browser');
-      
-      const templateParams = {
-        name: formData.name,
-        email: formData.email,
-        project_type: formData.project_type,
-        message: formData.message,
-        time: new Date().toLocaleString(),
-        recaptcha_token: token, // Include in email for verification if needed
-      };
-
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        templateParams,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
-
-      // Success
-      setSubmitStatus('success');
-      lastSubmissionRef.current = Date.now();
-      setFormData({ name: '', email: '', message: '', project_type: '' });
-      onSuccess?.();
-      
-    } catch (error) {
-      console.error('Form submission error:', error);
-      const errorMsg = error instanceof Error ? error.message : 'Failed to send message. Please try again.';
-      setErrorMessage(errorMsg);
-      setSubmitStatus('error');
-      onError?.(errorMsg);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [formData, onSuccess, onError]);
+    },
+    [formData, onSuccess, onError]
+  );
 
   return (
     <motion.div variants={itemFadeIn}>
@@ -208,7 +228,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >
                 Name *
               </label>
               <input
@@ -225,7 +248,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >
                 Email *
               </label>
               <input
@@ -242,7 +268,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 
             {/* Project Type Field */}
             <div>
-              <label htmlFor="project_type" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label
+                htmlFor="project_type"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >
                 Project Type *
               </label>
               <select
@@ -268,7 +297,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 
             {/* Message Field */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+              >
                 Message *
               </label>
               <textarea
@@ -294,9 +326,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 
             {submitStatus === 'error' && errorMessage && (
               <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-md">
-                <p className="text-sm text-red-700 dark:text-red-300">
-                  ❌ {errorMessage}
-                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">❌ {errorMessage}</p>
               </div>
             )}
 

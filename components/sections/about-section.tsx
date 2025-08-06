@@ -15,25 +15,28 @@ export default function AboutSection() {
       icon: 'Zap',
       title: 'Dual Trade',
       subtitle: 'Electrician & Developer',
-      description: 'Licensed electrician by day, full-stack developer by night. I bridge the gap between traditional trades and modern technology.',
-      color: 'from-orange-500 to-amber-500'
+      description:
+        'Licensed electrician by day, full-stack developer by night. I bridge the gap between traditional trades and modern technology.',
+      color: 'from-orange-500 to-amber-500',
     },
     {
       id: 2,
       icon: 'Building',
       title: 'Business Minded',
       subtitle: 'Past Business Owner',
-      description: 'Having run my own business, I understand what companies actually need. Now I help others build and grow their digital presence.',
-      color: 'from-slate-600 to-slate-800'
+      description:
+        'Having run my own business, I understand what companies actually need. Now I help others build and grow their digital presence.',
+      color: 'from-slate-600 to-slate-800',
     },
     {
       id: 3,
       icon: 'Heart',
       title: 'Problem Solver',
       subtitle: 'Customer Focused',
-      description: 'I believe in practical solutions that work in the real world. My goal is always satisfied customers and lasting relationships.',
-      color: 'from-orange-600 to-amber-600'
-    }
+      description:
+        'I believe in practical solutions that work in the real world. My goal is always satisfied customers and lasting relationships.',
+      color: 'from-orange-600 to-amber-600',
+    },
   ];
 
   return (
@@ -62,13 +65,15 @@ export default function AboutSection() {
               className="text-center mb-16"
             >
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 leading-tight">
-                I bridge the gap between<br />
-                <span className="text-slate-900 dark:text-white">traditional industries</span><br />
+                I bridge the gap between
+                <br />
+                <span className="text-slate-900 dark:text-white">traditional industries</span>
+                <br />
                 and modern technology
               </h2>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                From electrical contracting to web development, marketing to business advisory - 
-                I bring a practical, real-world approach to every project.
+                From electrical contracting to web development, marketing to business advisory - I
+                bring a practical, real-world approach to every project.
               </p>
             </motion.div>
 
@@ -107,12 +112,12 @@ export default function AboutSection() {
                       <p className="text-sm text-orange-600 dark:text-orange-400 font-medium mb-3">
                         {card.subtitle}
                       </p>
-                      
+
                       <motion.div
                         initial={false}
-                        animate={{ 
+                        animate={{
                           height: activeCard === card.id ? 'auto' : '0px',
-                          opacity: activeCard === card.id ? 1 : 0
+                          opacity: activeCard === card.id ? 1 : 0,
                         }}
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
@@ -150,8 +155,8 @@ export default function AboutSection() {
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
                 <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                  "I don't just build solutions - I build bridges between what businesses have 
-                  and what they need to thrive in today's digital world."
+                  "I don't just build solutions - I build bridges between what businesses have and
+                  what they need to thrive in today's digital world."
                 </p>
               </div>
             </motion.div>

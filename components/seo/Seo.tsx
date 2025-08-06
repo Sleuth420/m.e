@@ -25,7 +25,7 @@ export const generateSeoMetadata = ({
     'OakCodeAndTechSolutions',
     'Ricky',
     'Ricky Oakley',
-    
+
     // Professional roles
     'Full-stack developer',
     'Full stack developer',
@@ -33,7 +33,7 @@ export const generateSeoMetadata = ({
     'Licensed electrician',
     'Dual trade',
     'Business owner',
-    
+
     // Web development
     'Web developer',
     'Web development',
@@ -52,7 +52,7 @@ export const generateSeoMetadata = ({
     'Python',
     'Node.js developer',
     'Node.js',
-    
+
     // Services
     'Embedded systems',
     'Raspberry Pi',
@@ -73,13 +73,13 @@ export const generateSeoMetadata = ({
     '3D modeling',
     'Blender',
     'AI workflows',
-    
+
     // Location
     'Melbourne',
     'Australia',
     'Melbourne developer',
     'Melbourne electrician',
-    
+
     // Industry terms
     'Technology solutions',
     'Business solutions',
@@ -87,7 +87,7 @@ export const generateSeoMetadata = ({
     'Customer focused',
     'Practical solutions',
     'Real-world experience',
-    
+
     // Long-tail keywords
     'WordPress developer Melbourne',
     'Electrician who codes',
@@ -109,7 +109,7 @@ export const generateSeoMetadata = ({
   ],
 }: SeoProps = {}): Metadata => {
   const baseUrl = 'https://profile.oakcodeandtechsolutions.com';
-  
+
   return {
     title,
     description,
@@ -161,4 +161,4 @@ export const generateSeoMetadata = ({
       'msvalidate.01': 'your-bing-verification-code', // Add your Bing Webmaster Tools verification
     },
   };
-}; 
+};

@@ -25,4 +25,4 @@ export const trackEvent = (eventName: string, properties?: Record<string, unknow
   if (typeof window !== 'undefined') {
     posthogClient.capture(eventName, properties);
   }
-}; 
+};

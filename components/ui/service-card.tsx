@@ -18,7 +18,9 @@ export function ServiceCard({ service }: ServiceCardProps) {
           <div className="mb-3 sm:mb-4 rounded-full gradient-bg p-3 sm:p-4">
             <IconSelector name={service.icon} className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3">{service.title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3">
+            {service.title}
+          </h3>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             {service.description}
           </p>
@@ -26,4 +28,4 @@ export function ServiceCard({ service }: ServiceCardProps) {
       </Card>
     </motion.div>
   );
-} 
+}
