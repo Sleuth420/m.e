@@ -24,7 +24,7 @@ export default function AboutSection() {
       title: 'Business Minded',
       subtitle: 'Past Business Owner',
       description: 'Having run my own business, I understand what companies actually need. Now I help others build and grow their digital presence.',
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-slate-600 to-slate-800'
     },
     {
       id: 3,
@@ -32,7 +32,7 @@ export default function AboutSection() {
       title: 'Problem Solver',
       subtitle: 'Customer Focused',
       description: 'I believe in practical solutions that work in the real world. My goal is always satisfied customers and lasting relationships.',
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-orange-600 to-amber-600'
     }
   ];
 
