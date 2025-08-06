@@ -2,29 +2,35 @@
 
 import { motion } from 'framer-motion';
 import { ContactCard } from '@/components/ui/contact-card';
+import { SecureContactForm } from '@/components/ui/secure-contact-form';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
-import { QuestionnaireModal } from '@/components/ui/questionnaire-modal';
 import { contactInfo } from '@/lib/data';
 import { staggerContainer } from '@/lib/animations';
 import { useState } from 'react';
 import { usePostHog } from '@/lib/hooks/usePostHog';
 
 export default function ContactSection() {
-  const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
   const { trackEvent } = usePostHog();
-
-  const handleQuestionnaireOpen = () => {
-    trackEvent('questionnaire_opened', {
-      source: 'contact_section',
-      timestamp: new Date().toISOString()
-    });
-    setIsQuestionnaireOpen(true);
-  };
 
   const handleEmailClick = () => {
     trackEvent('email_clicked', {
       email: contactInfo.email,
+      source: 'contact_section',
+      timestamp: new Date().toISOString()
+    });
+  };
+
+  const handleFormSuccess = () => {
+    trackEvent('contact_form_submitted', {
+      source: 'contact_section',
+      timestamp: new Date().toISOString()
+    });
+  };
+
+  const handleFormError = (error: string) => {
+    trackEvent('contact_form_error', {
+      error,
       source: 'contact_section',
       timestamp: new Date().toISOString()
     });
@@ -56,23 +62,13 @@ export default function ContactSection() {
               onClick={handleEmailClick}
             />
 
-            <ContactCard
-              title="Service Questionnaire"
-              content="Tell me about your project needs"
-              icon="Database"
-              actionLabel="Fill Questionnaire"
-              actionUrl="#"
-              onClick={handleQuestionnaireOpen}
+            <SecureContactForm
+              onSuccess={handleFormSuccess}
+              onError={handleFormError}
             />
           </motion.div>
         </div>
       </SectionBackground>
-
-      <QuestionnaireModal
-        isOpen={isQuestionnaireOpen}
-        onClose={() => setIsQuestionnaireOpen(false)}
-        formUrl="https://docs.google.com/forms/d/e/1FAIpQLScuB908j5bTUTUHTLsTvSWZjIZoSmrULlquicVSaSuPo52DmA/viewform?embedded=true"
-      />
     </section>
   );
 }
