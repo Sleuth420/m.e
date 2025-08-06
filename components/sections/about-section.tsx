@@ -73,7 +73,7 @@ export default function AboutSection() {
 
                 <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-lg p-6 border border-orange-200/50 dark:border-orange-800/50">
                   <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
-                    <IconSelector name="Target" className="w-5 h-5 mr-2 text-orange-600" />
+                    <IconSelector name="Building" className="w-5 h-5 mr-2 text-orange-600" />
                     Current Focus
                   </h3>
                   <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
