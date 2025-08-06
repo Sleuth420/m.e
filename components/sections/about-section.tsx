@@ -1,11 +1,41 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
 import { IconSelector } from '@/components/ui/icon-selector';
 
 export default function AboutSection() {
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+
+  const cards = [
+    {
+      id: 1,
+      icon: 'Zap',
+      title: 'Dual Trade',
+      subtitle: 'Electrician & Developer',
+      description: 'Licensed electrician by day, full-stack developer by night. I bridge the gap between traditional trades and modern technology.',
+      color: 'from-orange-500 to-amber-500'
+    },
+    {
+      id: 2,
+      icon: 'Building',
+      title: 'Business Minded',
+      subtitle: 'Past Business Owner',
+      description: 'Having run my own business, I understand what companies actually need. Now I help others build and grow their digital presence.',
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      id: 3,
+      icon: 'Heart',
+      title: 'Problem Solver',
+      subtitle: 'Customer Focused',
+      description: 'I believe in practical solutions that work in the real world. My goal is always satisfied customers and lasting relationships.',
+      color: 'from-green-500 to-emerald-500'
+    }
+  ];
+
   return (
     <section id="about" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
       <SectionBackground variant="dots">
@@ -13,7 +43,7 @@ export default function AboutSection() {
           <SectionHeading
             badge="Who I Am"
             title="About Me"
-            description="I'm a dual trade professional who bridges the gap between traditional industries and modern technology."
+            description="I'm the electrician who codes, and the developer who understands what real businesses need."
           />
 
           <motion.div
@@ -21,69 +51,110 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mx-auto max-w-4xl mt-12"
+            className="mx-auto max-w-6xl mt-12"
           >
-            <div className="grid gap-8 md:gap-12 lg:grid-cols-3">
-              {/* Main Story */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="space-y-4">
-                  <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">
-                    As both a licensed electrician and full-stack developer, I bring a unique perspective to business solutions. 
-                    My journey started in the electrical trade, where I learned the value of practical, hands-on problem-solving. 
-                    After running my own business in the past, I now work as an electrical contractor while expanding into the digital world.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">
-                    I don't just build websites or fix electrical systems - I help businesses thrive by creating comprehensive solutions. 
-                    From WordPress development and marketing strategies to business advisory services and administrative system setup, 
-                    I understand what real businesses need because I've been in the trenches myself.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">
-                    Currently, I'm passionate about bringing technology to the electrical industry. My biggest project is developing 
-                    an app that combines electrical calculations with project management - a perfect example of how I bridge the gap 
-                    between traditional trades and modern technology. But I love working across all industries, helping businesses 
-                    of all sizes modernize their operations and reach their customers effectively.
-                  </p>
-                </div>
-              </div>
+            {/* Bold Opening Statement */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 leading-tight">
+                I bridge the gap between<br />
+                <span className="text-slate-900 dark:text-white">traditional industries</span><br />
+                and modern technology
+              </h2>
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                From electrical contracting to web development, marketing to business advisory - 
+                I bring a practical, real-world approach to every project.
+              </p>
+            </motion.div>
 
-              {/* Key Highlights */}
-              <div className="space-y-6">
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg p-6 border border-orange-200/50 dark:border-orange-800/50">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
-                    <IconSelector name="Zap" className="w-5 h-5 mr-2 text-orange-600" />
-                    What Drives Me
-                  </h3>
-                  <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Problem-solving with practical solutions
-                    </li>
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Satisfied customers and lasting relationships
-                    </li>
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Bridging traditional and modern approaches
-                    </li>
-                  </ul>
-                </div>
+            {/* Interactive Cards */}
+            <div className="grid gap-6 md:gap-8 lg:grid-cols-3 mb-12">
+              {cards.map((card, index) => (
+                <motion.div
+                  key={card.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="relative group"
+                >
+                  <motion.div
+                    className={`relative overflow-hidden rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-2 ${
+                      activeCard === card.id ? 'ring-2 ring-orange-500/50' : ''
+                    }`}
+                    onClick={() => setActiveCard(activeCard === card.id ? null : card.id)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {/* Gradient Header */}
+                    <div className={`h-24 bg-gradient-to-r ${card.color} relative overflow-hidden`}>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <IconSelector name={card.icon as any} className="w-10 h-10 text-white" />
+                      </div>
+                      <div className="absolute inset-0 bg-black/10"></div>
+                    </div>
 
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-lg p-6 border border-orange-200/50 dark:border-orange-800/50">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
-                    <IconSelector name="Building" className="w-5 h-5 mr-2 text-orange-600" />
-                    Current Focus
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    50/50 split between electrical contracting and digital solutions. 
-                    Passionate about creating the electrical industry's first comprehensive 
-                    calculation and project management app.
-                  </p>
-                </div>
-              </div>
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                        {card.title}
+                      </h3>
+                      <p className="text-sm text-orange-600 dark:text-orange-400 font-medium mb-3">
+                        {card.subtitle}
+                      </p>
+                      
+                      <motion.div
+                        initial={false}
+                        animate={{ 
+                          height: activeCard === card.id ? 'auto' : '0px',
+                          opacity: activeCard === card.id ? 1 : 0
+                        }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                          {card.description}
+                        </p>
+                      </motion.div>
+
+                      {/* Click indicator */}
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {activeCard === card.id ? 'Click to hide' : 'Click to learn more'}
+                        </span>
+                        <motion.div
+                          animate={{ rotate: activeCard === card.id ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <IconSelector name="ExternalLink" className="w-4 h-4 text-slate-400" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ))}
             </div>
+
+            {/* Bottom Statement */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="text-center"
+            >
+              <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
+                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                  "I don't just build solutions - I build bridges between what businesses have 
+                  and what they need to thrive in today's digital world."
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </SectionBackground>
