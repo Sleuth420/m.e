@@ -25,6 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       '%c🎮 Try the Konami Code! (↑↑↓↓←→←→BA)',
       'color: #f97316; font-size: 14px; font-weight: bold;'
     );
+    console.log(
+      '%c📱 On mobile: Tap up-up-down-down-left-right-left-right-center-center',
+      'color: #f97316; font-size: 12px;'
+    );
   }
 
   // Structured data for SEO

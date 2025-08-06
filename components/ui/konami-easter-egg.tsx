@@ -14,6 +14,9 @@ export function KonamiEasterEgg() {
           <div className="absolute top-4 right-4 text-orange-400 font-bold text-lg animate-bounce">
             🎮 KONAMI MODE! 🎮
           </div>
+          <div className="absolute bottom-4 left-4 text-orange-300 text-sm animate-pulse">
+            ⚡ Power Mode Activated! ⚡
+          </div>
         </div>
       )}
     </>
