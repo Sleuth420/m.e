@@ -95,44 +95,88 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     setSubmitStatus('idle');
 
     try {
-      // reCAPTCHA v3 check
-      if (typeof window !== 'undefined' && window.grecaptcha) {
-        const token = await window.grecaptcha.execute(
-          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
-          { action: 'contact_form' }
-        );
-
-        // You could optionally verify the token on your backend
-        // For now, we'll trust the client-side score
-        
-        // EmailJS send
-        const emailjs = await import('@emailjs/browser');
-        
-        const templateParams = {
-          name: formData.name,
-          email: formData.email,
-          project_type: formData.project_type,
-          message: formData.message,
-          time: new Date().toLocaleString(),
-          recaptcha_token: token, // Include in email for verification if needed
-        };
-
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-          templateParams,
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-        );
-
-        // Success
-        setSubmitStatus('success');
-        lastSubmissionRef.current = Date.now();
-        setFormData({ name: '', email: '', message: '', project_type: '' });
-        onSuccess?.();
-        
-      } else {
-        throw new Error('reCAPTCHA not loaded. Please refresh the page and try again.');
+      // Check if reCAPTCHA is available
+      if (typeof window === 'undefined') {
+        throw new Error('reCAPTCHA can only run in the browser');
       }
+
+      // Debug info
+      console.log('reCAPTCHA check:', {
+        grecaptcha: !!window.grecaptcha,
+        ready: !!window.grecaptcha?.ready,
+        siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.substring(0, 10) + '...'
+      });
+
+      // Wait for reCAPTCHA to be available
+      let attempts = 0;
+      const maxAttempts = 20; // Increased from 10
+      
+      while (!window.grecaptcha && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        attempts++;
+      }
+
+      if (!window.grecaptcha) {
+        throw new Error('reCAPTCHA script failed to load. Please check your internet connection and try again.');
+      }
+
+      // Execute reCAPTCHA with better error handling
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      if (!siteKey) {
+        throw new Error('reCAPTCHA site key is not configured');
+      }
+
+      const token = await new Promise<string>((resolve, reject) => {
+        try {
+          window.grecaptcha.ready(() => {
+            try {
+              window.grecaptcha.execute(siteKey, { action: 'contact_form' })
+                .then(resolve)
+                .catch((error) => {
+                  console.error('reCAPTCHA execute error:', error);
+                  reject(new Error(`reCAPTCHA execution failed: ${error.message || 'Unknown error'}`));
+                });
+            } catch (error) {
+              console.error('reCAPTCHA ready callback error:', error);
+              reject(new Error(`reCAPTCHA ready callback failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
+            }
+          });
+        } catch (error) {
+          console.error('reCAPTCHA ready error:', error);
+          reject(new Error(`reCAPTCHA ready failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
+        }
+      });
+
+      if (!token) {
+        throw new Error('reCAPTCHA verification failed. Please try again.');
+      }
+
+      console.log('reCAPTCHA token obtained successfully');
+      
+      // EmailJS send
+      const emailjs = await import('@emailjs/browser');
+      
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        project_type: formData.project_type,
+        message: formData.message,
+        time: new Date().toLocaleString(),
+        recaptcha_token: token, // Include in email for verification if needed
+      };
+
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        templateParams,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      // Success
+      setSubmitStatus('success');
+      lastSubmissionRef.current = Date.now();
+      setFormData({ name: '', email: '', message: '', project_type: '' });
+      onSuccess?.();
       
     } catch (error) {
       console.error('Form submission error:', error);
@@ -280,6 +324,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 declare global {
   interface Window {
     grecaptcha: {
+      ready: (callback: () => void) => void;
       execute: (siteKey: string, options: { action: string }) => Promise<string>;
     };
   }
