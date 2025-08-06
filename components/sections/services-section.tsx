@@ -137,7 +137,7 @@ export default function ServicesSection() {
                   className="relative group"
                 >
                   <motion.div
-                    className={`relative overflow-hidden rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-2 ${
+                    className={`group relative flex flex-col overflow-hidden rounded-lg border-0 bg-white/90 dark:bg-slate-900/90 shadow-lg shadow-orange-100/30 dark:shadow-orange-900/20 hover:shadow-orange-200/40 dark:hover:shadow-orange-800/30 transition-all duration-500 hover:-translate-y-2 h-full backdrop-blur-sm cursor-pointer ${
                       activeCard === category.id ? 'ring-2 ring-orange-500/50' : ''
                     }`}
                     onClick={() => setActiveCard(activeCard === category.id ? null : category.id)}
@@ -145,27 +145,24 @@ export default function ServicesSection() {
                     whileTap={{ scale: 0.98 }}
                   >
                     {/* Gradient Header */}
-                    <div className={`h-20 bg-gradient-to-r ${category.color} relative overflow-hidden`}>
+                    <div className={`relative h-20 sm:h-24 overflow-hidden bg-gradient-to-r ${category.color}`}>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <IconSelector name={category.icon as any} className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="absolute inset-0 bg-black/10"></div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-lg font-bold text-white">
-                          {category.title}
-                        </h3>
+                        <IconSelector name={category.icon as any} className="w-10 h-10 sm:w-12 sm:h-12 text-white/90" />
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-6">
-                      <div className="space-y-4">
+                    <div className="flex flex-col flex-grow p-4 sm:p-6">
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
+                        {category.title}
+                      </h3>
+                      <div className="space-y-3 flex-grow">
                         {category.services.map((service, serviceIndex) => (
-                          <div key={serviceIndex} className="space-y-3">
-                            <h4 className="text-lg font-semibold text-slate-900 dark:text-white">
+                          <div key={serviceIndex}>
+                            <h4 className="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-300 mb-1">
                               {service.name}
                             </h4>
-                            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
                               {service.description}
                             </p>
                             
@@ -178,34 +175,29 @@ export default function ServicesSection() {
                               transition={{ duration: 0.3 }}
                               className="overflow-hidden"
                             >
-                              <div className="space-y-2">
-                                <p className="text-xs font-medium text-orange-600 dark:text-orange-400 uppercase tracking-wide">
-                                  Key Features:
-                                </p>
-                                <ul className="space-y-1">
-                                  {service.features.map((feature, featureIndex) => (
-                                    <li key={featureIndex} className="flex items-center text-xs text-slate-500 dark:text-slate-400">
-                                      <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2 flex-shrink-0"></span>
-                                      {feature}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
+                              <ul className="space-y-1 mt-2">
+                                {service.features.map((feature, featureIndex) => (
+                                  <li key={featureIndex} className="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                                    <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2 flex-shrink-0"></span>
+                                    {feature}
+                                  </li>
+                                ))}
+                              </ul>
                             </motion.div>
                           </div>
                         ))}
                       </div>
 
                       {/* Click indicator */}
-                      <div className="mt-4 flex items-center justify-between pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {activeCard === category.id ? 'Click to hide details' : 'Click to see features'}
+                      <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>
+                          {activeCard === category.id ? 'Click to hide' : 'Click for details'}
                         </span>
                         <motion.div
                           animate={{ rotate: activeCard === category.id ? 180 : 0 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <IconSelector name="ExternalLink" className="w-4 h-4 text-slate-400" />
+                          <IconSelector name="ExternalLink" className="w-3 h-3" />
                         </motion.div>
                       </div>
                     </div>
