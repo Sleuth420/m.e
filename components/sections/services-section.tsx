@@ -36,10 +36,7 @@ export default function ServicesSection() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid gap-4 sm:gap-6"
-                style={{
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                }}
+                className="mx-auto grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3"
               >
                 {techServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />
@@ -60,10 +57,7 @@ export default function ServicesSection() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid gap-4 sm:gap-6"
-                style={{
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                }}
+                className="mx-auto grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3"
               >
                 {electricalServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />
@@ -84,10 +78,7 @@ export default function ServicesSection() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mx-auto grid gap-4 sm:gap-6"
-                style={{
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                }}
+                className="mx-auto grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3"
               >
                 {creativeServices.map((service, index) => (
                   <ServiceCard key={index} service={service} />

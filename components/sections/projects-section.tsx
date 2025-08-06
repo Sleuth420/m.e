@@ -23,10 +23,7 @@ export default function ProjectsSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid gap-6 sm:gap-8 mt-8"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            }}
+            className="mx-auto grid gap-6 sm:gap-8 mt-8 md:grid-cols-2 lg:grid-cols-3"
           >
             {projects.map((project, index) => (
               <ProjectCard key={index} project={project} index={index} />
