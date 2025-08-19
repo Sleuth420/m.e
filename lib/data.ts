@@ -79,6 +79,13 @@ export const projects: Project[] = [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
     ],
   },
+  {
+    title: 'Grow-y',
+    description:
+      'A web app to track your plants and their growth. Built with React, Tailwind CSS, and Vercel. A tree that takes 5 years to grow will take 5 years in the app.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
+  },
 ];
 
 export interface Skill {

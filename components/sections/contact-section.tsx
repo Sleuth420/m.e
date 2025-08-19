@@ -7,7 +7,6 @@ import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
 import { contactInfo } from '@/lib/data';
 import { staggerContainer } from '@/lib/animations';
-import { useState } from 'react';
 import { usePostHog } from '@/lib/hooks/usePostHog';
 
 export default function ContactSection() {
@@ -51,7 +50,7 @@ export default function ContactSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid gap-6 sm:gap-8 mt-12 md:grid-cols-2"
+            className="mx-auto grid gap-6 sm:gap-8 mt-12 md:grid-cols-2 px-4 sm:px-0"
           >
             <ContactCard
               title="Email Me"

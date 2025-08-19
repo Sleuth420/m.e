@@ -71,6 +71,20 @@
     @apply border border-orange-600;
   }
 
+  /* Improved line heights for better readability */
+  .text-heading {
+    line-height: 1.2;
+  }
+
+  .text-body {
+    line-height: 1.6;
+  }
+
+  /* Mobile-first spacing improvements */
+  .mobile-padding {
+    @apply px-4 sm:px-0;
+  }
+
   /* Konami Mode Effects */
   .konami-mode {
     animation: konamiShake 0.5s ease-in-out;

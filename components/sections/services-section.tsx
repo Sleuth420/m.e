@@ -2,12 +2,36 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
-import { IconSelector } from '@/components/ui/icon-selector';
+import { IconSelector, type IconName } from '@/components/ui/icon-selector';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function ServicesSection() {
   const [activeCard, setActiveCard] = useState<number | null>(null);
+
+  const getPricingAnchor = (title: string) => {
+    switch (title) {
+      case 'Web Development':
+        return 'wordpress';
+      case 'Embedded Systems':
+        return 'other-services';
+      case 'Electrical Services':
+        return 'electrical';
+      case 'Digital Marketing':
+        return 'other-services';
+      case 'IT & Business Setup':
+        return 'other-services';
+      case 'Cybersecurity':
+        return 'other-services';
+      case 'Design & 3D':
+        return 'other-services';
+      default:
+        return 'wordpress';
+    }
+  };
 
   const serviceCategories = [
     {
@@ -157,7 +181,7 @@ export default function ServicesSection() {
             className="mx-auto max-w-7xl mt-12"
           >
             {/* Services Grid */}
-            <div className="grid gap-6 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-6 md:gap-8 lg:grid-cols-2 xl:grid-cols-3 px-4 sm:px-0">
               {serviceCategories.map((category, index) => (
                 <motion.div
                   key={category.id}
@@ -181,15 +205,15 @@ export default function ServicesSection() {
                     >
                       <div className="absolute inset-0 flex items-center justify-center">
                         <IconSelector
-                          name={category.icon as any}
+                          name={category.icon as IconName}
                           className="w-10 h-10 sm:w-12 sm:h-12 text-white/90"
                         />
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-col flex-grow p-4 sm:p-6">
-                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
+                    <div className="flex flex-col flex-grow p-4 sm:p-6 space-y-3">
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
                         {category.title}
                       </h3>
                       <div className="space-y-3 flex-grow">
@@ -239,6 +263,20 @@ export default function ServicesSection() {
                           <IconSelector name="ExternalLink" className="w-3 h-3" />
                         </motion.div>
                       </div>
+
+                      {/* View Pricing Button */}
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-orange-400/30 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 hover:text-orange-700 hover:border-orange-400/40"
+                          asChild
+                        >
+                          <Link href={`/pricing#${getPricingAnchor(category.title)}`}>
+                            View Pricing
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -254,10 +292,22 @@ export default function ServicesSection() {
               className="text-center mt-16"
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
-                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed mb-6">
                   Need a custom solution? I specialize in bridging gaps between different
                   technologies and industries.
                 </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
+                    <Link href="/pricing" className="flex items-center">
+                      View Full Pricing <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="border-orange-400/30 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20" asChild>
+                    <Link href="#contact" className="flex items-center">
+                      Contact Me <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

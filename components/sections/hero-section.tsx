@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useSmoothScroll } from '@/lib/hooks';
-import { textReveal, scaleIn, hoverScale } from '@/lib/animations';
+import { textReveal, scaleIn } from '@/lib/animations';
 
 export default function HeroSection() {
   const scrollToSection = useSmoothScroll();
@@ -62,7 +62,7 @@ export default function HeroSection() {
           animate="show"
           variants={textReveal}
           transition={{ delay: 0.4 }}
-          className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl !leading-tight text-white"
+          className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-relaxed text-white"
         >
           Hi, I&apos;m Ricky
         </motion.h1>
@@ -82,11 +82,11 @@ export default function HeroSection() {
           animate="show"
           variants={scaleIn}
           transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center flex-wrap max-w-4xl mx-auto"
         >
           <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
             <Button
-              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300"
+              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300 w-full sm:w-auto"
               asChild
             >
               <Link href="#services" onClick={(e) => scrollToSection(e, 'services')}>
@@ -96,7 +96,7 @@ export default function HeroSection() {
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
             <Button
-              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300"
+              className="bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300 w-full sm:w-auto"
               asChild
             >
               <Link href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>
@@ -107,7 +107,18 @@ export default function HeroSection() {
           <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
             <Button
               variant="outline"
-              className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 transition-all duration-300"
+              className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 transition-all duration-300 w-full sm:w-auto"
+              asChild
+            >
+              <Link href="/pricing">
+                View Pricing
+              </Link>
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+            <Button
+              variant="outline"
+              className="border-orange-400/30 bg-orange-500/10 text-orange-300 hover:bg-orange-500/20 hover:text-orange-200 hover:border-orange-400/40 transition-all duration-300 w-full sm:w-auto"
               asChild
             >
               <Link href="#contact" onClick={(e) => scrollToSection(e, 'contact')}>

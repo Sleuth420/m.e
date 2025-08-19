@@ -64,7 +64,7 @@ export default function AboutSection() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-16"
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 leading-relaxed">
                 I bridge the gap between
                 <br />
                 <span className="text-slate-900 dark:text-white">traditional industries</span>
@@ -78,7 +78,7 @@ export default function AboutSection() {
             </motion.div>
 
             {/* Interactive Cards */}
-            <div className="grid gap-6 md:gap-8 lg:grid-cols-3 mb-12">
+            <div className="grid gap-6 md:gap-8 lg:grid-cols-3 mb-12 px-4 sm:px-0">
               {cards.map((card, index) => (
                 <motion.div
                   key={card.id}
@@ -105,11 +105,11 @@ export default function AboutSection() {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                    <div className="p-6 space-y-3">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                         {card.title}
                       </h3>
-                      <p className="text-sm text-orange-600 dark:text-orange-400 font-medium mb-3">
+                      <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">
                         {card.subtitle}
                       </p>
 

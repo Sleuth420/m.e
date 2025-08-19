@@ -36,7 +36,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           <IconSelector name={iconName} className="w-10 h-10 sm:w-12 sm:h-12 text-white/90" />
         </div>
       </div>
-      <div className="flex flex-col flex-grow p-4 sm:p-6">
+      <div className="flex flex-col flex-grow p-4 sm:p-6 space-y-3">
         <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
           {project.title}
         </h3>

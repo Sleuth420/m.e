@@ -17,6 +17,11 @@ import {
   Palette,
   Camera,
   Building,
+  Leaf,
+  Gamepad2,
+  Globe,
+  Users,
+  Sparkles,
 } from 'lucide-react';
 
 export type IconName =
@@ -35,7 +40,12 @@ export type IconName =
   | 'Home'
   | 'Palette'
   | 'Camera'
-  | 'Building';
+  | 'Building'
+  | 'Leaf'
+  | 'Gamepad2'
+  | 'Globe'
+  | 'Users'
+  | 'Sparkles';
 
 interface IconSelectorProps {
   name: IconName;
@@ -61,6 +71,11 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
     Palette: <Palette size={size} className={className} />,
     Camera: <Camera size={size} className={className} />,
     Building: <Building size={size} className={className} />,
+    Leaf: <Leaf size={size} className={className} />,
+    Gamepad2: <Gamepad2 size={size} className={className} />,
+    Globe: <Globe size={size} className={className} />,
+    Users: <Users size={size} className={className} />,
+    Sparkles: <Sparkles size={size} className={className} />,
   };
 
   return icons[name] || null;
@@ -69,11 +84,13 @@ export function IconSelector({ name, className = '', size = 24 }: IconSelectorPr
 export function getProjectIcon(title: string): IconName {
   if (title.toLowerCase().includes('electrician')) return 'Zap';
   if (title.toLowerCase().includes('glazey')) return 'Store';
-  if (title.toLowerCase().includes('electrovision')) return 'Zap';
+  if (title.toLowerCase().includes('electrovision')) return 'Wrench';
   if (title.toLowerCase().includes('reaching out')) return 'Heart';
-  if (title.toLowerCase().includes('pokedex')) return 'Database';
+  if (title.toLowerCase().includes('pokedex')) return 'Gamepad2';
   if (title.toLowerCase().includes('cybersecurity')) return 'Shield';
-  if (title.toLowerCase().includes('wedding')) return 'Heart';
+  if (title.toLowerCase().includes('wedding')) return 'Sparkles';
   if (title.toLowerCase().includes('max trans')) return 'Home';
+  if (title.toLowerCase().includes('grow-y') || title.toLowerCase().includes('growy')) return 'Leaf';
+  if (title.toLowerCase().includes('perfect circle')) return 'Gamepad2';
   return 'Code';
 }

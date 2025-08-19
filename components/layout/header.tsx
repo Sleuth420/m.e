@@ -23,6 +23,10 @@ export default function Header() {
     { href: '#contact', label: 'Contact' },
   ];
 
+  const externalNavItems = [
+    { href: '/pricing', label: 'Pricing' },
+  ];
+
   return (
     <header
       className={`sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-shadow duration-300 ${isScrolled ? 'shadow-md' : ''}`}
@@ -43,6 +47,15 @@ export default function Header() {
               key={item.href}
               href={item.href}
               onClick={(e) => scrollToSection(e, item.href.slice(1))}
+              className="px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600"
+            >
+              {item.label}
+            </Link>
+          ))}
+          {externalNavItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
               className="px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600"
             >
               {item.label}
@@ -73,6 +86,16 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href.slice(1))}
+                className="block px-4 py-3 text-sm font-medium transition-colors hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/20 rounded-md"
+              >
+                {item.label}
+              </Link>
+            ))}
+            {externalNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-4 py-3 text-sm font-medium transition-colors hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/20 rounded-md"
               >
                 {item.label}
