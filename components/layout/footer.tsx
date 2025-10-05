@@ -53,6 +53,13 @@ export default function Footer() {
           </Link>
         </div>
       </div>
+      <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container py-4">
+          <p className="text-center text-xs text-muted-foreground">
+            ABN: 48 113 774 962 | Legal Disclosure: In accordance with the Bankruptcy Act 1966, please be advised that the proprietor, Richard (Ricky) Oakley, is an undischarged bankrupt.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }
