@@ -13,7 +13,7 @@ export default function Footer() {
             </div>
             <span className="inline-block font-bold gradient-text">Ricky</span>
           </Link>
-          <p className="text-center text-xs sm:text-sm leading-loose text-muted-foreground md:text-left">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground md:text-left">
             Built with ❤️ by{' '}
             <Link
               href="https://github.com/Sleuth420"

@@ -222,7 +222,7 @@ export default function ServicesSection() {
                             <h4 className="text-sm sm:text-base font-semibold text-slate-700 dark:text-slate-300 mb-1">
                               {service.name}
                             </h4>
-                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
+                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-2">
                               {service.description}
                             </p>
 
@@ -292,7 +292,7 @@ export default function ServicesSection() {
               className="text-center mt-16"
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
-                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed mb-6">
+                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium mb-6">
                   Need a custom solution? I specialize in bridging gaps between different
                   technologies and industries.
                 </p>

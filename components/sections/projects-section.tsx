@@ -9,7 +9,7 @@ import { staggerContainer } from '@/lib/animations';
 
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative">
+    <section id="projects" className="w-full py-16 pb-0 md:py-24 md:pb-0 lg:py-32 lg:pb-0 relative mb-12">
       <SectionBackground variant="grid">
         <div className="container mx-auto">
           <SectionHeading

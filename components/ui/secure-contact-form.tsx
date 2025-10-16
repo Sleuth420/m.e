@@ -220,7 +220,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
             <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
               Send Secure Message
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
               Tell me about your project needs
             </p>
           </div>

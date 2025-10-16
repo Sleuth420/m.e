@@ -21,7 +21,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
           <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3">
             {service.title}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
             {service.description}
           </p>
         </CardContent>

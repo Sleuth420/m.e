@@ -62,7 +62,7 @@ export default function HeroSection() {
           animate="show"
           variants={textReveal}
           transition={{ delay: 0.4 }}
-          className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-relaxed text-white"
+          className="font-heading text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white"
         >
           Hi, I&apos;m Ricky
         </motion.h1>
@@ -71,7 +71,7 @@ export default function HeroSection() {
           animate="show"
           variants={textReveal}
           transition={{ delay: 0.6 }}
-          className="max-w-[42rem] leading-normal text-slate-300 text-base sm:text-lg md:text-xl sm:leading-8"
+          className="max-w-[42rem] text-slate-300 text-base sm:text-lg md:text-xl"
         >
           Full-stack developer at{' '}
           <span className="font-semibold text-orange-400">OakCodeAndTechSolutions</span>, combining

@@ -11,20 +11,22 @@ export interface Project {
   description: string;
   image: string;
   links: ProjectLink[];
+  technologies: string[];
 }
 
 export const projects: Project[] = [
   {
     title: 'Electrician Management App',
     description:
-      'A Vue.js + Django REST full-stack application for electricians consisting of feature based tools to manage jobs, streamline on-site calculations and repetitive day-to-day tasks. Complete with Stripe integration and secure practices such as OTP and 2fa',
+      'A comprehensive management platform for electricians featuring job tracking, on-site calculations, and task automation to streamline daily operations and improve productivity.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'In Progress', url: 'https://ohmsweetohm.xyz' }],
+    technologies: ['Vue.js', 'Django', 'Python', 'PostgreSQL', 'Stripe', 'Clerk', 'Cloudflare', 'Sentry', 'AWS', 'Nginx', 'Docker'  ],
   },
   {
     title: 'Reaching Out In The Inner West',
     description:
-      'WordPress website for a Melbourne-based non-profit organization, featuring donation integration and event management.',
+      'Professional website for a Melbourne-based non-profit organization, enabling online donations and event coordination to support community outreach programs.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       {
@@ -33,59 +35,81 @@ export const projects: Project[] = [
         url: 'https://reachingoutintheinnerwestofmelbourne.com.au',
       },
     ],
+    technologies: ['WordPress', 'Elementor'],
   },
   {
     title: 'GlazeyJewellery.com',
     description:
-      'Collaborated on this Shopify-based jewellery online store, implementing custom features and optimizing the checkout process. Design by others',
+      'Elegant online jewelry store featuring custom product showcases, streamlined checkout experience, and responsive design for an enhanced shopping experience.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
+    technologies: ['Shopify'],
   },
   {
     title: 'Electrovision Australia',
     description:
-      'Developed a website for this electrical contracting business, showcasing services and enabling online quote requests.',
+      'Professional website for an electrical contracting business, showcasing services, project galleries, and enabling seamless online quote requests for residential and commercial clients.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: '#' }],
+    technologies: ['Wordpress'],
   },
   {
     title: 'Wedding & RSVP Website',
     description:
-      'Custom wedding website with RSVP functionality, guest management, and beautiful design for a special day celebration.',
+      'Beautiful wedding website featuring RSVP functionality and tracking, custom login system, and a beautiful design for a memorable celebration.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Private Project', url: '#' }],
+    technologies: ['Wordpress'],
   },
   {
     title: 'Max Trans Portable Homes',
     description:
-      'Website for a portable homes company showcasing their modular housing solutions and enabling customer inquiries.',
+      'Modern website for a granny flats & portable homes company featuring modular housing showcases, detailed product specifications, and streamlined customer inquiry system.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au' }],
+    technologies: ['WordPress', 'Elementor'],
   },
   {
     title: 'ZegaMame Pokedex',
     description:
-      'Python-Tkinter Pokedex application built on a ZegaMame board with custom Linux ROM, showcasing embedded systems skills and a passion for retro gaming.',
+      'Interactive Pokédex application built on custom embedded hardware, featuring a comprehensive database of Pokémon with search, filter, and detailed information display capabilities.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       { type: 'github', label: 'Code', url: 'https://github.com/Sleuth420/Python-Tkinter-Pokedex' },
     ],
+    technologies: ['Python', 'Tkinter', 'Linux', 'Embedded Systems', 'GPIO'],
   },
   {
     title: 'Perfect Circle',
-    description: 'A Simple game written by AI using React and Next.js',
+    description: 'Interactive circle-drawing game featuring precision challenges, multiple difficulty levels, and real-time scoring system for competitive gameplay.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
     ],
+    technologies: ['v0 lol'],
   },
   {
     title: 'Grow-y',
     description:
-      'A web app to track your plants and their growth. Built with React, Tailwind CSS, and Vercel. A tree that takes 5 years to grow will take 5 years in the app.',
+      'Innovative plant tracking web application with real-time growth monitoring, care reminders, and species-specific growing timelines for gardening enthusiasts.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
+    technologies: ['React', 'Tailwind CSS', 'JavaScript', 'Vercel'],
   },
+  {
+    title: 'The Granny Flat Guide',
+    description: 'Comprehensive guide and review platform for granny flats, featuring builder directories, design inspiration, cost calculators, and community reviews.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://thegrannyflatguide.com' }],
+    technologies: ['WordPress', 'Elementor'],
+  },
+  {
+    title: 'Modern Home Tech',
+    description: 'Curated affiliate marketing platform showcasing modern home technology products with detailed reviews, buying guides, and product comparison tools.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://modernhome.cloud' }],
+    technologies: ['WordPress', 'Elementor'],
+  }
 ];
 
 export interface Skill {
@@ -113,7 +137,7 @@ export const skills: Skill[] = [
   {
     title: 'Electrical',
     icon: 'Wrench',
-    description: 'Licensed Electrician, Industrial Systems, Smart Home Integration',
+    description: 'A-GradeLicensed Electrician, Industrial Systems, Smart Home Integration, Residential | Commercial | Industrial, ',
   },
 ];
 

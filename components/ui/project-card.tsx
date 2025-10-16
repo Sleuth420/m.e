@@ -40,9 +40,22 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
           {project.title}
         </h3>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
           {project.description}
         </p>
+        <div className="mb-4">
+          <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">Built with:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {project.technologies.map((tech, i) => (
+              <span
+                key={i}
+                className="inline-block px-2 py-1 text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full border border-orange-200 dark:border-orange-800"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {project.links.map((link, i) =>
             link.type === 'github' ? (

@@ -27,7 +27,7 @@ export function SectionHeading({ badge, title, description }: SectionHeadingProp
         viewport={{ once: true }}
         variants={fadeInUp}
         transition={{ delay: 0.1 }}
-        className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-relaxed font-bold gradient-text"
+        className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold gradient-text"
       >
         {title}
       </motion.h2>
@@ -37,7 +37,7 @@ export function SectionHeading({ badge, title, description }: SectionHeadingProp
         viewport={{ once: true }}
         variants={fadeInUp}
         transition={{ delay: 0.2 }}
-        className="max-w-[85%] leading-normal text-muted-foreground text-base sm:text-lg sm:leading-7"
+        className="max-w-[85%] text-muted-foreground text-base sm:text-lg"
       >
         {description}
       </motion.p>

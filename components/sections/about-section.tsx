@@ -58,20 +58,20 @@ export default function AboutSection() {
           >
             {/* Bold Opening Statement */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center mb-16"
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 leading-relaxed">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-10">
                 I bridge the gap between
                 <br />
                 <span className="text-slate-900 dark:text-white">traditional industries</span>
                 <br />
                 and modern technology
               </h2>
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
                 From electrical contracting to web development, marketing to business advisory - I
                 bring a practical, real-world approach to every project.
               </p>
@@ -122,7 +122,7 @@ export default function AboutSection() {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                        <p className="text-slate-600 dark:text-slate-300 text-sm">
                           {card.description}
                         </p>
                       </motion.div>
@@ -154,7 +154,7 @@ export default function AboutSection() {
               className="text-center"
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
-                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium">
                   "I don't just build solutions - I build bridges between what businesses have and
                   what they need to thrive in today's digital world."
                 </p>

@@ -42,7 +42,7 @@ export function ContactCard({
             <IconSelector name={icon} className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
             {content}
           </p>
           {actionLabel && (
