@@ -44,8 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     },
     description:
       'Dual trade professional: Full-stack developer and licensed electrician specializing in WordPress, custom web development, embedded systems, and electrical services.',
-    url: 'https://profile.oakcodeandtechsolutions.com',
-    image: 'https://profile.oakcodeandtechsolutions.com/placeholder-user.jpg',
+    url: 'https://oakcodeandtechsolutions.com',
+    image: 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
     email: 'oakcodeandtechsolutions@gmail.com',
     address: {
       '@type': 'PostalAddress',

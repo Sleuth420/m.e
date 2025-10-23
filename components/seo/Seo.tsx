@@ -14,7 +14,7 @@ interface SeoProps {
 export const generateSeoMetadata = ({
   title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
   description = 'Dual trade professional: Full-stack developer and licensed electrician. Specializing in WordPress, custom web development, embedded systems, and electrical services. Bridge the gap between traditional trades and modern technology.',
-  image = 'https://profile.oakcodeandtechsolutions.com/placeholder-user.jpg',
+  image = 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
   type = 'profile',
   publishedTime,
   modifiedTime,
@@ -23,6 +23,18 @@ export const generateSeoMetadata = ({
     // Core identity
     'OakCode',
     'OakCodeAndTechSolutions',
+    'Oak Code and Tech Solutions',
+    'Oak Code and Tech',
+    'Oak Code',
+    'Tech Solutions',
+    'Tech',
+    'Code',
+    'Code and Tech',
+    'Code and Tech Solutions',
+    'Code and Tech',
+    'Code and Tech Solutions',
+    'Code and Tech',
+    'Code and Tech Solutions',
     'Ricky',
     'Ricky Oakley',
 
@@ -33,6 +45,10 @@ export const generateSeoMetadata = ({
     'Licensed electrician',
     'Dual trade',
     'Business owner',
+    'A-Grade Licensed Electrician',
+    'A-Grade Licensed Electrician Melbourne',
+    'A-Grade Licensed Electrician Australia',
+
 
     // Web development
     'Web developer',
@@ -108,7 +124,7 @@ export const generateSeoMetadata = ({
     'CAD design services',
   ],
 }: SeoProps = {}): Metadata => {
-  const baseUrl = 'https://profile.oakcodeandtechsolutions.com';
+  const baseUrl = 'https://oakcodeandtechsolutions.com';
 
   return {
     title,
@@ -156,9 +172,9 @@ export const generateSeoMetadata = ({
     publisher: 'OakCodeAndTechSolutions',
     category: 'Technology',
     classification: 'Business',
-    other: {
-      'google-site-verification': 'your-verification-code', // Add your Google Search Console verification
-      'msvalidate.01': 'your-bing-verification-code', // Add your Bing Webmaster Tools verification
-    },
+    // other: {
+    //   'google-site-verification': 'your-verification-code', // Add your Google Search Console verification
+    //   'msvalidate.01': 'your-bing-verification-code', // Add your Bing Webmaster Tools verification
+    // },
   };
 };

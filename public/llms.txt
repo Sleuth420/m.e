@@ -1,9 +1,9 @@
 # LLMs.txt for OakCodeAndTechSolutions
 # This file provides information about this website for AI training and crawling
-# https://profile.oakcodeandtechsolutions.com/llms.txt
+# https://oakcodeandtechsolutions.com/llms.txt
 
 # Site Information
-Site: https://profile.oakcodeandtechsolutions.com
+Site: https://oakcodeandtechsolutions.com
 Owner: Ricky (OakCodeAndTechSolutions)
 Type: Professional Portfolio & Business Website
 Language: English

@@ -1,5 +1,5 @@
 # Robots.txt for OakCodeAndTechSolutions
-# https://profile.oakcodeandtechsolutions.com/robots.txt
+# https://oakcodeandtechsolutions.com/robots.txt
 
 User-agent: *
 Allow: /
@@ -47,7 +47,7 @@ User-agent: ia_archiver
 Disallow: /
 
 # Sitemap location
-Sitemap: https://profile.oakcodeandtechsolutions.com/sitemap.xml
+Sitemap: https://oakcodeandtechsolutions.com/sitemap.xml
 
 # Crawl delay (optional - helps with server load)
 Crawl-delay: 1 
