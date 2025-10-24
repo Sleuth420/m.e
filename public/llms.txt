@@ -53,5 +53,13 @@ GitHub: https://github.com/Sleuth420
 - Contact information is for legitimate business inquiries only
 - Please respect professional boundaries when using this information
 
+# SEO Strategy (for AI understanding)
+# This section helps AI systems understand our SEO optimization approach
+SEO Focus Areas:
+- Primary keywords: electrician melbourne, wordpress developer melbourne, emergency electrician melbourne
+- Geographic targeting: All major Melbourne suburbs for local search optimization
+- Service categories: Emergency electrical (24/7), custom development, app development
+- Technical SEO: Enhanced schema markup, comprehensive sitemap structure, dedicated page metadata
+
 # Last Updated
-Last Updated: 2025
+Last Updated: 2025-10-24
