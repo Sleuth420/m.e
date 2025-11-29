@@ -1,5 +1,5 @@
 # Robots.txt for OakCodeAndTechSolutions
-# https://oakcodeandtechsolutions.com/robots.txt
+# https://www.oakcodeandtechsolutions.com/robots.txt
 
 User-agent: *
 Allow: /
@@ -24,7 +24,7 @@ User-agent: YandexBot
 Allow: /
 
 # Sitemap location
-Sitemap: https://oakcodeandtechsolutions.com/sitemap.xml
+Sitemap: https://www.oakcodeandtechsolutions.com/sitemap.xml
 
 # Last Updated
 Last Updated: 2025-10-24

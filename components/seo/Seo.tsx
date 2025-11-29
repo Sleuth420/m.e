@@ -14,7 +14,7 @@ interface SeoProps {
 export const generateSeoMetadata = ({
   title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
   description = 'Dual trade professional: Full-stack developer and licensed electrician. Specializing in WordPress, custom web development, embedded systems, and electrical services. Bridge the gap between traditional trades and modern technology.',
-  image = 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
+  image = 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
   type = 'profile',
   publishedTime,
   modifiedTime,
@@ -185,7 +185,7 @@ export const generateSeoMetadata = ({
     'Node.js development Melbourne',
   ],
 }: SeoProps = {}): Metadata => {
-  const baseUrl = 'https://oakcodeandtechsolutions.com';
+  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
 
   return {
     title,

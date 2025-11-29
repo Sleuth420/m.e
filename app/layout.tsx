@@ -37,19 +37,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     {
     '@context': 'https://schema.org',
     '@type': 'Person',
-      '@id': 'https://oakcodeandtechsolutions.com/#person',
+      '@id': 'https://www.oakcodeandtechsolutions.com/#person',
     name: 'Ricky',
     alternateName: 'Ricky Oakley',
     jobTitle: 'Full-Stack Developer & Licensed Electrician',
     worksFor: {
       '@type': 'Organization',
-        '@id': 'https://oakcodeandtechsolutions.com/#organization',
+        '@id': 'https://www.oakcodeandtechsolutions.com/#organization',
       name: 'OakCodeAndTechSolutions',
     },
     description:
         'Dual trade professional: Full-stack developer and licensed electrician specializing in WordPress, custom web development, embedded systems, and electrical services in Melbourne.',
-    url: 'https://oakcodeandtechsolutions.com',
-    image: 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
+    url: 'https://www.oakcodeandtechsolutions.com',
+    image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
     email: 'oakcodeandtechsolutions@gmail.com',
     address: {
       '@type': 'PostalAddress',
@@ -83,26 +83,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {
         '@type': 'Occupation',
         name: 'Full-Stack Developer',
-          description: 'Specializing in modern web technologies and custom applications in Melbourne',
-          skills: 'React, Vue.js, Django, Python, Node.js, WordPress, Next.js',
-          areaServed: {
-            '@type': 'City',
-            name: 'Melbourne',
-            addressCountry: 'Australia',
-          },
+        description: 'Specializing in modern web technologies and custom applications in Melbourne',
       },
       {
         '@type': 'Occupation',
         name: 'Licensed Electrician',
-          description: 'Residential, commercial, and industrial electrical services in Melbourne',
-          skills: 'Electrical installations, repairs, smart home integration, emergency services',
-          areaServed: {
-            '@type': 'City',
-            name: 'Melbourne',
-            addressCountry: 'Australia',
-          },
-        },
-      ],
+        description: 'Residential, commercial, and industrial electrical services in Melbourne',
+      },
+    ],
       sameAs: [
         'https://github.com/Sleuth420',
       ],
@@ -116,15 +104,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
-      '@id': 'https://oakcodeandtechsolutions.com/#electrician',
+      '@id': 'https://www.oakcodeandtechsolutions.com/#electrician',
       name: 'OakCodeAndTechSolutions - Licensed Electrician Melbourne',
       alternateName: 'OakCode Electrical Services Melbourne',
       description: 'Professional licensed electrician services in Melbourne. Emergency electrician, residential, commercial, and industrial electrical work. 24/7 emergency services available.',
-      url: 'https://oakcodeandtechsolutions.com',
-      telephone: '+61-XXX-XXX-XXX', // Add actual phone number
+      url: 'https://www.oakcodeandtechsolutions.com',
+      // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
       email: 'oakcodeandtechsolutions@gmail.com',
-      image: 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
-      logo: 'https://oakcodeandtechsolutions.com/placeholder-logo.png',
+      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
+      logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Melbourne',
@@ -210,27 +198,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: 'Electrical Services Melbourne',
         itemListElement: [
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Emergency Electrician Melbourne',
-              description: '24/7 emergency electrical services in Melbourne',
+            '@type': 'ListItem',
+            position: 1,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Emergency Electrician Melbourne',
+                description: '24/7 emergency electrical services in Melbourne',
+              },
             },
           },
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Residential Electrical Services',
-              description: 'Complete residential electrical work in Melbourne',
+            '@type': 'ListItem',
+            position: 2,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Residential Electrical Services',
+                description: 'Complete residential electrical work in Melbourne',
+              },
             },
           },
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Commercial Electrical Services',
-              description: 'Professional commercial electrical installations and maintenance',
+            '@type': 'ListItem',
+            position: 3,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Commercial Electrical Services',
+                description: 'Professional commercial electrical installations and maintenance',
+              },
             },
           },
         ],
@@ -241,27 +241,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       openingHours: [
         'Mo-Su 00:00-24:00', // 24/7 emergency services
       ],
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '5',
-        reviewCount: '1',
-        bestRating: '5',
-        worstRating: '1',
-      },
+      // aggregateRating removed - requires actual reviews to be valid
     },
     // LocalBusiness schema for web development services
     {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
-      '@id': 'https://oakcodeandtechsolutions.com/#webdev',
+      '@id': 'https://www.oakcodeandtechsolutions.com/#webdev',
       name: 'OakCodeAndTechSolutions - Web Developer Melbourne',
       alternateName: 'OakCode Web Development Melbourne',
       description: 'Professional web development services in Melbourne. WordPress developer, custom web applications, app development, and digital marketing services.',
-      url: 'https://oakcodeandtechsolutions.com',
-      telephone: '+61-XXX-XXX-XXX', // Add actual phone number
+      url: 'https://www.oakcodeandtechsolutions.com',
+      // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
       email: 'oakcodeandtechsolutions@gmail.com',
-      image: 'https://oakcodeandtechsolutions.com/placeholder-user.jpg',
-      logo: 'https://oakcodeandtechsolutions.com/placeholder-logo.png',
+      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
+      logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Melbourne',
@@ -298,27 +292,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: 'Web Development Services Melbourne',
         itemListElement: [
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'WordPress Developer Melbourne',
-              description: 'Custom WordPress development and WooCommerce integration',
+            '@type': 'ListItem',
+            position: 1,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'WordPress Developer Melbourne',
+                description: 'Custom WordPress development and WooCommerce integration',
+              },
             },
           },
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'Custom Web Applications',
-              description: 'Full-stack web applications with modern technologies',
+            '@type': 'ListItem',
+            position: 2,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'Custom Web Applications',
+                description: 'Full-stack web applications with modern technologies',
+              },
             },
           },
           {
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: 'App Development Melbourne',
-              description: 'Mobile and web app development services',
+            '@type': 'ListItem',
+            position: 3,
+            item: {
+              '@type': 'Offer',
+              itemOffered: {
+                '@type': 'Service',
+                name: 'App Development Melbourne',
+                description: 'Mobile and web app development services',
+              },
             },
           },
         ],
