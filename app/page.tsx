@@ -12,6 +12,7 @@ export const metadata: Metadata = generateSeoMetadata({
   title: 'Full-Stack Developer & Licensed Electrician Melbourne | OakCodeAndTechSolutions',
   description: 'Dual trade professional: Full-stack developer and licensed electrician in Melbourne. Specializing in WordPress, React, Vue.js, custom web applications, and electrical services. Get professional development and electrical work from one expert.',
   type: 'website',
+  canonical: 'https://www.oakcodeandtechsolutions.com',
   keywords: [
     'full stack developer melbourne',
     'licensed electrician melbourne',

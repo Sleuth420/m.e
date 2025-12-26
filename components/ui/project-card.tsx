@@ -77,7 +77,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   className="gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 text-xs sm:text-sm"
                   asChild
                 >
-                  <Link href={link.url} target="_blank" rel="noopener noreferrer">
+                  <Link
+                    href={link.url}
+                    target="_blank"
+                    rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
+                  >
                     <IconSelector name="Github" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     {link.label}
                   </Link>
@@ -91,7 +95,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-950/30 text-xs sm:text-sm"
                 asChild
               >
-                <Link href={link.url} target="_blank" rel="noopener noreferrer">
+                <Link
+                  href={link.url}
+                  target="_blank"
+                  rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
+                >
                   <IconSelector name="ExternalLink" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   {link.label}
                 </Link>

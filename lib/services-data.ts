@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { generateSeoMetadata } from '@/components/seo/Seo';
 
 export interface ServicePageData {
   slug: string;
@@ -722,18 +723,13 @@ export function generateServiceMetadata(slug: string): Metadata | null {
   const data = getServicePageData(slug);
   if (!data) return null;
 
-  return {
+  const canonicalUrl = `https://www.oakcodeandtechsolutions.com/services/${slug}`;
+
+  return generateSeoMetadata({
     title: data.title,
     description: data.description,
     keywords: data.keywords,
-    openGraph: {
-      title: data.title,
-      description: data.description,
-      type: 'website',
-      url: `https://www.oakcodeandtechsolutions.com/services/${slug}`,
-    },
-    alternates: {
-      canonical: `https://www.oakcodeandtechsolutions.com/services/${slug}`,
-    },
-  };
+    type: 'website',
+    canonical: canonicalUrl,
+  });
 }

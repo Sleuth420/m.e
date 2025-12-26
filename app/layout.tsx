@@ -338,9 +338,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     },
   ];
 
+  // Google Analytics ID from Vercel environment variables (defaults to provided GA ID)
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-LPYYS7GJ17';
+  const gscVerification = process.env.NEXT_PUBLIC_GSC_VERIFICATION;
+
   return (
-    <html lang="en" suppressHydrationWarning className={inter.className}>
+    <html lang="en-AU" suppressHydrationWarning className={inter.className}>
       <head>
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        
+        {/* Google Search Console Verification */}
+        {gscVerification && (
+          <meta name="google-site-verification" content={gscVerification} />
+        )}
+        
         {/* Enhanced Structured Data for SEO */}
         {structuredData.map((data, index) => (
           <script
@@ -349,12 +362,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
           />
         ))}
-        {/* reCAPTCHA v3 */}
+        
+        {/* Google tag (gtag.js) */}
         <script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
           async
-          defer
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}');
+            `,
+          }}
+        />
+        
+        {/* reCAPTCHA v3 */}
+        {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+          <script
+            src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
+            async
+            defer
+          />
+        )}
       </head>
       <body className={inter.className}>
         <PostHogProvider>

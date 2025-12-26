@@ -67,7 +67,7 @@ export default function AboutSection() {
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-10">
                 I bridge the gap between
                 <br />
-                <span className="text-slate-900 dark:text-white">traditional industries</span>
+                <span className="text-slate-900 dark:text-white">traditional trade industries</span>
                 <br />
                 and modern technology
               </h2>
