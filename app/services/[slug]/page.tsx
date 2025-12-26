@@ -11,10 +11,6 @@ import {
   getServicePageData,
   generateServiceMetadata,
 } from '@/lib/services-data';
-import {
-  generateBreadcrumbSchema,
-  generateServiceSchema,
-} from '@/lib/structured-data';
 
 // Generate static params for all service pages at build time
 export async function generateStaticParams() {
@@ -56,20 +52,8 @@ export default async function ServicePage({
 
   const { content, location } = serviceData;
 
-  // Generate structured data for SEO
-  const breadcrumbSchema = generateBreadcrumbSchema(slug, serviceData.title);
-  const serviceSchema = generateServiceSchema(serviceData);
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
-      />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
         {/* Hero Section */}

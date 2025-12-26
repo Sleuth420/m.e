@@ -15,7 +15,7 @@ export default function ProjectsSection() {
           <SectionHeading
             badge="My Work"
             title="Projects"
-            description="Here are some of the projects I've worked on that showcase my diverse skill set."
+            description="Here are some of me projects:"
           />
 
           <motion.div

@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     title: 'Pricing & Packages | OakCodeAndTechSolutions Melbourne',
     description: 'Professional web development and electrical services pricing in Melbourne. WordPress, custom apps, emergency electrician services with transparent pricing.',
     type: 'website',
-    url: 'https://www.oakcodeandtechsolutions.com/pricing',
     images: [
       {
         url: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',

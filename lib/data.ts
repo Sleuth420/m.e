@@ -62,11 +62,11 @@ export const projects: Project[] = [
     technologies: ['Wordpress'],
   },
   {
-    title: 'Max Trans Portable Homes',
+    title: 'Dog Grooming Online',
     description:
-      'Modern website for a granny flats & portable homes company featuring modular housing showcases, detailed product specifications, and streamlined customer inquiry system.',
+      'Comprehensive dog directory website for Australia featuring groomer listings, service directories, and location-based search to help pet owners find quality grooming services across the country.',
     image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au' }],
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://dog-grooming.online' }],
     technologies: ['WordPress', 'Elementor'],
   },
   {
