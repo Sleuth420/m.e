@@ -73,9 +73,10 @@ export default function HeroSection() {
           transition={{ delay: 0.6 }}
           className="max-w-[42rem] text-slate-300 text-base sm:text-lg md:text-xl"
         >
-          Full-stack developer at{' '}
-          <span className="font-semibold text-orange-400">OakCodeAndTechSolutions</span>, combining
-          electrical expertise with modern web development and software engineering.
+          <span className="font-semibold text-orange-400">A-Grade Licensed Electrician</span> and{' '}
+          <span className="font-semibold text-orange-400">Full-Stack Developer</span> at{' '}
+          <span className="font-semibold text-orange-400">OakCodeAndTechSolutions</span> in Melbourne. 
+          Professional electrical services and modern web development solutions from one trusted expert.
         </motion.p>
         <motion.div
           initial="hidden"

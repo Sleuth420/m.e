@@ -17,6 +17,7 @@ export default function Header() {
   };
 
   const navItems = [
+    { href: '/', label: 'Home' },
     { href: '#about', label: 'About' },
     { href: '#services', label: 'Services' },
     { href: '#projects', label: 'Projects' },
@@ -24,6 +25,7 @@ export default function Header() {
   ];
 
   const externalNavItems = [
+    { href: '/blog', label: 'Blog' },
     { href: '/pricing', label: 'Pricing' },
   ];
 
@@ -46,7 +48,12 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              onClick={(e) => scrollToSection(e, item.href.slice(1))}
+              onClick={(e) => {
+                if (item.href.startsWith('#')) {
+                  scrollToSection(e, item.href.slice(1));
+                }
+                // For Home link, just navigate normally
+              }}
               className="px-4 py-2 text-sm font-medium transition-colors hover:text-orange-600"
             >
               {item.label}
@@ -85,7 +92,13 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={(e) => handleNavClick(e, item.href.slice(1))}
+                onClick={(e) => {
+                  if (item.href.startsWith('#')) {
+                    handleNavClick(e, item.href.slice(1));
+                  } else {
+                    setIsMobileMenuOpen(false);
+                  }
+                }}
                 className="block px-4 py-3 text-sm font-medium transition-colors hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/20 rounded-md"
               >
                 {item.label}

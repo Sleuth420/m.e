@@ -36,6 +36,38 @@ export default function ServicesSection() {
   const serviceCategories = [
     {
       id: 1,
+      title: 'Electrical Services',
+      icon: 'Zap',
+      color: 'from-orange-600 to-amber-600',
+      services: [
+        {
+          name: 'Residential & Commercial Electrical',
+          description:
+            'A-Grade licensed electrician providing professional electrical work for homes, businesses, and industrial applications throughout Melbourne.',
+          features: [
+            'Emergency electrician services',
+            'Smart home integration',
+            'Commercial & industrial installations',
+            '24/7 emergency response',
+            'Licensed & insured',
+          ],
+        },
+        {
+          name: 'Emergency & 24-Hour Services',
+          description:
+            'Available around the clock for urgent electrical repairs, power outages, and electrical emergencies.',
+          features: [
+            'Fast response times',
+            '24/7 availability',
+            'Emergency repairs',
+            'Power outage fixes',
+            'After-hours service',
+          ],
+        },
+      ],
+    },
+    {
+      id: 2,
       title: 'Web Development',
       icon: 'Code',
       color: 'from-orange-500 to-amber-500',
@@ -55,7 +87,7 @@ export default function ServicesSection() {
       ],
     },
     {
-      id: 2,
+      id: 3,
       title: 'Embedded Systems',
       icon: 'Microchip',
       color: 'from-slate-600 to-slate-800',
@@ -68,25 +100,6 @@ export default function ServicesSection() {
             'Hardware integration',
             'Custom electronics',
             'Automation systems',
-          ],
-        },
-      ],
-    },
-    {
-      id: 3,
-      title: 'Electrical Services',
-      icon: 'Zap',
-      color: 'from-orange-600 to-amber-600',
-      services: [
-        {
-          name: 'Residential & Commercial',
-          description:
-            'Licensed electrical work for homes, businesses, and industrial applications.',
-          features: [
-            'Smart home integration',
-            'Commercial installations',
-            'Industrial systems',
-            'Licensed work',
           ],
         },
       ],
@@ -170,14 +183,14 @@ export default function ServicesSection() {
           <SectionHeading
             badge="What I Offer"
             title="Services"
-            description="From web development to electrical work, I provide comprehensive solutions that bridge technology and practical expertise."
+            description="Professional electrical services and web development solutions. Licensed electrician and full-stack developer serving Melbourne with expertise in both trades."
           />
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="mx-auto max-w-7xl mt-12"
           >
             {/* Services Grid */}
@@ -185,10 +198,10 @@ export default function ServicesSection() {
               {serviceCategories.map((category, index) => (
                 <motion.div
                   key={category.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.25, delay: index * 0.05, ease: 'easeOut' }}
                   className="relative group"
                 >
                   <motion.div
@@ -285,10 +298,10 @@ export default function ServicesSection() {
 
             {/* Bottom CTA */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.3, delay: 0.3, ease: 'easeOut' }}
               className="text-center mt-16"
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">

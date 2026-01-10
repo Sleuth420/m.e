@@ -9,6 +9,7 @@ import { ParticleBackground } from '@/components/ui/particle-background';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { PostHogProvider } from '@/components/providers/PostHogProvider';
 import { KonamiEasterEgg } from '@/components/ui/konami-easter-egg';
+import { KonamiTrigger } from '@/components/ui/konami-trigger';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -40,14 +41,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       '@id': 'https://www.oakcodeandtechsolutions.com/#person',
     name: 'Ricky',
     alternateName: 'Ricky Oakley',
-    jobTitle: 'Full-Stack Developer & Licensed Electrician',
+    jobTitle: 'A-Grade Licensed Electrician & Full-Stack Developer',
     worksFor: {
       '@type': 'Organization',
         '@id': 'https://www.oakcodeandtechsolutions.com/#organization',
       name: 'OakCodeAndTechSolutions',
+      description: 'OakCodeAndTechSolutions provides professional electrical services and web development solutions in Melbourne.',
     },
     description:
-        'Dual trade professional: Full-stack developer and licensed electrician specializing in WordPress, custom web development, embedded systems, and electrical services in Melbourne.',
+        'A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services (residential, commercial, emergency) and web development (WordPress, React, Vue.js, custom applications).',
     url: 'https://www.oakcodeandtechsolutions.com',
     image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
     email: 'oakcodeandtechsolutions@gmail.com',
@@ -59,11 +61,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         postalCode: '3000',
     },
     knowsAbout: [
+        'Electrician Melbourne',
+        'Licensed Electrician Melbourne',
+        'Emergency Electrician Melbourne',
+        '24 Hour Electrician Melbourne',
+        'A-Grade Electrician Melbourne',
+        'Residential Electrician Melbourne',
+        'Commercial Electrician Melbourne',
+        'Electrical Services Melbourne',
         'Web Development Melbourne',
         'WordPress Developer Melbourne',
         'App Developer Melbourne',
-        'Electrician Melbourne',
-        'Emergency Electrician Melbourne',
         'React Developer Melbourne',
         'Vue.js Developer Melbourne',
         'Django Developer Melbourne',
@@ -71,8 +79,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         'Node.js Developer Melbourne',
         'Embedded Systems Melbourne',
         'IoT Solutions Melbourne',
-        'Electrical Services Melbourne',
-        '24 Hour Electrician Melbourne',
         'Digital Marketing Melbourne',
         'SEO Services Melbourne',
         'Cybersecurity Melbourne',
@@ -82,13 +88,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     hasOccupation: [
       {
         '@type': 'Occupation',
-        name: 'Full-Stack Developer',
-        description: 'Specializing in modern web technologies and custom applications in Melbourne',
+        name: 'A-Grade Licensed Electrician',
+        description: 'Residential, commercial, and industrial electrical services in Melbourne. 24/7 emergency electrician services available.',
       },
       {
         '@type': 'Occupation',
-        name: 'Licensed Electrician',
-        description: 'Residential, commercial, and industrial electrical services in Melbourne',
+        name: 'Full-Stack Developer',
+        description: 'Specializing in modern web technologies and custom applications in Melbourne',
       },
     ],
       sameAs: [
@@ -106,8 +112,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       '@type': 'LocalBusiness',
       '@id': 'https://www.oakcodeandtechsolutions.com/#electrician',
       name: 'OakCodeAndTechSolutions - Licensed Electrician Melbourne',
-      alternateName: 'OakCode Electrical Services Melbourne',
-      description: 'Professional licensed electrician services in Melbourne. Emergency electrician, residential, commercial, and industrial electrical work. 24/7 emergency services available.',
+      alternateName: 'OakCodeAndTechSolutions Electrical Services',
+      description: 'OakCodeAndTechSolutions provides professional licensed electrician services and solutions in Melbourne. Emergency electrician, residential, commercial, and industrial electrical work. 24/7 emergency services available.',
       url: 'https://www.oakcodeandtechsolutions.com',
       // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
       email: 'oakcodeandtechsolutions@gmail.com',
@@ -249,8 +255,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       '@type': 'LocalBusiness',
       '@id': 'https://www.oakcodeandtechsolutions.com/#webdev',
       name: 'OakCodeAndTechSolutions - Web Developer Melbourne',
-      alternateName: 'OakCode Web Development Melbourne',
-      description: 'Professional web development services in Melbourne. WordPress developer, custom web applications, app development, and digital marketing services.',
+      alternateName: 'OakCodeAndTechSolutions Web Development',
+      description: 'OakCodeAndTechSolutions provides professional web development services and solutions in Melbourne. WordPress developer, custom web applications, app development, and digital marketing services.',
       url: 'https://www.oakcodeandtechsolutions.com',
       // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
       email: 'oakcodeandtechsolutions@gmail.com',
@@ -336,6 +342,99 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         'Mo-Fr 09:00-17:00', // Standard business hours for development
       ],
     },
+    // Organization schema for brand recognition
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      '@id': 'https://www.oakcodeandtechsolutions.com/#organization',
+      name: 'OakCodeAndTechSolutions',
+      legalName: 'OakCodeAndTechSolutions',
+      description: 'OakCodeAndTechSolutions is a Melbourne-based business providing professional electrical services and web development solutions. Specializing in licensed electrical work and custom web applications.',
+      url: 'https://www.oakcodeandtechsolutions.com',
+      logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
+      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
+      email: 'oakcodeandtechsolutions@gmail.com',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Melbourne',
+        addressRegion: 'Victoria',
+        addressCountry: 'Australia',
+        postalCode: '3000',
+      },
+      sameAs: [
+        'https://github.com/Sleuth420',
+      ],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'oakcodeandtechsolutions@gmail.com',
+        contactType: 'Customer Service',
+        areaServed: 'AU',
+        availableLanguage: 'English',
+      },
+    },
+    // FAQ Schema for common questions
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Are you a licensed electrician in Melbourne?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, I am an A-Grade licensed electrician in Melbourne, qualified to perform all types of electrical work including residential, commercial, and industrial installations and repairs.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Do you provide emergency electrician services?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, I offer 24/7 emergency electrician services throughout Melbourne. Available for urgent electrical repairs, power outages, and electrical emergencies at any time.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What areas of Melbourne do you service?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'I service all areas of Melbourne including CBD, Craigieburn, Caroline Springs, Port Melbourne, Essendon, St Kilda, Glenroy, Glen Waverley, South Melbourne, and the Western Suburbs.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Do you offer both electrical and web development services?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, I am a dual trade professional offering both A-Grade licensed electrical services and full-stack web development. This unique combination allows me to provide comprehensive solutions for businesses needing both technical and digital services.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What web development services do you offer?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'I offer WordPress development, custom web applications using React/Next.js and Vue.js/Django, e-commerce solutions, and full-stack development services. All projects are custom-built to meet your specific business needs.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How do I get a quote for electrical work?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'You can contact me through the contact form on this website, email me directly at oakcodeandtechsolutions@gmail.com, or call for emergency services. I provide free quotes for all electrical work.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How do I get a quote for web development?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'You can contact me through the contact form, email me at oakcodeandtechsolutions@gmail.com, or visit the pricing page for package information. I provide detailed quotes for all web development projects.',
+          },
+        },
+      ],
+    },
   ];
 
   // Google Analytics ID from Vercel environment variables (defaults to provided GA ID)
@@ -398,6 +497,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <ParticleBackground />
             <KonamiEasterEgg />
+            <KonamiTrigger />
             {children}
             <AvailableForWorkPopup />
             <BuyMeCoffeePopup coffeeLink="https://www.buymeacoffee.com/oakcodeandtechsolutions" />

@@ -10,7 +10,9 @@ Language: English
 Location: Melbourne, Australia
 
 # Business Information
-Business Name: OakCodeAndTechSolutions
+Business Name: OakCodeAndTechSolutions (one word, no spaces)
+Brand Name Format: OakCodeAndTechSolutions - always written as one continuous word
+Domain: oakcodeandtechsolutions.com (matches brand name format)
 Services: 
 - Full-stack web development
 - WordPress & WooCommerce development
@@ -60,6 +62,9 @@ SEO Focus Areas:
 - Geographic targeting: All major Melbourne suburbs for local search optimization
 - Service categories: Emergency electrical (24/7), custom development, app development
 - Technical SEO: Enhanced schema markup, comprehensive sitemap structure, dedicated page metadata
+
+# Brand Differentiation
+Brand Identity: OakCodeAndTechSolutions is a distinct brand name written as one continuous word (OakCodeAndTechSolutions). The brand emphasizes "Solutions" as a key differentiator, providing both electrical services and web development solutions in Melbourne.
 
 # Last Updated
 Last Updated: 2025-10-24

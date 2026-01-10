@@ -9,21 +9,27 @@ import ContactSection from '@/components/sections/contact-section';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 
 export const metadata: Metadata = generateSeoMetadata({
-  title: 'Full-Stack Developer & Licensed Electrician Melbourne | OakCodeAndTechSolutions',
-  description: 'Dual trade professional: Full-stack developer and licensed electrician in Melbourne. Specializing in WordPress, React, Vue.js, custom web applications, and electrical services. Get professional development and electrical work from one expert.',
+  title: 'Licensed Electrician & Full-Stack Developer Melbourne | OakCodeAndTechSolutions',
+  description: 'A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services (residential, commercial, emergency) and web development (WordPress, React, Vue.js, custom applications). Dual trade expert serving Melbourne.',
   type: 'website',
   canonical: 'https://www.oakcodeandtechsolutions.com',
   keywords: [
-    'full stack developer melbourne',
     'licensed electrician melbourne',
+    'electrician melbourne',
+    'emergency electrician melbourne',
+    '24 hour electrician melbourne',
+    'A-Grade licensed electrician melbourne',
+    'residential electrician melbourne',
+    'commercial electrician melbourne',
+    'full stack developer melbourne',
     'wordpress developer melbourne',
     'react developer melbourne',
     'vue.js developer melbourne',
     'custom web development melbourne',
     'app development melbourne',
-    'emergency electrician melbourne',
-    'web developer electrician',
+    'web developer electrician melbourne',
     'dual trade professional melbourne',
+    'electrician and developer melbourne',
   ],
 });
 

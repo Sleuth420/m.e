@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, ArrowRight, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import {
   getAllServiceSlugs,
   getServicePageData,
@@ -52,8 +53,16 @@ export default async function ServicePage({
 
   const { content, location } = serviceData;
 
+  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+  const breadcrumbItems = [
+    { name: 'Home', url: baseUrl },
+    { name: 'Services', url: `${baseUrl}/#services` },
+    { name: serviceData.title, url: `${baseUrl}/services/${slug}` },
+  ];
+
   return (
     <>
+      <Breadcrumbs items={breadcrumbItems} />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
         {/* Hero Section */}

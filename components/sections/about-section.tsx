@@ -13,10 +13,10 @@ export default function AboutSection() {
     {
       id: 1,
       icon: 'Zap',
-      title: 'Dual Trade',
-      subtitle: 'Electrician & Developer',
+      title: 'Dual Trade Professional',
+      subtitle: 'A-Grade Electrician & Full-Stack Developer',
       description:
-        'Licensed electrician by day, full-stack developer by night. I bridge the gap between traditional trades and modern technology.',
+        'A-Grade licensed electrician and full-stack developer. I provide professional electrical services and modern web development, bringing practical trade expertise together with cutting-edge technology.',
       color: 'from-orange-500 to-amber-500',
     },
     {
@@ -50,18 +50,18 @@ export default function AboutSection() {
           />
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="mx-auto max-w-6xl mt-12"
           >
             {/* Bold Opening Statement */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.3, delay: 0.1, ease: 'easeOut' }}
               className="text-center mb-16"
             >
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-10">
@@ -72,8 +72,7 @@ export default function AboutSection() {
                 and modern technology
               </h2>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-                From electrical contracting to web development, marketing to business advisory - I
-                bring a practical, real-world approach to every project.
+                <span className="font-semibold text-orange-600 dark:text-orange-400">OakCodeAndTechSolutions</span> brings together electrical contracting, web development, marketing, and business advisory - providing comprehensive solutions with a practical, real-world approach to every project.
               </p>
             </motion.div>
 
@@ -82,10 +81,10 @@ export default function AboutSection() {
               {cards.map((card, index) => (
                 <motion.div
                   key={card.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.25, delay: index * 0.1, ease: 'easeOut' }}
                   className="relative group"
                 >
                   <motion.div
@@ -147,10 +146,10 @@ export default function AboutSection() {
 
             {/* Bottom Statement */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.3, delay: 0.4, ease: 'easeOut' }}
               className="text-center"
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">

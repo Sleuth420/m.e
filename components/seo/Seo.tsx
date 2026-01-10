@@ -14,13 +14,19 @@ interface SeoProps {
 
 export const generateSeoMetadata = ({
   title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
-  description = 'Dual trade professional: Full-stack developer and licensed electrician. Specializing in WordPress, custom web development, embedded systems, and electrical services. Bridge the gap between traditional trades and modern technology.',
+  description = 'OakCodeAndTechSolutions: A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services and web development solutions. Specializing in WordPress, custom web applications, embedded systems, and electrical services.',
   image = 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
   type = 'profile',
   publishedTime,
   modifiedTime,
   author = 'Ricky',
   keywords = [
+    // Brand-specific keywords (for brand recognition)
+    'OakCodeAndTechSolutions',
+    'OakCodeAndTechSolutions Melbourne',
+    'OakCodeAndTechSolutions electrician',
+    'OakCodeAndTechSolutions web developer',
+    'OakCodeAndTechSolutions solutions',
     // High-value primary keywords (top priority for ranking)
     'electrician melbourne',
     'wordpress developer melbourne',
