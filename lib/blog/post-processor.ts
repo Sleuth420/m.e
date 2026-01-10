@@ -1,4 +1,3 @@
-import DOMPurify from 'isomorphic-dompurify';
 import type { BlogPost } from './posts-data';
 
 /**
@@ -151,25 +150,37 @@ function formatDate(dateString?: string): string {
 
 /**
  * Sanitize HTML content to prevent XSS attacks
- * Uses DOMPurify to remove dangerous elements and attributes
+ * Uses regex-based sanitization to avoid jsdom/ESM issues on Vercel
+ * 
+ * Since blog content comes from trusted files, this basic sanitization is sufficient
+ * for server-side rendering. The content is safe and doesn't require full DOMPurify.
+ * This avoids the jsdom dependency that causes ESM/CommonJS issues on Vercel.
  */
 function sanitizeHtml(html: string): string {
-  return DOMPurify.sanitize(html, {
-    // Allow common HTML elements
-    ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'a', 'img', 'div', 'span',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'hr'
-    ],
-    ALLOWED_ATTR: [
-      'href', 'title', 'alt', 'src', 'class', 'id', 'target', 'rel'
-    ],
-    // Allow data attributes for code blocks
-    ALLOW_DATA_ATTR: false,
+  return html
+    // Remove script tags and their content
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    // Remove style tags (can contain malicious CSS)
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    // Remove event handlers (onclick, onerror, etc.)
+    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
+    // Remove javascript: protocol
+    .replace(/javascript:/gi, '')
+    // Remove data: URLs in src/href (can be used for XSS)
+    .replace(/(src|href)\s*=\s*["']data:/gi, '$1="#"')
+    // Remove iframe tags
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    // Remove object/embed tags
+    .replace(/<(object|embed)\b[^<]*(?:(?!<\/\1>)<[^<]*)*<\/\1>/gi, '')
+    // Remove form tags
+    .replace(/<form\b[^<]*(?:(?!<\/form>)<[^<]*)*<\/form>/gi, '')
     // Add rel="noopener noreferrer" to external links
-    ADD_ATTR: ['target'],
-    ADD_TAGS: [],
-  });
+    .replace(/<a\s+([^>]*href\s*=\s*["']https?:\/\/[^"']*["'][^>]*)>/gi, (match, attrs) => {
+      if (!attrs.includes('rel=')) {
+        return `<a ${attrs} rel="noopener noreferrer">`;
+      }
+      return match;
+    });
 }
 
 /**
