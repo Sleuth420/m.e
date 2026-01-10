@@ -118,6 +118,13 @@ export const projects: Project[] = [
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://modernhome.cloud' }],
     technologies: ['WordPress', 'Elementor'],
+  },
+  {
+    title: 'OpshopsHub',
+    description: 'Online platform providing comprehensive shop listings and directory services to help users discover and connect with local businesses and shops.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://opshopshub.com' }],
+    technologies: ['WordPress', 'Elementor'],
   }
 ];
 
