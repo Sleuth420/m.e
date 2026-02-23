@@ -67,9 +67,30 @@ export default async function BlogPostPage({
     { name: post.title, url: `${baseUrl}/blog/${post.slug}` },
   ];
 
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: { '@type': 'Person', name: post.author },
+    publisher: {
+      '@id': 'https://www.oakcodeandtechsolutions.com/#organization',
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${baseUrl}/blog/${post.slug}`,
+    },
+  };
+
   return (
     <>
       <Breadcrumbs items={breadcrumbItems} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
         {/* Blog Post Content */}

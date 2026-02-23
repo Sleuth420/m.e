@@ -88,6 +88,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services" className="text-muted-foreground hover:text-orange-600 transition-colors">
+                  All Services
+                </Link>
+              </li>
+              <li>
                 <Link href="/#projects" className="text-muted-foreground hover:text-orange-600 transition-colors">
                   Projects
                 </Link>
@@ -144,7 +149,7 @@ export default function Footer() {
               })}
               {electricalServices.length > 6 && (
                 <li>
-                  <Link href="/#services" className="text-muted-foreground hover:text-orange-600 transition-colors text-xs">
+                  <Link href="/services" className="text-muted-foreground hover:text-orange-600 transition-colors text-xs">
                     View All Electrical Services →
                   </Link>
                 </li>
@@ -186,7 +191,7 @@ export default function Footer() {
               })}
               {webDevServices.length > 6 && (
                 <li>
-                  <Link href="/#services" className="text-muted-foreground hover:text-orange-600 transition-colors text-xs">
+                  <Link href="/services" className="text-muted-foreground hover:text-orange-600 transition-colors text-xs">
                     View All Web Services →
                   </Link>
                 </li>

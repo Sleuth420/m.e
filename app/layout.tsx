@@ -34,6 +34,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   // Enhanced structured data for SEO with LocalBusiness schema
   const structuredData = [
+    // WebSite schema (helps search engines understand site structure)
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      '@id': 'https://www.oakcodeandtechsolutions.com/#website',
+      name: 'OakCodeAndTechSolutions',
+      url: 'https://www.oakcodeandtechsolutions.com',
+      description: 'A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services and web development solutions.',
+      publisher: { '@id': 'https://www.oakcodeandtechsolutions.com/#organization' },
+      inLanguage: 'en-AU',
+    },
     // Person schema
     {
     '@context': 'https://schema.org',

@@ -26,8 +26,8 @@ Allow: /
 # Sitemap location
 Sitemap: https://www.oakcodeandtechsolutions.com/sitemap.xml
 
+# LLMs.txt for AI crawlers (site info, brand, services)
+# https://www.oakcodeandtechsolutions.com/llms.txt
+
 # Last Updated
 Last Updated: 2025-10-24
-
-# Crawl delay (optional - helps with server load)
-Crawl-delay: 1 

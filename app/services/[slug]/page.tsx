@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, ArrowRight, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
@@ -56,13 +56,42 @@ export default async function ServicePage({
   const baseUrl = 'https://www.oakcodeandtechsolutions.com';
   const breadcrumbItems = [
     { name: 'Home', url: baseUrl },
-    { name: 'Services', url: `${baseUrl}/#services` },
+    { name: 'Services', url: `${baseUrl}/services` },
     { name: serviceData.title, url: `${baseUrl}/services/${slug}` },
   ];
+
+  // Related services: same category, then others (exclude current)
+  const allSlugs = getAllServiceSlugs().filter((s) => s !== slug);
+  const sameCategory = allSlugs.filter(
+    (s) => getServicePageData(s)?.category === serviceData.category
+  );
+  const otherCategory = allSlugs.filter(
+    (s) => getServicePageData(s)?.category !== serviceData.category
+  );
+  const relatedSlugs = [...sameCategory.slice(0, 3), ...otherCategory].slice(0, 6);
+  const relatedServices = relatedSlugs
+    .map((s) => ({ slug: s, data: getServicePageData(s) }))
+    .filter((r): r is { slug: string; data: NonNullable<ReturnType<typeof getServicePageData>> } => r.data !== null);
+
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: serviceData.title.split('|')[0].trim(),
+    description: serviceData.description,
+    url: `${baseUrl}/services/${slug}`,
+    provider: { '@id': 'https://www.oakcodeandtechsolutions.com/#organization' },
+    areaServed: location
+      ? { '@type': 'City', name: location, addressCountry: 'AU' }
+      : { '@type': 'City', name: 'Melbourne', addressCountry: 'AU' },
+  };
 
   return (
     <>
       <Breadcrumbs items={breadcrumbItems} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
         {/* Hero Section */}
@@ -171,18 +200,37 @@ export default async function ServicePage({
         </section>
 
         {/* Related Services */}
-        <section className="py-16">
+        <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
                 Explore More Services
               </h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                I offer a wide range of professional services
+              <p className="text-lg text-muted-foreground mb-10 text-center">
+                I offer a wide range of professional services across Melbourne.
               </p>
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+                {relatedServices.map(({ slug: relatedSlug, data: related }) => (
+                  <li key={relatedSlug}>
+                    <Link href={`/services/${relatedSlug}`} className="block">
+                      <Card className="h-full border-orange-500/20 hover:border-orange-500/50 transition-colors hover:shadow-md">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base flex items-center justify-between gap-2">
+                            <span className="line-clamp-2">{related.title.split('|')[0].trim()}</span>
+                            <ArrowRight className="h-4 w-4 flex-shrink-0 text-orange-500" />
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground line-clamp-2">{related.description}</p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/#services">
+                  <Link href="/services">
                     View All Services
                   </Link>
                 </Button>
