@@ -55,6 +55,14 @@ export const projects: Project[] = [
     technologies: ['Wordpress'],
   },
   {
+    title: 'Perri Electrics',
+    description:
+      'Professional website for a Melbourne electrical contractor—authorised appliance installer for The Good Guys, residential and commercial services, safety and rental audits, and 24/7 local support.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://perrielectrics.com' }],
+    technologies: ['WordPress', 'Elementor'],
+  },
+  {
     title: 'Wedding & RSVP Website',
     description:
       'Beautiful wedding website featuring RSVP functionality and tracking, custom login system, and a beautiful design for a memorable celebration.',
