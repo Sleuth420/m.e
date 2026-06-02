@@ -19,6 +19,26 @@ interface SecureContactFormProps {
   onError?: (error: string) => void;
 }
 
+const RATE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+
+const mapSubmissionError = (error: unknown): string => {
+  const rawMessage =
+    error instanceof Error ? error.message : 'Failed to send message. Please try again.';
+  const normalized = rawMessage.toLowerCase();
+
+  // Email provider/OAuth failures should not leak internal details to visitors.
+  if (
+    normalized.includes('gmail_api') ||
+    normalized.includes('invalid grant') ||
+    normalized.includes('oauth') ||
+    normalized.includes('access token')
+  ) {
+    return 'Email service is temporarily unavailable. Please try again in a few minutes.';
+  }
+
+  return rawMessage;
+};
+
 export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -31,9 +51,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Rate limiting
   const lastSubmissionRef = useRef<number>(0);
-  const RATE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -47,23 +65,21 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     }
   };
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     if (!formData.name.trim()) return 'Name is required';
     if (!formData.email.trim()) return 'Email is required';
     if (!formData.message.trim()) return 'Message is required';
     if (!formData.project_type) return 'Project type is required';
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) return 'Please enter a valid email';
 
-    // Message length check
     if (formData.message.length < 10) return 'Message must be at least 10 characters';
 
     return null;
-  };
+  }, [formData]);
 
-  const checkRateLimit = () => {
+  const checkRateLimit = useCallback(() => {
     const now = Date.now();
     if (now - lastSubmissionRef.current < RATE_LIMIT_MS) {
       const remainingTime = Math.ceil(
@@ -72,7 +88,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
       return `Please wait ${remainingTime} minutes before submitting again`;
     }
     return null;
-  };
+  }, []);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -197,8 +213,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         onSuccess?.();
       } catch (error) {
         console.error('Form submission error:', error);
-        const errorMsg =
-          error instanceof Error ? error.message : 'Failed to send message. Please try again.';
+        const errorMsg = mapSubmissionError(error);
         setErrorMessage(errorMsg);
         setSubmitStatus('error');
         onError?.(errorMsg);
@@ -206,7 +221,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         setIsSubmitting(false);
       }
     },
-    [formData, onSuccess, onError]
+    [formData, onSuccess, onError, validateForm, checkRateLimit]
   );
 
   return (
@@ -319,7 +334,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
             {submitStatus === 'success' && (
               <div className="p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-md">
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  ✅ Message sent successfully! I'll get back to you soon.
+                  {`✅ Message sent successfully! I'll get back to you soon.`}
                 </p>
               </div>
             )}

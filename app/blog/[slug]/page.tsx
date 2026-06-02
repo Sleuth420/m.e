@@ -157,7 +157,7 @@ export default async function BlogPostPage({
                 Interested in Working Together?
               </h2>
               <p className="text-xl text-muted-foreground mb-8">
-                Let's discuss your next project or electrical needs.
+                {`Let's discuss your next project or electrical needs.`}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="text-lg px-8">

@@ -4,12 +4,19 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SectionBackground } from '@/components/ui/section-background';
-import { IconSelector } from '@/components/ui/icon-selector';
+import { IconSelector, type IconName } from '@/components/ui/icon-selector';
 
 export default function AboutSection() {
   const [activeCard, setActiveCard] = useState<number | null>(null);
 
-  const cards = [
+  const cards: {
+    id: number;
+    icon: IconName;
+    title: string;
+    subtitle: string;
+    description: string;
+    color: string;
+  }[] = [
     {
       id: 1,
       icon: 'Zap',
@@ -98,7 +105,7 @@ export default function AboutSection() {
                     {/* Gradient Header */}
                     <div className={`h-24 bg-gradient-to-r ${card.color} relative overflow-hidden`}>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <IconSelector name={card.icon as any} className="w-10 h-10 text-white" />
+                        <IconSelector name={card.icon} className="w-10 h-10 text-white" />
                       </div>
                       <div className="absolute inset-0 bg-black/10"></div>
                     </div>
@@ -154,8 +161,7 @@ export default function AboutSection() {
             >
               <div className="inline-block bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 rounded-2xl p-8 border border-orange-200/50 dark:border-orange-800/50">
                 <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 font-medium">
-                  "I don't just build solutions - I build bridges between what businesses have and
-                  what they need to thrive in today's digital world."
+                  {`"I don't just build solutions - I build bridges between what businesses have and what they need to thrive in today's digital world."`}
                 </p>
               </div>
             </motion.div>

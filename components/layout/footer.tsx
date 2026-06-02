@@ -15,14 +15,8 @@ export default function Footer() {
   const webDevServices = serviceSlugs.filter(slug => 
     slug.includes('developer') || slug.includes('development') || slug.includes('web') || slug.includes('app')
   );
-  const otherServices = serviceSlugs.filter(slug => 
-    !electricalServices.includes(slug) && !webDevServices.includes(slug)
-  );
-
   const triggerKonami = () => {
-    if (typeof window !== 'undefined' && (window as any).triggerKonami) {
-      (window as any).triggerKonami();
-    }
+    window.triggerKonami?.();
   };
 
   return (

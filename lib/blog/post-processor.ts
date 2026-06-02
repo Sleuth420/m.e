@@ -89,16 +89,6 @@ function extractContent(htmlContent: string): string {
 }
 
 /**
- * Generate a URL-friendly slug from a title
- */
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-/**
  * Generate an excerpt from content if not provided in metadata
  */
 function generateExcerpt(content: string, maxLength: number = 160): string {

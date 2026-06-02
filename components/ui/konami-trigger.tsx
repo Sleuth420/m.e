@@ -8,9 +8,7 @@ import { useEffect } from 'react';
  */
 export function KonamiTrigger() {
   useEffect(() => {
-    // Create a global function to trigger Konami mode
-    (window as any).triggerKonami = () => {
-      // Simulate the Konami code sequence
+    window.triggerKonami = () => {
       const konamiCode = [
         'ArrowUp',
         'ArrowUp',
@@ -24,7 +22,6 @@ export function KonamiTrigger() {
         'KeyA',
       ];
 
-      // Dispatch keyboard events to trigger the Konami code
       konamiCode.forEach((key, index) => {
         setTimeout(() => {
           const event = new KeyboardEvent('keydown', {
@@ -34,12 +31,12 @@ export function KonamiTrigger() {
             cancelable: true,
           });
           window.dispatchEvent(event);
-        }, index * 50); // Small delay between each key
+        }, index * 50);
       });
     };
 
     return () => {
-      delete (window as any).triggerKonami;
+      delete window.triggerKonami;
     };
   }, []);
 

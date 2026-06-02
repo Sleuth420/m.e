@@ -21,8 +21,15 @@ export const projects: Project[] = [
     description:
       'A comprehensive management platform for electricians featuring job tracking, on-site calculations, and task automation to streamline daily operations and improve productivity.',
     image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'In Progress', url: 'https://ohmsweetohm.xyz' }],
-    technologies: ['Vue.js', 'Django', 'Python', 'PostgreSQL', 'Stripe', 'Clerk', 'Cloudflare', 'Sentry', 'AWS', 'Nginx', 'Docker'  ],
+    links: [
+      {
+        type: 'external',
+        label: 'Visit Site',
+        url: 'https://electricianapp.com.au',
+        nofollow: true,
+      },
+    ],
+    technologies: ['Vue.js', 'Nuxt.js', "Tailwind CSS", 'Django', 'Python', 'PostgreSQL', 'Stripe', 'Clerk', 'Cloudflare', 'Sentry', 'AWS', 'Nginx', 'Docker'  ],
   },
   {
     title: 'Reaching Out In The Inner West',
@@ -76,7 +83,7 @@ export const projects: Project[] = [
       'Comprehensive dog directory website for Australia featuring groomer listings, service directories, and location-based search to help pet owners find quality grooming services across the country.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://dog-grooming.online' }],
-    technologies: ['WordPress', 'Elementor'],
+    technologies: ['WordPress'],
   },
   {
     title: 'Max Trans Portable Homes',
@@ -133,7 +140,15 @@ export const projects: Project[] = [
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://opshopshub.com' }],
     technologies: ['WordPress', 'Elementor'],
-  }
+  },
+  {
+    title: 'ComputerRepairNear.me',
+    description:
+      'Directory website helping users find local computer repair services, with business listings, location-based search, and clear service information.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://computerrepairenear.me' }],
+    technologies: ['WordPress'],
+  },
 ];
 
 export interface Skill {
