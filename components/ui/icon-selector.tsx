@@ -93,6 +93,7 @@ export function getProjectIcon(title: string): IconName {
   if (title.toLowerCase().includes('grow-y') || title.toLowerCase().includes('growy')) return 'Leaf';
   if (title.toLowerCase().includes('perfect circle')) return 'Gamepad2';
   if (title.toLowerCase().includes('computer repair')) return 'Microchip';
+  if (title.toLowerCase().includes('laundry')) return 'Home';
   if (title.toLowerCase().includes('opshop')) return 'Store';
   return 'Code';
 }

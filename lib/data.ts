@@ -149,6 +149,22 @@ export const projects: Project[] = [
     links: [{ type: 'external', label: 'Visit Site', url: 'https://computerrepairenear.me' }],
     technologies: ['WordPress'],
   },
+  {
+    title: 'ComputerRepairsNear.me',
+    description:
+      'Programmatic SEO directory for computer repair services, with location-based landing pages, business listings, and scalable content built for local search.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://computerrepairsnear.me' }],
+    technologies: ['WordPress', 'Custom PHP', 'ACF', 'CPT UI'],
+  },
+  {
+    title: 'LaundryServicesNear.me',
+    description:
+      'Programmatic SEO directory for laundry services, featuring location-based pages, service listings, and structured content to help users find providers nearby.',
+    image: '/placeholder.svg?height=400&width=600',
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://laundryservicesnear.me' }],
+    technologies: ['WordPress', 'Custom PHP', 'ACF', 'CPT UI'],
+  },
 ];
 
 export interface Skill {
