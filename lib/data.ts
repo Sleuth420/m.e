@@ -142,14 +142,6 @@ export const projects: Project[] = [
     technologies: ['WordPress', 'Elementor'],
   },
   {
-    title: 'ComputerRepairNear.me',
-    description:
-      'Directory website helping users find local computer repair services, with business listings, location-based search, and clear service information.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://computerrepairenear.me' }],
-    technologies: ['WordPress'],
-  },
-  {
     title: 'ComputerRepairsNear.me',
     description:
       'Programmatic SEO directory for computer repair services, with location-based landing pages, business listings, and scalable content built for local search.',
