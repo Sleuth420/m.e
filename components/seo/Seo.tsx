@@ -15,7 +15,7 @@ interface SeoProps {
 export const generateSeoMetadata = ({
   title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
   description = 'OakCodeAndTechSolutions: A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services and web development solutions. Specializing in WordPress, custom web applications, embedded systems, and electrical services.',
-  image = 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
+  image = 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
   type = 'profile',
   publishedTime,
   modifiedTime,

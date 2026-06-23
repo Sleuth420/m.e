@@ -12,14 +12,6 @@ import { usePostHog } from '@/lib/hooks/usePostHog';
 export default function ContactSection() {
   const { trackEvent } = usePostHog();
 
-  const handleEmailClick = () => {
-    trackEvent('email_clicked', {
-      email: contactInfo.email,
-      source: 'contact_section',
-      timestamp: new Date().toISOString(),
-    });
-  };
-
   const handleFormSuccess = () => {
     trackEvent('contact_form_submitted', {
       source: 'contact_section',
@@ -42,7 +34,7 @@ export default function ContactSection() {
           <SectionHeading
             badge="Contact"
             title="Get in Touch"
-            description="Whether you need a developer, an electrician, or someone who understands both worlds, I'm here to help."
+            description="Whether you need a developer, an electrician, or someone who understands both worlds, use the form below. We do not publish a public email address."
           />
 
           <motion.div
@@ -50,16 +42,22 @@ export default function ContactSection() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mx-auto grid gap-6 sm:gap-8 mt-12 md:grid-cols-2 px-4 sm:px-0"
+            className="mx-auto grid gap-6 sm:gap-8 mt-12 max-w-4xl px-4 sm:px-0"
           >
-            <ContactCard
-              title="Email Me"
-              content={contactInfo.email}
-              icon="Mail"
-              actionLabel="Send Email"
-              actionUrl={`mailto:${contactInfo.email}`}
-              onClick={handleEmailClick}
-            />
+            <div className="grid gap-6 sm:grid-cols-2">
+              <ContactCard
+                title="Based in"
+                content={contactInfo.location}
+                icon="MapPin"
+              />
+              <ContactCard
+                title="GitHub"
+                content="Sleuth420"
+                icon="Github"
+                actionLabel="View profile"
+                actionUrl={contactInfo.github}
+              />
+            </div>
 
             <SecureContactForm onSuccess={handleFormSuccess} onError={handleFormError} />
           </motion.div>

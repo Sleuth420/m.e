@@ -4,7 +4,7 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, ArrowRight, Phone, Mail } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import {
@@ -185,13 +185,7 @@ export default async function ServicePage({
                 <Button asChild size="lg" className="text-lg px-8">
                   <Link href="/#contact">
                     <Phone className="mr-2 h-5 w-5" />
-                    Contact Me
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="text-lg px-8">
-                  <Link href="mailto:oakcodeandtechsolutions@gmail.com">
-                    <Mail className="mr-2 h-5 w-5" />
-                    Email Me
+                    Contact via form
                   </Link>
                 </Button>
               </div>

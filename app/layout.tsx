@@ -62,8 +62,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     description:
         'A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services (residential, commercial, emergency) and web development (WordPress, React, Vue.js, custom applications).',
     url: 'https://www.oakcodeandtechsolutions.com',
-    image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
-    email: 'oakcodeandtechsolutions@gmail.com',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Melbourne',
@@ -126,9 +124,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       alternateName: 'OakCodeAndTechSolutions Electrical Services',
       description: 'OakCodeAndTechSolutions provides professional licensed electrician services and solutions in Melbourne. Emergency electrician, residential, commercial, and industrial electrical work. 24/7 emergency services available.',
       url: 'https://www.oakcodeandtechsolutions.com',
-      // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
-      email: 'oakcodeandtechsolutions@gmail.com',
-      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
       logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
       address: {
         '@type': 'PostalAddress',
@@ -269,9 +264,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       alternateName: 'OakCodeAndTechSolutions Web Development',
       description: 'OakCodeAndTechSolutions provides professional web development services and solutions in Melbourne. WordPress developer, custom web applications, app development, and digital marketing services.',
       url: 'https://www.oakcodeandtechsolutions.com',
-      // telephone: '+61-XXX-XXX-XXX', // Removed - invalid placeholder causes validation errors
-      email: 'oakcodeandtechsolutions@gmail.com',
-      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
       logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
       address: {
         '@type': 'PostalAddress',
@@ -363,8 +355,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       description: 'OakCodeAndTechSolutions is a Melbourne-based business providing professional electrical services and web development solutions. Specializing in licensed electrical work and custom web applications.',
       url: 'https://www.oakcodeandtechsolutions.com',
       logo: 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
-      image: 'https://www.oakcodeandtechsolutions.com/placeholder-user.jpg',
-      email: 'oakcodeandtechsolutions@gmail.com',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Melbourne',
@@ -377,8 +367,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        email: 'oakcodeandtechsolutions@gmail.com',
-        contactType: 'Customer Service',
+        contactType: 'customer support',
+        url: 'https://www.oakcodeandtechsolutions.com/#contact',
         areaServed: 'AU',
         availableLanguage: 'English',
       },
@@ -433,7 +423,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name: 'How do I get a quote for electrical work?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'You can contact me through the contact form on this website, email me directly at oakcodeandtechsolutions@gmail.com, or call for emergency services. I provide free quotes for all electrical work.',
+            text: 'Use the contact form on this website. I provide free quotes for electrical work after we connect through the form.',
           },
         },
         {
@@ -441,7 +431,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name: 'How do I get a quote for web development?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'You can contact me through the contact form, email me at oakcodeandtechsolutions@gmail.com, or visit the pricing page for package information. I provide detailed quotes for all web development projects.',
+            text: 'Use the contact form on this website or visit the pricing page for package information. I provide detailed quotes for web development projects after we connect through the form.',
           },
         },
       ],

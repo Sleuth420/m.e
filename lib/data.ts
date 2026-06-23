@@ -240,6 +240,7 @@ export interface ContactInfo {
   github: string;
 }
 
+/** Internal recipient for EmailJS only — never render in UI or schema. */
 export const contactInfo: ContactInfo = {
   email: 'oakcodeandtechsolutions@gmail.com',
   location: 'Melbourne, Australia',

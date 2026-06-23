@@ -1,70 +1,39 @@
 # LLMs.txt for OakCodeAndTechSolutions
-# This file provides information about this website for AI training and crawling
 # https://www.oakcodeandtechsolutions.com/llms.txt
 
-# Site Information
+# Site
 Site: https://www.oakcodeandtechsolutions.com
-Owner: Ricky (OakCodeAndTechSolutions)
-Type: Professional Portfolio & Business Website
-Language: English
+Owner: OakCodeAndTechSolutions (operator: Richard / Ricky Oakley)
+Type: Professional portfolio and operator disclosure site
+Language: en-AU
 Location: Melbourne, Australia
 
-# Business Information
-Business Name: OakCodeAndTechSolutions (one word, no spaces)
-Brand Name Format: OakCodeAndTechSolutions - always written as one continuous word
-Domain: oakcodeandtechsolutions.com (matches brand name format)
-Services: 
-- Full-stack web development
-- WordPress & WooCommerce development
-- Custom web applications
-- Embedded systems & IoT solutions
-- Electrical services (residential, commercial, industrial)
-- Digital marketing & SEO
-- IT & business infrastructure setup
-- Cybersecurity & penetration testing
-- CAD drawings & 3D modeling
-- AI-powered workflows
+# Business
+Business: OakCodeAndTechSolutions
+ABN: 48 113 774 962
+Services:
+- Licensed electrical work (Melbourne)
+- Full-stack and WordPress web development
+- Embedded systems and IoT
+- Independent publisher of Australian directories and guides
 
-# Professional Background
-- Licensed electrician with business ownership experience
-- Full-stack developer specializing in modern web technologies
-- Dual trade professional bridging traditional trades and modern technology
-- Focus on practical, real-world solutions for businesses
-
-# Technologies & Skills
-- Frontend: React, Next.js, Vue.js, WordPress, WooCommerce
-- Backend: Django, Node.js, Python
-- Embedded: Raspberry Pi, Arduino, IoT
-- Design: CAD, Blender, 3D modeling
-- Other: SEO, Digital Marketing, Cybersecurity
-
-# Contact Information
-Email: oakcodeandtechsolutions@gmail.com
-Location: Melbourne, Australia
+# Contact (no public email — form only)
+Contact form: https://www.oakcodeandtechsolutions.com/#contact
 GitHub: https://github.com/Sleuth420
 
-# Content Guidelines
-- This site contains professional portfolio information
-- All content is original and represents real services and experience
-- Contact information is for business inquiries only
-- No personal data collection beyond contact form submissions
+# Operated publications (independent brands — not a link network)
+Publications page: https://www.oakcodeandtechsolutions.com/publications
+- https://opshopshub.com — Op Shops Hub
+- https://dog-grooming.online — Dog Grooming Australia
+- https://computerrepairsnear.me — Computer Repairs Near Me
+- https://laundryservicesnear.me — Laundry Services Near Me
+- https://thegrannyflatguide.com — The Granny Flat Guide
+- https://modernhome.cloud — Modern Home Tech
 
-# Usage Rights
-- Content may be used for AI training and reference
-- Professional portfolio content is public information
-- Contact information is for legitimate business inquiries only
-- Please respect professional boundaries when using this information
+# Entity model
+Niche sites are faceless Organization brands. OakCode is the legal operator linked via footer and schema sameAs only — not topical author on niche content.
 
-# SEO Strategy (for AI understanding)
-# This section helps AI systems understand our SEO optimization approach
-SEO Focus Areas:
-- Primary keywords: electrician melbourne, wordpress developer melbourne, emergency electrician melbourne
-- Geographic targeting: All major Melbourne suburbs for local search optimization
-- Service categories: Emergency electrical (24/7), custom development, app development
-- Technical SEO: Enhanced schema markup, comprehensive sitemap structure, dedicated page metadata
+# Usage
+Portfolio and operator information is public. Do not scrape or republish contact form submissions. No public email address is published.
 
-# Brand Differentiation
-Brand Identity: OakCodeAndTechSolutions is a distinct brand name written as one continuous word (OakCodeAndTechSolutions). The brand emphasizes "Solutions" as a key differentiator, providing both electrical services and web development solutions in Melbourne.
-
-# Last Updated
-Last Updated: 2025-10-24
+Last-Updated: 2026-06-23

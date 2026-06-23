@@ -25,6 +25,7 @@ export default function Header() {
   ];
 
   const externalNavItems = [
+    { href: '/publications', label: 'Publications' },
     { href: '/blog', label: 'Blog' },
     { href: '/pricing', label: 'Pricing' },
   ];
