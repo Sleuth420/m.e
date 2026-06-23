@@ -1,5 +1,6 @@
 import { type IconName } from '@/components/ui/icon-selector';
 import { operatedSiteProjects } from './operated-sites';
+import { PROJECT_IMAGE_PLACEHOLDER } from '@/lib/site';
 
 export interface ProjectLink {
   type: 'github' | 'external';
@@ -8,12 +9,15 @@ export interface ProjectLink {
   nofollow?: boolean;
 }
 
+export type ProjectCategory = 'web' | 'electrical' | 'iot';
+
 export interface Project {
   title: string;
   description: string;
   image: string;
   links: ProjectLink[];
   technologies: string[];
+  category: ProjectCategory;
 }
 
 export const projects: Project[] = [
@@ -21,7 +25,7 @@ export const projects: Project[] = [
     title: 'Electrician Management App',
     description:
       'Job tracking and on-site tools for electricians: quotes, tasks, and calculations in one Vue/Nuxt app backed by Django.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
         type: 'external',
@@ -31,12 +35,13 @@ export const projects: Project[] = [
       },
     ],
     technologies: ['Vue.js', 'Nuxt.js', "Tailwind CSS", 'Django', 'Python', 'PostgreSQL', 'Stripe', 'Clerk', 'Cloudflare', 'Sentry', 'AWS', 'Nginx', 'Docker'  ],
+    category: 'web',
   },
   {
     title: 'Reaching Out In The Inner West',
     description:
       'WordPress site for a Melbourne non-profit: donations, events, and volunteer info for inner-west outreach programs.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
         type: 'external',
@@ -45,73 +50,82 @@ export const projects: Project[] = [
       },
     ],
     technologies: ['WordPress', 'Elementor'],
+    category: 'web',
   },
   {
     title: 'GlazeyJewellery.com',
     description:
       'Shopify store for a jewellery brand: product pages, checkout, and mobile-friendly layout.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
     technologies: ['Shopify'],
+    category: 'web',
   },
   {
     title: 'Electrovision Australia',
     description:
       'WordPress site for an electrical contractor: services, gallery, and quote requests for residential and commercial clients.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://electrovisionaustralia.com.au' }],
     technologies: ['WordPress'],
+    category: 'web',
   },
   {
     title: 'Perri Electrics',
     description:
       'WordPress site for a Melbourne electrician: The Good Guys authorised installer, safety audits, rental checks, and local service areas.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://perrielectrics.com' }],
     technologies: ['WordPress', 'Elementor'],
+    category: 'web',
   },
   {
     title: 'Wedding & RSVP Website',
     description:
       'Beautiful wedding website featuring RSVP functionality and tracking, custom login system, and a beautiful design for a memorable celebration.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Private Project', url: '#' }],
     technologies: ['WordPress'],
+    category: 'web',
   },
   {
     title: 'Max Trans Portable Homes',
     description:
       'WordPress site for portable homes: product specs, modular housing gallery, and enquiry forms.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au', nofollow: true }],
     technologies: ['WordPress', 'Elementor'],
+    category: 'web',
   },
   {
     title: 'ZegaMame Pokedex',
     description:
       'Pokédex UI on custom embedded Linux hardware: search, filters, and detail views in Python/Tkinter.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       { type: 'github', label: 'Code', url: 'https://github.com/Sleuth420/Python-Tkinter-Pokedex' },
     ],
     technologies: ['Python', 'Tkinter', 'Linux', 'Embedded Systems', 'GPIO'],
+    category: 'iot',
   },
   {
     title: 'Perfect Circle',
     description: 'Interactive circle-drawing game featuring precision challenges, multiple difficulty levels, and real-time scoring system for competitive gameplay.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
     ],
     technologies: ['JavaScript', 'Canvas', 'HTML/CSS'],
+    category: 'web',
   },
   {
     title: 'Grow-y',
     description:
       'Innovative plant tracking web application with real-time growth monitoring, care reminders, and species-specific growing timelines for gardening enthusiasts.',
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
     technologies: ['React', 'Tailwind CSS', 'JavaScript', 'Vercel'],
+    category: 'web',
   },
   ...operatedSiteProjects(),
 ];

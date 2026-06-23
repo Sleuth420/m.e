@@ -4,20 +4,27 @@ import Link from 'next/link';
 import { Github, Zap, Coffee, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getAllServiceSlugs } from '@/lib/services-data';
+import {
+  footerQuickLinks,
+  featuredElectricalLinks,
+  featuredWebDevLinks,
+  isElectricalSlug,
+  isWebDevSlug,
+  serviceNavLink,
+} from '@/lib/navigation';
 
 export default function Footer() {
   const serviceSlugs = getAllServiceSlugs();
-
-  const electricalServices = serviceSlugs.filter(
-    (slug) => slug.includes('electrician') || slug.includes('electrical')
-  );
-  const webDevServices = serviceSlugs.filter(
-    (slug) =>
-      slug.includes('developer') ||
-      slug.includes('development') ||
-      slug.includes('web') ||
-      slug.includes('app')
-  );
+  const extraElectrical = serviceSlugs
+    .filter(isElectricalSlug)
+    .filter((slug) => !featuredElectricalLinks.some((link) => link.href === `/services/${slug}`))
+    .slice(0, 3)
+    .map(serviceNavLink);
+  const extraWebDev = serviceSlugs
+    .filter(isWebDevSlug)
+    .filter((slug) => !featuredWebDevLinks.some((link) => link.href === `/services/${slug}`))
+    .slice(0, 3)
+    .map(serviceNavLink);
 
   const triggerKonami = () => {
     window.triggerKonami?.();
@@ -65,16 +72,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-display font-semibold text-sm text-primary">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              {[
-                { href: '/', label: 'Home' },
-                { href: '/about', label: 'About' },
-                { href: '/services', label: 'Services' },
-                { href: '/projects', label: 'Projects' },
-                { href: '/contact', label: 'Contact' },
-                { href: '/publications', label: 'Publications' },
-                { href: '/blog', label: 'Blog' },
-                { href: '/pricing', label: 'Pricing' },
-              ].map((link) => (
+              {footerQuickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -90,112 +88,68 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-display font-semibold text-sm text-primary">Electrical Services</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/services/electrician-melbourne"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Electrician Melbourne
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services/electrician-melbourne-cbd"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Electrician Melbourne CBD
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services/electrician-western-suburbs"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Western Suburbs
-                </Link>
-              </li>
-              {electricalServices.slice(3, 6).map((slug) => {
-                const serviceName = slug
-                  .split('-')
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ');
-                return (
-                  <li key={slug}>
-                    <Link
-                      href={`/services/${slug}`}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {serviceName}
-                    </Link>
-                  </li>
-                );
-              })}
-              {electricalServices.length > 6 && (
-                <li>
+              {featuredElectricalLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href="/services"
-                    className="text-muted-foreground hover:text-primary transition-colors text-xs"
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    View All Electrical Services →
+                    {link.label}
                   </Link>
                 </li>
-              )}
+              ))}
+              {extraElectrical.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/services"
+                  className="text-muted-foreground hover:text-primary transition-colors text-xs"
+                >
+                  View All Electrical Services →
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div className="space-y-4">
             <h3 className="font-display font-semibold text-sm text-primary">Web Development</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/services/wordpress-developer-melbourne"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  WordPress Developer
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services/web-developer-melbourne"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Web Developer
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services/app-development-melbourne"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  App Development
-                </Link>
-              </li>
-              {webDevServices.slice(3, 6).map((slug) => {
-                const serviceName = slug
-                  .split('-')
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ');
-                return (
-                  <li key={slug}>
-                    <Link
-                      href={`/services/${slug}`}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {serviceName}
-                    </Link>
-                  </li>
-                );
-              })}
-              {webDevServices.length > 6 && (
-                <li>
+              {featuredWebDevLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href="/services"
-                    className="text-muted-foreground hover:text-primary transition-colors text-xs"
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    View All Web Services →
+                    {link.label}
                   </Link>
                 </li>
-              )}
+              ))}
+              {extraWebDev.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/services"
+                  className="text-muted-foreground hover:text-primary transition-colors text-xs"
+                >
+                  View All Web Services →
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

@@ -7,6 +7,7 @@ import {
   getServicePageData,
   generateServiceMetadata,
 } from '@/lib/services-data';
+import { BASE_URL } from '@/lib/site';
 
 export async function generateStaticParams() {
   const slugs = getAllServiceSlugs();
@@ -40,11 +41,10 @@ export default async function ServicePage({
     notFound();
   }
 
-  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
   const breadcrumbItems = [
-    { name: 'Home', url: baseUrl },
-    { name: 'Services', url: `${baseUrl}/services` },
-    { name: serviceData.title, url: `${baseUrl}/services/${slug}` },
+    { name: 'Home', url: BASE_URL },
+    { name: 'Services', url: `${BASE_URL}/services` },
+    { name: serviceData.title, url: `${BASE_URL}/services/${slug}` },
   ];
 
   const allSlugs = getAllServiceSlugs().filter((s) => s !== slug);
@@ -67,8 +67,8 @@ export default async function ServicePage({
     '@type': 'Service',
     name: serviceData.title.split('|')[0].trim(),
     description: serviceData.description,
-    url: `${baseUrl}/services/${slug}`,
-    provider: { '@id': 'https://www.oakcodeandtechsolutions.com/#organization' },
+    url: `${BASE_URL}/services/${slug}`,
+    provider: { '@id': `${BASE_URL}/#organization` },
     areaServed: serviceData.location
       ? { '@type': 'City', name: serviceData.location, addressCountry: 'AU' }
       : { '@type': 'City', name: 'Melbourne', addressCountry: 'AU' },

@@ -4,14 +4,13 @@ import { DepthCard } from '@/components/ui/depth-card';
 import { IconSelector, type IconName } from '@/components/ui/icon-selector';
 import { skills } from '@/lib/data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
-
-const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'About Ricky | Licensed Electrician & Full-Stack Developer Melbourne',
   description:
     'Meet Ricky: A-Grade electrician and developer at OakCodeAndTechSolutions in Melbourne.',
-  canonical: `${baseUrl}/about`,
+  canonical: `${BASE_URL}/about`,
 });
 
 const timeline = [
@@ -70,8 +69,8 @@ const aboutSchema = {
   name: 'About Ricky - OakCodeAndTechSolutions',
   description:
     'A-Grade licensed electrician and full-stack developer in Melbourne.',
-  url: `${baseUrl}/about`,
-  mainEntity: { '@id': `${baseUrl}/#person` },
+  url: `${BASE_URL}/about`,
+  mainEntity: { '@id': `${BASE_URL}/#person` },
 };
 
 export default function AboutPage() {

@@ -4,14 +4,13 @@ import { ContactCard } from '@/components/ui/contact-card';
 import { SecureContactForm } from '@/components/ui/secure-contact-form';
 import { contactInfo } from '@/lib/data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
-
-const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Contact | Licensed Electrician & Web Developer Melbourne',
   description:
     'Contact OakCodeAndTechSolutions for electrical services or web development in Melbourne. Free quotes for electrical work and web projects.',
-  canonical: `${baseUrl}/contact`,
+  canonical: `${BASE_URL}/contact`,
 });
 
 const contactSchema = {
@@ -19,8 +18,8 @@ const contactSchema = {
   '@type': 'ContactPage',
   name: 'Contact OakCodeAndTechSolutions',
   description: 'Contact page for electrical and web development services in Melbourne',
-  url: `${baseUrl}/contact`,
-  mainEntity: { '@id': `${baseUrl}/#organization` },
+  url: `${BASE_URL}/contact`,
+  mainEntity: { '@id': `${BASE_URL}/#organization` },
 };
 
 export default function ContactPage() {

@@ -1,67 +1,64 @@
 import { MetadataRoute } from 'next';
 import { getAllServiceSlugs } from '@/lib/services-data';
 import { getAllPosts } from '@/lib/blog/posts-data';
+import { BASE_URL } from '@/lib/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
   const currentDate = new Date().toISOString().split('T')[0];
 
-  // Main pages
   const mainPages: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: BASE_URL,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${BASE_URL}/about`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/projects`,
+      url: `${BASE_URL}/projects`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.85,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${BASE_URL}/contact`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/services`,
+      url: `${BASE_URL}/services`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/publications`,
+      url: `${BASE_URL}/publications`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/pricing`,
+      url: `${BASE_URL}/pricing`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: `${BASE_URL}/blog`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
   ];
 
-  // Service pages - dynamically generated from services-data.ts
   const serviceSlugs = getAllServiceSlugs();
   const servicePages: MetadataRoute.Sitemap = serviceSlugs.map((slug) => {
-    // Determine priority based on service type
     let priority = 0.7;
     if (
       slug.includes('electrician-melbourne') ||
@@ -76,19 +73,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     return {
-      url: `${baseUrl}/services/${slug}`,
+      url: `${BASE_URL}/services/${slug}`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
       priority,
     };
   });
 
-  // Blog posts - dynamically generated from blog posts
   const blogPosts = await getAllPosts();
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => {
     const postDate = new Date(post.date).toISOString().split('T')[0];
     return {
-      url: `${baseUrl}/blog/${post.slug}`,
+      url: `${BASE_URL}/blog/${post.slug}`,
       lastModified: postDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
@@ -97,4 +93,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...mainPages, ...servicePages, ...blogPages];
 }
-

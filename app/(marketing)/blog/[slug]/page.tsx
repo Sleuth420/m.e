@@ -13,6 +13,7 @@ import {
   getAllPosts,
   generatePostMetadata,
 } from '@/lib/blog/posts-data';
+import { BASE_URL } from '@/lib/site';
 
 // Generate static params for all blog posts at build time
 export async function generateStaticParams() {
@@ -58,11 +59,10 @@ export default async function BlogPostPage({
     .filter((p) => p.slug !== post.slug)
     .slice(0, 3);
 
-  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
   const breadcrumbItems = [
-    { name: 'Home', url: baseUrl },
-    { name: 'Blog', url: `${baseUrl}/blog` },
-    { name: post.title, url: `${baseUrl}/blog/${post.slug}` },
+    { name: 'Home', url: BASE_URL },
+    { name: 'Blog', url: `${BASE_URL}/blog` },
+    { name: post.title, url: `${BASE_URL}/blog/${post.slug}` },
   ];
 
   const articleSchema = {
@@ -74,11 +74,11 @@ export default async function BlogPostPage({
     dateModified: post.date,
     author: { '@type': 'Person', name: post.author },
     publisher: {
-      '@id': 'https://www.oakcodeandtechsolutions.com/#organization',
+      '@id': `${BASE_URL}/#organization`,
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${baseUrl}/blog/${post.slug}`,
+      '@id': `${BASE_URL}/blog/${post.slug}`,
     },
   };
 

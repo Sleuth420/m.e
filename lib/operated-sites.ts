@@ -64,12 +64,15 @@ export const operatedSites: OperatedSite[] = [
   },
 ];
 
+import { PROJECT_IMAGE_PLACEHOLDER } from '@/lib/site';
+
 export function operatedSiteProjects() {
   return operatedSites.map((site) => ({
     title: site.name,
     description: site.portfolioDescription,
-    image: '/placeholder.svg?height=400&width=600',
+    image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external' as const, label: 'Visit Site', url: site.url }],
     technologies: site.stack.split(', '),
+    category: 'web' as const,
   }));
 }

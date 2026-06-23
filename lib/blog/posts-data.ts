@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getAllPostFileContents } from './posts-loader';
 import { processPost } from './post-processor';
 import { generateSeoMetadata } from '@/components/seo/Seo';
+import { BASE_URL } from '@/lib/site';
 
 export interface BlogPost {
   slug: string;
@@ -101,7 +102,7 @@ export async function generatePostMetadata(slug: string): Promise<Metadata | nul
     return null;
   }
 
-  const canonicalUrl = `https://www.oakcodeandtechsolutions.com/blog/${slug}`;
+  const canonicalUrl = `${BASE_URL}/blog/${slug}`;
   const publishedTime = new Date(post.date).toISOString();
 
   return generateSeoMetadata({
@@ -124,6 +125,6 @@ export function generateBlogListMetadata(): Metadata {
     description:
       'Notes on electrical work, web development, and running a dual trade business in Melbourne.',
     type: 'website',
-    canonical: 'https://www.oakcodeandtechsolutions.com/blog',
+    canonical: `${BASE_URL}/blog`,
   });
 }

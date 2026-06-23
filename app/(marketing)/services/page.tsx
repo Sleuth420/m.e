@@ -1,19 +1,16 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getAllServiceSlugs, getServicePageData } from '@/lib/services-data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { PageHero } from '@/components/ui/page-hero';
-import { DepthCard } from '@/components/ui/depth-card';
-import { ArrowRight } from 'lucide-react';
-
-const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+import { ServiceLinkCard } from '@/components/services/service-link-card';
+import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Services | Electrical & Web Development Melbourne | OakCodeAndTechSolutions',
   description:
     'Professional electrical services and web development in Melbourne. Licensed electrician, WordPress development, custom apps, IoT, SEO, cybersecurity, and CAD design. View all services.',
-  canonical: `${baseUrl}/services`,
+  canonical: `${BASE_URL}/services`,
 });
 
 function getCategoryLabel(category: string): string {
@@ -41,8 +38,8 @@ export default function ServicesIndexPage() {
   };
 
   const breadcrumbItems = [
-    { name: 'Home', url: baseUrl },
-    { name: 'Services', url: `${baseUrl}/services` },
+    { name: 'Home', url: BASE_URL },
+    { name: 'Services', url: `${BASE_URL}/services` },
   ];
 
   const itemListSchema = {
@@ -59,7 +56,7 @@ export default function ServicesIndexPage() {
         item: {
           '@type': 'Service',
           name: data?.title.split('|')[0].trim() ?? s,
-          url: `${baseUrl}/services/${s}`,
+          url: `${BASE_URL}/services/${s}`,
         },
       };
     }),
@@ -93,17 +90,11 @@ export default function ServicesIndexPage() {
                           if (!data) return null;
                           return (
                             <li key={slug}>
-                              <Link href={`/services/${slug}`} className="block h-full group">
-                                <DepthCard className="h-full p-5">
-                                  <div className="flex items-start justify-between gap-2 mb-2">
-                                    <h3 className="font-display font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                                      {data.title.split('|')[0].trim()}
-                                    </h3>
-                                    <ArrowRight className="h-4 w-4 flex-shrink-0 text-primary" />
-                                  </div>
-                                  <p className="text-sm text-muted-foreground line-clamp-2">{data.description}</p>
-                                </DepthCard>
-                              </Link>
+                              <ServiceLinkCard
+                                href={`/services/${slug}`}
+                                title={data.title.split('|')[0].trim()}
+                                description={data.description}
+                              />
                             </li>
                           );
                         })}

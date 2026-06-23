@@ -5,49 +5,19 @@ import { usePathname } from 'next/navigation';
 import { Zap, Menu, X, Code, Wrench, Building2, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useScrollPosition } from '@/lib/hooks';
+import {
+  mainNav,
+  megaMenuSections,
+  megaMenuAllLinks,
+} from '@/lib/navigation';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-const mainNav = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/services', label: 'Services' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/contact', label: 'Contact' },
-];
-
-const megaMenuCategories = [
-  {
-    title: 'Electrical',
-    icon: Wrench,
-    links: [
-      { href: '/services/electrician-melbourne', label: 'Electrician Melbourne' },
-      { href: '/services/electrician-melbourne-cbd', label: 'Electrician Melbourne CBD' },
-      { href: '/services/electrician-western-suburbs', label: 'Western Suburbs' },
-      { href: '/services', label: 'All Electrical Services' },
-    ],
-  },
-  {
-    title: 'Web Development',
-    icon: Code,
-    links: [
-      { href: '/services/wordpress-developer-melbourne', label: 'WordPress Developer' },
-      { href: '/services/web-developer-melbourne', label: 'Web Developer' },
-      { href: '/services/app-development-melbourne', label: 'App Development' },
-      { href: '/services', label: 'All Web Services' },
-    ],
-  },
-  {
-    title: 'Company',
-    icon: Building2,
-    links: [
-      { href: '/publications', label: 'Publications' },
-      { href: '/blog', label: 'Blog' },
-      { href: '/pricing', label: 'Pricing' },
-      { href: '/contact', label: 'Contact' },
-    ],
-  },
-];
+const megaMenuIcons = {
+  electrical: Wrench,
+  'web-dev': Code,
+  company: Building2,
+} as const;
 
 export default function Header() {
   const isScrolled = useScrollPosition();
@@ -125,27 +95,46 @@ export default function Header() {
           className="hidden lg:block border-t border-border/50 bg-surface-1/95 backdrop-blur-md"
         >
           <div className="container grid grid-cols-3 gap-8 py-8">
-            {megaMenuCategories.map((category) => (
-              <div key={category.title}>
-                <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">
-                  <category.icon className="h-4 w-4" />
-                  {category.title}
+            {megaMenuSections.map((section) => {
+              const Icon = megaMenuIcons[section.key];
+              const allLink =
+                section.key === 'electrical' || section.key === 'web-dev'
+                  ? megaMenuAllLinks[section.key]
+                  : null;
+
+              return (
+                <div key={section.key}>
+                  <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Icon className="h-4 w-4" />
+                    {section.title}
+                  </div>
+                  <ul className="space-y-2">
+                    {section.links.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          onClick={() => setIsMegaOpen(false)}
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                    {allLink && (
+                      <li>
+                        <Link
+                          href={allLink.href}
+                          onClick={() => setIsMegaOpen(false)}
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {allLink.label}
+                        </Link>
+                      </li>
+                    )}
+                  </ul>
                 </div>
-                <ul className="space-y-2">
-                  {category.links.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMegaOpen(false)}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -170,12 +159,12 @@ export default function Header() {
               </Link>
             ))}
             <div className="my-4 border-t border-border/50 pt-4">
-              {megaMenuCategories.map((category) => (
-                <div key={category.title} className="mb-4">
+              {megaMenuSections.map((section) => (
+                <div key={section.key} className="mb-4">
                   <p className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-primary">
-                    {category.title}
+                    {section.title}
                   </p>
-                  {category.links.map((link) => (
+                  {section.links.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

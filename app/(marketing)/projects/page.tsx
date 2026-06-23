@@ -4,14 +4,13 @@ import { PageHero } from '@/components/ui/page-hero';
 import { ProjectsGrid } from './ProjectsGrid';
 import { projects } from '@/lib/data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
-
-const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Projects & Portfolio | Web Development & Electrical Work Melbourne',
   description:
     'Portfolio of web development, WordPress, e-commerce, and electrical projects by OakCodeAndTechSolutions. Melbourne-based dual trade professional.',
-  canonical: `${baseUrl}/projects`,
+  canonical: `${BASE_URL}/projects`,
 });
 
 const projectsSchema = {
@@ -19,7 +18,7 @@ const projectsSchema = {
   '@type': 'ItemList',
   name: 'OakCodeAndTechSolutions Projects',
   description: 'Portfolio of web development and technology projects',
-  url: `${baseUrl}/projects`,
+  url: `${BASE_URL}/projects`,
   numberOfItems: projects.length,
   itemListElement: projects.slice(0, 10).map((project, index) => ({
     '@type': 'ListItem',

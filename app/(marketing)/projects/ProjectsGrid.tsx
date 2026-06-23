@@ -16,29 +16,13 @@ const categories = [
 
 type CategoryKey = (typeof categories)[number]['key'];
 
-function matchesCategory(title: string, technologies: string[], category: CategoryKey): boolean {
-  if (category === 'all') return true;
-  const haystack = `${title} ${technologies.join(' ')}`.toLowerCase();
-  if (category === 'web') {
-    return /react|vue|next|wordpress|shopify|django|node|web|vercel|tailwind|javascript|python/.test(
-      haystack
-    );
-  }
-  if (category === 'electrical') {
-    return /electric|electrical|electrician/.test(haystack);
-  }
-  if (category === 'iot') {
-    return /arduino|raspberry|embedded|gpio|iot|tkinter|linux/.test(haystack);
-  }
-  return true;
-}
-
 export function ProjectsGrid() {
   const searchParams = useSearchParams();
   const category = (searchParams.get('category') as CategoryKey) || 'all';
 
   const filtered = useMemo(
-    () => projects.filter((p) => matchesCategory(p.title, p.technologies, category)),
+    () =>
+      projects.filter((p) => category === 'all' || p.category === category),
     [category]
   );
 

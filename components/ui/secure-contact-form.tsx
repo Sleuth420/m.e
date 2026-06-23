@@ -6,59 +6,25 @@ import { Button } from '@/components/ui/button';
 import { IconSelector } from '@/components/ui/icon-selector';
 import { itemFadeIn } from '@/lib/animations';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-  project_type: string;
-  urgency: string;
-}
+import {
+  CONTACT_FORM_STEPS,
+  PROJECT_TYPES,
+  emptyContactFormData,
+  validateContactStep,
+  checkSubmissionRateLimit,
+  mapSubmissionError,
+  submitContactForm,
+  type ContactFormData,
+} from '@/lib/contact-form';
 
 interface SecureContactFormProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
 
-const RATE_LIMIT_MS = 5 * 60 * 1000;
-const STEPS = ['Service', 'Details', 'Message'] as const;
-
-const projectTypes = [
-  { value: 'website', label: 'Website Development' },
-  { value: 'custom_app', label: 'Custom Application' },
-  { value: 'electrical', label: 'Electrical Services' },
-  { value: 'embedded', label: 'Embedded Systems / IoT' },
-  { value: 'marketing', label: 'Marketing & SEO' },
-  { value: 'it_setup', label: 'IT & Business Setup' },
-  { value: 'security', label: 'Cybersecurity' },
-  { value: 'design', label: 'Design & 3D Modeling' },
-  { value: 'other', label: 'Other' },
-];
-
-const mapSubmissionError = (error: unknown): string => {
-  const rawMessage =
-    error instanceof Error ? error.message : 'Failed to send message. Please try again.';
-  const normalized = rawMessage.toLowerCase();
-  if (
-    normalized.includes('gmail_api') ||
-    normalized.includes('invalid grant') ||
-    normalized.includes('oauth') ||
-    normalized.includes('access token')
-  ) {
-    return 'Email service is temporarily unavailable. Please try again in a few minutes.';
-  }
-  return rawMessage;
-};
-
 export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps) {
   const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    message: '',
-    project_type: '',
-    urgency: 'normal',
-  });
+  const [formData, setFormData] = useState<ContactFormData>(emptyContactFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -75,39 +41,8 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     }
   };
 
-  const validateStep = useCallback(
-    (stepIndex: number): string | null => {
-      if (stepIndex === 0) {
-        if (!formData.project_type) return 'Please select a service type';
-      }
-      if (stepIndex === 1) {
-        if (!formData.name.trim()) return 'Name is required';
-        if (!formData.email.trim()) return 'Email is required';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) return 'Please enter a valid email';
-      }
-      if (stepIndex === 2) {
-        if (!formData.message.trim()) return 'Message is required';
-        if (formData.message.length < 10) return 'Message must be at least 10 characters';
-      }
-      return null;
-    },
-    [formData]
-  );
-
-  const checkRateLimit = useCallback(() => {
-    const now = Date.now();
-    if (now - lastSubmissionRef.current < RATE_LIMIT_MS) {
-      const remainingTime = Math.ceil(
-        (RATE_LIMIT_MS - (now - lastSubmissionRef.current)) / 1000 / 60
-      );
-      return `Please wait ${remainingTime} minutes before submitting again`;
-    }
-    return null;
-  }, []);
-
   const handleNext = () => {
-    const err = validateStep(step);
+    const err = validateContactStep(formData, step);
     if (err) {
       setErrorMessage(err);
       setSubmitStatus('error');
@@ -115,7 +50,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     }
     setErrorMessage('');
     setSubmitStatus('idle');
-    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    setStep((s) => Math.min(s + 1, CONTACT_FORM_STEPS.length - 1));
   };
 
   const handleBack = () => {
@@ -127,7 +62,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      const validationError = validateStep(2);
+      const validationError = validateContactStep(formData, 2);
       if (validationError) {
         setErrorMessage(validationError);
         setSubmitStatus('error');
@@ -135,7 +70,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         return;
       }
 
-      const rateLimitError = checkRateLimit();
+      const rateLimitError = checkSubmissionRateLimit(lastSubmissionRef.current);
       if (rateLimitError) {
         setErrorMessage(rateLimitError);
         setSubmitStatus('error');
@@ -147,47 +82,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
       setSubmitStatus('idle');
 
       try {
-        if (typeof window === 'undefined' || !window.grecaptcha) {
-          let attempts = 0;
-          while (!window.grecaptcha && attempts < 20) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            attempts++;
-          }
-        }
-        if (!window.grecaptcha) {
-          throw new Error('reCAPTCHA script failed to load. Please try again.');
-        }
-
-        const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-        if (!siteKey) throw new Error('reCAPTCHA site key is not configured');
-
-        const token = await new Promise<string>((resolve, reject) => {
-          window.grecaptcha.ready(() => {
-            window.grecaptcha
-              .execute(siteKey, { action: 'contact_form' })
-              .then(resolve)
-              .catch(reject);
-          });
-        });
-
-        const emailjs = await import('@emailjs/browser');
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-          {
-            name: formData.name,
-            email: formData.email,
-            project_type: formData.project_type,
-            message: `[Urgency: ${formData.urgency}]\n\n${formData.message}`,
-            time: new Date().toLocaleString(),
-            recaptcha_token: token,
-          },
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-        );
-
+        await submitContactForm(formData);
         setSubmitStatus('success');
         lastSubmissionRef.current = Date.now();
-        setFormData({ name: '', email: '', message: '', project_type: '', urgency: 'normal' });
+        setFormData(emptyContactFormData);
         setStep(0);
         onSuccess?.();
       } catch (error) {
@@ -199,7 +97,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         setIsSubmitting(false);
       }
     },
-    [formData, onSuccess, onError, validateStep, checkRateLimit]
+    [formData, onSuccess, onError]
   );
 
   const inputClass =
@@ -214,9 +112,15 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         <h3 className="font-display text-xl font-bold">Send a Message</h3>
       </div>
 
-      <div className="mb-8" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={3}>
+      <div
+        className="mb-8"
+        role="progressbar"
+        aria-valuenow={step + 1}
+        aria-valuemin={1}
+        aria-valuemax={3}
+      >
         <div className="flex justify-between mb-2">
-          {STEPS.map((label, i) => (
+          {CONTACT_FORM_STEPS.map((label, i) => (
             <span
               key={label}
               className={`text-xs font-medium ${i <= step ? 'text-primary' : 'text-muted-foreground'}`}
@@ -228,14 +132,14 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         <div className="h-1.5 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-primary to-cyan-accent transition-all duration-300"
-            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+            style={{ width: `${((step + 1) / CONTACT_FORM_STEPS.length) * 100}%` }}
           />
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div aria-live="polite" className="sr-only">
-          Step {step + 1} of {STEPS.length}: {STEPS[step]}
+          Step {step + 1} of {CONTACT_FORM_STEPS.length}: {CONTACT_FORM_STEPS[step]}
         </div>
 
         <AnimatePresence mode="wait">
@@ -249,7 +153,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
             >
               <p className="text-sm text-muted-foreground mb-4">What can I help you with?</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {projectTypes.map((type) => (
+                {PROJECT_TYPES.map((type) => (
                   <label
                     key={type.value}
                     className={`flex items-center gap-3 p-4 min-h-11 rounded-lg border cursor-pointer transition-colors ${
@@ -282,9 +186,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
               className="space-y-4"
             >
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name *
-                </label>
+                <label htmlFor="name" className="block text-sm font-medium mb-1">Name *</label>
                 <input
                   type="text"
                   id="name"
@@ -296,9 +198,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email *
-                </label>
+                <label htmlFor="email" className="block text-sm font-medium mb-1">Email *</label>
                 <input
                   type="email"
                   id="email"
@@ -310,9 +210,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
                 />
               </div>
               <div>
-                <label htmlFor="urgency" className="block text-sm font-medium mb-1">
-                  Urgency
-                </label>
+                <label htmlFor="urgency" className="block text-sm font-medium mb-1">Urgency</label>
                 <select
                   id="urgency"
                   name="urgency"
@@ -337,9 +235,7 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
               className="space-y-4"
             >
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-1">
-                  Message *
-                </label>
+                <label htmlFor="message" className="block text-sm font-medium mb-1">Message *</label>
                 <textarea
                   id="message"
                   name="message"
@@ -370,13 +266,22 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
 
         <div className="flex flex-col-reverse sm:flex-row gap-3 mt-8">
           {step > 0 && (
-            <Button type="button" variant="outline" onClick={handleBack} className="chrome-border min-h-11 w-full sm:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleBack}
+              className="chrome-border min-h-11 w-full sm:w-auto"
+            >
               <ChevronLeft className="h-4 w-4 mr-1" />
               Back
             </Button>
           )}
-          {step < STEPS.length - 1 ? (
-            <Button type="button" onClick={handleNext} className="flex-1 gradient-bg text-primary-foreground min-h-11">
+          {step < CONTACT_FORM_STEPS.length - 1 ? (
+            <Button
+              type="button"
+              onClick={handleNext}
+              className="flex-1 gradient-bg text-primary-foreground min-h-11"
+            >
               Next
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
@@ -397,13 +302,4 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
       </form>
     </motion.div>
   );
-}
-
-declare global {
-  interface Window {
-    grecaptcha: {
-      ready: (callback: () => void) => void;
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
-    };
-  }
 }

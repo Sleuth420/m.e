@@ -6,15 +6,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { operatedPublications } from '@/lib/publications-data';
-
-const baseUrl = 'https://www.oakcodeandtechsolutions.com';
+import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Publications | Independent Australian directories & guides | OakCodeAndTechSolutions',
   description:
     'Independent Australian directories and research sites built and maintained by OakCodeAndTechSolutions. Each property has its own editorial standards.',
   type: 'website',
-  canonical: `${baseUrl}/publications`,
+  canonical: `${BASE_URL}/publications`,
 });
 
 export default function PublicationsPage() {
@@ -22,11 +21,11 @@ export default function PublicationsPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Publications operated by OakCodeAndTechSolutions',
-    url: `${baseUrl}/publications`,
+    url: `${BASE_URL}/publications`,
     description:
       'Independent Australian directories and guides built and maintained by OakCodeAndTechSolutions.',
-    isPartOf: { '@id': `${baseUrl}/#website` },
-    publisher: { '@id': `${baseUrl}/#organization` },
+    isPartOf: { '@id': `${BASE_URL}/#website` },
+    publisher: { '@id': `${BASE_URL}/#organization` },
   };
 
   return (
