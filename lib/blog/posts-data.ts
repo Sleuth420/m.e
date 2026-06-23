@@ -3,14 +3,6 @@ import { getAllPostFileContents } from './posts-loader';
 import { processPost } from './post-processor';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 
-/**
- * Layer 3: Data Access API
- * Responsibility: Provide clean, consistent API for blog data
- * 
- * This is the public interface that components and pages use.
- * It follows the same pattern as services-data.ts for consistency.
- */
-
 export interface BlogPost {
   slug: string;
   fileName: string;
@@ -119,12 +111,6 @@ export async function generatePostMetadata(slug: string): Promise<Metadata | nul
     publishedTime,
     modifiedTime: publishedTime,
     author: post.author,
-    keywords: [
-      ...post.tags,
-      'blog',
-      'web development blog',
-      'melbourne developer blog',
-    ],
     canonical: canonicalUrl,
   });
 }
@@ -135,16 +121,9 @@ export async function generatePostMetadata(slug: string): Promise<Metadata | nul
 export function generateBlogListMetadata(): Metadata {
   return generateSeoMetadata({
     title: 'Blog | Web Development & Electrical Services | OakCodeAndTechSolutions',
-    description: 'Read articles about web development, electrical services, and technology from a dual trade professional in Melbourne.',
+    description:
+      'Notes on electrical work, web development, and running a dual trade business in Melbourne.',
     type: 'website',
     canonical: 'https://www.oakcodeandtechsolutions.com/blog',
-    keywords: [
-      'web development blog',
-      'developer blog melbourne',
-      'electrical services blog',
-      'technology blog',
-      'nextjs blog',
-      'web development articles',
-    ],
   });
 }

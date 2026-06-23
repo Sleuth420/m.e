@@ -27,30 +27,20 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
   const iconName = getProjectIcon(project.title);
 
   return (
-    <motion.div
-      variants={item}
-      className="group relative flex flex-col overflow-hidden rounded-lg border-0 bg-white/90 dark:bg-slate-900/90 shadow-lg shadow-orange-100/30 dark:shadow-orange-900/20 hover:shadow-orange-200/40 dark:hover:shadow-orange-800/30 transition-all duration-500 hover:-translate-y-2 h-full backdrop-blur-sm"
-    >
-      <div className="relative h-20 sm:h-24 overflow-hidden bg-orange-500 dark:bg-orange-600">
+    <motion.div variants={item} className="depth-card overflow-hidden h-full flex flex-col">
+      <div className="relative h-20 sm:h-24 overflow-hidden bg-primary">
         <div className="absolute inset-0 flex items-center justify-center">
-          <IconSelector name={iconName} className="w-10 h-10 sm:w-12 sm:h-12 text-white/90" />
+          <IconSelector name={iconName} className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground/90" />
         </div>
       </div>
       <div className="flex flex-col flex-grow p-4 sm:p-6 space-y-3">
-        <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-2">
-          {project.title}
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
-          {project.description}
-        </p>
+        <h3 className="text-lg sm:text-xl font-bold text-foreground">{project.title}</h3>
+        <p className="text-xs sm:text-sm text-muted-foreground flex-grow">{project.description}</p>
         <div className="mb-4">
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">Built with:</p>
+          <p className="text-xs font-medium text-muted-foreground mb-2">Built with:</p>
           <div className="flex flex-wrap gap-1.5">
-            {project.technologies.map((tech, i) => (
-              <span
-                key={i}
-                className="inline-block px-2 py-1 text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full border border-orange-200 dark:border-orange-800"
-              >
+            {project.technologies.map((tech) => (
+              <span key={tech} className="brand-chip">
                 {tech}
               </span>
             ))}
@@ -64,9 +54,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   key={i}
                   variant="default"
                   size="sm"
-                  className="gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 text-xs sm:text-sm"
+                  disabled
+                  className="gradient-bg text-primary-foreground w-full sm:w-auto opacity-70"
                 >
-                  <IconSelector name="Github" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <IconSelector name="Github" className="mr-2 h-4 w-4" />
                   {link.label}
                 </Button>
               ) : (
@@ -74,7 +65,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   key={i}
                   variant="default"
                   size="sm"
-                  className="gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 text-xs sm:text-sm"
+                  className="gradient-bg text-primary-foreground w-full sm:w-auto min-h-10"
                   asChild
                 >
                   <Link
@@ -82,7 +73,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                     target="_blank"
                     rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
                   >
-                    <IconSelector name="Github" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <IconSelector name="Github" className="mr-2 h-4 w-4" />
                     {link.label}
                   </Link>
                 </Button>
@@ -92,7 +83,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 key={i}
                 variant="outline"
                 size="sm"
-                className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-950/30 text-xs sm:text-sm"
+                className="outline-brand w-full sm:w-auto"
                 asChild
               >
                 <Link
@@ -100,7 +91,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   target="_blank"
                   rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
                 >
-                  <IconSelector name="ExternalLink" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <IconSelector name="ExternalLink" className="mr-2 h-4 w-4" />
                   {link.label}
                 </Link>
               </Button>

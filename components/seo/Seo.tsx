@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { BASE_URL, DEFAULT_OG_IMAGE } from '@/lib/site';
 
 interface SeoProps {
   title?: string;
@@ -8,74 +9,26 @@ interface SeoProps {
   publishedTime?: string;
   modifiedTime?: string;
   author?: string;
-  keywords?: string[];
-  canonical?: string; // Dynamic canonical URL per page
+  canonical?: string;
 }
 
 export const generateSeoMetadata = ({
-  title = 'Ricky - OakCodeAndTechSolutions | Full-Stack Developer & Electrician',
-  description = 'OakCodeAndTechSolutions: A-Grade licensed electrician and full-stack developer in Melbourne. Professional electrical services and web development solutions. Specializing in WordPress, custom web applications, embedded systems, and electrical services.',
-  image = 'https://www.oakcodeandtechsolutions.com/placeholder-logo.png',
-  type = 'profile',
+  title = 'Ricky | OakCodeAndTechSolutions — Electrician & Web Developer Melbourne',
+  description =
+    'A-Grade licensed electrician and full-stack developer in Melbourne. Electrical work, WordPress sites, and custom web apps. Quotes via the contact form.',
+  image = DEFAULT_OG_IMAGE,
+  type = 'website',
   publishedTime,
   modifiedTime,
   author = 'Ricky',
-  keywords = [
-    // Brand-specific keywords (for brand recognition)
-    'OakCodeAndTechSolutions',
-    'OakCodeAndTechSolutions Melbourne',
-    'OakCodeAndTechSolutions electrician',
-    'OakCodeAndTechSolutions web developer',
-    'OakCodeAndTechSolutions solutions',
-    // High-value primary keywords (top priority for ranking)
-    'electrician melbourne',
-    'wordpress developer melbourne',
-    'electrician melbourne cbd',
-    'emergency electrician melbourne',
-    'app developer melbourne',
-    'web developer melbourne',
-    '24 hour electrician melbourne',
-    'licensed electrician melbourne',
-    'full stack developer melbourne',
-    'website developer melbourne',
-
-    // Location-specific electrician suburbs (high search volume)
-    'electrician craigieburn',
-    'electrician caroline springs',
-    'electrician port melbourne',
-    'electrician essendon',
-    'electrician st kilda',
-    'electrician glenroy',
-    'electrician glen waverley',
-    'electrician south melbourne',
-    'electrician western suburbs',
-
-    // Core professional services
-    'A-Grade Licensed Electrician Melbourne',
-    'WordPress developer',
-    'React developer Melbourne',
-    'Vue.js developer Melbourne',
-    'Django developer Melbourne',
-    'custom web development melbourne',
-    'app development melbourne',
-    'website development melbourne',
-
-    // Long-tail high-intent keywords
-    'emergency electrician near me',
-    '24 hour electrician near me',
-    'licensed electrician near me',
-    'wordpress developer near me',
-    'web developer near me',
-  ],
   canonical,
 }: SeoProps = {}): Metadata => {
-  const baseUrl = 'https://www.oakcodeandtechsolutions.com';
-  const canonicalUrl = canonical || baseUrl;
+  const canonicalUrl = canonical || BASE_URL;
 
   return {
     title,
     description,
-    metadataBase: new URL(baseUrl),
+    metadataBase: new URL(BASE_URL),
     openGraph: {
       title,
       description,
@@ -93,6 +46,7 @@ export const generateSeoMetadata = ({
       publishedTime,
       modifiedTime,
       authors: [author],
+      locale: 'en_AU',
     },
     twitter: {
       card: 'summary_large_image',
@@ -100,7 +54,6 @@ export const generateSeoMetadata = ({
       description,
       images: [image],
     },
-    keywords,
     robots: {
       index: true,
       follow: true,
@@ -112,7 +65,6 @@ export const generateSeoMetadata = ({
     alternates: {
       canonical: canonicalUrl,
     },
-    // Additional metadata for better SEO
     authors: [{ name: author }],
     creator: author,
     publisher: 'OakCodeAndTechSolutions',

@@ -8,6 +8,11 @@ import { useEffect } from 'react';
  */
 export function KonamiTrigger() {
   useEffect(() => {
+    console.log(
+      '%c🎮 Try the Konami Code! (↑↑↓↓←→←→BA)',
+      'color: #f97316; font-size: 14px; font-weight: bold;'
+    );
+
     window.triggerKonami = () => {
       const konamiCode = [
         'ArrowUp',

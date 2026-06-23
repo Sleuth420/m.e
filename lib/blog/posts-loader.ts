@@ -3,18 +3,6 @@ import { join } from 'path';
 
 const POSTS_DIRECTORY = join(process.cwd(), 'content', 'blog');
 
-/**
- * Layer 1: File System Reader
- * Responsibility: Read HTML files from the filesystem
- * 
- * This layer handles all file I/O operations and returns raw file contents.
- * It does not process or parse the content - that's handled by Layer 2.
- */
-
-/**
- * Get all HTML file names from the blog directory
- * @returns Array of file names (without .html extension)
- */
 export async function getAllPostFileNames(): Promise<string[]> {
   try {
     const files = await readdir(POSTS_DIRECTORY);

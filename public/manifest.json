@@ -1,0 +1,18 @@
+{
+  "name": "OakCodeAndTechSolutions",
+  "short_name": "OakCode",
+  "description": "A-Grade electrician and web developer in Melbourne",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f97316",
+  "lang": "en-AU",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

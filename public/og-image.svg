@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#g)" opacity="0.35"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1200" y2="630">
+      <stop stop-color="#f97316"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <path fill="#f97316" d="M120 180 280 450h120L320 330l80-150H120Z"/>
+  <path fill="#fbbf24" d="M320 330 280 450H120l120-225 80 105Z"/>
+  <text x="380" y="280" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="52" font-weight="700">OakCodeAndTechSolutions</text>
+  <text x="380" y="350" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="32">Electrician &amp; Web Developer · Melbourne</text>
+  <text x="380" y="420" fill="#f97316" font-family="system-ui,sans-serif" font-size="24">oakcodeandtechsolutions.com</text>
+</svg>

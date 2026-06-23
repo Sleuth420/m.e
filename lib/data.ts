@@ -1,4 +1,5 @@
 import { type IconName } from '@/components/ui/icon-selector';
+import { operatedSiteProjects } from './operated-sites';
 
 export interface ProjectLink {
   type: 'github' | 'external';
@@ -19,7 +20,7 @@ export const projects: Project[] = [
   {
     title: 'Electrician Management App',
     description:
-      'A comprehensive management platform for electricians featuring job tracking, on-site calculations, and task automation to streamline daily operations and improve productivity.',
+      'Job tracking and on-site tools for electricians: quotes, tasks, and calculations in one Vue/Nuxt app backed by Django.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       {
@@ -34,7 +35,7 @@ export const projects: Project[] = [
   {
     title: 'Reaching Out In The Inner West',
     description:
-      'Professional website for a Melbourne-based non-profit organization, enabling online donations and event coordination to support community outreach programs.',
+      'WordPress site for a Melbourne non-profit: donations, events, and volunteer info for inner-west outreach programs.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       {
@@ -48,7 +49,7 @@ export const projects: Project[] = [
   {
     title: 'GlazeyJewellery.com',
     description:
-      'Elegant online jewelry store featuring custom product showcases, streamlined checkout experience, and responsive design for an enhanced shopping experience.',
+      'Shopify store for a jewellery brand: product pages, checkout, and mobile-friendly layout.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
     technologies: ['Shopify'],
@@ -56,15 +57,15 @@ export const projects: Project[] = [
   {
     title: 'Electrovision Australia',
     description:
-      'Professional website for an electrical contracting business, showcasing services, project galleries, and enabling seamless online quote requests for residential and commercial clients.',
+      'WordPress site for an electrical contractor: services, gallery, and quote requests for residential and commercial clients.',
     image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: '#' }],
-    technologies: ['Wordpress'],
+    links: [{ type: 'external', label: 'Visit Site', url: 'https://electrovisionaustralia.com.au' }],
+    technologies: ['WordPress'],
   },
   {
     title: 'Perri Electrics',
     description:
-      'Professional website for a Melbourne electrical contractor—authorised appliance installer for The Good Guys, residential and commercial services, safety and rental audits, and 24/7 local support.',
+      'WordPress site for a Melbourne electrician: The Good Guys authorised installer, safety audits, rental checks, and local service areas.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://perrielectrics.com' }],
     technologies: ['WordPress', 'Elementor'],
@@ -75,20 +76,12 @@ export const projects: Project[] = [
       'Beautiful wedding website featuring RSVP functionality and tracking, custom login system, and a beautiful design for a memorable celebration.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Private Project', url: '#' }],
-    technologies: ['Wordpress'],
-  },
-  {
-    title: 'Dog Grooming Online',
-    description:
-      'Comprehensive dog directory website for Australia featuring groomer listings, service directories, and location-based search to help pet owners find quality grooming services across the country.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://dog-grooming.online' }],
     technologies: ['WordPress'],
   },
   {
     title: 'Max Trans Portable Homes',
     description:
-      'Modern website for a granny flats & portable homes company featuring modular housing showcases, detailed product specifications, and streamlined customer inquiry system.',
+      'WordPress site for portable homes: product specs, modular housing gallery, and enquiry forms.',
     image: '/placeholder.svg?height=400&width=600',
     links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au', nofollow: true }],
     technologies: ['WordPress', 'Elementor'],
@@ -96,7 +89,7 @@ export const projects: Project[] = [
   {
     title: 'ZegaMame Pokedex',
     description:
-      'Interactive Pokédex application built on custom embedded hardware, featuring a comprehensive database of Pokémon with search, filter, and detailed information display capabilities.',
+      'Pokédex UI on custom embedded Linux hardware: search, filters, and detail views in Python/Tkinter.',
     image: '/placeholder.svg?height=400&width=600',
     links: [
       { type: 'github', label: 'Code', url: 'https://github.com/Sleuth420/Python-Tkinter-Pokedex' },
@@ -110,7 +103,7 @@ export const projects: Project[] = [
     links: [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
     ],
-    technologies: ['v0 lol'],
+    technologies: ['JavaScript', 'Canvas', 'HTML/CSS'],
   },
   {
     title: 'Grow-y',
@@ -120,43 +113,7 @@ export const projects: Project[] = [
     links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
     technologies: ['React', 'Tailwind CSS', 'JavaScript', 'Vercel'],
   },
-  {
-    title: 'The Granny Flat Guide',
-    description: 'Comprehensive guide and review platform for granny flats, featuring builder directories, design inspiration, cost calculators, and community reviews.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://thegrannyflatguide.com' }],
-    technologies: ['WordPress', 'Elementor'],
-  },
-  {
-    title: 'Modern Home Tech',
-    description: 'Curated affiliate marketing platform showcasing modern home technology products with detailed reviews, buying guides, and product comparison tools.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://modernhome.cloud' }],
-    technologies: ['WordPress', 'Elementor'],
-  },
-  {
-    title: 'OpshopsHub',
-    description: 'Online platform providing comprehensive shop listings and directory services to help users discover and connect with local businesses and shops.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://opshopshub.com' }],
-    technologies: ['WordPress', 'Elementor'],
-  },
-  {
-    title: 'ComputerRepairsNear.me',
-    description:
-      'Programmatic SEO directory for computer repair services, with location-based landing pages, business listings, and scalable content built for local search.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://computerrepairsnear.me' }],
-    technologies: ['WordPress', 'Custom PHP', 'ACF', 'CPT UI'],
-  },
-  {
-    title: 'LaundryServicesNear.me',
-    description:
-      'Programmatic SEO directory for laundry services, featuring location-based pages, service listings, and structured content to help users find providers nearby.',
-    image: '/placeholder.svg?height=400&width=600',
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://laundryservicesnear.me' }],
-    technologies: ['WordPress', 'Custom PHP', 'ACF', 'CPT UI'],
-  },
+  ...operatedSiteProjects(),
 ];
 
 export interface Skill {
@@ -184,7 +141,7 @@ export const skills: Skill[] = [
   {
     title: 'Electrical',
     icon: 'Wrench',
-    description: 'A-GradeLicensed Electrician, Industrial Systems, Smart Home Integration, Residential | Commercial | Industrial, ',
+    description: 'A-Grade licensed electrician in Victoria. Residential, commercial, and light industrial work.',
   },
 ];
 
@@ -245,18 +202,4 @@ export const contactInfo: ContactInfo = {
   email: 'oakcodeandtechsolutions@gmail.com',
   location: 'Melbourne, Australia',
   github: 'https://github.com/Sleuth420',
-};
-
-export interface SiteMetadata {
-  title: string;
-  description: string;
-  author: string;
-  company: string;
-}
-
-export const siteMetadata: SiteMetadata = {
-  title: 'Ricky - OakCodeAndTechSolutions',
-  description: 'Full-stack developer & electrician specializing in modern web technologies',
-  author: 'Ricky',
-  company: 'OakCodeAndTechSolutions',
 };

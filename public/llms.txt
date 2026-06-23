@@ -18,7 +18,9 @@ Services:
 - Independent publisher of Australian directories and guides
 
 # Contact (no public email — form only)
-Contact form: https://www.oakcodeandtechsolutions.com/#contact
+Contact form: https://www.oakcodeandtechsolutions.com/contact
+About: https://www.oakcodeandtechsolutions.com/about
+Projects: https://www.oakcodeandtechsolutions.com/projects
 GitHub: https://github.com/Sleuth420
 
 # Operated publications (independent brands — not a link network)

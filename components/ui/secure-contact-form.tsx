@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { IconSelector } from '@/components/ui/icon-selector';
 import { itemFadeIn } from '@/lib/animations';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface FormData {
   name: string;
   email: string;
   message: string;
   project_type: string;
+  urgency: string;
 }
 
 interface SecureContactFormProps {
@@ -19,14 +20,25 @@ interface SecureContactFormProps {
   onError?: (error: string) => void;
 }
 
-const RATE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+const RATE_LIMIT_MS = 5 * 60 * 1000;
+const STEPS = ['Service', 'Details', 'Message'] as const;
+
+const projectTypes = [
+  { value: 'website', label: 'Website Development' },
+  { value: 'custom_app', label: 'Custom Application' },
+  { value: 'electrical', label: 'Electrical Services' },
+  { value: 'embedded', label: 'Embedded Systems / IoT' },
+  { value: 'marketing', label: 'Marketing & SEO' },
+  { value: 'it_setup', label: 'IT & Business Setup' },
+  { value: 'security', label: 'Cybersecurity' },
+  { value: 'design', label: 'Design & 3D Modeling' },
+  { value: 'other', label: 'Other' },
+];
 
 const mapSubmissionError = (error: unknown): string => {
   const rawMessage =
     error instanceof Error ? error.message : 'Failed to send message. Please try again.';
   const normalized = rawMessage.toLowerCase();
-
-  // Email provider/OAuth failures should not leak internal details to visitors.
   if (
     normalized.includes('gmail_api') ||
     normalized.includes('invalid grant') ||
@@ -35,22 +47,21 @@ const mapSubmissionError = (error: unknown): string => {
   ) {
     return 'Email service is temporarily unavailable. Please try again in a few minutes.';
   }
-
   return rawMessage;
 };
 
 export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps) {
+  const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     message: '',
     project_type: '',
+    urgency: 'normal',
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-
   const lastSubmissionRef = useRef<number>(0);
 
   const handleInputChange = (
@@ -58,26 +69,31 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Reset status when user starts typing
     if (submitStatus !== 'idle') {
       setSubmitStatus('idle');
       setErrorMessage('');
     }
   };
 
-  const validateForm = useCallback(() => {
-    if (!formData.name.trim()) return 'Name is required';
-    if (!formData.email.trim()) return 'Email is required';
-    if (!formData.message.trim()) return 'Message is required';
-    if (!formData.project_type) return 'Project type is required';
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) return 'Please enter a valid email';
-
-    if (formData.message.length < 10) return 'Message must be at least 10 characters';
-
-    return null;
-  }, [formData]);
+  const validateStep = useCallback(
+    (stepIndex: number): string | null => {
+      if (stepIndex === 0) {
+        if (!formData.project_type) return 'Please select a service type';
+      }
+      if (stepIndex === 1) {
+        if (!formData.name.trim()) return 'Name is required';
+        if (!formData.email.trim()) return 'Email is required';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) return 'Please enter a valid email';
+      }
+      if (stepIndex === 2) {
+        if (!formData.message.trim()) return 'Message is required';
+        if (formData.message.length < 10) return 'Message must be at least 10 characters';
+      }
+      return null;
+    },
+    [formData]
+  );
 
   const checkRateLimit = useCallback(() => {
     const now = Date.now();
@@ -90,11 +106,35 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     return null;
   }, []);
 
+  const handleNext = () => {
+    const err = validateStep(step);
+    if (err) {
+      setErrorMessage(err);
+      setSubmitStatus('error');
+      return;
+    }
+    setErrorMessage('');
+    setSubmitStatus('idle');
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+
+  const handleBack = () => {
+    setErrorMessage('');
+    setSubmitStatus('idle');
+    setStep((s) => Math.max(s - 1, 0));
+  };
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
+      const validationError = validateStep(2);
+      if (validationError) {
+        setErrorMessage(validationError);
+        setSubmitStatus('error');
+        onError?.(validationError);
+        return;
+      }
 
-      // Rate limiting check
       const rateLimitError = checkRateLimit();
       if (rateLimitError) {
         setErrorMessage(rateLimitError);
@@ -103,116 +143,54 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         return;
       }
 
-      // Form validation
-      const validationError = validateForm();
-      if (validationError) {
-        setErrorMessage(validationError);
-        setSubmitStatus('error');
-        onError?.(validationError);
-        return;
-      }
-
       setIsSubmitting(true);
       setSubmitStatus('idle');
 
       try {
-        // Check if reCAPTCHA is available
-        if (typeof window === 'undefined') {
-          throw new Error('reCAPTCHA can only run in the browser');
+        if (typeof window === 'undefined' || !window.grecaptcha) {
+          let attempts = 0;
+          while (!window.grecaptcha && attempts < 20) {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            attempts++;
+          }
         }
-
-        // Debug info
-        console.log('reCAPTCHA check:', {
-          grecaptcha: !!window.grecaptcha,
-          ready: !!window.grecaptcha?.ready,
-          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.substring(0, 10) + '...',
-        });
-
-        // Wait for reCAPTCHA to be available
-        let attempts = 0;
-        const maxAttempts = 20; // Increased from 10
-
-        while (!window.grecaptcha && attempts < maxAttempts) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          attempts++;
-        }
-
         if (!window.grecaptcha) {
-          throw new Error(
-            'reCAPTCHA script failed to load. Please check your internet connection and try again.'
-          );
+          throw new Error('reCAPTCHA script failed to load. Please try again.');
         }
 
-        // Execute reCAPTCHA with better error handling
         const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-        if (!siteKey) {
-          throw new Error('reCAPTCHA site key is not configured');
-        }
+        if (!siteKey) throw new Error('reCAPTCHA site key is not configured');
 
         const token = await new Promise<string>((resolve, reject) => {
-          try {
-            window.grecaptcha.ready(() => {
-              try {
-                window.grecaptcha
-                  .execute(siteKey, { action: 'contact_form' })
-                  .then(resolve)
-                  .catch((error) => {
-                    console.error('reCAPTCHA execute error:', error);
-                    reject(
-                      new Error(`reCAPTCHA execution failed: ${error.message || 'Unknown error'}`)
-                    );
-                  });
-              } catch (error) {
-                console.error('reCAPTCHA ready callback error:', error);
-                reject(
-                  new Error(
-                    `reCAPTCHA ready callback failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-                  )
-                );
-              }
-            });
-          } catch (error) {
-            console.error('reCAPTCHA ready error:', error);
-            reject(
-              new Error(
-                `reCAPTCHA ready failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-              )
-            );
-          }
+          window.grecaptcha.ready(() => {
+            window.grecaptcha
+              .execute(siteKey, { action: 'contact_form' })
+              .then(resolve)
+              .catch(reject);
+          });
         });
 
-        if (!token) {
-          throw new Error('reCAPTCHA verification failed. Please try again.');
-        }
-
-        console.log('reCAPTCHA token obtained successfully');
-
-        // EmailJS send
         const emailjs = await import('@emailjs/browser');
-
-        const templateParams = {
-          name: formData.name,
-          email: formData.email,
-          project_type: formData.project_type,
-          message: formData.message,
-          time: new Date().toLocaleString(),
-          recaptcha_token: token, // Include in email for verification if needed
-        };
-
         await emailjs.send(
           process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
           process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-          templateParams,
+          {
+            name: formData.name,
+            email: formData.email,
+            project_type: formData.project_type,
+            message: `[Urgency: ${formData.urgency}]\n\n${formData.message}`,
+            time: new Date().toLocaleString(),
+            recaptcha_token: token,
+          },
           process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
         );
 
-        // Success
         setSubmitStatus('success');
         lastSubmissionRef.current = Date.now();
-        setFormData({ name: '', email: '', message: '', project_type: '' });
+        setFormData({ name: '', email: '', message: '', project_type: '', urgency: 'normal' });
+        setStep(0);
         onSuccess?.();
       } catch (error) {
-        console.error('Form submission error:', error);
         const errorMsg = mapSubmissionError(error);
         setErrorMessage(errorMsg);
         setSubmitStatus('error');
@@ -221,151 +199,206 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
         setIsSubmitting(false);
       }
     },
-    [formData, onSuccess, onError, validateForm, checkRateLimit]
+    [formData, onSuccess, onError, validateStep, checkRateLimit]
   );
+
+  const inputClass =
+    'w-full px-3 py-2.5 border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground text-sm';
 
   return (
     <motion.div variants={itemFadeIn}>
-      <Card className="overflow-hidden border-0 shadow-lg shadow-orange-100/30 dark:shadow-orange-900/20 hover:shadow-orange-200/40 dark:hover:shadow-orange-800/30 transition-all duration-300 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm h-full">
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col items-center gap-3 sm:gap-4 mb-6 text-center">
-            <div className="rounded-full gradient-bg p-3 sm:p-4">
-              <IconSelector name="Mail" className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-            </div>
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
-              Send Secure Message
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-              Tell me about your project needs
+      <div className="flex flex-col items-center gap-3 mb-8 text-center">
+        <div className="rounded-full gradient-bg p-3">
+          <IconSelector name="Mail" className="h-5 w-5 text-primary-foreground" />
+        </div>
+        <h3 className="font-display text-xl font-bold">Send a Message</h3>
+      </div>
+
+      <div className="mb-8" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={3}>
+        <div className="flex justify-between mb-2">
+          {STEPS.map((label, i) => (
+            <span
+              key={label}
+              className={`text-xs font-medium ${i <= step ? 'text-primary' : 'text-muted-foreground'}`}
+            >
+              {i + 1}. {label}
+            </span>
+          ))}
+        </div>
+        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-primary to-cyan-accent transition-all duration-300"
+            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div aria-live="polite" className="sr-only">
+          Step {step + 1} of {STEPS.length}: {STEPS[step]}
+        </div>
+
+        <AnimatePresence mode="wait">
+          {step === 0 && (
+            <motion.div
+              key="step0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <p className="text-sm text-muted-foreground mb-4">What can I help you with?</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {projectTypes.map((type) => (
+                  <label
+                    key={type.value}
+                    className={`flex items-center gap-3 p-4 min-h-11 rounded-lg border cursor-pointer transition-colors ${
+                      formData.project_type === type.value
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="project_type"
+                      value={type.value}
+                      checked={formData.project_type === type.value}
+                      onChange={handleInputChange}
+                      className="text-primary"
+                    />
+                    <span className="text-sm font-medium">{type.label}</span>
+                  </label>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                  placeholder="your.email@example.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="urgency" className="block text-sm font-medium mb-1">
+                  Urgency
+                </label>
+                <select
+                  id="urgency"
+                  name="urgency"
+                  value={formData.urgency}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                >
+                  <option value="normal">Normal — within a few days</option>
+                  <option value="soon">Soon — within 24 hours</option>
+                  <option value="emergency">Emergency — electrical urgent</option>
+                </select>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium mb-1">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={5}
+                  className={`${inputClass} resize-vertical`}
+                  placeholder="Tell me about your project..."
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {submitStatus === 'success' && (
+          <div className="mt-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+            <p className="text-sm text-green-600 dark:text-green-400">
+              Message sent successfully! I&apos;ll get back to you soon.
             </p>
           </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Field */}
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-              >
-                Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm"
-                placeholder="Your name"
-              />
-            </div>
+        {submitStatus === 'error' && errorMessage && (
+          <div className="mt-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
+            <p className="text-sm text-destructive">{errorMessage}</p>
+          </div>
+        )}
 
-            {/* Email Field */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-              >
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm"
-                placeholder="your.email@example.com"
-              />
-            </div>
-
-            {/* Project Type Field */}
-            <div>
-              <label
-                htmlFor="project_type"
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-              >
-                Project Type *
-              </label>
-              <select
-                id="project_type"
-                name="project_type"
-                value={formData.project_type}
-                onChange={handleInputChange}
-                required
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm"
-              >
-                <option value="">Select project type</option>
-                <option value="website">Website Development</option>
-                <option value="custom_app">Custom Application</option>
-                <option value="electrical">Electrical Services</option>
-                <option value="embedded">Embedded Systems/IoT</option>
-                <option value="marketing">Marketing & SEO</option>
-                <option value="it_setup">IT & Business Setup</option>
-                <option value="security">Cybersecurity</option>
-                <option value="design">Design & 3D Modeling</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            {/* Message Field */}
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-              >
-                Message *
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-                rows={4}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm resize-vertical"
-                placeholder="Tell me about your project..."
-              />
-            </div>
-
-            {/* Status Messages */}
-            {submitStatus === 'success' && (
-              <div className="p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-md">
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  {`✅ Message sent successfully! I'll get back to you soon.`}
-                </p>
-              </div>
-            )}
-
-            {submitStatus === 'error' && errorMessage && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-md">
-                <p className="text-sm text-red-700 dark:text-red-300">❌ {errorMessage}</p>
-              </div>
-            )}
-
-            {/* Submit Button */}
+        <div className="flex flex-col-reverse sm:flex-row gap-3 mt-8">
+          {step > 0 && (
+            <Button type="button" variant="outline" onClick={handleBack} className="chrome-border min-h-11 w-full sm:w-auto">
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back
+            </Button>
+          )}
+          {step < STEPS.length - 1 ? (
+            <Button type="button" onClick={handleNext} className="flex-1 gradient-bg text-primary-foreground min-h-11">
+              Next
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          ) : (
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full gradient-bg hover:bg-gradient-to-r hover:from-orange-700 hover:to-amber-800 transition-all duration-300 text-sm sm:text-base"
+              className="flex-1 gradient-bg text-primary-foreground min-h-11"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </Button>
+          )}
+        </div>
 
-            {/* reCAPTCHA Notice */}
-            <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
-              This form is protected by reCAPTCHA and secured against spam.
-            </p>
-          </form>
-        </CardContent>
-      </Card>
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          Protected by reCAPTCHA. Your information is kept confidential.
+        </p>
+      </form>
     </motion.div>
   );
 }
 
-// TypeScript declaration for reCAPTCHA
 declare global {
   interface Window {
     grecaptcha: {

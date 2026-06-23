@@ -33,7 +33,9 @@ const config = {
     },
     extend: {
       fontFamily: {
-        heading: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-syne)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-syne)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -41,6 +43,18 @@ const config = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        surface: {
+          0: 'hsl(var(--surface-0))',
+          1: 'hsl(var(--surface-1))',
+          2: 'hsl(var(--surface-2))',
+          3: 'hsl(var(--surface-3))',
+        },
+        cyan: {
+          accent: 'hsl(var(--accent-cyan))',
+        },
+        chrome: {
+          DEFAULT: 'hsl(var(--accent-chrome))',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
@@ -75,6 +89,18 @@ const config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      backgroundImage: {
+        'retro-grid':
+          'linear-gradient(hsl(var(--accent-cyan) / 0.06) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent-cyan) / 0.06) 1px, transparent 1px)',
+        'hero-glow':
+          'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--primary) / 0.25), transparent), radial-gradient(ellipse 60% 40% at 100% 0%, hsl(var(--accent-cyan) / 0.15), transparent)',
+      },
+      boxShadow: {
+        glow: '0 0 40px hsl(var(--glow-primary) / 0.25)',
+        'glow-cyan': '0 0 40px hsl(var(--glow-cyan) / 0.2)',
+        neumorphic:
+          '8px 8px 16px hsl(var(--foreground) / 0.08), -8px -8px 16px hsl(var(--background) / 0.9)',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -104,6 +130,14 @@ const config = {
           from: { transform: 'translateY(100%)' },
           to: { transform: 'translateY(0)' },
         },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -113,6 +147,8 @@ const config = {
         'fade-in': 'fade-in 0.3s ease-out',
         'fade-out': 'fade-out 0.3s ease-out',
         'slide-in-from-bottom': 'slide-in-from-bottom 0.3s ease-out',
+        marquee: 'marquee 40s linear infinite',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
       },
     },
   },

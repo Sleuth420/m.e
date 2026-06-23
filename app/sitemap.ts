@@ -15,6 +15,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/about`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/projects`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/services`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
@@ -47,14 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let priority = 0.7;
     if (
       slug.includes('electrician-melbourne') ||
-      slug.includes('wordpress-developer-melbourne') ||
-      slug.includes('emergency-electrician-melbourne')
+      slug.includes('wordpress-developer-melbourne')
     ) {
       priority = 0.9;
     } else if (
-      slug.includes('app-developer') ||
-      slug.includes('web-developer') ||
-      slug.includes('24-hour-electrician')
+      slug.includes('app-development') ||
+      slug.includes('web-developer')
     ) {
       priority = 0.8;
     }

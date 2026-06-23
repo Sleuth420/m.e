@@ -1,16 +1,5 @@
 import type { BlogPost } from './posts-data';
 
-/**
- * Layer 2: Content Processor
- * Responsibility: Parse HTML, extract metadata, sanitize content, transform data
- * 
- * This layer handles all the "dirty work":
- * - Extracts metadata from HTML comments
- * - Sanitizes HTML to prevent XSS attacks
- * - Generates slugs, excerpts, and formatted dates
- * - Transforms raw content into structured BlogPost objects
- */
-
 interface RawMetadata {
   title?: string;
   date?: string;

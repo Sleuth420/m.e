@@ -8,6 +8,46 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'oakcodeandtechsolutions.com' }],
+        destination: 'https://www.oakcodeandtechsolutions.com/:path*',
+        permanent: true,
+      },
+      {
+        source: '/services/emergency-electrician-melbourne',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/24-hour-electrician-melbourne',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/website-development-melbourne',
+        destination: '/services/web-developer-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/custom-web-development-melbourne',
+        destination: '/services/web-developer-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/app-developer-melbourne',
+        destination: '/services/app-development-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/software-developer-melbourne',
+        destination: '/services/app-development-melbourne',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
