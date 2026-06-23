@@ -18,7 +18,7 @@ const timeline = [
     year: 'Trade Foundation',
     title: 'A-Grade Licensed Electrician',
     description:
-      'Built a career in electrical contracting — residential, commercial, and emergency work across Melbourne.',
+      'Built a career in electrical contracting — residential, commercial, industrial, and emergency work across Melbourne.',
   },
   {
     year: 'Business Experience',
@@ -45,7 +45,7 @@ const cards: {
     title: 'Dual Trade Professional',
     subtitle: 'A-Grade Electrician & Full-Stack Developer',
     description:
-      'A-Grade licensed electrician and full-stack developer providing professional electrical services and modern web development.',
+      'A-Grade licensed electrician and full-stack developer — residential, commercial, and industrial electrical work plus modern web development.',
   },
   {
     icon: 'Building',
@@ -93,8 +93,9 @@ export default function AboutPage() {
           </h2>
           <p className="text-lg text-muted-foreground text-body">
             <span className="font-semibold text-primary">OakCodeAndTechSolutions</span> brings
-            together electrical contracting, web development, marketing, and business advisory —
-            providing comprehensive solutions with a practical, real-world approach to every project.
+            together residential, commercial, and industrial electrical contracting with web
+            development, marketing, and business advisory — practical solutions for homes, sites,
+            and businesses.
           </p>
         </div>
       </section>

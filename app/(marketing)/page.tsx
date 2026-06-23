@@ -11,7 +11,7 @@ import { BASE_URL } from '@/lib/site';
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Licensed Electrician & Full-Stack Developer Melbourne | OakCodeAndTechSolutions',
   description:
-    'A-Grade licensed electrician and full-stack developer in Melbourne. Electrical work, WordPress sites, and custom web apps. Quotes via the contact form.',
+    'A-Grade licensed electrician and full-stack developer in Melbourne. Residential, commercial, and industrial electrical work, plus WordPress sites and custom web apps. Quotes via the contact form.',
   type: 'website',
   canonical: BASE_URL,
 });

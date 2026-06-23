@@ -5,29 +5,33 @@ export const servicePagesContent = {
     slug: 'electrician-melbourne',
     title: 'Licensed Electrician Melbourne | A-Grade Electrical Services',
     description:
-      'A-Grade licensed electrician in Melbourne for residential and commercial work. Switchboards, fit-outs, smart home wiring, and urgent jobs by appointment via the contact form.',
+      'A-Grade licensed electrician in Melbourne for residential, commercial, and industrial work. Switchboards, fit-outs, maintenance, three-phase, and urgent jobs by appointment via the contact form.',
     keywords: ['electrician melbourne', 'licensed electrician melbourne', 'a-grade electrician'],
     category: 'electrical',
     content: {
       heading: 'Licensed Electrician in Melbourne',
       intro:
-        'I hold an A-Grade licence in Victoria and take on residential, commercial, and light industrial jobs across Melbourne. You get one person who turns up, explains the work in plain English, and leaves the site tidy.',
+        'I hold an A-Grade licence in Victoria and take on residential, commercial, and industrial jobs across Melbourne. You get one person who turns up, explains the work in plain English, and leaves the site tidy.',
       paragraphs: [
-        'Most of my electrical work is switchboard upgrades, power points, lighting, oven and appliance circuits, and compliance fixes before a sale or rental inspection. I also wire smart switches, CCTV power, and data points where the job needs both trade and tech sense.',
+        'Work ranges from home switchboard upgrades and compliance fixes through to shop fit-outs, warehouse power, three-phase checks, and ongoing maintenance for commercial and industrial sites. I also wire smart switches, CCTV power, and data points where the job needs both trade and tech sense.',
         'Urgent jobs are handled when my schedule allows. Submit the contact form and mark the job as urgent. I will reply with the earliest slot I can offer. This is not a 24-hour call centre, but I do prioritise genuine emergencies where it is safe and legal to attend.',
       ],
       commonJobs: [
         'Switchboard upgrades and safety switch installation',
-        'Power loss fault finding in homes and small offices',
+        'Commercial and industrial fit-out power and lighting',
+        'Three-phase supply checks and small industrial installs',
+        'Warehouse and workshop power, lighting, and maintenance',
+        'Power loss fault finding in homes, offices, and sites',
         'Oven, cooktop, and air-con circuit installs',
         'LED lighting retrofits and dimmer circuits',
         'Pre-purchase and rental compliance checks',
-        'Smart home wiring for switches, sensors, and cameras',
+        'Smart home and low-voltage wiring for switches, sensors, and cameras',
       ],
       features: [
-        'Residential and commercial electrical work',
+        'Residential, commercial, and industrial electrical work',
         'Switchboard upgrades and RCD protection',
-        'Fault finding and repairs',
+        'Fit-outs, maintenance, and fault finding',
+        'Three-phase and light industrial installs',
         'Lighting and power point installs',
         'Smart home and low-voltage integration',
         'Compliance and safety inspections',
@@ -42,7 +46,7 @@ export const servicePagesContent = {
         {
           question: 'Are you licensed to do all electrical work in Victoria?',
           answer:
-            'Yes. I hold an A-Grade electrician licence in Victoria, which covers the residential and commercial work listed on this site. I do not perform illegal DIY work or sign off other people\'s unlicensed installs.',
+            'Yes. I hold an A-Grade electrician licence in Victoria, which covers residential, commercial, and industrial work listed on this site. I do not perform illegal DIY work or sign off other people\'s unlicensed installs.',
         },
         {
           question: 'How do I book an urgent electrical job?',

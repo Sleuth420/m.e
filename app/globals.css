@@ -104,8 +104,12 @@
   h4,
   h5,
   h6 {
-    line-height: 1.2;
+    line-height: 1.35;
     @apply font-display;
+  }
+
+  .font-display {
+    line-height: 1.35;
   }
 
   p {
@@ -130,8 +134,11 @@
 @layer components {
   .gradient-text {
     @apply bg-gradient-to-r from-primary via-amber-500 to-cyan-400 bg-clip-text text-transparent;
-    line-height: 1.2;
     display: inline-block;
+    line-height: 1.45 !important;
+    padding-bottom: 0.2em !important;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .gradient-bg {
@@ -241,23 +248,26 @@
   }
 
   .text-heading {
-    line-height: 1.25;
+    line-height: 1.35;
   }
 
   .text-body {
-    line-height: 1.7;
+    line-height: 1.7 !important;
   }
 
   .display-xl {
     font-size: var(--text-display-xl);
+    line-height: 1.35;
   }
 
   .display-lg {
     font-size: var(--text-display-lg);
+    line-height: 1.35;
   }
 
   .display-md {
     font-size: var(--text-display-md);
+    line-height: 1.35;
   }
 
   .marquee-track {

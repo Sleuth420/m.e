@@ -43,8 +43,8 @@ export default function Footer() {
               <span className="font-display font-bold gradient-text">Ricky</span>
             </Link>
             <p className="text-sm text-muted-foreground text-body">
-              A-Grade licensed electrician and full-stack developer serving Melbourne. Professional
-              electrical services and web development solutions.
+              A-Grade licensed electrician and full-stack developer serving Melbourne. Residential,
+              commercial, and industrial electrical work plus web development.
             </p>
             <div className="flex items-center gap-3">
               <Button size="sm" className="gradient-bg text-primary-foreground text-xs min-h-10" asChild>

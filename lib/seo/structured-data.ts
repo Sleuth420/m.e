@@ -43,7 +43,7 @@ export const rootStructuredData = [
     name: 'OakCodeAndTechSolutions',
     url: BASE_URL,
     description:
-      'A-Grade licensed electrician and full-stack developer in Melbourne. Electrical work, WordPress sites, and custom web apps.',
+      'A-Grade licensed electrician and full-stack developer in Melbourne. Electrical work, WordPress sites, and custom web apps for residential, commercial, and industrial clients.',
     publisher: { '@id': orgId },
     inLanguage: 'en-AU',
   },
@@ -62,12 +62,12 @@ export const rootStructuredData = [
         'Professional electrical services and web development in Melbourne.',
     },
     description:
-      'A-Grade licensed electrician and full-stack developer in Melbourne. Residential and commercial electrical work, WordPress sites, and custom web applications.',
+      'A-Grade licensed electrician and full-stack developer in Melbourne. Residential, commercial, and industrial electrical work, WordPress sites, and custom web applications.',
     url: BASE_URL,
     address: melbourneAddress,
     knowsAbout: [
       'Licensed electrical work',
-      'Residential and commercial electrical installations',
+      'Residential, commercial, and industrial electrical installations',
       'WordPress development',
       'React and Next.js applications',
       'Vue.js and Django backends',
@@ -78,7 +78,7 @@ export const rootStructuredData = [
         '@type': 'Occupation',
         name: 'A-Grade Licensed Electrician',
         description:
-          'Residential, commercial, and light industrial electrical work in Melbourne. Urgent jobs by appointment via the contact form.',
+          'Residential, commercial, and industrial electrical work in Melbourne. Urgent jobs by appointment via the contact form.',
       },
       {
         '@type': 'Occupation',
@@ -102,7 +102,7 @@ export const rootStructuredData = [
     '@id': `${BASE_URL}/#electrician`,
     name: 'OakCodeAndTechSolutions — Licensed Electrician Melbourne',
     description:
-      'Licensed electrician in Melbourne for residential and commercial work. Quotes and urgent jobs by appointment via the contact form.',
+      'Licensed electrician in Melbourne for residential, commercial, and industrial work. Quotes and urgent jobs by appointment via the contact form.',
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.svg`,
     address: melbourneAddress,
@@ -111,9 +111,11 @@ export const rootStructuredData = [
     serviceType: [
       'Residential electrical',
       'Commercial electrical',
+      'Industrial electrical',
       'Switchboard upgrades',
+      'Three-phase and fit-out work',
       'Fault finding and repairs',
-      'Smart home wiring',
+      'Maintenance contracts',
       'Safety inspections',
     ],
     hasOfferCatalog: {
@@ -153,7 +155,19 @@ export const rootStructuredData = [
             itemOffered: {
               '@type': 'Service',
               name: 'Commercial electrical',
-              description: 'Fit-outs, maintenance, and small commercial installations.',
+              description: 'Fit-outs, maintenance, and commercial installations.',
+            },
+          },
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          item: {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Industrial electrical',
+              description: 'Warehouse power, three-phase, workshop lighting, and site maintenance.',
             },
           },
         },
@@ -264,7 +278,7 @@ export const rootStructuredData = [
         acceptedAnswer: {
           '@type': 'Answer',
           text:
-            'Yes. I hold an A-Grade electrician licence in Victoria for residential, commercial, and light industrial work.',
+            'Yes. I hold an A-Grade electrician licence in Victoria for residential, commercial, and industrial work.',
         },
       },
       {

@@ -4,7 +4,7 @@ const items = [
   {
     icon: Award,
     title: 'A-Grade Licensed',
-    description: 'Residential, commercial, and urgent electrical work by appointment.',
+    description: 'Residential, commercial, and industrial electrical work by appointment.',
   },
   {
     icon: MapPin,

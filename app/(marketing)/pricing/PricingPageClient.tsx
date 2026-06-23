@@ -157,7 +157,7 @@ export default function PricingPageClient() {
           <SectionHeading
             badge="Electrical Services"
             title="Licensed Electrical Work"
-            description="Professional electrical services with transparent pricing. Rates vary based on job complexity and requirements."
+            description="Residential, commercial, and industrial electrical work with transparent pricing. Rates vary based on job complexity and site requirements."
           />
 
           <div className="grid md:grid-cols-2 gap-8 mt-12 px-4 sm:px-0">

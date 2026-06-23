@@ -142,7 +142,7 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         <div className="container max-w-6xl">
           <h2 className="font-display text-3xl font-bold mb-4 text-center">More services</h2>
           <p className="text-muted-foreground mb-10 text-center">
-            Electrical, web development, apps, and related work across Melbourne.
+            Residential, commercial, and industrial electrical work, plus web development, apps, and related services across Melbourne.
           </p>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
             {relatedServices.map(({ slug: relatedSlug, data: related }) => (

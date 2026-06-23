@@ -20,7 +20,7 @@ const panels = [
     icon: Wrench,
     title: 'Services',
     description:
-      'Electrical work, WordPress, apps, embedded projects, SEO, and CAD. Each links to a dedicated service page.',
+      'Residential, commercial, and industrial electrical work, plus WordPress, apps, embedded projects, SEO, and CAD.',
     accent: 'from-cyan-accent to-primary',
   },
 ];

@@ -155,7 +155,7 @@ export const skills: Skill[] = [
   {
     title: 'Electrical',
     icon: 'Wrench',
-    description: 'A-Grade licensed electrician in Victoria. Residential, commercial, and light industrial work.',
+    description: 'A-Grade licensed electrician in Victoria. Residential, commercial, and industrial work.',
   },
 ];
 
@@ -188,7 +188,7 @@ export const services: Service[] = [
   {
     title: 'Electrical Services',
     icon: 'Zap',
-    description: 'Licensed electrical work, installations, and smart home integration',
+    description: 'Licensed work for homes, commercial sites, and industrial premises — installs, maintenance, and fault finding',
     category: 'electrical',
   },
   {

@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { HeroScene } from '@/components/effects/hero-scene';
 import { textReveal } from '@/lib/animations';
 
-const headline = 'Melbourne electrician & web developer';
+const headline = 'Melbourne Qualified Electrician & Web Developer';
 
 export default function ImmersiveHero() {
   return (
@@ -48,8 +48,9 @@ export default function ImmersiveHero() {
           transition={{ delay: 0.6, duration: 0.6 }}
           className="max-w-2xl text-lg text-muted-foreground text-body"
         >
-          A-Grade licensed in Victoria. I wire homes and build WordPress and Next.js sites, often
-          for the same clients. Quotes through the{' '}
+          A-Grade licensed in Victoria. Residential, commercial, and industrial electrical work — switchboards,
+          fit-outs, maintenance, and fault finding — plus WordPress, custom websites and IoT solutions, often for
+          the same clients. Quotes through the{' '}
           <Link href="/contact" className="text-primary underline underline-offset-2">
             contact form
           </Link>
@@ -72,7 +73,7 @@ export default function ImmersiveHero() {
           <Button size="lg" variant="outline" className="chrome-border hover:border-primary/50 w-full sm:w-auto min-h-11" asChild>
             <Link href="/services/web-developer-melbourne">
               <Code className="mr-2 h-4 w-4" />
-              Web Development
+              Web Development & IoT Solutions
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

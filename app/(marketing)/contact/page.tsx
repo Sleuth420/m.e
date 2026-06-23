@@ -9,7 +9,7 @@ import { BASE_URL } from '@/lib/site';
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Contact | Licensed Electrician & Web Developer Melbourne',
   description:
-    'Contact OakCodeAndTechSolutions for electrical services or web development in Melbourne. Free quotes for electrical work and web projects.',
+    'Contact OakCodeAndTechSolutions for residential, commercial, or industrial electrical work, or web development in Melbourne. Free quotes via the contact form.',
   canonical: `${BASE_URL}/contact`,
 });
 

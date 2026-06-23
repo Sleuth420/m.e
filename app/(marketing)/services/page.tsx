@@ -9,7 +9,7 @@ import { BASE_URL } from '@/lib/site';
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Services | Electrical & Web Development Melbourne | OakCodeAndTechSolutions',
   description:
-    'Professional electrical services and web development in Melbourne. Licensed electrician, WordPress development, custom apps, IoT, SEO, cybersecurity, and CAD design. View all services.',
+    'Professional residential, commercial, and industrial electrical services and web development in Melbourne. Licensed electrician, WordPress development, custom apps, IoT, SEO, cybersecurity, and CAD design. View all services.',
   canonical: `${BASE_URL}/services`,
 });
 
@@ -71,7 +71,7 @@ export default function ServicesIndexPage() {
       />
       <PageHero
         title="All Services"
-        description="Electrical, web development, and technology services across Melbourne. Choose a service to learn more."
+        description="Residential, commercial, and industrial electrical work, plus web development and technology services across Melbourne. Choose a service to learn more."
       />
       <section className="py-16 md:py-24">
         <div className="container">

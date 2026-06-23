@@ -172,14 +172,15 @@ export const electricalRates: ElectricalRate[] = [
 ];
 
 export const electricalServicesList = [
-  'Smart home integration',
-  'Commercial installations',
-  'Industrial systems',
+  'Commercial installations and fit-outs',
+  'Industrial systems and three-phase work',
   'Electrical maintenance',
-  'Safety inspections',
   'Fault finding and repairs',
+  'Switchboard upgrades',
   'New construction wiring',
   'Renovation projects',
+  'Safety inspections',
+  'Smart home integration',
 ];
 
 export const otherServiceOfferings: OtherServiceOffering[] = [
