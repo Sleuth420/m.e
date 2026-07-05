@@ -48,9 +48,7 @@ export default function ImmersiveHero() {
           transition={{ delay: 0.6, duration: 0.6 }}
           className="max-w-2xl text-lg text-muted-foreground text-body"
         >
-          A-Grade licensed in Victoria. Residential, commercial, and industrial electrical work — switchboards,
-          fit-outs, maintenance, and fault finding — plus WordPress, custom websites and IoT solutions, often for
-          the same clients. Quotes through the{' '}
+          I am a fully licensed A-Grade electrician based in Victoria, handling everything from home switchboard upgrades to commercial fit-outs and fault finding. But I don&apos;t just work with wires. I also build custom websites, WordPress platforms, and IoT solutions. Whether you need your office rewired or a new web app built from scratch, I can help. Get a quote through the{' '}
           <Link href="/contact" className="text-primary underline underline-offset-2">
             contact form
           </Link>

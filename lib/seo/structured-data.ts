@@ -100,7 +100,7 @@ export const rootStructuredData = [
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${BASE_URL}/#electrician`,
-    name: 'OakCodeAndTechSolutions — Licensed Electrician Melbourne',
+    name: 'OakCodeAndTechSolutions - Licensed Electrician Melbourne',
     description:
       'Licensed electrician in Melbourne for residential, commercial, and industrial work. Quotes and urgent jobs by appointment via the contact form.',
     url: BASE_URL,
@@ -182,7 +182,7 @@ export const rootStructuredData = [
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${BASE_URL}/#webdev`,
-    name: 'OakCodeAndTechSolutions — Web Developer Melbourne',
+    name: 'OakCodeAndTechSolutions - Web Developer Melbourne',
     description:
       'WordPress development, custom web applications, and digital marketing in Melbourne.',
     url: BASE_URL,
@@ -255,7 +255,7 @@ export const rootStructuredData = [
     name: 'OakCodeAndTechSolutions',
     legalName: 'OakCodeAndTechSolutions',
     description:
-      'Melbourne-based electrical services and web development — licensed trade work and custom software.',
+      'Melbourne-based electrical services and web development - licensed trade work and custom software.',
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.svg`,
     address: melbourneAddress,
@@ -305,7 +305,7 @@ export const rootStructuredData = [
         acceptedAnswer: {
           '@type': 'Answer',
           text:
-            'Yes. I am an A-Grade licensed electrician and a full-stack developer — useful when you need a trade website or internal tool alongside electrical work.',
+            'Yes. I am an A-Grade licensed electrician and a full-stack developer - useful when you need a trade website or internal tool alongside electrical work.',
         },
       },
       {

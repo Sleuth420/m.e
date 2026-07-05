@@ -12,7 +12,7 @@ const panels = [
     icon: User,
     title: 'My Story',
     description:
-      'A-Grade electrician turned developer. How I ended up building sites like perrielectrics.com for other trades.',
+      'I started out as an A-Grade electrician and eventually found my way into coding. Read about my journey and how I began building websites for other trades businesses.',
     accent: 'from-primary to-amber-500',
   },
   {
@@ -20,7 +20,7 @@ const panels = [
     icon: Wrench,
     title: 'Services',
     description:
-      'Residential, commercial, and industrial electrical work, plus WordPress, apps, embedded projects, SEO, and CAD.',
+      'From residential electrical upgrades and commercial fit-outs to custom WordPress sites, mobile apps, and SEO. Take a look at everything I can do for your business.',
     accent: 'from-cyan-accent to-primary',
   },
 ];

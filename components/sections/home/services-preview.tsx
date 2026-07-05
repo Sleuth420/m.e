@@ -27,7 +27,7 @@ export default function ServicesPreview() {
           <span className="text-xs font-medium text-primary uppercase tracking-wider">What I Do</span>
           <h2 className="display-md font-display font-bold mt-2 gradient-text">Services</h2>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-            Residential, commercial, and industrial electrical work plus web development in Melbourne. No agency layer.
+            Professional electrical services and custom web development, all handled by one person right here in Melbourne.
           </p>
         </div>
 

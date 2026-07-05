@@ -24,7 +24,7 @@ export const projects: Project[] = [
   {
     title: 'Electrician Management App',
     description:
-      'Job tracking and on-site tools for electricians: quotes, tasks, and calculations in one Vue/Nuxt app backed by Django.',
+      'A complete job tracking and management tool for electricians. Handles quotes, tasks, and site calculations in a custom Vue/Nuxt frontend with a Django backend.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
@@ -40,7 +40,7 @@ export const projects: Project[] = [
   {
     title: 'Reaching Out In The Inner West',
     description:
-      'WordPress site for a Melbourne non-profit: donations, events, and volunteer info for inner-west outreach programs.',
+      'A custom WordPress site built for a local Melbourne non-profit. It features easy donation handling, event schedules, and volunteer information.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
@@ -55,7 +55,7 @@ export const projects: Project[] = [
   {
     title: 'GlazeyJewellery.com',
     description:
-      'Shopify store for a jewellery brand: product pages, checkout, and mobile-friendly layout.',
+      'A sleek, mobile-friendly Shopify store I built for a jewellery brand to showcase products and handle secure checkouts.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
     technologies: ['Shopify'],
@@ -64,7 +64,7 @@ export const projects: Project[] = [
   {
     title: 'Electrovision Australia',
     description:
-      'WordPress site for an electrical contractor: services, gallery, and quote requests for residential and commercial clients.',
+      'A professional WordPress site for an electrical contractor, designed to showcase their services and make it easy for clients to request quotes.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://electrovisionaustralia.com.au' }],
     technologies: ['WordPress'],
@@ -73,7 +73,7 @@ export const projects: Project[] = [
   {
     title: 'Perri Electrics',
     description:
-      'WordPress site for a Melbourne electrician: The Good Guys authorised installer, safety audits, rental checks, and local service areas.',
+      'A local Melbourne electrician’s website highlighting their safety audits, service areas, and status as an authorised installer.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://perrielectrics.com' }],
     technologies: ['WordPress', 'Elementor'],
@@ -82,7 +82,7 @@ export const projects: Project[] = [
   {
     title: 'Wedding & RSVP Website',
     description:
-      'Beautiful wedding website featuring RSVP functionality and tracking, custom login system, and a beautiful design for a memorable celebration.',
+      'A custom wedding website with a private login system to help guests RSVP, track attendance, and view event details.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Private Project', url: '#' }],
     technologies: ['WordPress'],
@@ -91,7 +91,7 @@ export const projects: Project[] = [
   {
     title: 'Max Trans Portable Homes',
     description:
-      'WordPress site for portable homes: product specs, modular housing gallery, and enquiry forms.',
+      'A product-focused WordPress site for a portable homes business, featuring detailed specs, a gallery, and lead-generation forms.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au', nofollow: true }],
     technologies: ['WordPress', 'Elementor'],
@@ -110,7 +110,8 @@ export const projects: Project[] = [
   },
   {
     title: 'Perfect Circle',
-    description: 'Interactive circle-drawing game featuring precision challenges, multiple difficulty levels, and real-time scoring system for competitive gameplay.',
+    description:
+      'A fun, interactive circle-drawing game with precision challenges and a real-time scoring system built from scratch.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
@@ -121,7 +122,7 @@ export const projects: Project[] = [
   {
     title: 'Grow-y',
     description:
-      'Innovative plant tracking web application with real-time growth monitoring, care reminders, and species-specific growing timelines for gardening enthusiasts.',
+      'A web app for gardening enthusiasts to track plant growth in real-time, get care reminders, and monitor species-specific timelines.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
     technologies: ['React', 'Tailwind CSS', 'JavaScript', 'Vercel'],
@@ -155,7 +156,7 @@ export const skills: Skill[] = [
   {
     title: 'Electrical',
     icon: 'Wrench',
-    description: 'A-Grade licensed electrician in Victoria. Residential, commercial, and industrial work.',
+    description: 'Fully qualified A-Grade electrician handling residential, commercial, and industrial projects.',
   },
 ];
 
@@ -188,7 +189,7 @@ export const services: Service[] = [
   {
     title: 'Electrical Services',
     icon: 'Zap',
-    description: 'Licensed work for homes, commercial sites, and industrial premises — installs, maintenance, and fault finding',
+    description: 'Licensed work for homes, commercial sites, and industrial premises. Everything from new installs to maintenance and fault finding.',
     category: 'electrical',
   },
   {
@@ -211,7 +212,7 @@ export interface ContactInfo {
   github: string;
 }
 
-/** Internal recipient for EmailJS only — never render in UI or schema. */
+/** Internal recipient for EmailJS only - never render in UI or schema. */
 export const contactInfo: ContactInfo = {
   email: 'oakcodeandtechsolutions@gmail.com',
   location: 'Melbourne, Australia',

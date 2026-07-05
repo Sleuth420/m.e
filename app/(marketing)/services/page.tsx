@@ -71,7 +71,7 @@ export default function ServicesIndexPage() {
       />
       <PageHero
         title="All Services"
-        description="Residential, commercial, and industrial electrical work, plus web development and technology services across Melbourne. Choose a service to learn more."
+        description="From rewiring a house to building a custom web application, I offer a wide range of electrical and tech services across Melbourne. Take a look at what I can do for you below."
       />
       <section className="py-16 md:py-24">
         <div className="container">

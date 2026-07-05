@@ -51,7 +51,7 @@ export const operatedSites: OperatedSite[] = [
     portfolioDescription:
       'Granny flat guide with builder listings, cost notes, and community reviews across Australia.',
     publicationDescription:
-      'Independent research on granny flat costs, approval pathways, and state rules — not a builder.',
+      'Independent research on granny flat costs, approval pathways, and state rules - not a builder.',
   },
   {
     name: 'Modern Home Tech',

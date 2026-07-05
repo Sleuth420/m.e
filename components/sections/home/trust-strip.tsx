@@ -4,17 +4,17 @@ const items = [
   {
     icon: Award,
     title: 'A-Grade Licensed',
-    description: 'Residential, commercial, and industrial electrical work by appointment.',
+    description: 'Fully qualified and insured for all your residential, commercial, and industrial electrical needs.',
   },
   {
     icon: MapPin,
     title: 'Melbourne Wide',
-    description: 'Serving CBD, western suburbs, and surrounding areas across Victoria.',
+    description: 'Local to Melbourne and regularly servicing the CBD, western suburbs, and surrounding regions.',
   },
   {
     icon: Shield,
     title: 'Dual Trade Expert',
-    description: 'Licensed electrical work plus full-stack web development under one roof.',
+    description: 'I combine hands-on electrical expertise with modern web development skills to offer a truly unique service.',
   },
 ];
 

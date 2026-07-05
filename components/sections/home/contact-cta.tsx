@@ -12,7 +12,7 @@ export default function ContactCta() {
           Ready to start your project?
         </h2>
         <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto">
-          Whether you need an electrician, a developer, or both — get in touch for a free consultation.
+          Whether you are looking for an electrician, a developer, or someone who can do both, I would love to hear from you. Reach out today for a free consultation.
         </p>
         <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
           <Button size="lg" className="gradient-bg text-primary-foreground shadow-glow w-full sm:w-auto min-h-11" asChild>

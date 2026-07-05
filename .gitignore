@@ -19,7 +19,7 @@ yarn-error.log*
 # env files
 .env*
 
-# GSC MCP credentials (OAuth / service account — never commit)
+# GSC MCP credentials (OAuth / service account - never commit)
 /tools/client_secrets.json
 /tools/service_account_credentials.json
 /tools/*credentials*.json

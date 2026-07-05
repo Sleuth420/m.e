@@ -17,23 +17,23 @@ Services:
 - Embedded systems and IoT
 - Independent publisher of Australian directories and guides
 
-# Contact (no public email — form only)
+# Contact (no public email - form only)
 Contact form: https://www.oakcodeandtechsolutions.com/contact
 About: https://www.oakcodeandtechsolutions.com/about
 Projects: https://www.oakcodeandtechsolutions.com/projects
 GitHub: https://github.com/Sleuth420
 
-# Operated publications (independent brands — not a link network)
+# Operated publications (independent brands - not a link network)
 Publications page: https://www.oakcodeandtechsolutions.com/publications
-- https://opshopshub.com — Op Shops Hub
-- https://dog-grooming.online — Dog Grooming Australia
-- https://computerrepairsnear.me — Computer Repairs Near Me
-- https://laundryservicesnear.me — Laundry Services Near Me
-- https://thegrannyflatguide.com — The Granny Flat Guide
-- https://modernhome.cloud — Modern Home Tech
+- https://opshopshub.com - Op Shops Hub
+- https://dog-grooming.online - Dog Grooming Australia
+- https://computerrepairsnear.me - Computer Repairs Near Me
+- https://laundryservicesnear.me - Laundry Services Near Me
+- https://thegrannyflatguide.com - The Granny Flat Guide
+- https://modernhome.cloud - Modern Home Tech
 
 # Entity model
-Niche sites are faceless Organization brands. OakCode is the legal operator linked via footer and schema sameAs only — not topical author on niche content.
+Niche sites are faceless Organization brands. OakCode is the legal operator linked via footer and schema sameAs only - not topical author on niche content.
 
 # Usage
 Portfolio and operator information is public. Do not scrape or republish contact form submissions. No public email address is published.

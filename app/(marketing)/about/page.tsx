@@ -18,19 +18,19 @@ const timeline = [
     year: 'Trade Foundation',
     title: 'A-Grade Licensed Electrician',
     description:
-      'Built a career in electrical contracting — residential, commercial, industrial, and emergency work across Melbourne.',
+      'I have spent years building my career as an electrician handling homes, commercial fit-outs, and industrial sites across Melbourne.',
   },
   {
     year: 'Business Experience',
     title: 'Past Business Owner',
     description:
-      'Ran my own business, learning what companies actually need from the ground up.',
+      'Running my own company taught me exactly what small businesses need to succeed in the real world.',
   },
   {
     year: 'Today',
     title: 'Full-Stack Developer & Electrician',
     description:
-      'OakCodeAndTechSolutions combines electrical expertise with modern web development, IoT, and digital solutions.',
+      'Today, I combine my hands-on electrical background with modern web development to offer a truly unique service.',
   },
 ];
 
@@ -45,21 +45,21 @@ const cards: {
     title: 'Dual Trade Professional',
     subtitle: 'A-Grade Electrician & Full-Stack Developer',
     description:
-      'A-Grade licensed electrician and full-stack developer — residential, commercial, and industrial electrical work plus modern web development.',
+      'I am fully licensed to handle all your electrical requirements and equally qualified to build your next web application.',
   },
   {
     icon: 'Building',
     title: 'Business Minded',
     subtitle: 'Past Business Owner',
     description:
-      'Having run my own business, I understand what companies actually need. Now I help others build and grow their digital presence.',
+      'Running my own trade business gave me firsthand experience with the challenges companies face. Now I use those insights to help others grow online.',
   },
   {
     icon: 'Heart',
     title: 'Problem Solver',
     subtitle: 'Customer Focused',
     description:
-      'I believe in practical solutions that work in the real world. My goal is always satisfied customers and lasting relationships.',
+      'I prefer practical, no-nonsense solutions. I just want to do great work and build lasting relationships with my clients.',
   },
 ];
 
@@ -89,13 +89,12 @@ export default function AboutPage() {
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl text-center">
           <h2 className="display-md font-display font-bold gradient-text mb-8">
-            I bridge the gap between traditional trade industries and modern technology
+            Bringing traditional trades and modern technology
           </h2>
           <p className="text-lg text-muted-foreground text-body">
             <span className="font-semibold text-primary">OakCodeAndTechSolutions</span> brings
             together residential, commercial, and industrial electrical contracting with web
-            development, marketing, and business advisory — practical solutions for homes, sites,
-            and businesses.
+            development, marketing, and business advisory. I offer practical, straightforward solutions for homes, worksites, and growing businesses.
           </p>
         </div>
       </section>
@@ -166,8 +165,7 @@ export default function AboutPage() {
         <div className="container max-w-3xl text-center">
           <blockquote className="neumorphic rounded-2xl p-8 md:p-10">
             <p className="text-lg md:text-xl text-muted-foreground font-medium italic">
-              &ldquo;I don&apos;t just build solutions — I build bridges between what businesses
-              have and what they need to thrive in today&apos;s digital world.&rdquo;
+              &ldquo;I don&apos;t just write code or run cables. I want to help businesses get exactly what they need to thrive in a digital world without any of the usual hassle.&rdquo;
             </p>
           </blockquote>
         </div>

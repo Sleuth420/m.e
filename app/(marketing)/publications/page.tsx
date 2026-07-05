@@ -37,13 +37,12 @@ export default function PublicationsPage() {
       <PageHero
         badge="Operator portfolio"
         title="Publications"
-        description="Independent Australian directories and research sites — each with its own name, editorial standards, and audience."
+        description="Independent Australian directories and research sites, each with its own name, editorial standards, and audience."
       />
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
           <p className="text-muted-foreground mb-10">
-            These are reader-first resources, not a link network. Niche sites link here only via
-            standard legal footer disclosure.
+            These are genuine, reader-first resources. They aren't part of a link network - each site stands on its own and links back here only through standard footer disclosures.
           </p>
           <ul className="grid gap-6">
             {operatedPublications.map((pub) => (

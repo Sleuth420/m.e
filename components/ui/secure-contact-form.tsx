@@ -218,9 +218,9 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
                   onChange={handleInputChange}
                   className={inputClass}
                 >
-                  <option value="normal">Normal — within a few days</option>
-                  <option value="soon">Soon — within 24 hours</option>
-                  <option value="emergency">Emergency — electrical urgent</option>
+                  <option value="normal">Normal - within a few days</option>
+                  <option value="soon">Soon - within 24 hours</option>
+                  <option value="emergency">Emergency - electrical urgent</option>
                 </select>
               </div>
             </motion.div>

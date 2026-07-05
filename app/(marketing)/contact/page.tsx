@@ -32,7 +32,7 @@ export default function ContactPage() {
       <PageHero
         badge="Contact"
         title="Get in Touch"
-        description="Whether you need a developer, an electrician, or someone who understands both worlds — use the form below. We do not publish a public email address."
+        description="Whether you are looking for an electrician, a web developer, or someone who can handle both, just fill out the form below and I will get back to you. I do not publish a public email address to avoid spam."
       />
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
@@ -48,8 +48,7 @@ export default function ContactPage() {
           </div>
           <div className="neumorphic rounded-2xl p-6 md:p-10">
             <p className="text-sm text-muted-foreground mb-6">
-              Typical response within 24–48 hours. For electrical emergencies, note urgency in your
-              message.
+              I usually reply within 24 to 48 hours. If you have an electrical emergency, please make sure to mention that in your message.
             </p>
             <SecureContactForm />
           </div>
