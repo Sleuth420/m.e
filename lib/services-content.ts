@@ -65,47 +65,59 @@ export const servicePagesContent = {
   },
   'electrician-melbourne-cbd': {
     slug: 'electrician-melbourne-cbd',
-    title: 'Electrician Melbourne CBD | Offices, Apartments & Fit-Outs',
+    title: 'Electrician Melbourne CBD | A-Grade Residential & Commercial',
     description:
-      'Electrician for Melbourne CBD apartments, offices, and retail fit-outs. Switchboard work, lighting, and compliance jobs. Quote via contact form.',
-    keywords: ['electrician melbourne cbd', 'electricians melbourne cbd', 'cbd electrician'],
+      'A-Grade electrician in Melbourne CBD for apartments, offices, and retail fit-outs. Switchboards, lighting, residential circuits, and compliance. Quote via contact form.',
+    keywords: [
+      'electrician melbourne cbd',
+      'electricians melbourne cbd',
+      'electrician in melbourne cbd',
+      'residential electrician melbourne cbd',
+      'local electricians melbourne cbd',
+      'cbd electrician',
+    ],
     category: 'electrical',
     location: 'Melbourne CBD',
     content: {
-      heading: 'Electrician for Melbourne CBD',
+      heading: 'Electrician Melbourne CBD',
       intro:
-        'CBD work is different from suburban houses. Access windows, body corporate rules, and after-hours lift bookings all matter. I am used to working in high-rise apartments, small offices, and shop fit-outs around the grid.',
+        'Looking for an electrician in Melbourne CBD? I am an A-Grade licensed electrician for apartments, offices, and retail fit-outs across the city grid. Access windows, body corporate rules, and after-hours lift bookings are part of normal CBD work for me.',
       paragraphs: [
-        'Common CBD jobs for me: board upgrades in older apartment blocks, adding circuits for home offices, fixing nuisance tripping on kitchen appliances, and lighting changes for retail tenancies. Parking is usually the client\'s problem; I factor loading-zone time into the quote.',
-        'I quote from the contact form. Photos of the switchboard, the fault, and the meter location speed things up. For body corporate work I need the manager\'s approval in writing before I book a date.',
+        'Common residential and commercial CBD jobs: switchboard and RCD upgrades in older apartment blocks, extra circuits for home offices, fixing nuisance tripping on kitchen appliances, and lighting changes for retail tenancies. I also handle electrical contractors-style office power upgrades when a small business needs a licensed tradie without a big firm quote.',
+        'I quote from the contact form. Photos of the switchboard, the fault, and the meter location speed things up. For body corporate work I need the manager\'s approval in writing before I book a date. Parking is usually the client\'s problem; I factor loading-zone time into the quote.',
       ],
       commonJobs: [
         'Apartment switchboard and RCD upgrades',
+        'Residential power points and appliance circuits in high-rise kitchens',
         'Office power and data point installs',
         'Shop lighting and emergency exit checks',
         'After-hours work when building access requires it',
         'Compliance fixes flagged in rental reports',
-        'Oven and appliance circuits in high-rise kitchens',
       ],
       features: [
-        'High-rise and apartment electrical work',
+        'Local electrician for Melbourne CBD apartments and suites',
+        'Residential and commercial electrical work',
         'Office fit-outs and power upgrades',
         'Retail and hospitality lighting',
         'Fault finding for tripping circuits',
-        'Compliance and inspection repairs',
         'Coordination with body corporate where required',
       ],
       benefits: [
+        'A-Grade licensed electrician (Victoria)',
         'Experience with CBD access and timing constraints',
-        'Licensed A-Grade electrician',
         'Quotes in writing before work starts',
         'Contact via form; no phone tag',
       ],
       faqs: [
         {
-          question: 'Do you work in Melbourne CBD apartments?',
+          question: 'Do you work as an electrician in Melbourne CBD apartments?',
           answer:
-            'Yes. Many of my CBD jobs are in apartments and small commercial suites. I need building access arranged and, where required, body corporate approval before I attend.',
+            'Yes. Many of my Melbourne CBD jobs are residential apartments and small commercial suites. I need building access arranged and, where required, body corporate approval before I attend.',
+        },
+        {
+          question: 'Are you a residential electrician for Melbourne CBD?',
+          answer:
+            'Yes. Residential work covers apartment switchboards, RCDs, oven and appliance circuits, lighting, and rental compliance fixes across the CBD and nearby towers.',
         },
         {
           question: 'Can you do after-hours electrical work in the city?',
@@ -113,12 +125,12 @@ export const servicePagesContent = {
             'Sometimes, when access and safety allow it. After-hours rates apply and I need confirmed building access. Submit the form with your preferred window and I will confirm availability.',
         },
         {
-          question: 'How fast can you quote a CBD job?',
+          question: 'How fast can you quote a CBD electrical job?',
           answer:
             'If you send clear photos of the switchboard and describe the fault, I can often quote the same business day. Larger fit-outs need a site visit, which we book through the form.',
         },
       ],
-      cta: 'Describe your CBD job on the contact form. Include suburb, building type, and photos if you have them.',
+      cta: 'Describe your Melbourne CBD job on the contact form. Include building type, access notes, and photos if you have them.',
     },
   },
   'electrician-craigieburn': {
@@ -711,18 +723,25 @@ export const servicePagesContent = {
   },
   'app-development-melbourne': {
     slug: 'app-development-melbourne',
-    title: 'App Development Melbourne | Web Apps & Internal Tools',
+    title: 'App Development Melbourne | Custom Web Apps & MVPs',
     description:
-      'App development in Melbourne: web apps, internal tools, and SaaS-style products with React, Next.js, and Django. Quote via contact form.',
-    keywords: ['app development melbourne', 'application development melbourne', 'custom app development melbourne'],
+      'App development Melbourne: custom web apps, internal tools, and SaaS MVPs with React, Next.js, and Django. Melbourne-based developer. Quote via contact form.',
+    keywords: [
+      'app development melbourne',
+      'app development in melbourne',
+      'application development melbourne',
+      'custom app development melbourne',
+      'app developer melbourne',
+      'app builders melbourne',
+    ],
     category: 'app-dev',
     content: {
-      heading: 'App Development in Melbourne',
+      heading: 'App Development Melbourne',
       intro:
-        'When I say app, I usually mean web apps: tools your staff use in the browser, customer portals, and SaaS MVPs. Native iOS/Android is not my main focus, but web apps work on phones fine when designed for it.',
+        'Need app development in Melbourne without an agency runaround? I build custom web apps, internal tools, and SaaS-style products as a Melbourne-based full-stack developer. Native iOS/Android is not the default; most products ship faster as responsive web apps.',
       paragraphs: [
-        'Examples from my own portfolio: an electrician job management platform (Vue/Nuxt + Django), Grow-y plant tracking (React), and hardware-adjacent projects like a custom Pokédex on embedded Linux.',
-        'We start with the smallest version that solves one real problem, ship it, then iterate based on usage rather than a six-month spec doc.',
+        'Examples from my portfolio: an electrician job management platform (Vue/Nuxt + Django), Grow-y plant tracking (React), and hardware-adjacent projects like a custom Pokédex on embedded Linux.',
+        'We start with the smallest version that solves one real problem, ship it, then iterate based on usage rather than a six-month spec doc. Application development for Melbourne businesses usually means dashboards, portals, and billing — not another brochure site.',
       ],
       commonJobs: [
         'Internal dashboards and admin tools',
@@ -741,27 +760,35 @@ export const servicePagesContent = {
         'Deployment and monitoring',
       ],
       benefits: [
-        'Pragmatic MVP scope',
+        'Pragmatic MVP scope for Melbourne startups and SMEs',
         'One developer accountable for the stack',
         'Electrical trade domain knowledge for trade apps',
         'Written milestones and deliverables',
       ],
       faqs: [
         {
+          question: 'Do you offer app development in Melbourne?',
+          answer:
+            'Yes. I am based in Melbourne and build web apps, internal tools, and SaaS MVPs. Contact the form with the problem you need solved and I will reply with scope and pricing options.',
+        },
+        {
           question: 'Web app or mobile app?',
-          answer: 'Web app unless you truly need app-store presence. It is faster and cheaper to iterate. We can wrap a web app later if required.',
+          answer:
+            'Web app unless you truly need app-store presence. It is faster and cheaper to iterate. We can wrap a web app later if required.',
         },
         {
           question: 'Do you build electrician software?',
-          answer: 'Yes. I am building tools for my own trade and have domain knowledge most agencies lack.',
+          answer:
+            'Yes. I am building tools for my own trade and have domain knowledge most agencies lack — useful for electrical app development and trade SaaS.',
         },
         {
           question: 'Can you take over an existing codebase?',
-          answer: 'Sometimes. Send repo access or a architecture summary in the form and I will do a paid discovery block first.',
+          answer:
+            'Sometimes. Send repo access or an architecture summary in the form and I will do a paid discovery block first.',
         },
       ],
       proofLink: { label: 'Electrician management app', url: 'https://electricianapp.com.au' },
-      cta: 'App projects: contact form with the problem you are solving, not just feature wishlists.',
+      cta: 'App development projects: use the contact form with the problem you are solving, not just a feature wishlist.',
     },
   },
   'embedded-systems-melbourne': {

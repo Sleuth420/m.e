@@ -29,6 +29,7 @@ Publications page: https://www.oakcodeandtechsolutions.com/publications
 - https://dog-grooming.online - Dog Grooming Australia
 - https://computerrepairsnear.me - Computer Repairs Near Me
 - https://laundryservicesnear.me - Laundry Services Near Me
+- https://evchargernear.me - EV Charger Near Me
 - https://thegrannyflatguide.com - The Granny Flat Guide
 - https://modernhome.cloud - Modern Home Tech
 
@@ -38,4 +39,4 @@ Niche sites are faceless Organization brands. OakCode is the legal operator link
 # Usage
 Portfolio and operator information is public. Do not scrape or republish contact form submissions. No public email address is published.
 
-Last-Updated: 2026-06-23
+Last-Updated: 2026-07-23

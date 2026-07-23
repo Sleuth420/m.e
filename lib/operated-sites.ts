@@ -45,6 +45,15 @@ export const operatedSites: OperatedSite[] = [
       'Australian laundromat and dry-cleaner directory with suburb finders and service explainers.',
   },
   {
+    name: 'EV Charger Near Me',
+    url: 'https://evchargernear.me',
+    stack: 'WordPress, PHP, ACF',
+    portfolioDescription:
+      'Programmatic SEO directory for public EV charging stations with location and charger listing pages.',
+    publicationDescription:
+      'Australian EV charger finder with suburb and station pages covering networks across the country.',
+  },
+  {
     name: 'The Granny Flat Guide',
     url: 'https://thegrannyflatguide.com',
     stack: 'WordPress, PHP',

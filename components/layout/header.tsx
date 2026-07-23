@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap, Menu, X, Code, Wrench, Building2, Globe } from 'lucide-react';
+import { Menu, X, Code, Wrench, Building2, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useScrollPosition } from '@/lib/hooks';
 import {
@@ -39,10 +39,15 @@ export default function Header() {
     >
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 group">
-          <div className="rounded-full bg-primary p-1.5 shadow-glow transition-transform group-hover:scale-105">
-            <Zap className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="font-display text-lg font-bold gradient-text">Ricky</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/icon.svg"
+            alt="OakCodeAndTechSolutions"
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-lg shadow-glow transition-transform group-hover:scale-105"
+          />
+          <span className="font-display text-lg font-bold gradient-text">OakCode</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">

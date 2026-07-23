@@ -7,8 +7,8 @@
       <stop offset="1" stop-color="#3b82f6"/>
     </linearGradient>
   </defs>
-  <path fill="#f97316" d="M120 180 280 450h120L320 330l80-150H120Z"/>
-  <path fill="#fbbf24" d="M320 330 280 450H120l120-225 80 105Z"/>
+  <path fill="#f97316" d="M220 140 96 356h88l-36 168 172-248h-92l52-136Z"/>
+  <path fill="#fbbf24" d="M184 356h-88L220 140l-36 216Z"/>
   <text x="380" y="280" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="52" font-weight="700">OakCodeAndTechSolutions</text>
   <text x="380" y="350" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="32">Electrician &amp; Web Developer · Melbourne</text>
   <text x="380" y="420" fill="#f97316" font-family="system-ui,sans-serif" font-size="24">oakcodeandtechsolutions.com</text>
