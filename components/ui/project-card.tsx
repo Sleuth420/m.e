@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Code, ExternalLink, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { IconSelector, getProjectIcon } from '@/components/ui/icon-selector';
 import type { Project } from '@/lib/data';
-import { itemFadeIn } from '@/lib/animations';
+import { fadeInUp } from '@/lib/animations';
 
 interface ProjectCardProps {
   project: Project;
@@ -14,9 +14,9 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const item = {
-    ...itemFadeIn,
+    ...fadeInUp,
     show: {
-      ...itemFadeIn.show,
+      ...fadeInUp.show,
       transition: {
         duration: 0.5,
         delay: index * 0.1,
@@ -24,13 +24,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     },
   };
 
-  const iconName = getProjectIcon(project.title);
-
   return (
     <motion.div variants={item} className="depth-card overflow-hidden h-full flex flex-col">
       <div className="relative h-20 sm:h-24 overflow-hidden bg-primary">
         <div className="absolute inset-0 flex items-center justify-center">
-          <IconSelector name={iconName} className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground/90" />
+          <Code className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground/90" />
         </div>
       </div>
       <div className="flex flex-col flex-grow p-4 sm:p-6 space-y-3">
@@ -57,7 +55,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   disabled
                   className="gradient-bg text-primary-foreground w-full sm:w-auto opacity-70"
                 >
-                  <IconSelector name="Github" className="mr-2 h-4 w-4" />
+                  <Github className="mr-2 h-4 w-4" />
                   {link.label}
                 </Button>
               ) : (
@@ -73,7 +71,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                     target="_blank"
                     rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
                   >
-                    <IconSelector name="Github" className="mr-2 h-4 w-4" />
+                    <Github className="mr-2 h-4 w-4" />
                     {link.label}
                   </Link>
                 </Button>
@@ -91,7 +89,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                   target="_blank"
                   rel={`noopener noreferrer${link.nofollow ? ' nofollow' : ''}`}
                 >
-                  <IconSelector name="ExternalLink" className="mr-2 h-4 w-4" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   {link.label}
                 </Link>
               </Button>

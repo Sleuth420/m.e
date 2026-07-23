@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export default function ContactCta() {
   return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden">
+    <section className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-x-clip">
       <div className="absolute inset-0 bg-hero-glow" aria-hidden />
       <div className="absolute inset-0 retro-grid opacity-30" aria-hidden />
       <div className="container relative text-center">

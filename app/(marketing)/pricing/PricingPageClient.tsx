@@ -48,7 +48,7 @@ function scrollToSection(sectionId: string) {
 export default function PricingPageClient() {
   return (
     <div className="min-h-screen bg-surface-0">
-      <section className="pt-16 pb-12 md:pt-24 md:pb-16 relative overflow-hidden border-b border-border/50">
+      <section className="pt-16 pb-12 md:pt-24 md:pb-16 relative overflow-x-clip border-b border-border/50">
         <div className="absolute inset-0 bg-hero-glow" aria-hidden />
         <div className="absolute inset-0 retro-grid opacity-40" aria-hidden />
 

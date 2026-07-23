@@ -1,4 +1,4 @@
-import type { ServicePageData } from './service-types';
+import type { ServicePageData } from './services';
 
 export const servicePagesContent = {
   'electrician-melbourne': {

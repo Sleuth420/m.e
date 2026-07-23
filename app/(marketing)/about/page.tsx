@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import type { LucideIcon } from 'lucide-react';
+import { Building, Heart, Zap } from 'lucide-react';
 import { PageHero } from '@/components/ui/page-hero';
 import { DepthCard } from '@/components/ui/depth-card';
-import { IconSelector, type IconName } from '@/components/ui/icon-selector';
 import { skills } from '@/lib/data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { BASE_URL } from '@/lib/site';
@@ -35,27 +36,27 @@ const timeline = [
 ];
 
 const cards: {
-  icon: IconName;
+  icon: LucideIcon;
   title: string;
   subtitle: string;
   description: string;
 }[] = [
   {
-    icon: 'Zap',
+    icon: Zap,
     title: 'Dual Trade Professional',
     subtitle: 'A-Grade Electrician & Full-Stack Developer',
     description:
       'I am fully licensed to handle all your electrical requirements and equally qualified to build your next web application.',
   },
   {
-    icon: 'Building',
+    icon: Building,
     title: 'Business Minded',
     subtitle: 'Past Business Owner',
     description:
       'Running my own trade business gave me firsthand experience with the challenges companies face. Now I use those insights to help others grow online.',
   },
   {
-    icon: 'Heart',
+    icon: Heart,
     title: 'Problem Solver',
     subtitle: 'Customer Focused',
     description:
@@ -130,16 +131,19 @@ export default function AboutPage() {
         <div className="container">
           <h2 className="display-md font-display font-bold text-center mb-12">Core Values</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {cards.map((card) => (
-              <DepthCard key={card.title} className="p-6">
-                <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-2.5">
-                  <IconSelector name={card.icon} className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-display font-semibold text-lg">{card.title}</h3>
-                <p className="text-sm text-primary mt-1">{card.subtitle}</p>
-                <p className="mt-3 text-sm text-muted-foreground">{card.description}</p>
-              </DepthCard>
-            ))}
+            {cards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <DepthCard key={card.title} className="p-6">
+                  <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-2.5">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg">{card.title}</h3>
+                  <p className="text-sm text-primary mt-1">{card.subtitle}</p>
+                  <p className="mt-3 text-sm text-muted-foreground">{card.description}</p>
+                </DepthCard>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -148,15 +152,18 @@ export default function AboutPage() {
         <div className="container">
           <h2 className="display-md font-display font-bold text-center mb-12">Skills & Expertise</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {skills.map((skill) => (
-              <DepthCard key={skill.title} className="p-6 text-center">
-                <div className="mb-3 inline-flex rounded-lg bg-primary/10 p-2.5 mx-auto">
-                  <IconSelector name={skill.icon} className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-display font-semibold">{skill.title}</h3>
-                <p className="mt-2 text-xs text-muted-foreground">{skill.description}</p>
-              </DepthCard>
-            ))}
+            {skills.map((skill) => {
+              const Icon = skill.icon;
+              return (
+                <DepthCard key={skill.title} className="p-6 text-center">
+                  <div className="mb-3 inline-flex rounded-lg bg-primary/10 p-2.5 mx-auto">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-display font-semibold">{skill.title}</h3>
+                  <p className="mt-2 text-xs text-muted-foreground">{skill.description}</p>
+                </DepthCard>
+              );
+            })}
           </div>
         </div>
       </section>

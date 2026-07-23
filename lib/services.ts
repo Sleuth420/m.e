@@ -2,9 +2,31 @@ import type { Metadata } from 'next';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { BASE_URL } from '@/lib/site';
 import { servicePagesContent } from './services-content';
-import type { ServiceFaq, ServicePageData } from './service-types';
 
-export type { ServiceFaq, ServicePageData };
+export interface ServiceFaq {
+  question: string;
+  answer: string;
+}
+
+export interface ServicePageData {
+  slug: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  content: {
+    heading: string;
+    intro: string;
+    paragraphs?: string[];
+    commonJobs?: string[];
+    features: string[];
+    benefits: string[];
+    faqs?: ServiceFaq[];
+    proofLink?: { label: string; url: string };
+    cta: string;
+  };
+  category: 'electrical' | 'web-dev' | 'app-dev' | 'other';
+  location?: string;
+}
 
 export const servicePages: Record<string, ServicePageData> = servicePagesContent;
 

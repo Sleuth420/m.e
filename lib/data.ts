@@ -1,4 +1,5 @@
-import { type IconName } from '@/components/ui/icon-selector';
+import type { LucideIcon } from 'lucide-react';
+import { Code, Shield, Microchip, Wrench } from 'lucide-react';
 import { operatedSiteProjects } from './operated-sites';
 import { PROJECT_IMAGE_PLACEHOLDER } from '@/lib/site';
 
@@ -133,76 +134,79 @@ export const projects: Project[] = [
 
 export interface Skill {
   title: string;
-  icon: IconName;
+  icon: LucideIcon;
   description: string;
 }
 
 export const skills: Skill[] = [
   {
     title: 'Web Development',
-    icon: 'Code',
+    icon: Code,
     description: 'Vue.js, React, Django, WordPress, Shopify, Tailwind CSS, Node.js, Next.js',
   },
   {
     title: 'Cybersecurity',
-    icon: 'Shield',
+    icon: Shield,
     description: 'Network Security, Penetration Testing, Secure Coding, OWASP Top 10',
   },
   {
     title: 'IoT and Embedded Systems',
-    icon: 'Microchip',
+    icon: Microchip,
     description: 'Arduino, Raspberry Pi, ESP32, Linux',
   },
   {
     title: 'Electrical',
-    icon: 'Wrench',
+    icon: Wrench,
     description: 'Fully qualified A-Grade electrician handling residential, commercial, and industrial projects.',
   },
 ];
 
-export interface Service {
+export type HomeServiceCategory = 'electrical' | 'web-dev' | 'app-dev' | 'other';
+
+export interface HomeServiceTeaser {
   title: string;
-  icon: IconName;
   description: string;
-  category: 'tech' | 'electrical' | 'creative';
+  slug: string;
+  category: HomeServiceCategory;
 }
 
-export const services: Service[] = [
-  {
-    title: 'Custom Websites',
-    icon: 'Code',
-    description: 'Modern, responsive websites built with the latest technologies',
-    category: 'tech',
-  },
-  {
-    title: 'WordPress Development',
-    icon: 'Code',
-    description: 'Custom WordPress themes, plugins, and site management',
-    category: 'tech',
-  },
-  {
-    title: 'Embedded Systems',
-    icon: 'Microchip',
-    description: 'IoT solutions, Arduino, Raspberry Pi, and custom electronics',
-    category: 'tech',
-  },
+/** Curated home teasers pointing at real /services/[slug] pages. */
+export const homeServiceTeasers: HomeServiceTeaser[] = [
   {
     title: 'Electrical Services',
-    icon: 'Zap',
-    description: 'Licensed work for homes, commercial sites, and industrial premises. Everything from new installs to maintenance and fault finding.',
+    description: 'Licensed residential, commercial, and industrial electrical work across Melbourne.',
+    slug: 'electrician-melbourne',
     category: 'electrical',
   },
   {
-    title: '3D Visuals & CAD',
-    icon: 'Palette',
-    description: '3D modeling, CAD drawings, and technical visualizations',
-    category: 'creative',
+    title: 'Custom Websites',
+    description: 'Modern, responsive websites built for local businesses and tradies.',
+    slug: 'web-developer-melbourne',
+    category: 'web-dev',
   },
   {
-    title: 'Marketing & Branding',
-    icon: 'Camera',
-    description: 'Company branding, product marketing, and visual content',
-    category: 'creative',
+    title: 'WordPress Development',
+    description: 'Custom WordPress themes, plugins, and ongoing site management.',
+    slug: 'wordpress-developer-melbourne',
+    category: 'web-dev',
+  },
+  {
+    title: 'App Development',
+    description: 'Custom web apps and tools for quoting, jobs, and client workflows.',
+    slug: 'app-development-melbourne',
+    category: 'app-dev',
+  },
+  {
+    title: 'IoT & Embedded',
+    description: 'Arduino, Raspberry Pi, and custom electronics for real-world systems.',
+    slug: 'iot-solutions-melbourne',
+    category: 'app-dev',
+  },
+  {
+    title: 'CAD Design',
+    description: 'Technical drawings and CAD for electrical and product work.',
+    slug: 'cad-design-melbourne',
+    category: 'other',
   },
 ];
 

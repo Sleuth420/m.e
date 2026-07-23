@@ -1,69 +1,84 @@
 'use client';
 
-import { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Torus } from '@react-three/drei';
-import type { Mesh } from 'three';
-
-function AnimatedTorus() {
-  const ref = useRef<Mesh>(null);
-
-  useFrame((state) => {
-    if (!ref.current) return;
-    ref.current.rotation.x = state.clock.elapsedTime * 0.15;
-    ref.current.rotation.y = state.clock.elapsedTime * 0.25;
-  });
-
-  return (
-    <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.6}>
-      <Torus ref={ref} args={[2.2, 0.04, 16, 100]}>
-        <MeshDistortMaterial
-          color="#f97316"
-          emissive="#06b6d4"
-          emissiveIntensity={0.3}
-          distort={0.25}
-          speed={2}
-          wireframe
-        />
-      </Torus>
-    </Float>
-  );
-}
-
-function InnerTorus() {
-  const ref = useRef<Mesh>(null);
-
-  useFrame((state) => {
-    if (!ref.current) return;
-    ref.current.rotation.x = -state.clock.elapsedTime * 0.2;
-    ref.current.rotation.z = state.clock.elapsedTime * 0.1;
-  });
-
-  return (
-    <Torus ref={ref} args={[1.4, 0.03, 12, 80]} rotation={[Math.PI / 3, 0, 0]}>
-      <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.5} />
-    </Torus>
-  );
-}
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sparkles } from '@react-three/drei';
+import { PCFShadowMap } from 'three';
+import { SceneEnvironment } from './switchboard/SceneEnvironment';
+import { Switchboard } from './switchboard/Switchboard';
+import { useSwitchboardMaterials } from './switchboard/materials';
 
 interface HeroSceneCanvasProps {
   active?: boolean;
+  /** When false, orbit is off and the canvas ignores pointer — page can scroll */
+  controlsEnabled?: boolean;
 }
 
-export default function HeroSceneCanvas({ active = true }: HeroSceneCanvasProps) {
+function Scene({ controlsEnabled }: { controlsEnabled: boolean }) {
+  const materials = useSwitchboardMaterials();
+  return (
+    <>
+      <SceneEnvironment materials={materials} />
+      <Switchboard />
+
+      {/* Workshop dust + a cooler secondary mote layer */}
+      <Sparkles
+        count={36}
+        scale={[4.8, 3.4, 2.6]}
+        size={2.4}
+        speed={0.28}
+        opacity={0.4}
+        color="#f97316"
+        position={[0.1, -0.1, 0.4]}
+      />
+      <Sparkles
+        count={18}
+        scale={[3.6, 2.4, 1.8]}
+        size={1.6}
+        speed={0.15}
+        opacity={0.22}
+        color="#fdba74"
+        position={[0.4, 0.2, 0.55]}
+      />
+
+      <OrbitControls
+        makeDefault
+        enabled={controlsEnabled}
+        enablePan={false}
+        enableDamping
+        dampingFactor={0.08}
+        enableZoom={controlsEnabled}
+        enableRotate={controlsEnabled}
+        zoomToCursor={false}
+        minDistance={3.0}
+        maxDistance={7.0}
+        minPolarAngle={Math.PI * 0.3}
+        maxPolarAngle={Math.PI * 0.58}
+        minAzimuthAngle={-Math.PI * 0.4}
+        maxAzimuthAngle={Math.PI * 0.32}
+        target={[0.05, -0.15, 0.1]}
+      />
+    </>
+  );
+}
+
+export default function HeroSceneCanvas({
+  active = true,
+  controlsEnabled = false,
+}: HeroSceneCanvasProps) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 50 }}
+      camera={{ position: [2.6, 0.35, 5.2], fov: 34, near: 0.1, far: 40 }}
       dpr={[1, 1.5]}
       frameloop={active ? 'always' : 'demand'}
-      className="!absolute inset-0"
-      gl={{ antialias: true, alpha: true }}
+      className={`!absolute inset-0 h-full w-full ${controlsEnabled ? 'pointer-events-auto cursor-grab active:cursor-grabbing' : 'pointer-events-none'}`}
+      shadows={{ type: PCFShadowMap }}
+      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+        gl.shadowMap.type = PCFShadowMap;
+      }}
     >
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#f97316" />
-      <pointLight position={[-10, -5, 5]} intensity={0.5} color="#06b6d4" />
-      <AnimatedTorus />
-      <InnerTorus />
+      <Scene controlsEnabled={controlsEnabled} />
     </Canvas>
   );
 }

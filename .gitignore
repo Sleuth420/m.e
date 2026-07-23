@@ -34,3 +34,5 @@ next-env.d.ts
 # package manager lock files (choose one)
 pnpm-lock.yaml
 .cursor
+
+.vercel

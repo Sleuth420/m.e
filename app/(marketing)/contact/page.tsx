@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { Github, MapPin } from 'lucide-react';
 import { PageHero } from '@/components/ui/page-hero';
 import { ContactCard } from '@/components/ui/contact-card';
-import { SecureContactForm } from '@/components/ui/secure-contact-form';
+import { ContactForm } from '@/components/ui/contact-form';
 import { contactInfo } from '@/lib/data';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { BASE_URL } from '@/lib/site';
@@ -37,11 +38,15 @@ export default function ContactPage() {
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
           <div className="grid gap-6 sm:grid-cols-2 mb-10">
-            <ContactCard title="Based in" content={contactInfo.location} icon="MapPin" />
+            <ContactCard
+              title="Based in"
+              content={contactInfo.location}
+              icon={<MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />}
+            />
             <ContactCard
               title="GitHub"
               content="Sleuth420"
-              icon="Github"
+              icon={<Github className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />}
               actionLabel="View profile"
               actionUrl={contactInfo.github}
             />
@@ -50,7 +55,7 @@ export default function ContactPage() {
             <p className="text-sm text-muted-foreground mb-6">
               I usually reply within 24 to 48 hours. If you have an electrical emergency, please make sure to mention that in your message.
             </p>
-            <SecureContactForm />
+            <ContactForm />
           </div>
         </div>
       </section>

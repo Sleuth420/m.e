@@ -15,27 +15,20 @@ import {
 } from '@/lib/blog/posts-data';
 import { BASE_URL } from '@/lib/site';
 
-// Generate static params for all blog posts at build time
 export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  return getAllPostSlugs().map((slug) => ({ slug }));
 }
 
-// Generate metadata for each blog post
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const metadata = await generatePostMetadata(slug);
+  const metadata = generatePostMetadata(slug);
 
   if (!metadata) {
-    return {
-      title: 'Post Not Found',
-    };
+    return { title: 'Post Not Found' };
   }
 
   return metadata;
@@ -47,15 +40,13 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  // Get related posts (excluding current post)
-  const allPosts = await getAllPosts();
-  const relatedPosts = allPosts
+  const relatedPosts = getAllPosts()
     .filter((p) => p.slug !== post.slug)
     .slice(0, 3);
 

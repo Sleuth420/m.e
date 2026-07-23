@@ -1,9 +1,18 @@
+import { PROJECT_IMAGE_PLACEHOLDER } from '@/lib/site';
+
 export interface OperatedSite {
   name: string;
   url: string;
   stack: string;
   portfolioDescription: string;
   publicationDescription: string;
+}
+
+export interface Publication {
+  name: string;
+  url: string;
+  description: string;
+  stack: string;
 }
 
 /** Directories and guides operated by OakCodeAndTechSolutions. */
@@ -73,7 +82,12 @@ export const operatedSites: OperatedSite[] = [
   },
 ];
 
-import { PROJECT_IMAGE_PLACEHOLDER } from '@/lib/site';
+export const operatedPublications: Publication[] = operatedSites.map((site) => ({
+  name: site.name,
+  url: site.url,
+  description: site.publicationDescription,
+  stack: site.stack,
+}));
 
 export function operatedSiteProjects() {
   return operatedSites.map((site) => ({

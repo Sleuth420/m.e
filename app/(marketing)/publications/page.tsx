@@ -5,7 +5,7 @@ import { PageHero } from '@/components/ui/page-hero';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { generateSeoMetadata } from '@/components/seo/Seo';
-import { operatedPublications } from '@/lib/publications-data';
+import { operatedPublications } from '@/lib/operated-sites';
 import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
@@ -42,7 +42,7 @@ export default function PublicationsPage() {
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
           <p className="text-muted-foreground mb-10">
-            These are genuine, reader-first resources. They aren't part of a link network - each site stands on its own and links back here only through standard footer disclosures.
+            These are genuine, reader-first resources. They aren&apos;t part of a link network - each site stands on its own and links back here only through standard footer disclosures.
           </p>
           <ul className="grid gap-6">
             {operatedPublications.map((pub) => (

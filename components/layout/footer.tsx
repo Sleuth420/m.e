@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Github, Zap, Coffee, Gamepad2 } from 'lucide-react';
+import { Github, Zap, Coffee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getAllServiceSlugs } from '@/lib/services-data';
+import { getAllServiceSlugs } from '@/lib/services';
 import {
   footerQuickLinks,
   featuredElectricalLinks,
@@ -25,10 +25,6 @@ export default function Footer() {
     .filter((slug) => !featuredWebDevLinks.some((link) => link.href === `/services/${slug}`))
     .slice(0, 3)
     .map(serviceNavLink);
-
-  const triggerKonami = () => {
-    window.triggerKonami?.();
-  };
 
   return (
     <footer className="relative border-t border-border/50 bg-surface-1/80 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
@@ -154,16 +150,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-border/50">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={triggerKonami}
-            className="border-primary/30 bg-primary/5 text-primary hover:bg-primary/10"
-          >
-            <Gamepad2 className="mr-2 h-3 w-3" />
-            <span className="text-xs">Konami Mode</span>
-          </Button>
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-8 border-t border-border/50">
           <p className="text-xs text-muted-foreground text-center sm:text-right">
             Built with care by{' '}
             <Link

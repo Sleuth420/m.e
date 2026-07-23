@@ -11,13 +11,13 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ badge, title, description }: SectionHeadingProps) {
   return (
-    <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-3 sm:space-y-4 text-center">
+    <div className="mx-auto flex max-w-[58rem] flex-col items-center gap-4 sm:gap-5 text-center">
       <motion.span
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
         variants={fadeInUp}
-        className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs sm:text-sm font-medium text-primary"
+        className="inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs sm:text-sm font-medium text-primary"
       >
         {badge}
       </motion.span>

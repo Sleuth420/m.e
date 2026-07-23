@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ImmersiveHero from '@/components/sections/home/immersive-hero';
+import SwitchboardShowcase from '@/components/sections/home/switchboard-showcase';
 import DualTradeTeaser from '@/components/sections/home/dual-trade-teaser';
 import FeaturedProjectsMarquee from '@/components/sections/home/featured-projects-marquee';
 import ServicesPreview from '@/components/sections/home/services-preview';
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <>
       <ImmersiveHero />
+      <SwitchboardShowcase />
       <TrustStrip />
       <DualTradeTeaser />
       <ServicesPreview />

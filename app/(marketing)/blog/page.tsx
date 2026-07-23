@@ -13,7 +13,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = await searchParams;
   const tag = params.tag;
 
-  const posts = tag ? await getPostsByTag(tag) : await getAllPosts();
+  const posts = tag ? getPostsByTag(tag) : getAllPosts();
 
   return (
     <>

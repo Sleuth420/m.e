@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllServiceSlugs } from '@/lib/services-data';
+import { getAllServiceSlugs } from '@/lib/services';
 import { getAllPosts } from '@/lib/blog/posts-data';
 import { BASE_URL } from '@/lib/site';
 
@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  const blogPosts = await getAllPosts();
+  const blogPosts = getAllPosts();
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => {
     const postDate = new Date(post.date).toISOString().split('T')[0];
     return {

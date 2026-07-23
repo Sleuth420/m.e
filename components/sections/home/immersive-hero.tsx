@@ -4,19 +4,26 @@ import Link from 'next/link';
 import { ArrowRight, Zap, Code } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { HeroScene } from '@/components/effects/hero-scene';
 import { textReveal } from '@/lib/animations';
 
 const headline = 'Melbourne Qualified Electrician & Web Developer';
 
+/**
+ * Text-first hero — switchboard lives in SwitchboardShowcase below
+ * so copy/CTAs are never fighting the 3D scene.
+ */
 export default function ImmersiveHero() {
   return (
     <section
       id="immersive-hero"
-      className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center overflow-hidden"
+      className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center overflow-x-clip"
     >
-      <HeroScene />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background)/0.85)_70%)]" />
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,hsl(var(--primary)/0.18),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,hsl(var(--primary)/0.08),transparent_50%)]" />
+        <div className="absolute inset-0 opacity-[0.22] retro-grid" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background" />
+      </div>
 
       <div className="container relative z-10 flex max-w-5xl flex-col items-center gap-6 sm:gap-8 text-center py-16 sm:py-20 px-2">
         <motion.span

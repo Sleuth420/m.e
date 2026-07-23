@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getAllServiceSlugs, getServicePageData } from '@/lib/services-data';
+import { getAllServiceSlugs, getServicePageData } from '@/lib/services';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { PageHero } from '@/components/ui/page-hero';

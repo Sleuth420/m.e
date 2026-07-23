@@ -38,7 +38,7 @@ export default function Header() {
       )}
     >
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href="/" className="flex items-center group" aria-label="OakCodeAndTechSolutions home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/icon.svg"
@@ -47,7 +47,6 @@ export default function Header() {
             height={32}
             className="h-8 w-8 rounded-lg shadow-glow transition-transform group-hover:scale-105"
           />
-          <span className="font-display text-lg font-bold gradient-text">OakCode</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">

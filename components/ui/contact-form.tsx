@@ -3,9 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { IconSelector } from '@/components/ui/icon-selector';
-import { itemFadeIn } from '@/lib/animations';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import {
   CONTACT_FORM_STEPS,
   PROJECT_TYPES,
@@ -16,13 +14,14 @@ import {
   submitContactForm,
   type ContactFormData,
 } from '@/lib/contact-form';
+import { fadeInUp } from '@/lib/animations';
 
-interface SecureContactFormProps {
+interface ContactFormProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }
 
-export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps) {
+export function ContactForm({ onSuccess, onError }: ContactFormProps) {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<ContactFormData>(emptyContactFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,10 +103,10 @@ export function SecureContactForm({ onSuccess, onError }: SecureContactFormProps
     'w-full px-3 py-2.5 border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground text-sm';
 
   return (
-    <motion.div variants={itemFadeIn}>
+    <motion.div variants={fadeInUp}>
       <div className="flex flex-col items-center gap-3 mb-8 text-center">
         <div className="rounded-full gradient-bg p-3">
-          <IconSelector name="Mail" className="h-5 w-5 text-primary-foreground" />
+          <Mail className="h-5 w-5 text-primary-foreground" />
         </div>
         <h3 className="font-display text-xl font-bold">Send a Message</h3>
       </div>

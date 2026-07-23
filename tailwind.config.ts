@@ -34,8 +34,8 @@ const config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-syne)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-syne)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-display)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',

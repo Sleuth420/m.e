@@ -6,7 +6,7 @@ import {
   getAllServiceSlugs,
   getServicePageData,
   generateServiceMetadata,
-} from '@/lib/services-data';
+} from '@/lib/services';
 import { BASE_URL } from '@/lib/site';
 
 export async function generateStaticParams() {

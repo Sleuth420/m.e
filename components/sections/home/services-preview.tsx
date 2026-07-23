@@ -1,22 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Code, Microchip, Palette, Zap } from 'lucide-react';
+import { ArrowRight, Code, Cpu, PenTool, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { services } from '@/lib/data';
+import { homeServiceTeasers, type HomeServiceCategory } from '@/lib/data';
 import { DepthCard } from '@/components/ui/depth-card';
 import { fadeInUp, staggerContainer } from '@/lib/animations';
 
-const categoryIcons = {
-  tech: Code,
+const categoryIcons: Record<HomeServiceCategory, typeof Zap> = {
   electrical: Zap,
-  creative: Palette,
-} as const;
+  'web-dev': Code,
+  'app-dev': Cpu,
+  other: PenTool,
+};
 
-const categories = [
-  { key: 'electrical' as const, label: 'Electrical', href: '/services/electrician-melbourne' },
-  { key: 'tech' as const, label: 'Web & Tech', href: '/services/web-developer-melbourne' },
-  { key: 'creative' as const, label: 'Creative', href: '/services' },
+const categories: { key: HomeServiceCategory; label: string; href: string }[] = [
+  { key: 'electrical', label: 'Electrical', href: '/services/electrician-melbourne' },
+  { key: 'web-dev', label: 'Web Development', href: '/services/web-developer-melbourne' },
+  { key: 'app-dev', label: 'Apps & IoT', href: '/services/app-development-melbourne' },
+  { key: 'other', label: 'Other', href: '/services' },
 ];
 
 export default function ServicesPreview() {
@@ -25,7 +27,7 @@ export default function ServicesPreview() {
       <div className="container">
         <div className="text-center mb-14">
           <span className="text-xs font-medium text-primary uppercase tracking-wider">What I Do</span>
-          <h2 className="display-md font-display font-bold mt-2 gradient-text">Services</h2>
+          <h2 className="display-md font-display font-bold mt-3 sm:mt-4 gradient-text">Services</h2>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
             Professional electrical services and custom web development, all handled by one person right here in Melbourne.
           </p>
@@ -36,11 +38,12 @@ export default function ServicesPreview() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {categories.map((cat) => {
-            const catServices = services.filter((s) => s.category === cat.key).slice(0, 2);
-            const Icon = categoryIcons[cat.key] ?? Microchip;
+            const catServices = homeServiceTeasers.filter((s) => s.category === cat.key).slice(0, 2);
+            if (catServices.length === 0) return null;
+            const Icon = categoryIcons[cat.key];
             return (
               <motion.div key={cat.key} variants={fadeInUp}>
                 <DepthCard className="h-full p-6">
@@ -50,8 +53,10 @@ export default function ServicesPreview() {
                   <h3 className="font-display font-semibold text-lg mb-4">{cat.label}</h3>
                   <ul className="space-y-3 mb-6">
                     {catServices.map((s) => (
-                      <li key={s.title} className="text-sm text-muted-foreground">
-                        {s.title}
+                      <li key={s.slug} className="text-sm text-muted-foreground">
+                        <Link href={`/services/${s.slug}`} className="hover:text-primary transition-colors">
+                          {s.title}
+                        </Link>
                       </li>
                     ))}
                   </ul>

@@ -4,13 +4,13 @@ import { DepthCard } from '@/components/ui/depth-card';
 import { PageHero } from '@/components/ui/page-hero';
 import { ServiceLinkCard } from '@/components/services/service-link-card';
 import { CheckCircle2, ArrowRight, MessageSquare } from 'lucide-react';
-import type { ServicePageData } from '@/lib/services-data';
+import type { ServicePageData } from '@/lib/services';
 
 interface ServicePageLayoutProps {
   serviceData: ServicePageData;
   relatedServices: {
     slug: string;
-    data: NonNullable<ReturnType<typeof import('@/lib/services-data').getServicePageData>>;
+    data: NonNullable<ReturnType<typeof import('@/lib/services').getServicePageData>>;
   }[];
 }
 
