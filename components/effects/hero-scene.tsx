@@ -60,7 +60,11 @@ export function HeroScene({
   }
 
   return (
-    <div className={cn('absolute inset-0 overflow-hidden', className)} aria-hidden={!controlsEnabled}>
+    <div
+      className={cn('absolute inset-0 max-w-full overflow-hidden touch-pan-y', className)}
+      aria-hidden={!controlsEnabled}
+      style={{ pointerEvents: controlsEnabled ? 'auto' : 'none' }}
+    >
       <Suspense fallback={<HeroSceneFallback />}>
         <HeroSceneCanvas active={visible} controlsEnabled={controlsEnabled} />
       </Suspense>

@@ -26,7 +26,7 @@ function MarqueeProjectTeaser({ project }: { project: (typeof featured)[number] 
 
 export default function FeaturedProjectsMarquee() {
   return (
-    <section className="py-16 sm:py-20 md:py-28 border-y border-border/50 bg-surface-1/50">
+    <section className="overflow-x-clip py-16 sm:py-20 md:py-28 border-y border-border/50 bg-surface-1/50">
       <div className="container mb-8 sm:mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <span className="text-xs font-medium text-primary uppercase tracking-wider">Portfolio</span>

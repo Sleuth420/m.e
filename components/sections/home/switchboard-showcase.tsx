@@ -16,14 +16,17 @@ export default function SwitchboardShowcase() {
   return (
     <section
       id="switchboard-showcase"
-      className="relative isolate min-h-[min(92vh,920px)] w-full overflow-hidden border-y border-border/40 bg-background"
+      className="relative isolate min-h-[min(92vh,920px)] w-full max-w-[100vw] overflow-x-clip overflow-y-hidden border-y border-border/40 bg-background touch-pan-y"
       aria-label="Interactive switchboard"
     >
-      <div className="absolute inset-0" aria-hidden={!explore}>
+      <div
+        className={`absolute inset-0 overflow-hidden ${explore ? '' : 'pointer-events-none'}`}
+        aria-hidden={!explore}
+      >
         <HeroScene
           observeId="switchboard-showcase"
           controlsEnabled={explore}
-          className="!relative h-full min-h-[min(92vh,920px)]"
+          className="!relative h-full min-h-[min(92vh,920px)] max-w-full"
         />
       </div>
 

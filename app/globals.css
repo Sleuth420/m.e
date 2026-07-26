@@ -91,6 +91,11 @@
     color-scheme: light dark;
   }
 
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'liga' 1, 'kern' 1;

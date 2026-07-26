@@ -82,7 +82,7 @@ export function Switchboard() {
   const flashCircuit = CIRCUITS.find((c) => c.id === tripFlashId);
 
   return (
-    <group position={[0.02, -0.22, 0.05]} rotation={[0.03, -0.18, 0]}>
+    <group position={[0.02, -0.18, 0.12]} rotation={[0.06, -0.28, 0.01]}>
       <Enclosure materials={materials} />
       <DinRail materials={materials} />
       <TerminalBars materials={materials} />
@@ -116,8 +116,14 @@ export function Switchboard() {
       ))}
 
       {hoveredLabel && (
-        <Html position={[0, 1.72, 0.55]} center style={{ pointerEvents: 'none' }}>
-          <div className="rounded-md border border-primary/40 bg-background/90 px-3 py-1.5 text-xs font-medium text-foreground shadow-lg backdrop-blur-sm whitespace-nowrap">
+        <Html
+          position={[0, 1.72, 0.55]}
+          center
+          style={{ pointerEvents: 'none' }}
+          wrapperClass="!max-w-[min(90vw,20rem)] !overflow-hidden"
+          zIndexRange={[10, 0]}
+        >
+          <div className="max-w-[min(90vw,20rem)] truncate rounded-md border border-primary/40 bg-background/90 px-3 py-1.5 text-xs font-medium text-foreground shadow-lg backdrop-blur-sm">
             {hoveredLabel}
           </div>
         </Html>
