@@ -9,14 +9,15 @@ import {
   rcboX,
 } from './circuit-data';
 import type { SwitchboardMaterials } from './materials';
+import { CombSpine } from './parts/CombSpine';
 
 type Props = {
   materials: SwitchboardMaterials;
 };
 
 /**
- * Modern RCBO comb: ACTIVE (yellow) + NEUTRAL (blue) spines at the TOP.
- * Teeth drop into LINE and N tunnels — bottoms stay free for load tails.
+ * Active + Neutral insulated combs above the RCBO row.
+ * Flat teeth drop into TOP-face cable mouths.
  */
 export function CombBus({ materials }: Props) {
   const first = rcboX(0);
@@ -27,72 +28,52 @@ export function CombBus({ materials }: Props) {
   const span = last - first;
   const mainBot = moduleBottomTerminal(mainSwitchX());
 
-  const activeY = topA[1] + 0.085;
-  const activeZ = topA[2] - 0.035;
-  const neutY = topN[1] + 0.07;
-  const neutZ = topN[2] - 0.02;
+  const activeY = topA[1] + 0.078;
+  const activeZ = topA[2];
+  const neutY = topN[1] + 0.06;
+  const neutZ = topN[2];
 
   return (
     <group>
-      {/* ——— ACTIVE comb (yellow) ——— */}
-      <mesh position={[mid, activeY, activeZ]}>
-        <boxGeometry args={[span + 0.1, 0.018, 0.022]} />
-        <meshStandardMaterial color="#b45309" metalness={0.95} roughness={0.22} />
-      </mesh>
-      <mesh position={[mid, activeY + 0.01, activeZ]} material={materials.plasticYellow}>
-        <boxGeometry args={[span + 0.08, 0.012, 0.03]} />
+      <CombSpine
+        circuits={CIRCUITS}
+        mid={mid}
+        span={span}
+        spineY={activeY}
+        spineZ={activeZ}
+        metal={materials.brass}
+        sleeve={materials.plasticGrey}
+        endCap={materials.plasticYellow}
+        terminalAt={moduleTopTerminal}
+        showFeedBlock
+        feedX={first - 0.08}
+        toothW={0.015}
+        toothT={0.005}
+      />
+
+      {/* Brass link: main LOAD → active comb feed block */}
+      <mesh
+        position={[first - 0.08, (activeY + mainBot[1]) * 0.5, activeZ]}
+        material={materials.brass}
+        castShadow={false}
+      >
+        <boxGeometry args={[0.014, Math.abs(activeY - mainBot[1]) * 0.72, 0.01]} />
       </mesh>
 
-      {CIRCUITS.map((c) => {
-        const x = rcboX(c.index);
-        const term = moduleTopTerminal(x);
-        const pinH = activeY - term[1];
-        return (
-          <group key={`a-${c.id}`}>
-            <mesh position={[x, term[1] + pinH / 2, activeZ]}>
-              <boxGeometry args={[0.012, pinH, 0.01]} />
-              <meshStandardMaterial color="#b45309" metalness={0.95} roughness={0.22} />
-            </mesh>
-            <mesh position={[x, term[1] + 0.008, term[2]]}>
-              <boxGeometry args={[0.014, 0.012, 0.016]} />
-              <meshStandardMaterial color="#b45309" metalness={0.95} roughness={0.22} />
-            </mesh>
-          </group>
-        );
-      })}
-
-      {/* Main LOAD → active comb riser */}
-      <mesh position={[first - 0.08, (activeY + mainBot[1]) * 0.5 + 0.18, activeZ - 0.02]}>
-        <boxGeometry args={[0.014, 0.16, 0.012]} />
-        <meshStandardMaterial color="#b45309" metalness={0.95} roughness={0.22} />
-      </mesh>
-
-      {/* ——— NEUTRAL comb (blue sleeve) ——— */}
-      <mesh position={[mid + 0.02, neutY, neutZ]}>
-        <boxGeometry args={[span + 0.06, 0.014, 0.018]} />
-        <meshStandardMaterial color="#64748b" metalness={0.85} roughness={0.3} />
-      </mesh>
-      <mesh position={[mid + 0.02, neutY + 0.008, neutZ]} material={materials.plasticBlue}>
-        <boxGeometry args={[span + 0.04, 0.01, 0.024]} />
-      </mesh>
-
-      {CIRCUITS.map((c) => {
-        const x = rcboX(c.index);
-        const term = moduleNeutralTerminal(x);
-        const pinH = Math.max(neutY - term[1], 0.04);
-        return (
-          <group key={`n-${c.id}`}>
-            <mesh position={[term[0], term[1] + pinH / 2, neutZ]}>
-              <boxGeometry args={[0.01, pinH, 0.008]} />
-              <meshStandardMaterial color="#64748b" metalness={0.85} roughness={0.3} />
-            </mesh>
-            <mesh position={[term[0], term[1] + 0.006, term[2]]}>
-              <boxGeometry args={[0.012, 0.01, 0.014]} />
-              <meshStandardMaterial color="#64748b" metalness={0.85} roughness={0.3} />
-            </mesh>
-          </group>
-        );
-      })}
+      <CombSpine
+        circuits={CIRCUITS}
+        mid={mid}
+        span={span - 0.02}
+        spineY={neutY}
+        spineZ={neutZ}
+        metal={materials.combNeutralMetal}
+        sleeve={materials.plasticGrey}
+        endCap={materials.plasticBlue}
+        terminalAt={moduleNeutralTerminal}
+        sleeveOffsetX={-0.012}
+        toothW={0.012}
+        toothT={0.005}
+      />
     </group>
   );
 }

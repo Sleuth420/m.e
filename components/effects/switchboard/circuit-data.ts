@@ -1,3 +1,5 @@
+import { moduleTerminalLocal } from './assets/module-assets';
+
 export type Vec3 = [number, number, number];
 
 export type CircuitPole = {
@@ -9,31 +11,47 @@ export type CircuitPole = {
 
 /**
  * Layout: modules on DIN (body in front of rail).
- * Neutral LEFT + earth RIGHT at same Y.
+ * Neutral + earth bars on the BACK WALL (not side panels).
  * Comb feeds LINE + N at the TOP of RCBOs.
+ * Outgoing TPS gathers into ONE floor gland (not scattered exits).
  */
+/** Main + circuit poles (kept in sync with CIRCUITS.length + 1). */
+const POLE_COUNT = 13; // 1 main + 12 RCBOs
+const RCBO_WIDTH = 0.17;
+const MODULE_PITCH = RCBO_WIDTH;
+/** Tight box: small equal side margins so poles fill the enclosure */
+const SIDE_MARGIN = 0.16;
+const POLE_SPAN = (POLE_COUNT - 1) * MODULE_PITCH;
+const BOARD_HEIGHT = 3.35;
+const BOARD_WIDTH = POLE_SPAN + RCBO_WIDTH + SIDE_MARGIN * 2;
+
 export const BOARD = {
-  width: 4.6,
-  height: 3.35,
-  depth: 0.92,
-  innerDepth: 0.7,
+  width: BOARD_WIDTH,
+  height: BOARD_HEIGHT,
+  depth: 1.7,
+  innerDepth: 1.45,
   railY: 0,
-  railZ: 0.02,
-  mainWidth: 0.17,
-  rcboWidth: 0.17,
-  moduleGap: 0.005,
-  moduleDepth: 0.36,
+  railZ: 0.08,
+  mainWidth: RCBO_WIDTH,
+  // Exact pole pitch — modules abut
+  rcboWidth: RCBO_WIDTH,
+  moduleGap: 0,
+  moduleDepth: 0.55,
   moduleHeight: 0.86,
-  firstModuleX: -1.72,
-  barY: 1.26,
-  barZ: 0.06,
-  /** Separate entry points for incoming TPS / earth */
-  knockoutActive: [-1.95, 1.4, -0.22] as Vec3,
-  /** Kept left of the main so N never reads as a black fan into the red */
-  knockoutNeutral: [-1.78, 1.55, -0.3] as Vec3,
-  knockoutEarth: [1.55, 1.42, -0.24] as Vec3,
-  loomGather: [0.95, -1.0, -0.06] as Vec3,
-  outgoingExit: [1.15, -1.32, -0.38] as Vec3,
+  /** Centered pole row — enclosure hugs the modules */
+  firstModuleX: -POLE_SPAN / 2,
+  /** Terminal bars flush on the back wall above the DIN */
+  barY: 1.05,
+  barZ: -0.62,
+  /**
+   * Single mains TPS gland (matches Enclosure top-left knockout 0).
+   * Active + neutral + earth peel from this one cable inside the board.
+   */
+  mainsKnockout: [-BOARD_WIDTH / 2 + 0.22, 1.555, -0.35] as Vec3,
+  /**
+   * Floor gland plate under the load side — one aligned hole per circuit (neat row).
+   */
+  glandPlateZ: 0.32,
 };
 
 export const CIRCUITS: CircuitPole[] = [
@@ -64,31 +82,31 @@ export function rcboX(index: number): number {
 }
 
 export function moduleBodyZ(): number {
-  return BOARD.railZ + BOARD.moduleDepth / 2 + 0.14;
+  return BOARD.railZ + BOARD.moduleDepth / 2 + 0.02;
 }
 
+/** LINE (active) top cable mouth — TOP face, right side. */
 export function moduleTopTerminal(x: number): Vec3 {
-  return [
-    x,
-    BOARD.railY + BOARD.moduleHeight / 2 + 0.01,
-    moduleBodyZ() - BOARD.moduleDepth * 0.28,
-  ];
+  const t = moduleTerminalLocal('rcbo').lineTop;
+  return [x + t.x, BOARD.railY + t.y, moduleBodyZ() + t.z];
 }
 
+/** Load active bottom cable mouth — BOTTOM face, right side. */
 export function moduleBottomTerminal(x: number): Vec3 {
-  return [
-    x,
-    BOARD.railY - BOARD.moduleHeight / 2 - 0.01,
-    moduleBodyZ() - BOARD.moduleDepth * 0.28,
-  ];
+  const t = moduleTerminalLocal('rcbo').lineBottom;
+  return [x + t.x, BOARD.railY + t.y, moduleBodyZ() + t.z];
 }
 
+/** Neutral top cable mouth — TOP face, left (N). */
 export function moduleNeutralTerminal(x: number): Vec3 {
-  return [
-    x + BOARD.rcboWidth * 0.22,
-    BOARD.railY + BOARD.moduleHeight / 2 + 0.01,
-    moduleBodyZ() - BOARD.moduleDepth * 0.2,
-  ];
+  const t = moduleTerminalLocal('rcbo').neutralTop;
+  return [x + t.x, BOARD.railY + t.y, moduleBodyZ() + t.z];
+}
+
+/** Neutral load bottom cable mouth — BOTTOM face, left (N). */
+export function moduleBottomNeutralTerminal(x: number): Vec3 {
+  const t = moduleTerminalLocal('rcbo').neutralBottom;
+  return [x + t.x, BOARD.railY + t.y, moduleBodyZ() + t.z];
 }
 
 export function poleSpan(): number {
@@ -99,31 +117,44 @@ export function poleCenterX(): number {
   return (mainSwitchX() + rcboX(CIRCUITS.length - 1)) / 2;
 }
 
-/** Neutral LEFT, earth RIGHT — span the module row */
+/**
+ * Neutral + earth bars on the BACK WALL spanning the pole row
+ * (not on left/right side panels).
+ */
 export function barLayout() {
-  const half = poleSpan() * 0.42;
-  const cx = poleCenterX();
-  const gap = 0.22;
-  const neutCx = cx - half / 2 - gap / 2;
-  const earthCx = cx + half / 2 + gap / 2;
-  return { half, earthCx, neutCx, y: BOARD.barY, z: BOARD.barZ };
+  const first = mainSwitchX();
+  const last = rcboX(CIRCUITS.length - 1);
+  const mid = (first + last) / 2;
+  // Fit bars to the pole span — side-by-side on the back wall
+  const neutHalf = POLE_SPAN * 0.46;
+  const earthHalf = POLE_SPAN * 0.46;
+  const neutCx = mid - earthHalf / 2 - 0.06;
+  const earthCx = mid + neutHalf / 2 + 0.06;
+  return {
+    neutHalf,
+    earthHalf,
+    earthCx,
+    neutCx,
+    y: BOARD.barY,
+    z: BOARD.barZ,
+  };
 }
 
 /** 0 = supply in, 1 = bond/spare, 2+ = circuit tails */
 export function earthBarScrew(i: number): Vec3 {
-  const { half, earthCx, y, z } = barLayout();
+  const { earthHalf, earthCx, y, z } = barLayout();
   const total = CIRCUITS.length + 2;
-  const left = earthCx - half / 2 + 0.05;
-  const span = half - 0.1;
+  const left = earthCx - earthHalf / 2 + 0.05;
+  const span = earthHalf - 0.1;
   const x = left + (i / Math.max(total - 1, 1)) * span;
   return [x, y, z];
 }
 
 export function neutralBarScrew(i: number): Vec3 {
-  const { half, neutCx, y, z } = barLayout();
+  const { neutHalf, neutCx, y, z } = barLayout();
   const total = CIRCUITS.length + 2;
-  const left = neutCx - half / 2 + 0.05;
-  const span = half - 0.1;
+  const left = neutCx - neutHalf / 2 + 0.05;
+  const span = neutHalf - 0.1;
   const x = left + (i / Math.max(total - 1, 1)) * span;
   return [x, y, z];
 }

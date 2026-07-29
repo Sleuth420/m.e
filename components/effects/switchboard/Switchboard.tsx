@@ -1,88 +1,35 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
-import { MathUtils } from 'three';
-import { CIRCUITS, rcboX, BOARD } from './circuit-data';
+import { CIRCUITS, rcboX } from './circuit-data';
 import { CombBus } from './CombBus';
 import { DinRail } from './DinRail';
 import { Enclosure } from './Enclosure';
 import { MainSwitch } from './MainSwitch';
 import { useSwitchboardMaterials } from './materials';
+import { TripFlash } from './parts/TripFlash';
 import { Rcbo } from './Rcbo';
 import { TerminalBars } from './TerminalBars';
+import { useSwitchboardState } from './useSwitchboardState';
 import { Wiring } from './Wiring';
 
-function TripFlash({ x, active }: { x: number; active: boolean }) {
-  const lightRef = useRef<{ intensity: number }>(null);
-  const intensity = useRef(0);
-
-  useFrame((_, delta) => {
-    intensity.current = MathUtils.damp(intensity.current, active ? 4.5 : 0, 8, delta);
-    if (lightRef.current) lightRef.current.intensity = intensity.current;
-  });
-
-  return (
-    <pointLight
-      ref={lightRef as never}
-      position={[x, BOARD.railY + 0.1, 0.55]}
-      color="#fb923c"
-      distance={2.2}
-      decay={2}
-      intensity={0}
-    />
-  );
-}
-
+/** Composes board assemblies; state lives in useSwitchboardState. */
 export function Switchboard() {
   const materials = useSwitchboardMaterials();
-  const [mainOn, setMainOn] = useState(true);
-  const [rcboOn, setRcboOn] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(CIRCUITS.map((c) => [c.id, true]))
-  );
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [tripFlashId, setTripFlashId] = useState<string | null>(null);
-
-  const toggleRcbo = useCallback((id: string) => {
-    setRcboOn((prev) => ({ ...prev, [id]: !(prev[id] ?? true) }));
-  }, []);
-
-  const tripRcbo = useCallback((id: string) => {
-    setRcboOn((prev) => ({ ...prev, [id]: false }));
-    setTripFlashId(id);
-  }, []);
-
-  useEffect(() => {
-    if (!tripFlashId) return;
-    const t = window.setTimeout(() => setTripFlashId(null), 420);
-    return () => window.clearTimeout(t);
-  }, [tripFlashId]);
-
-  const liveById = useMemo(
-    () =>
-      Object.fromEntries(
-        CIRCUITS.map((c) => [c.id, mainOn && (rcboOn[c.id] ?? false)])
-      ) as Record<string, boolean>,
-    [mainOn, rcboOn]
-  );
-
-  const hoveredCircuit = CIRCUITS.find((c) => c.id === hovered);
-  const hoveredLabel =
-    hovered === 'main'
-      ? mainOn
-        ? 'MAIN ON — supply to the board'
-        : 'MAIN OFF — whole board isolated'
-      : hoveredCircuit
-        ? `${hoveredCircuit.label} · ${
-            liveById[hoveredCircuit.id] ? 'LIVE' : rcboOn[hoveredCircuit.id] ? 'ON (no supply)' : 'TRIPPED / OFF'
-          }`
-        : null;
-
-  const flashCircuit = CIRCUITS.find((c) => c.id === tripFlashId);
+  const {
+    mainOn,
+    rcboOn,
+    setHovered,
+    tripFlashId,
+    toggleMain,
+    toggleRcbo,
+    tripRcbo,
+    liveById,
+    flashCircuit,
+    hovered,
+  } = useSwitchboardState();
 
   return (
-    <group position={[0.02, -0.18, 0.12]} rotation={[0.06, -0.28, 0.01]}>
+    <group position={[0, -0.1, 0.08]} rotation={[0.04, -0.12, 0]} scale={1.55}>
       <Enclosure materials={materials} />
       <DinRail materials={materials} />
       <TerminalBars materials={materials} />
@@ -97,7 +44,7 @@ export function Switchboard() {
         materials={materials}
         on={mainOn}
         highlighted={hovered === 'main'}
-        onToggle={() => setMainOn((v) => !v)}
+        onToggle={toggleMain}
         onHover={setHovered}
       />
 
@@ -114,20 +61,6 @@ export function Switchboard() {
           onHover={setHovered}
         />
       ))}
-
-      {hoveredLabel && (
-        <Html
-          position={[0, 1.72, 0.55]}
-          center
-          style={{ pointerEvents: 'none' }}
-          wrapperClass="!max-w-[min(90vw,20rem)] !overflow-hidden"
-          zIndexRange={[10, 0]}
-        >
-          <div className="max-w-[min(90vw,20rem)] truncate rounded-md border border-primary/40 bg-background/90 px-3 py-1.5 text-xs font-medium text-foreground shadow-lg backdrop-blur-sm">
-            {hoveredLabel}
-          </div>
-        </Html>
-      )}
     </group>
   );
 }
