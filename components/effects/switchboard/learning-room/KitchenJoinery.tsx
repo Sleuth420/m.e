@@ -10,7 +10,7 @@ import { useSizedPbr } from './room-textures';
 /** Light oak tint — keeps Poly Haven kitchen wood in the same family as the marble bench. */
 export const JOINERY = '#efe6d8';
 const JOINERY_IN = '#cbbba6';
-const KICK = '#1c1d1f';
+const KICK = '#2a2d31';
 const STEEL = '#c5c9ce';
 
 const PANEL = 0.018;
@@ -274,29 +274,38 @@ function SlabDrawer({ w, h }: { w: number; h: number }) {
 }
 
 function KickMat() {
-  return <meshStandardMaterial color={KICK} roughness={0.48} metalness={0.12} envMapIntensity={0.55} />;
+  return <meshStandardMaterial color={KICK} roughness={0.42} metalness={0.16} envMapIntensity={0.7} />;
 }
 
-/** Recessed vinyl plinth — a 16 mm front panel, not a charcoal block filling the void. */
-export function JoineryKick({ x, w }: { x: number; w: number }) {
-  const t = 0.016;
+/** Recessed vinyl plinth — 18 mm front, dark lining so the toe-space is not a cave. */
+export function JoineryKick({ x, w, returns = true }: { x: number; w: number; returns?: boolean }) {
+  const t = 0.018;
   const frontZ = KITCHEN.benchDepth + DOOR_T - KICK_RECESS;
-  const h = KITCHEN.kickH - 0.003;
-  const y = h / 2 + 0.001;
+  const h = KITCHEN.kickH - 0.004;
+  const y = h / 2 + 0.002;
+  const liningZ = frontZ - 0.032;
   return (
     <group>
       <mesh position={[x + w / 2, y, frontZ - t / 2]} castShadow receiveShadow>
         <boxGeometry args={[w, h, t]} />
         <KickMat />
       </mesh>
-      <mesh position={[x + t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
-        <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
-        <KickMat />
+      <mesh position={[x + w / 2, y, liningZ]} receiveShadow>
+        <boxGeometry args={[Math.max(0.02, w - t * 2), h - 0.006, 0.01]} />
+        <meshStandardMaterial color="#16181a" roughness={0.88} metalness={0.04} />
       </mesh>
-      <mesh position={[x + w - t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
-        <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
-        <KickMat />
-      </mesh>
+      {returns && (
+        <>
+          <mesh position={[x + t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+            <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
+            <KickMat />
+          </mesh>
+          <mesh position={[x + w - t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+            <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
+            <KickMat />
+          </mesh>
+        </>
+      )}
     </group>
   );
 }
@@ -346,6 +355,97 @@ export function JoineryEndPanel({
       uvW={depth}
       uvH={h}
     />
+  );
+}
+
+/** 6–8 mm oak packer between an appliance and the neighbouring door. */
+export function JoineryPacker({
+  x,
+  y,
+  h,
+  depth,
+}: {
+  x: number;
+  y: number;
+  h: number;
+  depth: number;
+}) {
+  const w = 0.007;
+  if (h < 0.04) return null;
+  return (
+    <Box
+      w={w}
+      h={h}
+      d={0.018}
+      position={[x + w / 2, y + h / 2, depth + 0.009]}
+      grain="v"
+      uvW={0.018}
+      uvH={h}
+    />
+  );
+}
+
+/**
+ * Fridge tower: 18 mm gables + a hollow oak bulkhead, not a solid timber brick.
+ * Opening is the appliance cutout; leftover width is equal scribes.
+ */
+export function JoineryFridgeHousing({
+  x,
+  w,
+  h,
+  openingX,
+  openingW,
+  openingH,
+  depth,
+}: {
+  x: number;
+  w: number;
+  h: number;
+  openingX: number;
+  openingW: number;
+  openingH: number;
+  depth: number;
+}) {
+  const leftW = openingX - x;
+  const rightW = x + w - (openingX + openingW);
+  const canopyH = h - openingH;
+  return (
+    <group>
+      <JoineryEndPanel x={x} w={leftW} h={h} depth={depth} />
+      <JoineryEndPanel x={openingX + openingW} w={rightW} h={h} depth={depth} />
+      {canopyH > 0.02 && (
+        <>
+          <Box
+            w={openingW}
+            h={canopyH}
+            d={PANEL}
+            position={[openingX + openingW / 2, openingH + canopyH / 2, depth - PANEL / 2]}
+            grain="v"
+            uvW={openingW}
+            uvH={canopyH}
+          />
+          <Box
+            w={openingW}
+            h={PANEL}
+            d={depth}
+            position={[openingX + openingW / 2, h - PANEL / 2, depth / 2]}
+            grain="h"
+            uvW={openingW}
+            uvH={depth}
+          />
+          <Box
+            w={openingW}
+            h={PANEL}
+            d={depth - PANEL}
+            position={[openingX + openingW / 2, openingH + PANEL / 2, (depth - PANEL) / 2]}
+            interior
+            grain="h"
+            uvW={openingW}
+            uvH={depth}
+          />
+        </>
+      )}
+    </group>
   );
 }
 

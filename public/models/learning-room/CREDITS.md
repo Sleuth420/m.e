@@ -9,6 +9,7 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/cabinet-drawers.glb` | Kitchen 4-drawer base | CC BY 4.0 | Objaverse / Sketchfab |
 | `real/cabinets-modular.glb` | Modular kitchen cabinets (joinery kit) | CC BY 4.0 | Objaverse / Sketchfab |
 | `real/fridge-french.glb` | French Door Refrigerator - Stainless | CC BY 4.0 | [ebe62ed](https://sketchfab.com/3d-models/french-door-refrigerator-stainless-ebe62ed6dd9b446a9c9b7d7d6a8086e7) |
+| `real/dishwasher-phoria.glb` | Whirlpool WDF330PAHS dishwasher | CC BY 4.0 | Objaverse / Sketchfab |
 | `real/dishwasher-pro.glb` | Built-in dishwasher (door, racks, plates) | CC BY 4.0 | Objaverse / Sketchfab |
 | `real/sink.glb` | Kitchen sink | CC BY 4.0 | [8bc381a](https://sketchfab.com/3d-models/8bc381a229e34834bd8e20ca6011e82f) |
 | `real/tap.glb` | Grohe tap | CC BY 4.0 | — |
