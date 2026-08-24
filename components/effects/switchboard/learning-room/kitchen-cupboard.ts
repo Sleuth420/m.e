@@ -83,40 +83,6 @@ function extractTriangles(
   return dst;
 }
 
-function extractTrianglesWorld(
-  mesh: Mesh,
-  keepCentroid: (x: number, y: number, z: number) => boolean,
-): BufferGeometry {
-  mesh.updateWorldMatrix(true, false);
-  const src = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
-  const pos = src.getAttribute('position');
-  if (!pos) return new BufferGeometry();
-  const v = new Vector3();
-  const keep: number[] = [];
-  for (let i = 0; i < pos.count; i += 3) {
-    v.set(
-      (pos.getX(i) + pos.getX(i + 1) + pos.getX(i + 2)) / 3,
-      (pos.getY(i) + pos.getY(i + 1) + pos.getY(i + 2)) / 3,
-      (pos.getZ(i) + pos.getZ(i + 1) + pos.getZ(i + 2)) / 3,
-    );
-    v.applyMatrix4(mesh.matrixWorld);
-    if (keepCentroid(v.x, v.y, v.z)) keep.push(i, i + 1, i + 2);
-  }
-  const dst = new BufferGeometry();
-  for (const name of Object.keys(src.attributes)) {
-    const attr = src.getAttribute(name) as BufferAttribute;
-    const itemSize = attr.itemSize;
-    const out = new Float32Array(keep.length * itemSize);
-    let o = 0;
-    for (const i of keep) {
-      for (let k = 0; k < itemSize; k++) out[o++] = attr.getComponent(i, k);
-    }
-    dst.setAttribute(name, new BufferAttribute(out, itemSize));
-  }
-  dst.computeVertexNormals();
-  return dst;
-}
-
 function paintKitchenJoinery(root: Object3D) {
   root.traverse((obj) => {
     const mesh = obj as Mesh;
@@ -301,58 +267,4 @@ export function prepareUpperCupboard(root: Object3D) {
   isolateCupboard(root, 'upper');
   paintKitchenJoinery(root);
   splitShakerDoors(root);
-}
-
-/**
- * Whirlpool WDF330PAHS is one mesh: drop the integral kickplate so it sits on
- * our vinyl plinth, and peel the front skin off as `dw_door` for the drop hinge.
- */
-export function preparePhoriaDishwasher(root: Object3D) {
-  if (findNamed(root, /^dw_door$/)) return;
-  root.updateWorldMatrix(true, true);
-  const found: Mesh[] = [];
-  root.traverse((obj) => {
-    const m = obj as Mesh;
-    if (m.isMesh && m.visible) found.push(m);
-  });
-  const mesh = found[0];
-  if (!mesh) return;
-
-  const box = new Box3().setFromObject(mesh);
-  const size = box.getSize(new Vector3());
-  if (size.y < 0.25 || size.z < 0.08) return;
-
-  const yKick = box.min.y + size.y * 0.12;
-  const zDoor = box.max.z - Math.min(0.05, size.z * 0.16);
-  const doorGeom = extractTrianglesWorld(mesh, (_x, y, z) => y >= yKick && z >= zDoor);
-  const bodyGeom = extractTrianglesWorld(mesh, (_x, y, z) => y >= yKick && z < zDoor);
-  const doorCount = doorGeom.getAttribute('position')?.count ?? 0;
-  const bodyCount = bodyGeom.getAttribute('position')?.count ?? 0;
-  if (doorCount < 30 || bodyCount < 30) {
-    doorGeom.dispose();
-    bodyGeom.dispose();
-    return;
-  }
-
-  const mat = mesh.material;
-  const parent = mesh.parent ?? root;
-  const bodyMesh = new Mesh(bodyGeom, mat);
-  bodyMesh.name = 'dw_tub';
-  bodyMesh.castShadow = true;
-  bodyMesh.receiveShadow = true;
-  bodyMesh.position.copy(mesh.position);
-  bodyMesh.quaternion.copy(mesh.quaternion);
-  bodyMesh.scale.copy(mesh.scale);
-
-  const doorMesh = new Mesh(doorGeom, mat);
-  doorMesh.name = 'dw_door';
-  doorMesh.castShadow = true;
-  doorMesh.receiveShadow = true;
-  doorMesh.position.copy(mesh.position);
-  doorMesh.quaternion.copy(mesh.quaternion);
-  doorMesh.scale.copy(mesh.scale);
-
-  parent.add(bodyMesh);
-  parent.add(doorMesh);
-  parent.remove(mesh);
 }

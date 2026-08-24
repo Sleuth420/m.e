@@ -16,7 +16,6 @@ import {
   JoineryPacker,
   JoinerySubtop,
 } from './KitchenJoinery';
-import { preparePhoriaDishwasher } from './kitchen-cupboard';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
@@ -62,8 +61,9 @@ const OVEN_DRAWER_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H - OVEN_H;
 const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
 const FILL = 0.018;
 const PACK = 0.007;
-const FRIDGE_H = 1.78;
 const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
+/** Native French-door is 960×1818; width-fit into the 18 mm scribes, ~40 mm bulkhead left. */
+const FRIDGE_H = HOUSING_H - 0.04;
 
 function BenchSlab({
   x0,
@@ -181,7 +181,6 @@ function HingedAppliance({
   preScale,
   envIntensity,
   hide,
-  prepare,
 }: {
   url: string;
   maxSize: [number, number, number];
@@ -193,7 +192,6 @@ function HingedAppliance({
   preScale?: number;
   envIntensity?: number;
   hide?: RegExp;
-  prepare?: (root: Object3D) => void;
   open: boolean;
   doorMatch: RegExp;
   extraMatch?: RegExp;
@@ -217,7 +215,6 @@ function HingedAppliance({
       preScale={preScale}
       envIntensity={envIntensity}
       hide={hide}
-      prepare={prepare}
       onReady={(root) => {
         pivot.current = hingeParts(root, doorMatch, extraMatch);
       }}
@@ -572,18 +569,14 @@ export function KitchenRun({
       />
       <JoineryPacker x={dw.x} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <JoineryPacker x={dw.x + dw.w - PACK} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
-      <HingedAppliance
+      <FittedGltf
         url={ROOM_GLB.dishwasher}
-        maxSize={[dw.w - PACK * 2 - 0.004, DW_H - 0.004, FACE - 0.05]}
+        maxSize={[dw.w - PACK * 2 - 0.004, DW_H - 0.004, 0.85]}
         position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
         align="bottom"
         pin="front"
         fit="contain"
-        envIntensity={1.35}
-        prepare={preparePhoriaDishwasher}
-        open={dwOpen}
-        doorMatch={/dw_door/}
-        openAngle={1.22}
+        envIntensity={1.5}
       />
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <JoineryFridgeHousing
@@ -597,12 +590,12 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.fridge}
-        maxSize={[fridgeW - 0.01, FRIDGE_H, 0.82]}
+        maxSize={[fridgeW - 0.008, FRIDGE_H, 0.9]}
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        fit="contain"
-        envIntensity={1.35}
+        fit="width"
+        envIntensity={1.4}
       />
       <FittedGltf
         url={ROOM_GLB.toaster}
