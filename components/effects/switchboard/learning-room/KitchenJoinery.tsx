@@ -10,7 +10,6 @@ import { useSizedPbr } from './room-textures';
 /** Light oak tint — keeps Poly Haven kitchen wood in the same family as the marble bench. */
 export const JOINERY = '#efe6d8';
 const JOINERY_IN = '#cbbba6';
-const JOINERY_GAP = '#2a2724';
 const KICK = '#1c1d1f';
 const STEEL = '#c5c9ce';
 
@@ -29,11 +28,13 @@ function WoodMat({
   h,
   grain,
   interior = false,
+  panel = false,
 }: {
   w: number;
   h: number;
   grain: 'v' | 'h';
   interior?: boolean;
+  panel?: boolean;
 }) {
   const maps = useSizedPbr(
     POLYHAVEN.oakVeneer,
@@ -41,15 +42,16 @@ function WoodMat({
     WOOD_TILE,
     grain === 'h' ? Math.PI / 2 : 0,
   );
+  const tint = interior ? JOINERY_IN : panel ? '#e4d7c6' : JOINERY;
   return (
     <meshStandardMaterial
       map={maps.map}
       normalMap={maps.normalMap}
       roughnessMap={maps.roughnessMap}
-      color={interior ? JOINERY_IN : JOINERY}
+      color={tint}
       roughness={1}
       metalness={0.02}
-      envMapIntensity={interior ? 0.55 : 1.05}
+      envMapIntensity={interior ? 0.7 : panel ? 0.95 : 1.08}
       normalScale={[0.22, 0.22]}
     />
   );
@@ -65,6 +67,7 @@ function Box({
   d,
   position,
   interior,
+  panel,
   grain = 'v',
   uvW,
   uvH,
@@ -74,6 +77,7 @@ function Box({
   d: number;
   position: [number, number, number];
   interior?: boolean;
+  panel?: boolean;
   grain?: 'v' | 'h';
   uvW?: number;
   uvH?: number;
@@ -84,7 +88,7 @@ function Box({
   return (
     <mesh position={position} castShadow receiveShadow>
       <boxGeometry args={[w, h, d]} />
-      <WoodMat w={u} h={v} grain={grain} interior={interior} />
+      <WoodMat w={u} h={v} grain={grain} interior={interior} panel={panel} />
     </mesh>
   );
 }
@@ -138,6 +142,7 @@ function ShakerLeaf({ w, h }: { w: number; h: number }) {
         d={DOOR_T - inset}
         position={[w / 2, h / 2, (DOOR_T - inset) / 2]}
         grain="v"
+        panel
       />
     </group>
   );
@@ -384,10 +389,6 @@ export function JoineryBay({
 
   return (
     <group>
-      <mesh position={[x + w / 2, doorY + doorH / 2, depth - 0.001]} receiveShadow>
-        <boxGeometry args={[w - 0.004, doorH, 0.002]} />
-        <meshStandardMaterial color={JOINERY_GAP} roughness={1} metalness={0} />
-      </mesh>
       <Carcass x={x} y={y} w={w} h={h} depth={depth - 0.004} kick={kick} />
       {fronts}
     </group>
