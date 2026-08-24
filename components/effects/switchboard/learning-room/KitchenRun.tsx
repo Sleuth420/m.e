@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { FittedGltf, findNamed } from './FittedGltf';
-import { JoineryBay, JoineryFascia, JoineryKick, JoinerySubtop } from './KitchenJoinery';
+import { JoineryBay, JoineryEndPanel, JoineryFascia, JoineryKick, JoineryOvenDrawer, JoinerySubtop } from './KitchenJoinery';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
@@ -46,10 +46,15 @@ const FACE = KITCHEN.benchDepth;
 /** Center of overlay doors (hinge on FACE, 36 mm thick). */
 const FRONT = FACE + 0.018;
 const SINK_CUT = { w: 0.76, d: 0.46, cz: 0.3 } as const;
-/** White fascia above oven / dishwasher — appliance body sits on kicker below this line. */
-const APPLIANCE_FILL_Y = 0.68;
-const APPLIANCE_BODY_H = APPLIANCE_FILL_Y - KITCHEN.kickH;
-const FASCIA_H = KITCHEN.benchH - APPLIANCE_FILL_Y;
+/** Built-in oven is 595 mm; leftover under the bench is an oak drawer + 16 mm rail. */
+const RAIL_H = 0.016;
+const OVEN_H = 0.595;
+const OVEN_DRAWER_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H - OVEN_H;
+const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
+const FILL = 0.018;
+const FRIDGE_W = 0.91;
+const FRIDGE_H = 1.8;
+const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
 
 function BenchSlab({
   x0,
@@ -166,6 +171,7 @@ function HingedAppliance({
   fit,
   preScale,
   envIntensity,
+  hide,
 }: {
   url: string;
   maxSize: [number, number, number];
@@ -176,6 +182,7 @@ function HingedAppliance({
   fit?: 'contain' | 'width' | 'stretch';
   preScale?: number;
   envIntensity?: number;
+  hide?: RegExp;
   open: boolean;
   doorMatch: RegExp;
   extraMatch?: RegExp;
@@ -198,32 +205,11 @@ function HingedAppliance({
       fit={fit}
       preScale={preScale}
       envIntensity={envIntensity}
+      hide={hide}
       onReady={(root) => {
         pivot.current = hingeParts(root, doorMatch, extraMatch);
       }}
     />
-  );
-}
-
-/** Built-in dishwasher door — stainless drop-down in front of the product tub. */
-function DishwasherDoor({ x, w, open }: { x: number; w: number; open: boolean }) {
-  const hinge = useRef<Group>(null);
-  useFrame((_, delta) => {
-    if (!hinge.current) return;
-    hinge.current.rotation.x = MathUtils.damp(hinge.current.rotation.x, open ? 1.28 : 0, 8, delta);
-  });
-  const h = APPLIANCE_BODY_H;
-  return (
-    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.01, FRONT + 0.012]}>
-      <mesh position={[0, h / 2, 0.012]} castShadow receiveShadow>
-        <boxGeometry args={[w - 0.028, h - 0.016, 0.022]} />
-        <meshStandardMaterial color="#c5c9ce" metalness={0.84} roughness={0.22} envMapIntensity={1.45} />
-      </mesh>
-      <mesh position={[0, h * 0.74, 0.026]} castShadow>
-        <boxGeometry args={[w - 0.16, 0.016, 0.014]} />
-        <meshStandardMaterial color="#9aa0a6" metalness={0.9} roughness={0.16} envMapIntensity={1.5} />
-      </mesh>
-    </group>
   );
 }
 
@@ -416,12 +402,24 @@ export function KitchenRun({
   const dwOpen = !!openById.dishwasher;
   const drawersOpen = !!openById['cabA-base'];
 
+  const fridgeLeftFill = FILL;
+  const fridgeRightFill = Math.max(FILL, fridge.w - fridgeLeftFill - FRIDGE_W);
+  const fridgeLeft = fridge.x + fridgeLeftFill;
+  const fridgeMid = fridgeLeft + FRIDGE_W / 2;
+  const ovenY = KITCHEN.kickH + OVEN_DRAWER_H;
+  const gableDepth = KITCHEN.benchDepth + 0.018;
+
   return (
     <group>
-      <JoineryKick x={sink.x} w={sink.w + cabA.w + cook.w} />
-      <JoineryKick x={cabL.x} w={cabL.w} />
-      <JoineryKick x={dw.x} w={dw.w} />
-      <JoineryKick x={cabR.x} w={cabR.w} />
+      <JoineryKick x={sink.x} w={fridge.x + fridge.w - sink.x} />
+      <JoineryEndPanel x={sink.x - FILL} w={FILL} h={KITCHEN.benchH} depth={gableDepth} />
+      <JoineryEndPanel
+        x={sink.x - FILL}
+        w={FILL}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth + 0.018}
+      />
       <BenchRun startX={KITCHEN.startX} endX={joineryEnd} sinkX={FIXTURES.sink.x} />
       <JoinerySubtop x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
@@ -526,50 +524,69 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.cooktop}
-        maxSize={[0.58, 0.05, 0.52]}
-        position={[FIXTURES.cooktop.x, benchY + 0.04, FIXTURES.cooktop.z]}
+        maxSize={[0.58, 0.06, 0.52]}
+        position={[FIXTURES.cooktop.x, benchTop, FIXTURES.cooktop.z]}
+        align="bottom"
         fit="width"
         envIntensity={1.35}
       />
+      <JoineryOvenDrawer x={cook.x} w={cook.w} y={KITCHEN.kickH} h={OVEN_DRAWER_H} />
       <HingedAppliance
         url={ROOM_GLB.oven}
-        maxSize={[cook.w - 0.02, APPLIANCE_BODY_H, FRONT]}
-        position={[FIXTURES.oven.x, KITCHEN.kickH, FRONT]}
+        maxSize={[cook.w - 0.01, OVEN_H, FRONT]}
+        position={[FIXTURES.oven.x, ovenY, FRONT]}
         rotation={[0, -Math.PI / 2, 0]}
+        align="bottom"
         pin="front"
         preScale={0.001}
         fit="contain"
-        envIntensity={1.35}
+        envIntensity={1.4}
         open={ovenOpen}
         doorMatch={/glass/i}
         openAngle={1.15}
       />
-      <JoineryFascia x={cook.x} w={cook.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
+      <JoineryFascia x={cook.x} w={cook.w} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <FittedGltf
         url={ROOM_GLB.hood}
-        maxSize={[cook.w, KITCHEN.upperH + 0.04, 0.5]}
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.26]}
+        maxSize={[cook.w, KITCHEN.upperH + 0.02, 0.52]}
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.28]}
         align="bottom"
         pin="center"
-        fit="contain"
-        envIntensity={1.45}
+        fit="width"
+        envIntensity={1.5}
       />
-      <FittedGltf
+      <HingedAppliance
         url={ROOM_GLB.dishwasher}
-        maxSize={[dw.w - 0.012, APPLIANCE_BODY_H, FACE - 0.04]}
-        position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT - 0.028]}
+        maxSize={[dw.w - 0.01, DW_H, FACE + 0.02]}
+        position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT]}
+        align="bottom"
+        pin="front"
+        fit="contain"
+        envIntensity={1.4}
+        hide={/pied/i}
+        open={dwOpen}
+        doorMatch={/couvercle/i}
+        extraMatch={/baisserPoigner/i}
+        openAngle={1.22}
+      />
+      <JoineryFascia x={dw.x} w={dw.w} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
+      <JoineryEndPanel x={fridge.x} w={fridgeLeftFill} h={HOUSING_H} depth={0.64} />
+      <FittedGltf
+        url={ROOM_GLB.fridge}
+        maxSize={[FRIDGE_W - 0.012, FRIDGE_H, 0.64]}
+        position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
         fit="contain"
         envIntensity={1.35}
       />
-      <DishwasherDoor x={dw.x} w={dw.w} open={dwOpen} />
-      <JoineryFascia x={dw.x} w={dw.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
-      <FittedGltf
-        url={ROOM_GLB.fridge}
-        maxSize={[0.8, 1.64, 0.62]}
-        position={[FIXTURES.fridge.x, 0, 0.34]}
-        envIntensity={1.3}
+      <JoineryEndPanel x={fridgeLeft + FRIDGE_W} w={fridgeRightFill} h={HOUSING_H} depth={0.64} />
+      <JoineryFascia
+        x={fridgeLeft}
+        w={FRIDGE_W}
+        y={FRIDGE_H}
+        h={HOUSING_H - FRIDGE_H}
+        depth={0.64}
       />
       <FittedGltf
         url={ROOM_GLB.toaster}
@@ -580,9 +597,9 @@ export function KitchenRun({
 
       <Hit onToggle={onToggleSink} size={[0.55, 0.24, 0.4]} position={[FIXTURES.sink.x, benchY + 0.12, 0.55]} />
       <Hit onToggle={onToggleBoil} size={[0.56, 0.1, 0.48]} position={[cookX, benchY + 0.08, benchZ]} />
-      <Hit onToggle={() => onToggle('oven')} size={[cook.w - 0.04, 0.55, 0.22]} position={[FIXTURES.oven.x, 0.42, 0.58]} />
-      <Hit onToggle={() => onToggle('dishwasher')} size={[dw.w - 0.04, 0.7, 0.2]} position={[FIXTURES.dishwasher.x, 0.42, 0.58]} />
-      <Hit onToggle={onToggleFridge} size={[0.72, 1.6, 0.22]} position={[FIXTURES.fridge.x, 0.95, 0.62]} />
+      <Hit onToggle={() => onToggle('oven')} size={[cook.w - 0.04, OVEN_H, 0.22]} position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.58]} />
+      <Hit onToggle={() => onToggle('dishwasher')} size={[dw.w - 0.04, DW_H, 0.2]} position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.58]} />
+      <Hit onToggle={onToggleFridge} size={[FRIDGE_W, FRIDGE_H, 0.22]} position={[fridgeMid, FRIDGE_H / 2, 0.64]} />
       <Hit onToggle={() => onToggle('sink-base')} size={[0.7, 0.55, 0.16]} position={[0.68, 0.42, 0.58]} />
       <Hit onToggle={() => onToggle('cabA-base')} size={[0.4, 0.55, 0.16]} position={[1.3, 0.42, 0.58]} />
       <Hit onToggle={() => onToggle('cabL-base')} size={[0.8, 0.55, 0.16]} position={[2.58, 0.42, 0.58]} />

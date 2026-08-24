@@ -273,28 +273,129 @@ function SlabDrawer({ w, h }: { w: number; h: number }) {
   return <Box w={w} h={h} d={DOOR_T} position={[w / 2, h / 2, DOOR_T / 2]} grain="h" />;
 }
 
-/** Recessed charcoal kick — typical of a real Australian kitchen run. */
+function KickMat() {
+  return <meshStandardMaterial color={KICK} roughness={0.48} metalness={0.12} envMapIntensity={0.55} />;
+}
+
+/** Recessed vinyl plinth — a 16 mm front panel, not a charcoal block filling the void. */
 export function JoineryKick({ x, w }: { x: number; w: number }) {
-  const depth = KITCHEN.benchDepth + DOOR_T - KICK_RECESS;
+  const t = 0.016;
+  const frontZ = KITCHEN.benchDepth + DOOR_T - KICK_RECESS;
+  const h = KITCHEN.kickH - 0.003;
+  const y = h / 2 + 0.001;
   return (
-    <mesh position={[x + w / 2, KITCHEN.kickH / 2, depth / 2]} castShadow receiveShadow>
-      <boxGeometry args={[w - 0.001, KITCHEN.kickH, depth]} />
-      <meshStandardMaterial color={KICK} roughness={0.64} metalness={0.1} envMapIntensity={0.5} />
-    </mesh>
+    <group>
+      <mesh position={[x + w / 2, y, frontZ - t / 2]} castShadow receiveShadow>
+        <boxGeometry args={[w, h, t]} />
+        <KickMat />
+      </mesh>
+      <mesh position={[x + t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+        <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
+        <KickMat />
+      </mesh>
+      <mesh position={[x + w - t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+        <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
+        <KickMat />
+      </mesh>
+    </group>
   );
 }
 
-export function JoineryFascia({ x, w, y, h }: { x: number; w: number; y: number; h: number }) {
-  if (h < 0.008) return null;
-  const depth = KITCHEN.benchDepth + DOOR_T;
+export function JoineryFascia({
+  x,
+  w,
+  y,
+  h,
+  depth,
+}: {
+  x: number;
+  w: number;
+  y: number;
+  h: number;
+  depth?: number;
+}) {
+  if (h < 0.006) return null;
+  const d = depth ?? KITCHEN.benchDepth + DOOR_T;
+  return (
+    <Box w={w - REVEAL} h={h - REVEAL} d={d} position={[x + w / 2, y + h / 2, d / 2]} grain="v" />
+  );
+}
+
+/** Finished gable / scribe filler, floor to a given height. */
+export function JoineryEndPanel({
+  x,
+  w,
+  y = 0,
+  h,
+  depth,
+}: {
+  x: number;
+  w: number;
+  y?: number;
+  h: number;
+  depth: number;
+}) {
+  if (w < 0.006 || h < 0.02) return null;
   return (
     <Box
-      w={w - REVEAL}
-      h={h - REVEAL}
+      w={w}
+      h={h}
       d={depth}
       position={[x + w / 2, y + h / 2, depth / 2]}
       grain="v"
+      uvW={depth}
+      uvH={h}
     />
+  );
+}
+
+/** Single oak drawer under a built-in oven — fills the hole the appliance doesn't. */
+export function JoineryOvenDrawer({ x, w, y, h }: { x: number; w: number; y: number; h: number }) {
+  const depth = KITCHEN.benchDepth;
+  const frontW = w - REVEAL * 2;
+  const frontH = h - REVEAL * 2;
+  return (
+    <group>
+      <Box
+        w={PANEL}
+        h={h}
+        d={depth}
+        position={[x + PANEL / 2, y + h / 2, depth / 2]}
+        uvW={depth}
+        uvH={h}
+      />
+      <Box
+        w={PANEL}
+        h={h}
+        d={depth}
+        position={[x + w - PANEL / 2, y + h / 2, depth / 2]}
+        uvW={depth}
+        uvH={h}
+      />
+      <Box
+        w={w - 2 * PANEL}
+        h={PANEL}
+        d={depth}
+        position={[x + w / 2, y + PANEL / 2, depth / 2]}
+        interior
+        grain="h"
+      />
+      <Box
+        w={w - 2 * PANEL}
+        h={h - PANEL}
+        d={PANEL * 0.6}
+        position={[x + w / 2, y + PANEL + (h - PANEL) / 2, PANEL * 0.3]}
+        interior
+      />
+      <group position={[x + REVEAL, y + REVEAL, depth]}>
+        <SlabDrawer w={frontW} h={frontH} />
+        <BarHandle
+          position={[frontW / 2, frontH / 2, DOOR_T + HANDLE_PROJ]}
+          vertical={false}
+          length={Math.min(0.16, frontW * 0.42)}
+        />
+      </group>
+    </group>
   );
 }
 
