@@ -236,10 +236,14 @@ function hingeParts(root: Object3D, match: RegExp, extra?: RegExp): Group | null
   const q = new Quaternion();
   host.getWorldQuaternion(q).invert();
   pivot.quaternion.copy(q);
+  const inner = new Group();
+  inner.name = 'hinge-inner';
+  pivot.add(inner);
   pivot.updateWorldMatrix(true, false);
-  for (const part of parts) pivot.attach(part);
-  root.userData.hinge = pivot;
-  return pivot;
+  inner.updateWorldMatrix(true, false);
+  for (const part of parts) inner.attach(part);
+  root.userData.hinge = inner;
+  return inner;
 }
 
 /** Product GLB whose door/glass mesh drops open around the bottom-front edge. */
