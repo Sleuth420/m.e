@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { FittedGltf, findNamed } from './FittedGltf';
-import { CUPBOARD_BASE_KEEP, CUPBOARD_UPPER_KEEP, prepareKitchenCupboard } from './kitchen-cupboard';
+import { prepareBaseCupboard, prepareUpperCupboard } from './kitchen-cupboard';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
@@ -172,6 +172,12 @@ function DoorCabinet({
   });
   return (
     <group>
+      {kind === 'base' && (
+        <mesh position={[x + w / 2, y + h / 2 + 0.06, depth / 2 - 0.02]} receiveShadow>
+          <boxGeometry args={[w - 0.03, h - 0.14, Math.max(0.18, depth - 0.08)]} />
+          <meshStandardMaterial color="#b9b1a6" roughness={0.62} metalness={0.04} />
+        </mesh>
+      )}
       {kind === 'upper' && (
         <mesh position={[x + w / 2, y + h / 2, depth / 2 - 0.012]} receiveShadow>
           <boxGeometry args={[w - 0.02, h - 0.02, Math.max(0.1, depth - 0.05)]} />
@@ -185,8 +191,7 @@ function DoorCabinet({
         align="bottom"
         pin="center"
         fit="stretch"
-        keep={kind === 'upper' ? CUPBOARD_UPPER_KEEP : CUPBOARD_BASE_KEEP}
-        prepare={prepareKitchenCupboard}
+        prepare={kind === 'upper' ? prepareUpperCupboard : prepareBaseCupboard}
         envIntensity={1.2}
         onReady={(root) => {
           left.current = findNamed(root, /^door_l$/);

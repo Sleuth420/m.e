@@ -3,7 +3,7 @@ export const ROOM_GLB = {
   sconce: '/models/learning-room/sconce.glb?v=21',
   cabinetDrawers: '/models/learning-room/real/cabinet-drawers.glb?v=8',
   /** Modular kitchen cupboard kit — one closed two-door unit per bay. */
-  cabinetDoors: '/models/learning-room/real/cabinets-modular.glb?v=2',
+  cabinetDoors: '/models/learning-room/real/cabinets-modular.glb?v=3',
   fridge: '/models/learning-room/real/fridge-french.glb?v=8',
   oven: '/models/learning-room/real/oven.glb?v=14',
   cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=11',

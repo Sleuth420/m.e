@@ -54,16 +54,6 @@ export function pruneHidden(root: Object3D) {
   for (const obj of drop) obj.parent?.remove(obj);
 }
 
-function firstMesh(root: Object3D): Mesh | null {
-  let found: Mesh | null = null;
-  root.traverse((obj) => {
-    if (found) return;
-    const mesh = obj as Mesh;
-    if (mesh.isMesh) found = mesh;
-  });
-  return found;
-}
-
 function extractTriangles(geometry: BufferGeometry, keepCentroid: (x: number) => boolean): BufferGeometry {
   const src = geometry.index ? geometry.toNonIndexed() : geometry.clone();
   const pos = src.getAttribute('position');
@@ -149,11 +139,68 @@ function hingeGroup(parts: Object3D[], name: string, side: 'left' | 'right'): Gr
   return pivot;
 }
 
+function doorMesh(root: Object3D): Mesh | null {
+  let best: Mesh | null = null;
+  let bestZ = -Infinity;
+  const box = new Box3();
+  const center = new Vector3();
+  const size = new Vector3();
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh || !mesh.visible) return;
+    box.setFromObject(mesh);
+    box.getCenter(center);
+    box.getSize(size);
+    if (size.x < 0.3 || size.y < 0.3) return;
+    if (center.z >= bestZ) {
+      bestZ = center.z;
+      best = mesh;
+    }
+  });
+  return best;
+}
+
+/** The kit is a whole kitchen; pick the closed 1100 mm two-door base at x≈8.82. */
+export function isolateCupboard(root: Object3D, kind: 'base' | 'upper') {
+  root.updateWorldMatrix(true, true);
+  const box = new Box3();
+  const center = new Vector3();
+  const size = new Vector3();
+  const keep = new Set<Object3D>();
+
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    box.setFromObject(mesh);
+    if (box.isEmpty()) return;
+    box.getCenter(center);
+    box.getSize(size);
+    const inCluster = center.x > 8.22 && center.x < 9.42 && center.z > -0.05 && center.z < 0.72;
+    if (!inCluster) return;
+    if (kind === 'upper') {
+      const door = center.z > 0.54 && size.y > 0.4;
+      const handle = size.x < 0.12 && size.y < 0.12 && size.z < 0.12 && center.z > 0.54;
+      if (!door && !handle) return;
+    } else if (center.y > 0.88) {
+      return;
+    }
+    let climb: Object3D | null = mesh;
+    while (climb) {
+      keep.add(climb);
+      climb = climb.parent;
+    }
+    mesh.traverse((child) => keep.add(child));
+  });
+
+  root.traverse((obj) => {
+    if (obj !== root && !keep.has(obj)) obj.visible = false;
+  });
+  pruneHidden(root);
+}
+
 function splitShakerDoors(root: Object3D) {
   if (findNamed(root, /^door_l$/)) return;
-  const front = findNamed(root, /^Cabinet_FrontA\.005$/);
-  if (!front) return;
-  const mesh = firstMesh(front);
+  const mesh = doorMesh(root);
   if (!mesh) return;
 
   const pos = mesh.geometry.getAttribute('position');
@@ -177,7 +224,7 @@ function splitShakerDoors(root: Object3D) {
   rightMesh.castShadow = true;
   rightMesh.receiveShadow = true;
 
-  const parent = mesh.parent ?? front;
+  const parent = mesh.parent ?? root;
   parent.add(leftMesh);
   parent.add(rightMesh);
   leftMesh.position.copy(mesh.position);
@@ -188,15 +235,31 @@ function splitShakerDoors(root: Object3D) {
   rightMesh.scale.copy(mesh.scale);
   parent.remove(mesh);
 
-  const leftHandle = findNamed(root, /^Cabinet_Handle\.013$/);
-  const rightHandle = findNamed(root, /^Cabinet_Handle\.014$/);
-  const leftParts = [leftMesh, leftHandle].filter(Boolean) as Object3D[];
-  const rightParts = [rightMesh, rightHandle].filter(Boolean) as Object3D[];
+  const handles: Object3D[] = [];
+  root.traverse((obj) => {
+    if (/handle/i.test(obj.name)) handles.push(obj);
+  });
+  handles.sort((a, b) => {
+    a.updateWorldMatrix(true, false);
+    b.updateWorldMatrix(true, false);
+    return a.getWorldPosition(new Vector3()).x - b.getWorldPosition(new Vector3()).x;
+  });
+  const leftHandle = handles[0];
+  const rightHandle = handles[handles.length - 1];
+  const leftParts = [leftMesh, leftHandle].filter((p, i, arr) => p && arr.indexOf(p) === i) as Object3D[];
+  const rightParts = [rightMesh, rightHandle].filter((p, i, arr) => p && p !== leftHandle) as Object3D[];
   hingeGroup(leftParts, 'door_l', 'left');
   hingeGroup(rightParts, 'door_r', 'right');
 }
 
-export function prepareKitchenCupboard(root: Object3D) {
+export function prepareBaseCupboard(root: Object3D) {
+  isolateCupboard(root, 'base');
+  paintKitchenJoinery(root);
+  splitShakerDoors(root);
+}
+
+export function prepareUpperCupboard(root: Object3D) {
+  isolateCupboard(root, 'upper');
   paintKitchenJoinery(root);
   splitShakerDoors(root);
 }

@@ -41,7 +41,7 @@ function filterScene(
   prepare?: (root: Object3D) => void
 ) {
   if (!keep && !hide && !prepare) return scene;
-  const key = `${scene.uuid}|k:${keep?.source ?? ''}|h:${hide?.source ?? ''}|p:${prepare?.name ?? ''}`;
+  const key = `v2|${scene.uuid}|k:${keep?.source ?? ''}|h:${hide?.source ?? ''}|p:${prepare?.name ?? ''}`;
   const cached = filteredScenes.get(key);
   if (cached) return cached;
   const clone = scene.clone(true);
