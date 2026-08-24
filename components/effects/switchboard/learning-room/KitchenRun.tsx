@@ -6,15 +6,12 @@ import { useRef } from 'react';
 import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { FittedGltf, findNamed } from './FittedGltf';
-import { prepareBaseCupboard, prepareUpperCupboard } from './kitchen-cupboard';
+import { JoineryBay, JoineryFascia, JoineryKick, JoinerySubtop } from './KitchenJoinery';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
-
-const doorCol = '#cfc8bc';
-const kickCol = '#5c5854';
 
 function Hit({
   onToggle,
@@ -53,27 +50,6 @@ const SINK_CUT = { w: 0.76, d: 0.46, cz: 0.3 } as const;
 const APPLIANCE_FILL_Y = 0.68;
 const APPLIANCE_BODY_H = APPLIANCE_FILL_Y - KITCHEN.kickH;
 const FASCIA_H = KITCHEN.benchH - APPLIANCE_FILL_Y;
-
-function Kick({ x, w }: { x: number; w: number }) {
-  const depth = FRONT - 0.002;
-  return (
-    <mesh position={[x + w / 2, KITCHEN.kickH / 2, depth / 2]} castShadow receiveShadow>
-      <boxGeometry args={[w - 0.002, KITCHEN.kickH, depth]} />
-      <meshStandardMaterial color={kickCol} roughness={0.88} />
-    </mesh>
-  );
-}
-
-function FrontFill({ x, w, y, h }: { x: number; w: number; y: number; h: number }) {
-  if (h < 0.008) return null;
-  const depth = FRONT + 0.018;
-  return (
-    <mesh position={[x + w / 2, y + h / 2, depth / 2]} castShadow receiveShadow>
-      <boxGeometry args={[w - 0.002, h, depth]} />
-      <meshStandardMaterial color={doorCol} roughness={0.48} />
-    </mesh>
-  );
-}
 
 function BenchSlab({
   x0,
@@ -139,89 +115,6 @@ function TiledSplash({ x, w, h = 0.42 }: { x: number; w: number; h?: number }) {
         envMapIntensity={1.1}
       />
     </mesh>
-  );
-}
-
-/** Kitchen joinery kit — one two-door cupboard per bay, painted as matching laminate. */
-function DoorCabinet({
-  x,
-  w,
-  y,
-  h,
-  depth,
-  open,
-  kind,
-}: {
-  x: number;
-  w: number;
-  y: number;
-  h: number;
-  depth: number;
-  open: boolean;
-  kind: 'base' | 'upper';
-}) {
-  const left = useRef<Object3D | null>(null);
-  const right = useRef<Object3D | null>(null);
-  useFrame((_, delta) => {
-    if (left.current) {
-      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? -1.15 : 0, 8, delta);
-    }
-    if (right.current) {
-      right.current.rotation.y = MathUtils.damp(right.current.rotation.y, open ? 1.15 : 0, 8, delta);
-    }
-  });
-  return (
-    <group>
-      {kind === 'base' && (
-        <mesh position={[x + w / 2, y + h / 2 + 0.06, depth / 2 - 0.02]} receiveShadow>
-          <boxGeometry args={[w - 0.03, h - 0.14, Math.max(0.18, depth - 0.08)]} />
-          <meshStandardMaterial color="#b9b1a6" roughness={0.62} metalness={0.04} />
-        </mesh>
-      )}
-      {kind === 'upper' && (
-        <mesh position={[x + w / 2, y + h / 2, depth / 2 - 0.012]} receiveShadow>
-          <boxGeometry args={[w - 0.02, h - 0.02, Math.max(0.1, depth - 0.05)]} />
-          <meshStandardMaterial color="#b9b1a6" roughness={0.62} metalness={0.04} />
-        </mesh>
-      )}
-      <FittedGltf
-        url={ROOM_GLB.cabinetDoors}
-        maxSize={[w - 0.008, h, depth]}
-        position={[x + w / 2, y, depth / 2]}
-        align="bottom"
-        pin="center"
-        fit="stretch"
-        prepare={kind === 'upper' ? prepareUpperCupboard : prepareBaseCupboard}
-        envIntensity={1.2}
-        onReady={(root) => {
-          left.current = findNamed(root, /^door_l$/);
-          right.current = findNamed(root, /^door_r$/);
-        }}
-      />
-    </group>
-  );
-}
-
-/** 4-drawer base. Benchtop/kick stay ours so the run lines up. */
-function DrawerBay({ x, w, open }: { x: number; w: number; open: boolean }) {
-  const slide = useRef<Group>(null);
-  useFrame((_, delta) => {
-    if (!slide.current) return;
-    slide.current.position.z = MathUtils.damp(slide.current.position.z, open ? 0.22 : 0, 8, delta);
-  });
-  return (
-    <group ref={slide}>
-      <FittedGltf
-        url={ROOM_GLB.cabinetDrawers}
-        maxSize={[w - 0.004, KITCHEN.benchH, FACE]}
-        position={[x + w / 2, 0, FACE / 2]}
-        align="bottom"
-        pin="center"
-        fit="stretch"
-        hide={/benchtop|kick|stand/i}
-        envIntensity={1.25}
-      />
-    </group>
   );
 }
 
@@ -525,18 +418,15 @@ export function KitchenRun({
 
   return (
     <group>
-      <Kick x={sink.x} w={sink.w + cabA.w + cook.w} />
-      <Kick x={cabL.x} w={cabL.w} />
-      <Kick x={dw.x} w={dw.w} />
-      <Kick x={cabR.x} w={cabR.w} />
+      <JoineryKick x={sink.x} w={sink.w + cabA.w + cook.w} />
+      <JoineryKick x={cabL.x} w={cabL.w} />
+      <JoineryKick x={dw.x} w={dw.w} />
+      <JoineryKick x={cabR.x} w={cabR.w} />
       <BenchRun startX={KITCHEN.startX} endX={joineryEnd} sinkX={FIXTURES.sink.x} />
-      <mesh position={[(KITCHEN.startX + joineryEnd) / 2, KITCHEN.benchH - 0.006, KITCHEN.benchDepth / 2]} receiveShadow>
-        <boxGeometry args={[joineryEnd - KITCHEN.startX + 0.01, 0.014, KITCHEN.benchDepth]} />
-        <meshStandardMaterial color={doorCol} roughness={0.48} />
-      </mesh>
+      <JoinerySubtop x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 
-      <DoorCabinet
+      <JoineryBay
         x={sink.x}
         w={sink.w}
         y={0}
@@ -545,8 +435,17 @@ export function KitchenRun({
         open={!!openById['sink-base']}
         kind="base"
       />
-      <DrawerBay x={cabA.x} w={cabA.w} open={drawersOpen} />
-      <DoorCabinet
+      <JoineryBay
+        x={cabA.x}
+        w={cabA.w}
+        y={0}
+        h={KITCHEN.benchH}
+        depth={KITCHEN.benchDepth}
+        open={drawersOpen}
+        kind="base"
+        drawers
+      />
+      <JoineryBay
         x={cabL.x}
         w={cabL.w}
         y={0}
@@ -555,7 +454,7 @@ export function KitchenRun({
         open={!!openById['cabL-base']}
         kind="base"
       />
-      <DoorCabinet
+      <JoineryBay
         x={cabR.x}
         w={cabR.w}
         y={0}
@@ -565,7 +464,7 @@ export function KitchenRun({
         kind="base"
       />
 
-      <DoorCabinet
+      <JoineryBay
         x={sink.x}
         w={sink.w}
         y={KITCHEN.upperY}
@@ -574,7 +473,7 @@ export function KitchenRun({
         open={!!openById['sink-upper']}
         kind="upper"
       />
-      <DoorCabinet
+      <JoineryBay
         x={cabA.x}
         w={cabA.w}
         y={KITCHEN.upperY}
@@ -583,7 +482,7 @@ export function KitchenRun({
         open={!!openById['cabA-upper']}
         kind="upper"
       />
-      <DoorCabinet
+      <JoineryBay
         x={cabL.x}
         w={cabL.w}
         y={KITCHEN.upperY}
@@ -592,7 +491,7 @@ export function KitchenRun({
         open={!!openById['cabL-upper']}
         kind="upper"
       />
-      <DoorCabinet
+      <JoineryBay
         x={dw.x}
         w={dw.w}
         y={KITCHEN.upperY}
@@ -601,7 +500,7 @@ export function KitchenRun({
         open={!!openById['dw-upper']}
         kind="upper"
       />
-      <DoorCabinet
+      <JoineryBay
         x={cabR.x}
         w={cabR.w}
         y={KITCHEN.upperY}
@@ -645,7 +544,7 @@ export function KitchenRun({
         doorMatch={/glass/i}
         openAngle={1.15}
       />
-      <FrontFill x={cook.x} w={cook.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
+      <JoineryFascia x={cook.x} w={cook.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
       <FittedGltf
         url={ROOM_GLB.hood}
         maxSize={[cook.w, KITCHEN.upperH + 0.04, 0.5]}
@@ -665,7 +564,7 @@ export function KitchenRun({
         envIntensity={1.35}
       />
       <DishwasherDoor x={dw.x} w={dw.w} open={dwOpen} />
-      <FrontFill x={dw.x} w={dw.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
+      <JoineryFascia x={dw.x} w={dw.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
       <FittedGltf
         url={ROOM_GLB.fridge}
         maxSize={[0.8, 1.64, 0.62]}
@@ -763,8 +662,6 @@ loadKeptGltf(ROOM_GLB.toaster);
 loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
-loadKeptGltf(ROOM_GLB.cabinetDrawers);
-loadKeptGltf(ROOM_GLB.cabinetDoors);
 loadKeptGltf(ROOM_GLB.dishwasher);
 loadKeptGltf(ROOM_GLB.hood);
 loadKeptGltf(ROOM_GLB.pot);

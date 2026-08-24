@@ -39,6 +39,11 @@ export const POLYHAVEN = {
     nor: '/models/learning-room/polyhaven/textures/laminate/laminate_floor_02_nor_gl_1k.jpg',
     arm: '/models/learning-room/polyhaven/textures/laminate/laminate_floor_02_arm_1k.jpg',
   },
+  kitchenWood: {
+    diff: '/models/learning-room/polyhaven/textures/kitchen-wood/kitchen_wood_diff_1k.jpg',
+    nor: '/models/learning-room/polyhaven/textures/kitchen-wood/kitchen_wood_nor_gl_1k.jpg',
+    arm: '/models/learning-room/polyhaven/textures/kitchen-wood/kitchen_wood_arm_1k.jpg',
+  },
 } as const;
 
 export function preloadRoomModelPaths(): string[] {
