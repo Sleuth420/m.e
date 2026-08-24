@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "generate:switchboard-models": "node scripts/generate-switchboard-models.mjs"
+    "generate:switchboard-models": "node scripts/generate-switchboard-models.mjs",
+    "generate:learning-room-models": "node scripts/generate-learning-room-models.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

@@ -1,0 +1,228 @@
+'use client';
+
+import { Clone } from '@react-three/drei';
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
+import { Box3, Euler, Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { useKeptGltf } from './useKeptGltf';
+
+export function findNamed(root: Object3D, match: RegExp): Object3D | null {
+  let found: Object3D | null = null;
+  root.traverse((obj) => {
+    if (found || !obj.name) return;
+    if (match.test(obj.name)) found = obj;
+  });
+  return found;
+}
+
+export function hideNamed(root: Object3D, match: RegExp) {
+  root.traverse((obj) => {
+    if (obj.name && match.test(obj.name)) obj.visible = false;
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const mat of mats) {
+      if (mat?.name && match.test(mat.name)) {
+        mesh.visible = false;
+        break;
+      }
+    }
+  });
+}
+
+export type FitMode = 'contain' | 'width' | 'stretch';
+
+function rotatedAabb(
+  min: Vector3,
+  max: Vector3,
+  scale: [number, number, number],
+  localOffset: [number, number, number],
+  euler: Euler
+) {
+  const box = new Box3();
+  const v = new Vector3();
+  for (const x of [min.x, max.x]) {
+    for (const y of [min.y, max.y]) {
+      for (const z of [min.z, max.z]) {
+        v.set(x * scale[0] + localOffset[0], y * scale[1] + localOffset[1], z * scale[2] + localOffset[2]).applyEuler(
+          euler
+        );
+        box.expandByPoint(v);
+      }
+    }
+  }
+  return box;
+}
+
+function measureVisible(
+  source: Object3D,
+  maxSize: [number, number, number],
+  align: 'bottom' | 'center',
+  pin: 'center' | 'min' | 'front',
+  fit: FitMode,
+  preScale: number,
+  rotation: [number, number, number]
+) {
+  const parent = source.parent;
+  const prevPos = source.position.clone();
+  const prevRot = source.rotation.clone();
+  const prevScale = source.scale.clone();
+  if (parent) parent.remove(source);
+  source.position.set(0, 0, 0);
+  source.rotation.set(0, 0, 0);
+  source.scale.set(1, 1, 1);
+  source.updateWorldMatrix(true, true);
+
+  const box = new Box3();
+  source.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh || !mesh.visible) return;
+    let ancestor: Object3D | null = mesh;
+    while (ancestor) {
+      if (!ancestor.visible) return;
+      ancestor = ancestor.parent;
+    }
+    box.expandByObject(mesh);
+  });
+
+  source.position.copy(prevPos);
+  source.rotation.copy(prevRot);
+  source.scale.copy(prevScale);
+  if (parent) parent.add(source);
+
+  const size = box.getSize(new Vector3());
+  const minDim = Math.max(size.x, size.y, size.z);
+  if (!Number.isFinite(minDim) || minDim < 1e-6) {
+    return {
+      localOffset: [0, 0, 0] as [number, number, number],
+      worldShift: [0, 0, 0] as [number, number, number],
+      scale: [1, 1, 1] as [number, number, number],
+    };
+  }
+
+  const euler = new Euler(rotation[0], rotation[1], rotation[2], 'XYZ');
+  const center = box.getCenter(new Vector3());
+  const pre: [number, number, number] = [preScale, preScale, preScale];
+  const preOff: [number, number, number] = [-center.x * preScale, -center.y * preScale, -center.z * preScale];
+  const world0 = rotatedAabb(box.min, box.max, pre, preOff, euler).getSize(new Vector3());
+
+  const sx = maxSize[0] / Math.max(world0.x, 1e-6);
+  const sy = maxSize[1] / Math.max(world0.y, 1e-6);
+  const sz = maxSize[2] / Math.max(world0.z, 1e-6);
+  const s = fit === 'width' ? sx : Math.min(sx, sy, sz);
+  const scale: [number, number, number] =
+    fit === 'stretch' ? [sx * preScale, sy * preScale, sz * preScale] : [s * preScale, s * preScale, s * preScale];
+
+  const localOffset: [number, number, number] = [-center.x * scale[0], -center.y * scale[1], -center.z * scale[2]];
+  const aabb = rotatedAabb(box.min, box.max, scale, localOffset, euler);
+  return {
+    scale,
+    localOffset,
+    worldShift: [
+      pin === 'min' ? -aabb.min.x : -(aabb.min.x + aabb.max.x) / 2,
+      align === 'bottom' ? -aabb.min.y : -(aabb.min.y + aabb.max.y) / 2,
+      pin === 'min' ? -aabb.min.z : pin === 'front' ? -aabb.max.z : -(aabb.min.z + aabb.max.z) / 2,
+    ] as [number, number, number],
+  };
+}
+
+type FittedGltfProps = {
+  url: string;
+  maxSize: [number, number, number];
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  align?: 'bottom' | 'center';
+  pin?: 'center' | 'min' | 'front';
+  hide?: RegExp;
+  share?: boolean;
+  /** contain = keep proportions inside the box. width = match bay width, allow chimney into the wall. */
+  fit?: FitMode;
+  /** Convert mm (0.001) or cm (0.01) or inches (0.0254) to metres before fitting. */
+  preScale?: number;
+  envIntensity?: number;
+  /** Recolor product metal to black stainless. Glass stays dark glass. */
+  finish?: 'black-steel';
+  onReady?: (root: Object3D) => void;
+  children?: ReactNode;
+};
+
+export function FittedGltf({
+  url,
+  maxSize,
+  position = [0, 0, 0],
+  rotation = [0, 0, 0],
+  align = 'bottom',
+  pin = 'center',
+  hide,
+  share: _share = false,
+  fit = 'contain',
+  preScale = 1,
+  envIntensity = 1,
+  finish,
+  onReady,
+  children,
+}: FittedGltfProps) {
+  const { scene } = useKeptGltf(url);
+  const wrap = useRef<Group>(null);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
+
+  const fitResult = useMemo(() => {
+    if (hide) hideNamed(scene, hide);
+    return measureVisible(scene, maxSize, align, pin, fit, preScale, rotation);
+  }, [scene, maxSize[0], maxSize[1], maxSize[2], align, pin, hide, fit, preScale, rotation[0], rotation[1], rotation[2]]);
+
+  useLayoutEffect(() => {
+    const g = wrap.current;
+    if (!g) return;
+    g.traverse((obj) => {
+      const mesh = obj as Mesh;
+      if (!mesh.isMesh) return;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const next = mats.map((mat) => {
+        const src = mat as MeshStandardMaterial;
+        if (!src) return mat;
+        const m = finish ? src.clone() : src;
+        if ('envMapIntensity' in m) m.envMapIntensity = envIntensity;
+        if (finish === 'black-steel') {
+          const n = `${m.name ?? ''} ${mesh.name ?? ''}`.toLowerCase();
+          const glass = /glass|translucent/.test(n);
+          m.map = null;
+          m.emissiveMap = null;
+          if (glass) {
+            m.color.set('#141416');
+            m.metalness = 0.15;
+            m.roughness = 0.08;
+            m.transparent = true;
+            m.opacity = 0.92;
+          } else {
+            m.color.set('#1c1d20');
+            m.metalness = 0.72;
+            m.roughness = 0.32;
+            m.transparent = false;
+            m.opacity = 1;
+          }
+          m.needsUpdate = true;
+        }
+        return m;
+      });
+      mesh.material = Array.isArray(mesh.material) ? next : next[0]!;
+    });
+    g.updateWorldMatrix(true, true);
+    onReadyRef.current?.(g);
+  }, [scene, fitResult, envIntensity, finish]);
+
+  return (
+    <group position={position}>
+      <group position={fitResult.worldShift}>
+        <group rotation={rotation}>
+          <group ref={wrap} position={fitResult.localOffset} scale={fitResult.scale}>
+            <Clone object={scene} castShadow receiveShadow />
+          </group>
+        </group>
+      </group>
+      {children}
+    </group>
+  );
+}

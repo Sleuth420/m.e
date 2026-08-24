@@ -2,7 +2,7 @@
 
 import { MODULE_TARGET, MODULE_WELLS } from './assets/module-assets';
 import { BOARD, mainSwitchX, moduleBodyZ } from './circuit-data';
-import { useDampRotation } from './hooks/useDampRotation';
+import { ROCKER_OFF, ROCKER_ON, useDampRotation } from './hooks/useDampRotation';
 import { onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
 import { ModuleShell } from './parts/ModuleShell';
@@ -15,12 +15,13 @@ type Props = {
   highlighted: boolean;
   onToggle: () => void;
   onHover: (id: string | null) => void;
+  disabled?: boolean;
 };
 
-export function MainSwitch({ materials, on, highlighted, onToggle, onHover }: Props) {
+export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disabled = false }: Props) {
   const x = mainSwitchX();
   const face = useMainSwitchFaceTexture();
-  const leverRef = useDampRotation(on ? -0.32 : 0.28);
+  const leverRef = useDampRotation(on ? ROCKER_ON : ROCKER_OFF);
 
   const size = MODULE_TARGET.mainSwitch;
   const wells = MODULE_WELLS.mainSwitch;
@@ -58,6 +59,7 @@ export function MainSwitch({ materials, on, highlighted, onToggle, onHover }: Pr
           depth={0.028}
           showStatusWindow
           statusLive={on}
+          disabled={disabled}
         />
       </group>
     </group>
