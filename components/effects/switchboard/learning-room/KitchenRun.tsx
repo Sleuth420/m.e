@@ -2,18 +2,17 @@
 
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
-import { Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { useRef } from 'react';
+import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
-import { FittedGltf } from './FittedGltf';
-import { ROOM_GLB } from './room-assets';
-import { useSubwayTileTexture } from './room-textures';
+import { FittedGltf, findNamed } from './FittedGltf';
+import { POLYHAVEN, ROOM_GLB } from './room-assets';
+import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
 
 const doorCol = '#cfc8bc';
-const bench = '#dcd6cc';
 const kickCol = '#5c5854';
 
 function Hit({
@@ -75,20 +74,40 @@ function FrontFill({ x, w, y, h }: { x: number; w: number; y: number; h: number 
   );
 }
 
-function BenchSlab({ x0, x1, z0, z1 }: { x0: number; x1: number; z0: number; z1: number }) {
+function BenchSlab({
+  x0,
+  x1,
+  z0,
+  z1,
+  maps,
+}: {
+  x0: number;
+  x1: number;
+  z0: number;
+  z1: number;
+  maps: ReturnType<typeof useRepeatingPbr>;
+}) {
   const w = x1 - x0;
   const d = z1 - z0;
   if (w < 0.01 || d < 0.01) return null;
   return (
     <mesh position={[(x0 + x1) / 2, BENCH_Y, (z0 + z1) / 2]} castShadow receiveShadow>
       <boxGeometry args={[w, BENCH_T, d]} />
-      <meshStandardMaterial color={bench} roughness={0.38} metalness={0.04} />
+      <meshStandardMaterial
+        map={maps.map}
+        normalMap={maps.normalMap}
+        roughnessMap={maps.roughnessMap}
+        roughness={1}
+        metalness={0.08}
+        envMapIntensity={1.15}
+      />
     </mesh>
   );
 }
 
 /** Benchtop with a sink cutout so the bowls sit in the bench, not on it. */
 function BenchRun({ startX, endX, sinkX }: { startX: number; endX: number; sinkX: number }) {
+  const maps = useRepeatingPbr(POLYHAVEN.marble, [2.6, 0.55]);
   const zMin = -0.01;
   const zMax = KITCHEN.benchDepth + 0.01;
   const cutL = sinkX - SINK_CUT.w / 2;
@@ -97,52 +116,76 @@ function BenchRun({ startX, endX, sinkX }: { startX: number; endX: number; sinkX
   const cutFront = SINK_CUT.cz + SINK_CUT.d / 2;
   return (
     <group>
-      <BenchSlab x0={startX - 0.006} x1={cutL} z0={zMin} z1={zMax} />
-      <BenchSlab x0={cutR} x1={endX + 0.006} z0={zMin} z1={zMax} />
-      <BenchSlab x0={cutL} x1={cutR} z0={zMin} z1={cutBack} />
-      <BenchSlab x0={cutL} x1={cutR} z0={cutFront} z1={zMax} />
+      <BenchSlab maps={maps} x0={startX - 0.006} x1={cutL} z0={zMin} z1={zMax} />
+      <BenchSlab maps={maps} x0={cutR} x1={endX + 0.006} z0={zMin} z1={zMax} />
+      <BenchSlab maps={maps} x0={cutL} x1={cutR} z0={zMin} z1={cutBack} />
+      <BenchSlab maps={maps} x0={cutL} x1={cutR} z0={cutFront} z1={zMax} />
     </group>
   );
 }
 
 function TiledSplash({ x, w, h = 0.42 }: { x: number; w: number; h?: number }) {
-  const map = useSubwayTileTexture(Math.max(8, Math.round(w * 2.2)), Math.max(4, Math.round(h * 5)));
-  const mat = useMemo(() => {
-    if (!map) return new MeshStandardMaterial({ color: '#4f8a9b', roughness: 0.55 });
-    return new MeshStandardMaterial({ map, roughness: 0.48, metalness: 0.04 });
-  }, [map]);
-
+  const maps = useRepeatingPbr(POLYHAVEN.tiles, [Math.max(4, w / 0.42), Math.max(1.6, h / 0.14)]);
   return (
-    <mesh position={[x + w / 2, KITCHEN.benchH + 0.04 + h / 2, 0.008]} receiveShadow material={mat}>
+    <mesh position={[x + w / 2, KITCHEN.benchH + 0.04 + h / 2, 0.008]} receiveShadow>
       <boxGeometry args={[w, h, 0.012]} />
+      <meshStandardMaterial
+        map={maps.map}
+        normalMap={maps.normalMap}
+        roughnessMap={maps.roughnessMap}
+        roughness={1}
+        metalness={0.04}
+        envMapIntensity={1.1}
+      />
     </mesh>
   );
 }
 
-/** Product cabinet GLB stretched into a bay — not a coloured box. */
-function CabinetBay({
+/** Poly Haven two-door cabinet — one unit per bay, doors actually swing. */
+function DoorCabinet({
   x,
   w,
   y,
   h,
   depth,
+  open,
 }: {
   x: number;
   w: number;
   y: number;
   h: number;
   depth: number;
+  open: boolean;
 }) {
+  const left = useRef<Object3D | null>(null);
+  const right = useRef<Object3D | null>(null);
+  useFrame((_, delta) => {
+    if (left.current) {
+      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? 1.15 : 0, 8, delta);
+    }
+    if (right.current) {
+      right.current.rotation.y = MathUtils.damp(
+        right.current.rotation.y,
+        open ? Math.PI - 1.15 : Math.PI,
+        8,
+        delta,
+      );
+    }
+  });
   return (
     <FittedGltf
-      url={ROOM_GLB.cabinetDrawers}
-      maxSize={[w - 0.006, h, depth]}
+      url={ROOM_GLB.cabinetDoors}
+      maxSize={[w - 0.008, h, depth]}
       position={[x + w / 2, y, depth / 2]}
       align="bottom"
       pin="center"
       fit="stretch"
-      hide={/benchtop|kick|stand/i}
-      envIntensity={1.25}
+      envIntensity={1.2}
+      onReady={(root) => {
+        left.current = findNamed(root, /door_l/i);
+        right.current = findNamed(root, /door_r/i);
+        if (right.current && !open) right.current.rotation.y = Math.PI;
+      }}
     />
   );
 }
@@ -163,9 +206,114 @@ function DrawerBay({ x, w, open }: { x: number; w: number; open: boolean }) {
         align="bottom"
         pin="center"
         fit="stretch"
-        hide={/benchtop|kick/i}
+        hide={/benchtop|kick|stand/i}
         envIntensity={1.25}
       />
+    </group>
+  );
+}
+
+function hingeParts(root: Object3D, match: RegExp, extra?: RegExp): Group | null {
+  const existing = root.userData.hinge as Group | undefined;
+  if (existing) return existing;
+  const parts: Object3D[] = [];
+  root.traverse((obj) => {
+    if (!obj.name) return;
+    if (match.test(obj.name) || (extra && extra.test(obj.name))) parts.push(obj);
+  });
+  if (!parts.length) return null;
+  const box = new Box3();
+  for (const part of parts) box.expandByObject(part);
+  const worldHinge = new Vector3((box.min.x + box.max.x) / 2, box.min.y, box.max.z);
+  const host = parts[0]!.parent;
+  if (!host) return null;
+  const local = worldHinge.clone();
+  host.worldToLocal(local);
+  const pivot = new Group();
+  pivot.name = 'hinge-pivot';
+  host.add(pivot);
+  pivot.position.copy(local);
+  const q = new Quaternion();
+  host.getWorldQuaternion(q).invert();
+  pivot.quaternion.copy(q);
+  pivot.updateWorldMatrix(true, false);
+  for (const part of parts) pivot.attach(part);
+  root.userData.hinge = pivot;
+  return pivot;
+}
+
+/** Product GLB whose door/glass mesh drops open around the bottom-front edge. */
+function HingedAppliance({
+  open,
+  doorMatch,
+  extraMatch,
+  openAngle = 1.2,
+  url,
+  maxSize,
+  position,
+  rotation,
+  align,
+  pin,
+  fit,
+  preScale,
+  envIntensity,
+}: {
+  url: string;
+  maxSize: [number, number, number];
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  align?: 'bottom' | 'center';
+  pin?: 'center' | 'min' | 'front';
+  fit?: 'contain' | 'width' | 'stretch';
+  preScale?: number;
+  envIntensity?: number;
+  open: boolean;
+  doorMatch: RegExp;
+  extraMatch?: RegExp;
+  openAngle?: number;
+}) {
+  const pivot = useRef<Group | null>(null);
+  useFrame((_, delta) => {
+    const g = pivot.current;
+    if (!g) return;
+    g.rotation.x = MathUtils.damp(g.rotation.x, open ? openAngle : 0, 8, delta);
+  });
+  return (
+    <FittedGltf
+      url={url}
+      maxSize={maxSize}
+      position={position}
+      rotation={rotation}
+      align={align}
+      pin={pin}
+      fit={fit}
+      preScale={preScale}
+      envIntensity={envIntensity}
+      onReady={(root) => {
+        pivot.current = hingeParts(root, doorMatch, extraMatch);
+      }}
+    />
+  );
+}
+
+/** Built-in dishwasher door — stainless drop-down in front of the product tub. */
+function DishwasherDoor({ x, w, open }: { x: number; w: number; open: boolean }) {
+  const hinge = useRef<Group>(null);
+  useFrame((_, delta) => {
+    if (!hinge.current) return;
+    hinge.current.rotation.x = MathUtils.damp(hinge.current.rotation.x, open ? 1.28 : 0, 8, delta);
+  });
+  const h = APPLIANCE_BODY_H;
+  return (
+    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.01, FRONT + 0.012]}>
+      <mesh position={[0, h / 2, 0.012]} castShadow receiveShadow>
+        <boxGeometry args={[w - 0.028, h - 0.016, 0.022]} />
+        <meshStandardMaterial color="#c5c9ce" metalness={0.84} roughness={0.22} envMapIntensity={1.45} />
+      </mesh>
+      <mesh position={[0, h * 0.74, 0.026]} castShadow>
+        <boxGeometry args={[w - 0.16, 0.016, 0.014]} />
+        <meshStandardMaterial color="#9aa0a6" metalness={0.9} roughness={0.16} envMapIntensity={1.5} />
+      </mesh>
     </group>
   );
 }
@@ -181,7 +329,6 @@ function WallGpo({
 }) {
   return (
     <group position={position}>
-      {/* Face into the room (+Z). Plate proud of splash so white GPOs read clearly. */}
       <FittedGltf
         url={ROOM_GLB.gpoDouble}
         maxSize={[0.155, 0.1, 0.032]}
@@ -228,6 +375,15 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
   });
   return (
     <group position={position}>
+      <FittedGltf
+        url={ROOM_GLB.pot}
+        maxSize={[0.22, 0.14, 0.22]}
+        position={[0, 0.02, 0]}
+        align="bottom"
+        pin="center"
+        fit="contain"
+        envIntensity={1.2}
+      />
       <group ref={steam} visible={boiling}>
         {Array.from({ length: 6 }, (_, i) => (
           <mesh key={i} position={[0, 0.08, 0]}>
@@ -348,6 +504,7 @@ export function KitchenRun({
   const hood = FIXTURES.rangehood;
 
   const ovenOpen = !!openById.oven;
+  const dwOpen = !!openById.dishwasher;
   const drawersOpen = !!openById['cabA-base'];
 
   return (
@@ -363,23 +520,16 @@ export function KitchenRun({
       </mesh>
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 
-      <CabinetBay x={sink.x} w={sink.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
-      <CabinetBay x={sink.x + sink.w / 2} w={sink.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
+      <DoorCabinet x={sink.x} w={sink.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['sink-base']} />
       <DrawerBay x={cabA.x} w={cabA.w} open={drawersOpen} />
-      <CabinetBay x={cabL.x} w={cabL.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
-      <CabinetBay x={cabL.x + cabL.w / 2} w={cabL.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
-      <CabinetBay x={cabR.x} w={cabR.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
-      <CabinetBay x={cabR.x + cabR.w / 2} w={cabR.w / 2} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} />
+      <DoorCabinet x={cabL.x} w={cabL.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['cabL-base']} />
+      <DoorCabinet x={cabR.x} w={cabR.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['cabR-base']} />
 
-      <CabinetBay x={sink.x} w={sink.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={sink.x + sink.w / 2} w={sink.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={cabA.x} w={cabA.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={cabL.x} w={cabL.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={cabL.x + cabL.w / 2} w={cabL.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={dw.x} w={dw.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={dw.x + dw.w / 2} w={dw.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={cabR.x} w={cabR.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
-      <CabinetBay x={cabR.x + cabR.w / 2} w={cabR.w / 2} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} />
+      <DoorCabinet x={sink.x} w={sink.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['sink-upper']} />
+      <DoorCabinet x={cabA.x} w={cabA.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabA-upper']} />
+      <DoorCabinet x={cabL.x} w={cabL.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabL-upper']} />
+      <DoorCabinet x={dw.x} w={dw.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['dw-upper']} />
+      <DoorCabinet x={cabR.x} w={cabR.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabR-upper']} />
 
       <FittedGltf
         url={ROOM_GLB.sink}
@@ -402,7 +552,7 @@ export function KitchenRun({
         fit="width"
         envIntensity={1.35}
       />
-      <FittedGltf
+      <HingedAppliance
         url={ROOM_GLB.oven}
         maxSize={[cook.w - 0.02, APPLIANCE_BODY_H, FRONT]}
         position={[FIXTURES.oven.x, KITCHEN.kickH, FRONT]}
@@ -411,6 +561,9 @@ export function KitchenRun({
         preScale={0.001}
         fit="contain"
         envIntensity={1.35}
+        open={ovenOpen}
+        doorMatch={/glass/i}
+        openAngle={1.15}
       />
       <FrontFill x={cook.x} w={cook.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
       <FittedGltf
@@ -424,13 +577,15 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.dishwasher}
-        maxSize={[dw.w - 0.012, BASE_H + 0.012, FACE]}
-        position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT]}
+        maxSize={[dw.w - 0.012, APPLIANCE_BODY_H, FACE - 0.04]}
+        position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT - 0.028]}
         align="bottom"
         pin="front"
         fit="contain"
         envIntensity={1.35}
       />
+      <DishwasherDoor x={dw.x} w={dw.w} open={dwOpen} />
+      <FrontFill x={dw.x} w={dw.w} y={APPLIANCE_FILL_Y} h={FASCIA_H} />
       <FittedGltf
         url={ROOM_GLB.fridge}
         maxSize={[0.8, 1.64, 0.62]}
@@ -456,20 +611,22 @@ export function KitchenRun({
       <Hit onToggle={() => onToggle('sink-upper')} size={[0.7, 0.45, 0.14]} position={[0.68, 1.78, 0.36]} />
       <Hit onToggle={() => onToggle('cabA-upper')} size={[0.4, 0.45, 0.14]} position={[1.3, 1.78, 0.36]} />
       <Hit onToggle={() => onToggle('cabL-upper')} size={[0.8, 0.45, 0.14]} position={[2.58, 1.78, 0.36]} />
+      <Hit onToggle={() => onToggle('dw-upper')} size={[0.52, 0.45, 0.14]} position={[3.33, 1.78, 0.36]} />
       <Hit onToggle={() => onToggle('cabR-upper')} size={[0.8, 0.45, 0.14]} position={[4.08, 1.78, 0.36]} />
       <Hit onToggle={onToggleToaster} size={[0.32, 0.22, 0.2]} position={[toasterX, benchY + 0.14, benchZ]} />
 
       <CookPot boiling={hobLive && boiling} position={[cookX, benchY + 0.1, 0.3]} />
       {sinkOn && <TapWater x={FIXTURES.sink.x} y={benchTop + 0.14} z={0.28} />}
       {ovenOpen && ovenLive && (
-        <mesh position={[FIXTURES.oven.x, 0.42, 0.52]} castShadow>
-          <boxGeometry args={[0.18, 0.06, 0.12]} />
-          <meshStandardMaterial color="#b7a08a" roughness={0.55} />
-        </mesh>
+        <FittedGltf
+          url={ROOM_GLB.roast}
+          maxSize={[0.2, 0.08, 0.14]}
+          position={[FIXTURES.oven.x, 0.4, 0.42]}
+          align="bottom"
+          envIntensity={1.1}
+        />
       )}
-      {fridgeOpen && fridgeLive && (
-        <FridgeSurprise position={[FIXTURES.fridge.x, 1.05, 0.72]} />
-      )}
+      {fridgeOpen && fridgeLive && <FridgeSurprise position={[FIXTURES.fridge.x, 1.05, 0.72]} />}
       {toasterPop && (
         <>
           <mesh position={[toasterX - 0.04, benchY + 0.26, 0.34]} castShadow>
@@ -489,7 +646,6 @@ export function KitchenRun({
         onToggle={powerLive ? onToggleToaster : undefined}
       />
       <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} />
-      {/* Under-bench + fridge: same double white GPO GLB as splash */}
       <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} />
       <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} />
       <CookIsolator
@@ -502,12 +658,20 @@ export function KitchenRun({
         <pointLight position={[cookX, benchY + 0.18, 0.3]} intensity={0.18} distance={0.5} color="#fdba74" />
       )}
       {powerLive && <pointLight position={[hood.x, 1.48, 0.28]} intensity={0.55} distance={2.2} color="#f4f1ea" />}
+      {powerLive && (
+        <>
+          <pointLight position={[sink.x + sink.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
+          <pointLight position={[cabL.x + cabL.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
+          <pointLight position={[cabR.x + cabR.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
+        </>
+      )}
       {powerLive && toasterPop && (
         <pointLight position={[toasterX, benchY + 0.26, 0.34]} intensity={0.35} distance={1.1} color="#fde68a" />
       )}
       {ovenOpen && ovenLive && (
         <pointLight position={[FIXTURES.oven.x, 0.48, 0.4]} intensity={0.35} distance={0.8} color="#fdba74" />
       )}
+      {dwOpen && <pointLight position={[dw.x + dw.w / 2, 0.46, 0.42]} intensity={0.22} distance={0.7} color="#e8eef5" />}
     </group>
   );
 }
@@ -520,5 +684,8 @@ loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
 loadKeptGltf(ROOM_GLB.cabinetDrawers);
+loadKeptGltf(ROOM_GLB.cabinetDoors);
 loadKeptGltf(ROOM_GLB.dishwasher);
 loadKeptGltf(ROOM_GLB.hood);
+loadKeptGltf(ROOM_GLB.pot);
+loadKeptGltf(ROOM_GLB.roast);

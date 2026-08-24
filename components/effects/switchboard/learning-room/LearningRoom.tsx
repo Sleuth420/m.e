@@ -1,7 +1,25 @@
 'use client';
 
+import { POLYHAVEN } from './room-assets';
 import { ROOM } from './room-layout';
+import { useRepeatingPbr } from './room-textures';
 import { FramedWalls } from './FramedWall';
+
+function GalleryFloor() {
+  const maps = useRepeatingPbr(POLYHAVEN.laminate, [ROOM.width / 0.6, ROOM.depth / 0.6]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[ROOM.width / 2, 0, ROOM.depth / 2]} receiveShadow>
+      <planeGeometry args={[ROOM.width, ROOM.depth]} />
+      <meshStandardMaterial
+        map={maps.map}
+        normalMap={maps.normalMap}
+        roughnessMap={maps.roughnessMap}
+        roughness={1}
+        metalness={0.04}
+      />
+    </mesh>
+  );
+}
 
 /** Solid gallery shell plus ghost teaching frames on the origin corner. */
 export function LearningRoom() {
@@ -9,10 +27,7 @@ export function LearningRoom() {
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[ROOM.width / 2, 0, ROOM.depth / 2]} receiveShadow>
-        <planeGeometry args={[ROOM.width, ROOM.depth]} />
-        <meshStandardMaterial color="#e8e8ea" roughness={0.92} />
-      </mesh>
+      <GalleryFloor />
 
       {/* Far solid walls (not teaching cutaways) */}
       <mesh position={[ROOM.width, midY, ROOM.depth / 2]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>

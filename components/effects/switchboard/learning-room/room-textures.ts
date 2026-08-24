@@ -1,41 +1,43 @@
 'use client';
 
-import { useMemo } from 'react';
-import { CanvasTexture, RepeatWrapping, SRGBColorSpace } from 'three';
+import { useTexture } from '@react-three/drei';
+import { useLayoutEffect } from 'react';
+import { LinearSRGBColorSpace, RepeatWrapping, SRGBColorSpace, Texture } from 'three';
 
-/** Procedural subway tile — teal/grey grout so white GPOs read clearly. */
-export function useSubwayTileTexture(repeatX = 10, repeatY = 4) {
-  return useMemo(() => {
-    const size = 256;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+export type PbrMaps = {
+  map: Texture;
+  normalMap: Texture;
+  roughnessMap: Texture;
+};
 
-    const tile = 64;
-    const grout = 5;
-    ctx.fillStyle = '#7a8f98';
-    ctx.fillRect(0, 0, size, size);
+function prepColor(tex: Texture, repeat: [number, number]) {
+  tex.colorSpace = SRGBColorSpace;
+  tex.wrapS = tex.wrapT = RepeatWrapping;
+  tex.repeat.set(repeat[0], repeat[1]);
+  tex.anisotropy = 8;
+  tex.needsUpdate = true;
+}
 
-    for (let row = 0; row < size / tile; row++) {
-      for (let col = 0; col < size / tile; col++) {
-        const offset = row % 2 === 0 ? 0 : tile / 2;
-        const x = col * tile + offset;
-        const tone = (row + col) % 2 === 0 ? '#4f8a9b' : '#3f7585';
-        ctx.fillStyle = tone;
-        ctx.fillRect(x + grout / 2, row * tile + grout / 2, tile - grout, tile - grout);
-        ctx.fillStyle = 'rgba(255,255,255,0.06)';
-        ctx.fillRect(x + grout / 2 + 4, row * tile + grout / 2 + 4, tile - grout - 8, 8);
-      }
-    }
+function prepData(tex: Texture, repeat: [number, number]) {
+  tex.colorSpace = LinearSRGBColorSpace;
+  tex.wrapS = tex.wrapT = RepeatWrapping;
+  tex.repeat.set(repeat[0], repeat[1]);
+  tex.anisotropy = 8;
+  tex.needsUpdate = true;
+}
 
-    const tex = new CanvasTexture(canvas);
-    tex.wrapS = RepeatWrapping;
-    tex.wrapT = RepeatWrapping;
-    tex.repeat.set(repeatX, repeatY);
-    tex.colorSpace = SRGBColorSpace;
-    tex.needsUpdate = true;
-    return tex;
-  }, [repeatX, repeatY]);
+/** Poly Haven PBR (diff + OpenGL normal + ARM). Roughness is the ARM green channel. */
+export function useRepeatingPbr(
+  urls: { diff: string; nor: string; arm: string },
+  repeat: [number, number],
+): PbrMaps {
+  const rx = repeat[0];
+  const ry = repeat[1];
+  const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, urls.arm]);
+  useLayoutEffect(() => {
+    prepColor(map, [rx, ry]);
+    prepData(normalMap, [rx, ry]);
+    prepData(roughnessMap, [rx, ry]);
+  }, [map, normalMap, roughnessMap, rx, ry]);
+  return { map, normalMap, roughnessMap };
 }

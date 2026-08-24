@@ -18,5 +18,18 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/switch.glb` | Simple Light Switch | CC BY 4.0 | [32d02fa](https://sketchfab.com/3d-models/simple-light-switch-32d02fa06d474f4db5a433aa134be612) |
 
 Sconce on the board wall is still the generated fitting in `sconce.glb`.
-Walls, floor, and ceiling stay ghosted so the TPS run is visible.
+Walls stay ghosted so the TPS run is visible.
 Product models sit in the kitchen bays along z=0.
+
+## Poly Haven (CC0)
+
+Same source as the pliers avatar. https://polyhaven.com
+
+| File | Asset | License |
+|---|---|---|
+| `polyhaven/cabinet/modern_wooden_cabinet_1k.gltf` | [Modern Wooden Cabinet](https://polyhaven.com/a/modern_wooden_cabinet) | CC0 |
+| `polyhaven/hdri/kiara_interior_2k.hdr` | [Kiara 1 Interior](https://polyhaven.com/a/kiara_1_interior) | CC0 |
+| `polyhaven/textures/tiles/long_white_tiles_*_2k.jpg` | [Long White Tiles](https://polyhaven.com/a/long_white_tiles) | CC0 |
+| `polyhaven/textures/marble/marble_01_*_1k.jpg` | [Marble 01](https://polyhaven.com/a/marble_01) | CC0 |
+| `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
+| `real/pliers/` | [Pliers](https://polyhaven.com/a/pliers) | CC0 |

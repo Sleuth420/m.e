@@ -117,6 +117,7 @@ export type KitchenInteractId =
   | 'sink-upper'
   | 'cabA-upper'
   | 'cabL-upper'
+  | 'dw-upper'
   | 'cabR-upper';
 
 export const KITCHEN_INTERACTS: {
@@ -145,6 +146,7 @@ export const KITCHEN_INTERACTS: {
   { id: 'sink-upper', x: 0.68, y: 1.78, z: 0.4, r: 0.85, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
   { id: 'cabA-upper', x: 1.3, y: 1.78, z: 0.4, r: 0.8, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
   { id: 'cabL-upper', x: 2.58, y: 1.78, z: 0.4, r: 1.05, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
+  { id: 'dw-upper', x: 3.33, y: 1.78, z: 0.4, r: 0.75, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
   { id: 'cabR-upper', x: 4.08, y: 1.78, z: 0.4, r: 1.05, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
 ];
 

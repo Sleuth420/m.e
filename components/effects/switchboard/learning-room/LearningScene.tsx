@@ -11,6 +11,7 @@ import { LearningRoom } from './LearningRoom';
 import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
 import { BOARD_MOUNT, ROOM, ROOM_LOADS, type KitchenInteractId } from './room-layout';
+import { POLYHAVEN } from './room-assets';
 
 type Props = {
   controlsEnabled: boolean;
@@ -40,7 +41,7 @@ function GalleryLighting() {
       />
       <directionalLight position={[2.4, 3.4, 9]} intensity={0.28} color="#e8eef5" />
       <Suspense fallback={null}>
-        <Environment preset="apartment" environmentIntensity={0.85} />
+        <Environment files={POLYHAVEN.hdri} environmentIntensity={0.9} />
       </Suspense>
     </>
   );
