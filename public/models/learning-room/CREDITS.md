@@ -6,6 +6,8 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | File | Model | License | Sketchfab |
 |---|---|---|---|
 | `real/cabinet.glb` | Kitchen cabinet | CC BY 4.0 | [6ad39b0](https://sketchfab.com/3d-models/6ad39b0f52ad439ea12cbfdc1a1dd37f) |
+| `real/cabinet-drawers.glb` | Kitchen 4-drawer base | CC BY 4.0 | Objaverse / Sketchfab |
+| `real/cabinets-modular.glb` | Modular kitchen cabinets (joinery kit) | CC BY 4.0 | Objaverse / Sketchfab |
 | `real/fridge-french.glb` | French Door Refrigerator - Stainless | CC BY 4.0 | [ebe62ed](https://sketchfab.com/3d-models/french-door-refrigerator-stainless-ebe62ed6dd9b446a9c9b7d7d6a8086e7) |
 | `real/dishwasher-phoria.glb` | Dishwasher (Whirlpool WDF330PAHS03) | CC BY 4.0 | [dbd9076](https://sketchfab.com/3d-models/dishwasher-dbd9076c131f4d63b7b39490c560c173) |
 | `real/sink.glb` | Kitchen sink | CC BY 4.0 | [8bc381a](https://sketchfab.com/3d-models/8bc381a229e34834bd8e20ca6011e82f) |
@@ -27,7 +29,6 @@ Same source as the pliers avatar. https://polyhaven.com
 
 | File | Asset | License |
 |---|---|---|
-| `polyhaven/cabinet/modern_wooden_cabinet_1k.gltf` | [Modern Wooden Cabinet](https://polyhaven.com/a/modern_wooden_cabinet) | CC0 |
 | `polyhaven/hdri/kiara_interior_2k.hdr` | [Kiara 1 Interior](https://polyhaven.com/a/kiara_1_interior) | CC0 |
 | `polyhaven/textures/tiles/long_white_tiles_*_2k.jpg` | [Long White Tiles](https://polyhaven.com/a/long_white_tiles) | CC0 |
 | `polyhaven/textures/marble/marble_01_*_1k.jpg` | [Marble 01](https://polyhaven.com/a/marble_01) | CC0 |

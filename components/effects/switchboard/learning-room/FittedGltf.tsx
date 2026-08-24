@@ -3,6 +3,7 @@
 import { Clone } from '@react-three/drei';
 import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
 import { Box3, Euler, Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { keepNamed, pruneHidden } from './kitchen-cupboard';
 import { useKeptGltf } from './useKeptGltf';
 
 export function findNamed(root: Object3D, match: RegExp): Object3D | null {
@@ -30,6 +31,27 @@ export function hideNamed(root: Object3D, match: RegExp) {
 }
 
 export type FitMode = 'contain' | 'width' | 'stretch';
+
+const filteredScenes = new Map<string, Object3D>();
+
+function filterScene(
+  scene: Object3D,
+  keep?: RegExp,
+  hide?: RegExp,
+  prepare?: (root: Object3D) => void
+) {
+  if (!keep && !hide && !prepare) return scene;
+  const key = `${scene.uuid}|k:${keep?.source ?? ''}|h:${hide?.source ?? ''}|p:${prepare?.name ?? ''}`;
+  const cached = filteredScenes.get(key);
+  if (cached) return cached;
+  const clone = scene.clone(true);
+  if (keep) keepNamed(clone, keep);
+  if (hide) hideNamed(clone, hide);
+  if (keep || hide) pruneHidden(clone);
+  prepare?.(clone);
+  filteredScenes.set(key, clone);
+  return clone;
+}
 
 function rotatedAabb(
   min: Vector3,
@@ -133,6 +155,10 @@ type FittedGltfProps = {
   align?: 'bottom' | 'center';
   pin?: 'center' | 'min' | 'front';
   hide?: RegExp;
+  /** Keep matching nodes (and their ancestors/descendants); hide the rest. */
+  keep?: RegExp;
+  /** Mutate a filtered clone once (split doors, recolor) before measuring. */
+  prepare?: (root: Object3D) => void;
   share?: boolean;
   /** contain = keep proportions inside the box. width = match bay width, allow chimney into the wall. */
   fit?: FitMode;
@@ -153,6 +179,8 @@ export function FittedGltf({
   align = 'bottom',
   pin = 'center',
   hide,
+  keep,
+  prepare,
   share: _share = false,
   fit = 'contain',
   preScale = 1,
@@ -166,10 +194,14 @@ export function FittedGltf({
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
 
+  const source = useMemo(
+    () => filterScene(scene, keep, hide, prepare),
+    [scene, keep, hide, prepare]
+  );
+
   const fitResult = useMemo(() => {
-    if (hide) hideNamed(scene, hide);
-    return measureVisible(scene, maxSize, align, pin, fit, preScale, rotation);
-  }, [scene, maxSize[0], maxSize[1], maxSize[2], align, pin, hide, fit, preScale, rotation[0], rotation[1], rotation[2]]);
+    return measureVisible(source, maxSize, align, pin, fit, preScale, rotation);
+  }, [source, maxSize[0], maxSize[1], maxSize[2], align, pin, fit, preScale, rotation[0], rotation[1], rotation[2]]);
 
   useLayoutEffect(() => {
     const g = wrap.current;
@@ -211,14 +243,14 @@ export function FittedGltf({
     });
     g.updateWorldMatrix(true, true);
     onReadyRef.current?.(g);
-  }, [scene, fitResult, envIntensity, finish]);
+  }, [source, fitResult, envIntensity, finish]);
 
   return (
     <group position={position}>
       <group position={fitResult.worldShift}>
         <group rotation={rotation}>
           <group ref={wrap} position={fitResult.localOffset} scale={fitResult.scale}>
-            <Clone object={scene} castShadow receiveShadow />
+            <Clone object={source} castShadow receiveShadow />
           </group>
         </group>
       </group>

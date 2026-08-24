@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { FittedGltf, findNamed } from './FittedGltf';
+import { CUPBOARD_BASE_KEEP, CUPBOARD_UPPER_KEEP, prepareKitchenCupboard } from './kitchen-cupboard';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
@@ -141,7 +142,7 @@ function TiledSplash({ x, w, h = 0.42 }: { x: number; w: number; h?: number }) {
   );
 }
 
-/** Poly Haven two-door cabinet — one unit per bay, doors actually swing. */
+/** Kitchen joinery kit — one two-door cupboard per bay, painted as matching laminate. */
 function DoorCabinet({
   x,
   w,
@@ -149,6 +150,7 @@ function DoorCabinet({
   h,
   depth,
   open,
+  kind,
 }: {
   x: number;
   w: number;
@@ -156,37 +158,42 @@ function DoorCabinet({
   h: number;
   depth: number;
   open: boolean;
+  kind: 'base' | 'upper';
 }) {
   const left = useRef<Object3D | null>(null);
   const right = useRef<Object3D | null>(null);
   useFrame((_, delta) => {
     if (left.current) {
-      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? 1.15 : 0, 8, delta);
+      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? -1.15 : 0, 8, delta);
     }
     if (right.current) {
-      right.current.rotation.y = MathUtils.damp(
-        right.current.rotation.y,
-        open ? Math.PI - 1.15 : Math.PI,
-        8,
-        delta,
-      );
+      right.current.rotation.y = MathUtils.damp(right.current.rotation.y, open ? 1.15 : 0, 8, delta);
     }
   });
   return (
-    <FittedGltf
-      url={ROOM_GLB.cabinetDoors}
-      maxSize={[w - 0.008, h, depth]}
-      position={[x + w / 2, y, depth / 2]}
-      align="bottom"
-      pin="center"
-      fit="stretch"
-      envIntensity={1.2}
-      onReady={(root) => {
-        left.current = findNamed(root, /door_l/i);
-        right.current = findNamed(root, /door_r/i);
-        if (right.current && !open) right.current.rotation.y = Math.PI;
-      }}
-    />
+    <group>
+      {kind === 'upper' && (
+        <mesh position={[x + w / 2, y + h / 2, depth / 2 - 0.012]} receiveShadow>
+          <boxGeometry args={[w - 0.02, h - 0.02, Math.max(0.1, depth - 0.05)]} />
+          <meshStandardMaterial color="#b9b1a6" roughness={0.62} metalness={0.04} />
+        </mesh>
+      )}
+      <FittedGltf
+        url={ROOM_GLB.cabinetDoors}
+        maxSize={[w - 0.008, h, depth]}
+        position={[x + w / 2, y, depth / 2]}
+        align="bottom"
+        pin="center"
+        fit="stretch"
+        keep={kind === 'upper' ? CUPBOARD_UPPER_KEEP : CUPBOARD_BASE_KEEP}
+        prepare={prepareKitchenCupboard}
+        envIntensity={1.2}
+        onReady={(root) => {
+          left.current = findNamed(root, /^door_l$/);
+          right.current = findNamed(root, /^door_r$/);
+        }}
+      />
+    </group>
   );
 }
 
@@ -524,16 +531,80 @@ export function KitchenRun({
       </mesh>
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 
-      <DoorCabinet x={sink.x} w={sink.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['sink-base']} />
+      <DoorCabinet
+        x={sink.x}
+        w={sink.w}
+        y={0}
+        h={KITCHEN.benchH}
+        depth={KITCHEN.benchDepth}
+        open={!!openById['sink-base']}
+        kind="base"
+      />
       <DrawerBay x={cabA.x} w={cabA.w} open={drawersOpen} />
-      <DoorCabinet x={cabL.x} w={cabL.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['cabL-base']} />
-      <DoorCabinet x={cabR.x} w={cabR.w} y={KITCHEN.kickH} h={BASE_H + 0.012} depth={KITCHEN.benchDepth} open={!!openById['cabR-base']} />
+      <DoorCabinet
+        x={cabL.x}
+        w={cabL.w}
+        y={0}
+        h={KITCHEN.benchH}
+        depth={KITCHEN.benchDepth}
+        open={!!openById['cabL-base']}
+        kind="base"
+      />
+      <DoorCabinet
+        x={cabR.x}
+        w={cabR.w}
+        y={0}
+        h={KITCHEN.benchH}
+        depth={KITCHEN.benchDepth}
+        open={!!openById['cabR-base']}
+        kind="base"
+      />
 
-      <DoorCabinet x={sink.x} w={sink.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['sink-upper']} />
-      <DoorCabinet x={cabA.x} w={cabA.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabA-upper']} />
-      <DoorCabinet x={cabL.x} w={cabL.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabL-upper']} />
-      <DoorCabinet x={dw.x} w={dw.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['dw-upper']} />
-      <DoorCabinet x={cabR.x} w={cabR.w} y={KITCHEN.upperY} h={KITCHEN.upperH} depth={KITCHEN.upperDepth} open={!!openById['cabR-upper']} />
+      <DoorCabinet
+        x={sink.x}
+        w={sink.w}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth}
+        open={!!openById['sink-upper']}
+        kind="upper"
+      />
+      <DoorCabinet
+        x={cabA.x}
+        w={cabA.w}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth}
+        open={!!openById['cabA-upper']}
+        kind="upper"
+      />
+      <DoorCabinet
+        x={cabL.x}
+        w={cabL.w}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth}
+        open={!!openById['cabL-upper']}
+        kind="upper"
+      />
+      <DoorCabinet
+        x={dw.x}
+        w={dw.w}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth}
+        open={!!openById['dw-upper']}
+        kind="upper"
+      />
+      <DoorCabinet
+        x={cabR.x}
+        w={cabR.w}
+        y={KITCHEN.upperY}
+        h={KITCHEN.upperH}
+        depth={KITCHEN.upperDepth}
+        open={!!openById['cabR-upper']}
+        kind="upper"
+      />
 
       <FittedGltf
         url={ROOM_GLB.sink}
