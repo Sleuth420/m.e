@@ -22,7 +22,7 @@ const KICK_RECESS = 0.048;
 const HANDLE_LEN = 0.152;
 const HANDLE_R = 0.006;
 const HANDLE_PROJ = 0.03;
-const WOOD_TILE = 0.22;
+const WOOD_TILE = 0.48;
 
 function WoodMat({
   w,
@@ -36,7 +36,7 @@ function WoodMat({
   interior?: boolean;
 }) {
   const maps = useSizedPbr(
-    POLYHAVEN.kitchenWood,
+    POLYHAVEN.oakVeneer,
     [Math.max(0.04, w), Math.max(0.04, h)],
     WOOD_TILE,
     grain === 'h' ? Math.PI / 2 : 0,
@@ -49,8 +49,8 @@ function WoodMat({
       color={interior ? JOINERY_IN : JOINERY}
       roughness={1}
       metalness={0.02}
-      envMapIntensity={interior ? 0.55 : 1.12}
-      normalScale={[0.42, 0.42]}
+      envMapIntensity={interior ? 0.55 : 1.05}
+      normalScale={[0.22, 0.22]}
     />
   );
 }
@@ -123,7 +123,7 @@ function BarHandle({
 
 function ShakerLeaf({ w, h }: { w: number; h: number }) {
   const f = Math.min(STILE, w * 0.28, h * 0.28);
-  const inset = 0.0035;
+  const inset = 0.006;
   const innerW = w - 2 * f;
   const innerH = h - 2 * f;
   return (

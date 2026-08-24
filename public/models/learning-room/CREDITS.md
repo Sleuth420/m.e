@@ -33,5 +33,5 @@ Same source as the pliers avatar. https://polyhaven.com
 | `polyhaven/textures/tiles/long_white_tiles_*_2k.jpg` | [Long White Tiles](https://polyhaven.com/a/long_white_tiles) | CC0 |
 | `polyhaven/textures/marble/marble_01_*_1k.jpg` | [Marble 01](https://polyhaven.com/a/marble_01) | CC0 |
 | `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
-| `polyhaven/textures/kitchen-wood/kitchen_wood_*_1k.jpg` | [Kitchen Wood](https://polyhaven.com/a/kitchen_wood) | CC0 |
+| `polyhaven/textures/oak-veneer/oak_veneer_01_*_1k.jpg` | [Oak Veneer 01](https://polyhaven.com/a/oak_veneer_01) | CC0 |
 | `real/pliers/` | [Pliers](https://polyhaven.com/a/pliers) | CC0 |
