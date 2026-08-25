@@ -4,14 +4,15 @@ export const ROOM_GLB = {
   cabinetDrawers: '/models/learning-room/real/cabinet-drawers.glb?v=8',
   /** Modular kitchen cupboard kit — one closed two-door unit per bay. */
   cabinetDoors: '/models/learning-room/real/cabinets-modular.glb?v=3',
-  fridge: '/models/learning-room/real/fridge-french.glb?v=8',
-  oven: '/models/learning-room/real/oven.glb?v=14',
-  cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=11',
-  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=21',
-  hood: '/models/learning-room/real/hood-wall.glb?v=2',
-  toaster: '/models/learning-room/real/toaster.glb?v=7',
-  sink: '/models/learning-room/real/sink.glb?v=7',
-  tap: '/models/learning-room/real/tap.glb?v=7',
+  fridge: '/models/learning-room/real/fridge-french.glb?v=9',
+  oven: '/models/learning-room/real/oven.glb?v=15',
+  cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=12',
+  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=22',
+  /** One wall canopy — never stack a second chimney mesh on top. */
+  hood: '/models/learning-room/real/hood-wall.glb?v=3',
+  toaster: '/models/learning-room/real/toaster.glb?v=8',
+  sink: '/models/learning-room/real/sink.glb?v=8',
+  tap: '/models/learning-room/real/tap.glb?v=8',
   pot: '/models/learning-room/kitchen/pot.glb?v=1',
   roast: '/models/learning-room/kitchen/roast.glb?v=1',
   /** White double GPO plate — used for every outlet (splash + under-bench). */
