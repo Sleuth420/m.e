@@ -33,6 +33,7 @@ Same source as the pliers avatar. https://polyhaven.com
 | `polyhaven/hdri/kiara_interior_2k.hdr` | [Kiara 1 Interior](https://polyhaven.com/a/kiara_1_interior) | CC0 |
 | `polyhaven/textures/tiles/long_white_tiles_*_2k.jpg` | [Long White Tiles](https://polyhaven.com/a/long_white_tiles) | CC0 |
 | `polyhaven/textures/marble/marble_01_*_1k.jpg` | [Marble 01](https://polyhaven.com/a/marble_01) | CC0 |
+| `ambientcg/marble-015/` | [Marble 015](https://ambientcg.com/a/Marble015) | CC0 |
 | `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
 | `polyhaven/textures/oak-veneer/oak_veneer_01_*_1k.jpg` | [Oak Veneer 01](https://polyhaven.com/a/oak_veneer_01) | CC0 |
 | `polyhaven/textures/pine/coated_pine_*_1k.jpg` | [Coated Pine](https://polyhaven.com/a/coated_pine) | CC0 |

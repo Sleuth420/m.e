@@ -7,8 +7,10 @@ export const ROOM_GLB = {
   fridge: '/models/learning-room/real/fridge-french.glb?v=8',
   oven: '/models/learning-room/real/oven.glb?v=14',
   cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=11',
-  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=20',
-  hood: '/models/learning-room/real/hood-wall.glb?v=1',
+  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=21',
+  /** Built-in tub + drop door — used when the Whirlpool door is open. */
+  dishwasherOpen: '/models/learning-room/real/dishwasher-pro.glb?v=1',
+  hood: '/models/learning-room/real/hood-wall.glb?v=2',
   toaster: '/models/learning-room/real/toaster.glb?v=7',
   sink: '/models/learning-room/real/sink.glb?v=7',
   tap: '/models/learning-room/real/tap.glb?v=7',
@@ -33,6 +35,12 @@ export const POLYHAVEN = {
     diff: '/models/learning-room/polyhaven/textures/marble/marble_01_diff_1k.jpg',
     nor: '/models/learning-room/polyhaven/textures/marble/marble_01_nor_gl_1k.jpg',
     arm: '/models/learning-room/polyhaven/textures/marble/marble_01_arm_1k.jpg',
+  },
+  /** ambientCG Marble015 — seamless cream slab, not tiled stone. */
+  marbleSlab: {
+    diff: '/models/learning-room/ambientcg/marble-015/color.jpg',
+    nor: '/models/learning-room/ambientcg/marble-015/normal.jpg',
+    rough: '/models/learning-room/ambientcg/marble-015/roughness.jpg',
   },
   laminate: {
     diff: '/models/learning-room/polyhaven/textures/laminate/laminate_floor_02_diff_1k.jpg',

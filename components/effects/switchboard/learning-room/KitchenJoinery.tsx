@@ -10,7 +10,7 @@ import { useSizedPbr } from './room-textures';
 /** Light oak tint — keeps Poly Haven kitchen wood in the same family as the marble bench. */
 export const JOINERY = '#efe6d8';
 const JOINERY_IN = '#cbbba6';
-const KICK = '#3d4248';
+const KICK = '#4a4f55';
 const STEEL = '#c5c9ce';
 
 const PANEL = 0.018;
@@ -427,10 +427,6 @@ export function JoineryFridgeHousing({
           <KickMat />
         </mesh>
       )}
-      <mesh position={[openingX + openingW / 2, 0.055, kickZ + 0.004]} receiveShadow>
-        <boxGeometry args={[openingW - 0.01, 0.1, 0.012]} />
-        <meshStandardMaterial color="#2c3034" roughness={0.45} metalness={0.35} />
-      </mesh>
       {canopyH > 0.02 && (
         <>
           <Box

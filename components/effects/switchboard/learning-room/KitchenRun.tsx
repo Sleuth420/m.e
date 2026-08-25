@@ -1,6 +1,5 @@
 'use client';
 
-import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
@@ -48,10 +47,10 @@ function Hit({
   );
 }
 
-const BENCH_T = 0.04;
+const BENCH_T = 0.03;
 const BENCH_Y = KITCHEN.benchH + BENCH_T / 2;
 const FACE = KITCHEN.benchDepth;
-/** Center of overlay doors (hinge on FACE, 36 mm thick). */
+/** Center of overlay doors (hinge on FACE, 18 mm thick). */
 const FRONT = FACE + 0.018;
 const SINK_CUT = { w: 0.76, d: 0.46, cz: 0.3 } as const;
 /** Built-in oven is 595 mm; leftover under the bench is an oak drawer + 16 mm rail. */
@@ -62,7 +61,7 @@ const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
 const FILL = 0.018;
 const PACK = 0.01;
 const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
-const FRIDGE_W = 0.9;
+const FRIDGE_W = 0.91;
 const FRIDGE_H = 1.82;
 
 function BenchSlab({
@@ -88,9 +87,9 @@ function BenchSlab({
         map={maps.map}
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
-        roughness={1}
-        metalness={0.08}
-        envMapIntensity={1.15}
+        roughness={0.38}
+        metalness={0.06}
+        envMapIntensity={1.05}
       />
     </mesh>
   );
@@ -98,35 +97,48 @@ function BenchSlab({
 
 /** Benchtop with a sink cutout so the bowls sit in the bench, not on it. */
 function BenchRun({ startX, endX, sinkX }: { startX: number; endX: number; sinkX: number }) {
-  const maps = useRepeatingPbr(POLYHAVEN.marble, [2.6, 0.55]);
-  const zMin = -0.01;
-  const zMax = KITCHEN.benchDepth + 0.01;
+  const w = endX - startX;
+  const maps = useRepeatingPbr(POLYHAVEN.marbleSlab, [Math.max(1.2, w / 2.1), 0.32]);
+  const zMin = 0;
+  const zMax = KITCHEN.benchDepth + 0.018;
   const cutL = sinkX - SINK_CUT.w / 2;
   const cutR = sinkX + SINK_CUT.w / 2;
   const cutBack = SINK_CUT.cz - SINK_CUT.d / 2;
   const cutFront = SINK_CUT.cz + SINK_CUT.d / 2;
+  const frontT = 0.012;
   return (
     <group>
-      <BenchSlab maps={maps} x0={startX - 0.006} x1={cutL} z0={zMin} z1={zMax} />
-      <BenchSlab maps={maps} x0={cutR} x1={endX + 0.006} z0={zMin} z1={zMax} />
+      <BenchSlab maps={maps} x0={startX - 0.004} x1={cutL} z0={zMin} z1={zMax} />
+      <BenchSlab maps={maps} x0={cutR} x1={endX + 0.004} z0={zMin} z1={zMax} />
       <BenchSlab maps={maps} x0={cutL} x1={cutR} z0={zMin} z1={cutBack} />
       <BenchSlab maps={maps} x0={cutL} x1={cutR} z0={cutFront} z1={zMax} />
+      <mesh position={[(startX + endX) / 2, BENCH_Y, zMax + frontT / 2]} castShadow receiveShadow>
+        <boxGeometry args={[w + 0.008, BENCH_T, frontT]} />
+        <meshStandardMaterial
+          map={maps.map}
+          normalMap={maps.normalMap}
+          roughnessMap={maps.roughnessMap}
+          roughness={0.38}
+          metalness={0.06}
+          envMapIntensity={1.05}
+        />
+      </mesh>
     </group>
   );
 }
 
-function TiledSplash({ x, w, h = 0.42 }: { x: number; w: number; h?: number }) {
-  const maps = useRepeatingPbr(POLYHAVEN.tiles, [Math.max(4, w / 0.42), Math.max(1.6, h / 0.14)]);
+function TiledSplash({ x, w, h = 0.45 }: { x: number; w: number; h?: number }) {
+  const maps = useRepeatingPbr(POLYHAVEN.tiles, [w / 0.62, h / 0.5]);
   return (
-    <mesh position={[x + w / 2, KITCHEN.benchH + 0.04 + h / 2, 0.008]} receiveShadow>
-      <boxGeometry args={[w, h, 0.012]} />
+    <mesh position={[x + w / 2, KITCHEN.benchH + BENCH_T + h / 2, 0.012]} receiveShadow>
+      <boxGeometry args={[w, h, 0.008]} />
       <meshStandardMaterial
         map={maps.map}
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
-        roughness={1}
-        metalness={0.04}
-        envMapIntensity={1.1}
+        roughness={0.72}
+        metalness={0.02}
+        envMapIntensity={0.85}
       />
     </mesh>
   );
@@ -181,6 +193,7 @@ function HingedAppliance({
   preScale,
   envIntensity,
   hide,
+  prepare,
 }: {
   url: string;
   maxSize: [number, number, number];
@@ -188,10 +201,11 @@ function HingedAppliance({
   rotation?: [number, number, number];
   align?: 'bottom' | 'center';
   pin?: 'center' | 'min' | 'front';
-  fit?: 'contain' | 'width' | 'stretch';
+  fit?: 'contain' | 'width' | 'height' | 'stretch';
   preScale?: number;
   envIntensity?: number;
   hide?: RegExp;
+  prepare?: (root: Object3D) => void;
   open: boolean;
   doorMatch: RegExp;
   extraMatch?: RegExp;
@@ -215,6 +229,7 @@ function HingedAppliance({
       preScale={preScale}
       envIntensity={envIntensity}
       hide={hide}
+      prepare={prepare}
       onReady={(root) => {
         pivot.current = hingeParts(root, doorMatch, extraMatch);
       }}
@@ -222,51 +237,50 @@ function HingedAppliance({
   );
 }
 
-/** Bright stainless integrated door — control strip and handle readable from across the room. */
-function DishwasherDoor({ x, w, open }: { x: number; w: number; open: boolean }) {
-  const hinge = useRef<Group>(null);
-  useFrame((_, delta) => {
-    if (!hinge.current) return;
-    hinge.current.rotation.x = MathUtils.damp(hinge.current.rotation.x, open ? 1.22 : 0, 8, delta);
+function dressBuiltInDishwasher(root: Object3D) {
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const mat of mats) {
+      const m = mat as MeshStandardMaterial;
+      if (!m) continue;
+      const n = `${m.name ?? ''} ${mesh.name ?? ''} ${obj.name ?? ''}`.toLowerCase();
+      m.envMapIntensity = 1.45;
+      if (/metal/.test(n)) {
+        m.color.set('#c5ccd2');
+        m.metalness = 0.88;
+        m.roughness = 0.22;
+      } else if (/pied/.test(n)) {
+        m.color.set('#1a1c1e');
+        m.metalness = 0.12;
+        m.roughness = 0.55;
+      } else {
+        m.color.set('#d9dde2');
+        m.metalness = 0.42;
+        m.roughness = 0.32;
+      }
+      m.needsUpdate = true;
+    }
   });
-  const h = DW_H - 0.008;
-  const doorW = w - PACK * 2 - 0.002;
+}
+
+function Stainless({ color = '#c9ced4' }: { color?: string }) {
+  return <meshStandardMaterial color={color} metalness={0.86} roughness={0.24} envMapIntensity={1.35} />;
+}
+
+function HoodChimney({ x, y0 }: { x: number; y0: number }) {
+  const h = Math.max(0.16, ROOM.height - y0);
   return (
-    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.002, FRONT + 0.006]}>
-      <mesh position={[0, h / 2, 0.011]} castShadow receiveShadow>
-        <boxGeometry args={[doorW, h, 0.022]} />
-        <meshStandardMaterial color="#eef2f6" metalness={0.9} roughness={0.16} envMapIntensity={2.1} />
+    <group>
+      <mesh position={[x, y0 + 0.055, 0.12]} castShadow receiveShadow>
+        <boxGeometry args={[0.3, 0.11, 0.22]} />
+        <Stainless color="#d4d8dc" />
       </mesh>
-      <mesh position={[0, h - 0.055, 0.024]}>
-        <boxGeometry args={[doorW - 0.02, 0.092, 0.008]} />
-        <meshStandardMaterial color="#141618" metalness={0.4} roughness={0.28} envMapIntensity={0.85} />
+      <mesh position={[x, y0 + 0.11 + (h - 0.11) / 2, 0.1]} castShadow receiveShadow>
+        <boxGeometry args={[0.17, h - 0.11, 0.16]} />
+        <Stainless />
       </mesh>
-      <mesh position={[0.11, h - 0.055, 0.029]}>
-        <boxGeometry args={[0.07, 0.028, 0.004]} />
-        <meshStandardMaterial color="#0b0c0d" roughness={0.2} metalness={0.5} />
-      </mesh>
-      {([-0.16, -0.1, -0.04, 0.02, 0.08] as const).map((ox) => (
-        <mesh key={ox} position={[ox, h - 0.055, 0.03]}>
-          <sphereGeometry args={[0.005, 10, 10]} />
-          <meshStandardMaterial
-            color="#9ec5ff"
-            metalness={0.4}
-            roughness={0.2}
-            emissive="#60a5fa"
-            emissiveIntensity={0.7}
-          />
-        </mesh>
-      ))}
-      <mesh position={[0, h - 0.118, 0.032]} castShadow>
-        <boxGeometry args={[doorW - 0.16, 0.014, 0.018]} />
-        <meshStandardMaterial color="#b8bec4" metalness={0.92} roughness={0.14} envMapIntensity={1.7} />
-      </mesh>
-      {Array.from({ length: 9 }, (_, i) => (
-        <mesh key={i} position={[-doorW / 2 + 0.04 + i * ((doorW - 0.08) / 8), 0.046, 0.024]}>
-          <boxGeometry args={[0.028, 0.05, 0.006]} />
-          <meshStandardMaterial color="#9aa1a8" metalness={0.7} roughness={0.3} />
-        </mesh>
-      ))}
     </group>
   );
 }
@@ -320,10 +334,10 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
       const t = (clock.elapsedTime * 0.7 + i * 0.22) % 1;
       child.position.y = 0.16 + t * 0.26;
       child.position.x = Math.sin(clock.elapsedTime * 2 + i) * 0.025;
-      child.scale.setScalar((0.022 + t * 0.036) / 0.022);
+      child.scale.setScalar((0.014 + t * 0.028) / 0.014);
       const mesh = child as Mesh;
       const mat = mesh.material as MeshStandardMaterial;
-      if (mat) mat.opacity = 0.55 * (1 - t);
+      if (mat) mat.opacity = 0.28 * (1 - t);
     });
   });
   return (
@@ -338,10 +352,10 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
         envIntensity={1.2}
       />
       <group ref={steam} visible={boiling}>
-        {Array.from({ length: 6 }, (_, i) => (
+        {Array.from({ length: 5 }, (_, i) => (
           <mesh key={i} position={[0, 0.08, 0]}>
-            <sphereGeometry args={[0.022, 8, 8]} />
-            <meshStandardMaterial color="#f8fafc" transparent opacity={0.45} roughness={1} />
+            <sphereGeometry args={[0.014, 8, 8]} />
+            <meshStandardMaterial color="#eef2f6" transparent opacity={0.22} roughness={1} depthWrite={false} />
           </mesh>
         ))}
       </group>
@@ -350,55 +364,16 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
 }
 
 function TapWater({ x, y, z }: { x: number; y: number; z: number }) {
-  const drops = useRef<Group>(null);
-  useFrame(({ clock }) => {
-    const g = drops.current;
-    if (!g) return;
-    g.children.forEach((child, i) => {
-      const t = (clock.elapsedTime * 2.8 + i * 0.16) % 1;
-      child.position.y = y + 0.18 - t * 0.28;
-      child.scale.setScalar(0.65 + t * 0.55);
-    });
-  });
   return (
-    <group>
-      <mesh position={[x, y + 0.08, z]}>
-        <cylinderGeometry args={[0.007, 0.011, 0.2, 8]} />
-        <meshStandardMaterial color="#7dd3fc" transparent opacity={0.55} roughness={0.12} />
-      </mesh>
-      <group ref={drops}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <mesh key={i} position={[x, y + 0.18, z]}>
-            <sphereGeometry args={[0.011, 8, 8]} />
-            <meshStandardMaterial color="#bae6fd" transparent opacity={0.75} roughness={0.15} />
-          </mesh>
-        ))}
-      </group>
-    </group>
+    <mesh position={[x, y + 0.02, z]}>
+      <cylinderGeometry args={[0.004, 0.006, 0.22, 8]} />
+      <meshStandardMaterial color="#9ec9de" transparent opacity={0.38} roughness={0.08} metalness={0.05} />
+    </mesh>
   );
 }
 
-function FridgeSurprise({ position }: { position: [number, number, number] }) {
-  const spin = useRef<Group>(null);
-  useFrame((_, delta) => {
-    if (spin.current) spin.current.rotation.y += delta * 1.4;
-  });
-  return (
-    <group position={position}>
-      <group ref={spin}>
-        <mesh position={[0, 0.08, 0]} castShadow>
-          <sphereGeometry args={[0.07, 12, 10]} />
-          <meshStandardMaterial color="#facc15" roughness={0.4} emissive="#facc15" emissiveIntensity={0.35} />
-        </mesh>
-      </group>
-      <pointLight intensity={0.6} distance={1.6} color="#fde68a" />
-      <Html center position={[0, 0.42, 0]} style={{ pointerEvents: 'none', width: 240 }}>
-        <p className="rounded-md bg-black/80 px-2 py-1.5 text-center text-[11px] leading-snug text-white">
-          Dedicated fridge circuit — a lighting or kitchen-power trip won&apos;t lose the cold stuff.
-        </p>
-      </Html>
-    </group>
-  );
+function FridgeInterior({ position }: { position: [number, number, number] }) {
+  return <pointLight position={position} intensity={0.45} distance={1.4} color="#f3efe6" />;
 }
 
 type KitchenProps = {
@@ -466,7 +441,6 @@ export function KitchenRun({
   const gableDepth = KITCHEN.benchDepth + 0.018;
   const kickEnd = fridge.x;
   const ovenPackH = OVEN_H + RAIL_H;
-  const chimneyH = Math.max(0.12, ROOM.height - (KITCHEN.upperY + KITCHEN.upperH));
 
   return (
     <group>
@@ -609,33 +583,43 @@ export function KitchenRun({
       <JoineryFascia x={cook.x + PACK} w={cook.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <FittedGltf
         url={ROOM_GLB.hood}
-        maxSize={[cook.w, KITCHEN.upperH + 0.02, KITCHEN.upperDepth + 0.22]}
+        maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
         position={[FIXTURES.rangehood.x, KITCHEN.upperY, KITCHEN.upperDepth + 0.018]}
         align="bottom"
         pin="front"
         fit="width"
-        envIntensity={1.5}
+        envIntensity={1.55}
       />
-      <mesh
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH + chimneyH / 2, 0.14]}
-        castShadow
-        receiveShadow
-      >
-        <boxGeometry args={[0.22, chimneyH + 0.04, 0.18]} />
-        <meshStandardMaterial color="#3a3d42" metalness={0.68} roughness={0.34} envMapIntensity={1.15} />
-      </mesh>
+      <HoodChimney x={FIXTURES.rangehood.x} y0={KITCHEN.upperY + KITCHEN.upperH} />
       <JoineryPacker x={dw.x} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <JoineryPacker x={dw.x + dw.w - PACK} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
-      <FittedGltf
-        url={ROOM_GLB.dishwasher}
-        maxSize={[dw.w - PACK * 2 - 0.02, DW_H - 0.03, FACE - 0.12]}
-        position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.008, FRONT - 0.06]}
-        align="bottom"
-        pin="front"
-        fit="contain"
-        envIntensity={1.2}
-      />
-      <DishwasherDoor x={dw.x} w={dw.w} open={dwOpen} />
+      <group visible={!dwOpen}>
+        <FittedGltf
+          url={ROOM_GLB.dishwasher}
+          maxSize={[dw.w - 0.01, DW_H - 0.008, 0.58]}
+          position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
+          align="bottom"
+          pin="front"
+          fit="width"
+          envIntensity={1.45}
+        />
+      </group>
+      <group visible={dwOpen}>
+        <HingedAppliance
+          url={ROOM_GLB.dishwasherOpen}
+          maxSize={[dw.w - 0.01, DW_H, 0.62]}
+          position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT]}
+          align="bottom"
+          pin="front"
+          fit="width"
+          envIntensity={1.4}
+          prepare={dressBuiltInDishwasher}
+          open={dwOpen}
+          doorMatch={/couvercle/i}
+          extraMatch={/baisserPoigner/i}
+          openAngle={1.22}
+        />
+      </group>
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <JoineryFridgeHousing
         x={fridge.x}
@@ -648,12 +632,12 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.fridge}
-        maxSize={[0.99, FRIDGE_H, 0.85]}
+        maxSize={[1.02, FRIDGE_H, 0.72]}
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        fit="width"
-        envIntensity={1.4}
+        fit="height"
+        envIntensity={1.35}
       />
       <FittedGltf
         url={ROOM_GLB.toaster}
@@ -689,16 +673,16 @@ export function KitchenRun({
           envIntensity={1.1}
         />
       )}
-      {fridgeOpen && fridgeLive && <FridgeSurprise position={[FIXTURES.fridge.x, 1.05, 0.72]} />}
+      {fridgeOpen && fridgeLive && <FridgeInterior position={[fridgeMid, 1.05, 0.52]} />}
       {toasterPop && (
         <>
-          <mesh position={[toasterX - 0.04, benchY + 0.26, 0.34]} castShadow>
-            <boxGeometry args={[0.07, 0.09, 0.02]} />
-            <meshStandardMaterial color="#eab308" roughness={0.7} />
+          <mesh position={[toasterX - 0.038, benchY + 0.24, 0.34]} castShadow>
+            <boxGeometry args={[0.062, 0.08, 0.016]} />
+            <meshStandardMaterial color="#c4a06a" roughness={0.88} metalness={0.02} />
           </mesh>
-          <mesh position={[toasterX + 0.04, benchY + 0.26, 0.34]} castShadow>
-            <boxGeometry args={[0.07, 0.09, 0.02]} />
-            <meshStandardMaterial color="#ca8a04" roughness={0.7} />
+          <mesh position={[toasterX + 0.038, benchY + 0.24, 0.34]} castShadow>
+            <boxGeometry args={[0.062, 0.08, 0.016]} />
+            <meshStandardMaterial color="#b08958" roughness={0.88} metalness={0.02} />
           </mesh>
         </>
       )}
@@ -747,6 +731,7 @@ loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
 loadKeptGltf(ROOM_GLB.dishwasher);
+loadKeptGltf(ROOM_GLB.dishwasherOpen);
 loadKeptGltf(ROOM_GLB.hood);
 loadKeptGltf(ROOM_GLB.pot);
 loadKeptGltf(ROOM_GLB.roast);

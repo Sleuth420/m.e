@@ -26,14 +26,16 @@ function prepData(tex: Texture, repeat: [number, number]) {
   tex.needsUpdate = true;
 }
 
-/** Poly Haven PBR (diff + OpenGL normal + ARM). Roughness is the ARM green channel. */
+/** PBR (diff + OpenGL normal + roughness). Poly Haven ARM uses the green channel as roughness. */
 export function useRepeatingPbr(
-  urls: { diff: string; nor: string; arm: string },
+  urls: { diff: string; nor: string; arm?: string; rough?: string },
   repeat: [number, number],
 ): PbrMaps {
   const rx = repeat[0];
   const ry = repeat[1];
-  const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, urls.arm]);
+  const third = urls.arm ?? urls.rough;
+  if (!third) throw new Error('PBR maps need arm or rough');
+  const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, third]);
   useLayoutEffect(() => {
     prepColor(map, [rx, ry]);
     prepData(normalMap, [rx, ry]);

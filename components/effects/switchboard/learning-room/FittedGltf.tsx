@@ -30,7 +30,7 @@ export function hideNamed(root: Object3D, match: RegExp) {
   });
 }
 
-export type FitMode = 'contain' | 'width' | 'stretch';
+export type FitMode = 'contain' | 'width' | 'height' | 'stretch';
 
 const filteredScenes = new Map<string, Object3D>();
 
@@ -130,7 +130,7 @@ function measureVisible(
   const sx = maxSize[0] / Math.max(world0.x, 1e-6);
   const sy = maxSize[1] / Math.max(world0.y, 1e-6);
   const sz = maxSize[2] / Math.max(world0.z, 1e-6);
-  const s = fit === 'width' ? sx : Math.min(sx, sy, sz);
+  const s = fit === 'width' ? sx : fit === 'height' ? sy : Math.min(sx, sy, sz);
   const scale: [number, number, number] =
     fit === 'stretch' ? [sx * preScale, sy * preScale, sz * preScale] : [s * preScale, s * preScale, s * preScale];
 
@@ -160,7 +160,7 @@ type FittedGltfProps = {
   /** Mutate a filtered clone once (split doors, recolor) before measuring. */
   prepare?: (root: Object3D) => void;
   share?: boolean;
-  /** contain = keep proportions inside the box. width = match bay width, allow chimney into the wall. */
+  /** contain = keep proportions. width = bay width. height = bay height. */
   fit?: FitMode;
   /** Convert mm (0.001) or cm (0.01) or inches (0.0254) to metres before fitting. */
   preScale?: number;
