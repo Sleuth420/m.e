@@ -62,7 +62,7 @@ const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
 const FILL = 0.018;
 const PACK = 0.01;
 const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
-const FRIDGE_W = 0.96;
+const FRIDGE_W = 0.9;
 const FRIDGE_H = 1.82;
 
 function BenchSlab({
@@ -232,10 +232,10 @@ function DishwasherDoor({ x, w, open }: { x: number; w: number; open: boolean })
   const h = DW_H - 0.008;
   const doorW = w - PACK * 2 - 0.002;
   return (
-    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.002, FRONT]}>
+    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.002, FRONT + 0.006]}>
       <mesh position={[0, h / 2, 0.011]} castShadow receiveShadow>
         <boxGeometry args={[doorW, h, 0.022]} />
-        <meshStandardMaterial color="#dfe3e8" metalness={0.82} roughness={0.22} envMapIntensity={1.7} />
+        <meshStandardMaterial color="#eef2f6" metalness={0.9} roughness={0.16} envMapIntensity={2.1} />
       </mesh>
       <mesh position={[0, h - 0.055, 0.024]}>
         <boxGeometry args={[doorW - 0.02, 0.092, 0.008]} />
@@ -617,12 +617,12 @@ export function KitchenRun({
         envIntensity={1.5}
       />
       <mesh
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH + chimneyH / 2, 0.09]}
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH + chimneyH / 2, 0.14]}
         castShadow
         receiveShadow
       >
-        <boxGeometry args={[0.2, chimneyH, 0.16]} />
-        <meshStandardMaterial color="#2a2d32" metalness={0.72} roughness={0.32} envMapIntensity={1.2} />
+        <boxGeometry args={[0.22, chimneyH + 0.04, 0.18]} />
+        <meshStandardMaterial color="#3a3d42" metalness={0.68} roughness={0.34} envMapIntensity={1.15} />
       </mesh>
       <JoineryPacker x={dw.x} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <JoineryPacker x={dw.x + dw.w - PACK} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
@@ -648,11 +648,11 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.fridge}
-        maxSize={[FRIDGE_W - 0.004, FRIDGE_H, 0.85]}
+        maxSize={[0.99, FRIDGE_H, 0.85]}
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        fit="contain"
+        fit="width"
         envIntensity={1.4}
       />
       <FittedGltf

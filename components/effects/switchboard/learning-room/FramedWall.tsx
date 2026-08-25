@@ -91,7 +91,9 @@ export function FramedWalls() {
   const topOfFrame = ROOM.height - doubleTop;
   const crippleAboveH = Math.max(0.08, topOfFrame - (headY + lintelT / 2));
   const crippleAboveY = headY + lintelT / 2 + crippleAboveH / 2;
-  const crippleZ = openZ;
+  const jackH = headY - lintelT / 2 - ROOM.plate;
+  const jackY = ROOM.plate + jackH / 2;
+  const crippleZs = [openZ - openW * 0.28, openZ + openW * 0.28];
 
   return (
     <group>
@@ -151,12 +153,16 @@ export function FramedWalls() {
         }),
       )}
 
-      <Timber maps={vMaps} position={[cx, studY, BOARD_OPENING.z0]} args={[s, studH, s]} />
-      <Timber maps={vMaps} position={[cx, studY, BOARD_OPENING.z1]} args={[s, studH, s]} />
+      <Timber maps={vMaps} position={[cx, jackY, BOARD_OPENING.z0]} args={[s, jackH, s]} />
+      <Timber maps={vMaps} position={[cx, jackY, BOARD_OPENING.z1]} args={[s, jackH, s]} />
       <Timber maps={hMaps} position={[cx, sillY, openZ]} args={[s, lintelT, openW - s]} />
       <Timber maps={hMaps} position={[cx, headY, openZ]} args={[s, lintelT, openW - s]} />
-      <Timber maps={vMaps} position={[cx, crippleBelowY, crippleZ]} args={[s, crippleBelowH, s]} />
-      <Timber maps={vMaps} position={[cx, crippleAboveY, crippleZ]} args={[s, crippleAboveH, s]} />
+      {crippleZs.map((z) => (
+        <group key={`cr-${z}`}>
+          <Timber maps={vMaps} position={[cx, crippleBelowY, z]} args={[s, crippleBelowH, s]} />
+          <Timber maps={vMaps} position={[cx, crippleAboveY, z]} args={[s, crippleAboveH, s]} />
+        </group>
+      ))}
 
       <mesh position={[0.02, openY, openZ]} receiveShadow>
         <boxGeometry args={[0.012, openH - 0.02, openW - 0.02]} />

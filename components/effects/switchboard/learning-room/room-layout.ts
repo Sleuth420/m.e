@@ -36,10 +36,10 @@ const BOARD_WORLD_W = BOARD.width * BOARD_MOUNT.scale;
 const BOARD_WORLD_H = BOARD.height * BOARD_MOUNT.scale;
 /** Framed opening in the board wall — trimmers sit just outside this. */
 export const BOARD_OPENING = {
-  z0: BOARD_MOUNT.z - BOARD_WORLD_W / 2 - 0.05,
-  z1: BOARD_MOUNT.z + BOARD_WORLD_W / 2 + 0.05,
-  y0: BOARD_MOUNT.y - BOARD_WORLD_H / 2 - 0.05,
-  y1: BOARD_MOUNT.y + BOARD_WORLD_H / 2 + 0.05,
+  z0: BOARD_MOUNT.z - BOARD_WORLD_W / 2 - 0.14,
+  z1: BOARD_MOUNT.z + BOARD_WORLD_W / 2 + 0.14,
+  y0: BOARD_MOUNT.y - BOARD_WORLD_H / 2 - 0.1,
+  y1: BOARD_MOUNT.y + BOARD_WORLD_H / 2 + 0.1,
 } as const;
 
 /** Greyscale carcass sizes. Appliances are fitted to these bays. */
