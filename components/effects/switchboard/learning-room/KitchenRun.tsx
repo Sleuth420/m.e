@@ -237,34 +237,6 @@ function HingedAppliance({
   );
 }
 
-function dressBuiltInDishwasher(root: Object3D) {
-  root.traverse((obj) => {
-    const mesh = obj as Mesh;
-    if (!mesh.isMesh) return;
-    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    for (const mat of mats) {
-      const m = mat as MeshStandardMaterial;
-      if (!m) continue;
-      const n = `${m.name ?? ''} ${mesh.name ?? ''} ${obj.name ?? ''}`.toLowerCase();
-      m.envMapIntensity = 1.45;
-      if (/metal/.test(n)) {
-        m.color.set('#c5ccd2');
-        m.metalness = 0.88;
-        m.roughness = 0.22;
-      } else if (/pied/.test(n)) {
-        m.color.set('#1a1c1e');
-        m.metalness = 0.12;
-        m.roughness = 0.55;
-      } else {
-        m.color.set('#d9dde2');
-        m.metalness = 0.42;
-        m.roughness = 0.32;
-      }
-      m.needsUpdate = true;
-    }
-  });
-}
-
 function Stainless({ color = '#c9ced4' }: { color?: string }) {
   return <meshStandardMaterial color={color} metalness={0.86} roughness={0.24} envMapIntensity={1.35} />;
 }
@@ -593,33 +565,15 @@ export function KitchenRun({
       <HoodChimney x={FIXTURES.rangehood.x} y0={KITCHEN.upperY + KITCHEN.upperH} />
       <JoineryPacker x={dw.x} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <JoineryPacker x={dw.x + dw.w - PACK} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
-      <group visible={!dwOpen}>
-        <FittedGltf
-          url={ROOM_GLB.dishwasher}
-          maxSize={[dw.w - 0.01, DW_H - 0.008, 0.58]}
-          position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
-          align="bottom"
-          pin="front"
-          fit="width"
-          envIntensity={1.45}
-        />
-      </group>
-      <group visible={dwOpen}>
-        <HingedAppliance
-          url={ROOM_GLB.dishwasherOpen}
-          maxSize={[dw.w - 0.01, DW_H, 0.62]}
-          position={[dw.x + dw.w / 2, KITCHEN.kickH, FRONT]}
-          align="bottom"
-          pin="front"
-          fit="width"
-          envIntensity={1.4}
-          prepare={dressBuiltInDishwasher}
-          open={dwOpen}
-          doorMatch={/couvercle/i}
-          extraMatch={/baisserPoigner/i}
-          openAngle={1.22}
-        />
-      </group>
+      <FittedGltf
+        url={ROOM_GLB.dishwasher}
+        maxSize={[dw.w - 0.01, DW_H - 0.008, 0.58]}
+        position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
+        align="bottom"
+        pin="front"
+        fit="width"
+        envIntensity={1.45}
+      />
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <JoineryFridgeHousing
         x={fridge.x}
@@ -731,7 +685,6 @@ loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
 loadKeptGltf(ROOM_GLB.dishwasher);
-loadKeptGltf(ROOM_GLB.dishwasherOpen);
 loadKeptGltf(ROOM_GLB.hood);
 loadKeptGltf(ROOM_GLB.pot);
 loadKeptGltf(ROOM_GLB.roast);

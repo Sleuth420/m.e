@@ -8,8 +8,6 @@ export const ROOM_GLB = {
   oven: '/models/learning-room/real/oven.glb?v=14',
   cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=11',
   dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=21',
-  /** Built-in tub + drop door — used when the Whirlpool door is open. */
-  dishwasherOpen: '/models/learning-room/real/dishwasher-pro.glb?v=1',
   hood: '/models/learning-room/real/hood-wall.glb?v=2',
   toaster: '/models/learning-room/real/toaster.glb?v=7',
   sink: '/models/learning-room/real/sink.glb?v=7',
