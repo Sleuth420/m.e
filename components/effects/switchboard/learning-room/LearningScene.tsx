@@ -10,7 +10,7 @@ import { KitchenRun } from './KitchenRun';
 import { LearningRoom } from './LearningRoom';
 import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
-import { BOARD_MOUNT, ROOM, ROOM_LOADS, type KitchenInteractId } from './room-layout';
+import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type KitchenInteractId } from './room-layout';
 import { POLYHAVEN } from './room-assets';
 
 type Props = {
@@ -102,6 +102,37 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           <Switchboard />
         </Suspense>
       </group>
+      {/* Always-on work light so the board stays readable with the lighting circuit off. */}
+      <pointLight
+        position={[BOARD_MOUNT.x + 0.58, BOARD_MOUNT.y + 0.08, BOARD_MOUNT.z]}
+        intensity={1.35}
+        distance={2.8}
+        decay={2}
+        color="#fff1d4"
+      />
+      <pointLight
+        position={[BOARD_MOUNT.x + 0.2, BOARD_MOUNT.y, BOARD_MOUNT.z]}
+        intensity={0.45}
+        distance={1.35}
+        decay={2}
+        color="#f7f0e4"
+      />
+      <mesh position={[BOARD_MOUNT.x + 0.08, BOARD_OPENING.y1 + 0.08, BOARD_MOUNT.z]} castShadow>
+        <boxGeometry args={[0.05, 0.035, 0.11]} />
+        <meshStandardMaterial color="#c5c9ce" metalness={0.65} roughness={0.28} />
+      </mesh>
+      <mesh
+        position={[BOARD_MOUNT.x + 0.11, BOARD_OPENING.y1 + 0.055, BOARD_MOUNT.z]}
+        rotation={[0, 0, Math.PI / 2]}
+      >
+        <cylinderGeometry args={[0.016, 0.018, 0.04, 12]} />
+        <meshStandardMaterial
+          color="#fff6e0"
+          emissive="#fff1c2"
+          emissiveIntensity={0.85}
+          roughness={0.35}
+        />
+      </mesh>
       <RoomWiring liveById={liveById} isolatorOn={isolatorOn} />
       <Suspense fallback={null}>
         <Fixtures

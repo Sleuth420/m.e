@@ -1,82 +1,181 @@
 'use client';
 
-import { HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
+import { POLYHAVEN } from './room-assets';
+import { BOARD_OPENING, HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
+import { useSizedPbr, type PbrMaps } from './room-textures';
 
-const timber = '#7a756c';
-const timberDark = '#5c5852';
-const sarking = '#3f3f46';
+/** Dressed MGP pine — lift the coated-pine albedo toward straw construction timber. */
+const PINE = '#f3e4c4';
+const SARKING = '#3a3a40';
+const NOGGIN_YS = ROOM.nogginYs;
 
-function Stud({ position, args }: { position: [number, number, number]; args: [number, number, number] }) {
+function skipRaycast() {}
+
+function Timber({
+  position,
+  args,
+  maps,
+}: {
+  position: [number, number, number];
+  args: [number, number, number];
+  maps: PbrMaps;
+}) {
   return (
     <mesh position={position} castShadow receiveShadow>
       <boxGeometry args={args} />
-      <meshStandardMaterial color={timber} roughness={0.86} metalness={0.02} />
+      <meshStandardMaterial
+        map={maps.map}
+        normalMap={maps.normalMap}
+        roughnessMap={maps.roughnessMap}
+        color={PINE}
+        roughness={1}
+        metalness={0.02}
+        envMapIntensity={0.7}
+        normalScale={[0.55, 0.55]}
+      />
     </mesh>
   );
 }
 
-/** Ghost plaster + timber frame on the two teaching walls (corner at origin). */
+function GhostPlaster({
+  position,
+  size,
+}: {
+  position: [number, number, number];
+  size: [number, number];
+}) {
+  return (
+    <mesh position={position} rotation={[0, Math.PI / 2, 0]} renderOrder={1} raycast={skipRaycast}>
+      <planeGeometry args={size} />
+      <meshStandardMaterial
+        color="#f3f1ec"
+        roughness={0.94}
+        transparent
+        opacity={ROOM.plasterOpacity}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+function openingHitsZ(z: number, pad = 0.02) {
+  return z > BOARD_OPENING.z0 - pad && z < BOARD_OPENING.z1 + pad;
+}
+
+function openingHitsY(y: number, pad = 0.04) {
+  return y > BOARD_OPENING.y0 - pad && y < BOARD_OPENING.y1 + pad;
+}
+
+/** MGP10 pine frame: plates, studs at 450, noggins at 900 / 1800, switchboard bay trimmed out. */
 export function FramedWalls() {
+  const vMaps = useSizedPbr(POLYHAVEN.pine, [0.09, 2.6], 0.7, 0);
+  const hMaps = useSizedPbr(POLYHAVEN.pine, [2.6, 0.09], 0.7, Math.PI / 2);
+  const plyMaps = useSizedPbr(POLYHAVEN.plywood, [0.55, 0.7], 0.55, 0);
   const boardZs = boardWallStudZs();
   const fridgeXs = fridgeWallStudXs();
-  const studH = ROOM.height - ROOM.plate * 2;
-  const studY = ROOM.plate + studH / 2;
   const s = ROOM.studSize;
+  const doubleTop = ROOM.plate * 2;
+  const studH = ROOM.height - ROOM.plate - doubleTop;
+  const studY = ROOM.plate + studH / 2;
+  const cx = HEIGHTS.cavityX;
+  const cz = HEIGHTS.cavityZ;
+  const openW = BOARD_OPENING.z1 - BOARD_OPENING.z0;
+  const openH = BOARD_OPENING.y1 - BOARD_OPENING.y0;
+  const openZ = (BOARD_OPENING.z0 + BOARD_OPENING.z1) / 2;
+  const openY = (BOARD_OPENING.y0 + BOARD_OPENING.y1) / 2;
+  const lintelT = s * 0.9;
+  const sillY = BOARD_OPENING.y0;
+  const headY = BOARD_OPENING.y1;
+  const crippleBelowH = Math.max(0.08, sillY - lintelT / 2 - ROOM.plate);
+  const crippleBelowY = ROOM.plate + crippleBelowH / 2;
+  const topOfFrame = ROOM.height - doubleTop;
+  const crippleAboveH = Math.max(0.08, topOfFrame - (headY + lintelT / 2));
+  const crippleAboveY = headY + lintelT / 2 + crippleAboveH / 2;
+  const crippleZ = openZ;
 
   return (
     <group>
-      {/* Sarking behind board wall */}
-      <mesh position={[-s - 0.01, ROOM.height / 2, ROOM.depth / 2]} receiveShadow>
+      <mesh position={[-s - 0.012, ROOM.height / 2, ROOM.depth / 2]} receiveShadow>
         <boxGeometry args={[0.02, ROOM.height, ROOM.depth + 0.2]} />
-        <meshStandardMaterial color={sarking} roughness={0.95} />
+        <meshStandardMaterial color={SARKING} roughness={0.95} />
       </mesh>
-      {/* Sarking behind fridge wall */}
-      <mesh position={[ROOM.width / 2, ROOM.height / 2, -s - 0.01]} receiveShadow>
+      <mesh position={[ROOM.width / 2, ROOM.height / 2, -s - 0.012]} receiveShadow>
         <boxGeometry args={[ROOM.width + 0.2, ROOM.height, 0.02]} />
-        <meshStandardMaterial color={sarking} roughness={0.95} />
+        <meshStandardMaterial color={SARKING} roughness={0.95} />
       </mesh>
 
-      {/* Board wall plaster — faces +X */}
-      <mesh position={[0.012, ROOM.height / 2, ROOM.depth / 2]} rotation={[0, Math.PI / 2, 0]} renderOrder={1}>
-        <planeGeometry args={[ROOM.depth, ROOM.height]} />
+      <GhostPlaster
+        position={[0.012, ROOM.height / 2, BOARD_OPENING.z0 / 2]}
+        size={[Math.max(0.05, BOARD_OPENING.z0), ROOM.height]}
+      />
+      <GhostPlaster
+        position={[0.012, ROOM.height / 2, (BOARD_OPENING.z1 + ROOM.depth) / 2]}
+        size={[Math.max(0.05, ROOM.depth - BOARD_OPENING.z1), ROOM.height]}
+      />
+      <GhostPlaster position={[0.012, BOARD_OPENING.y0 / 2, openZ]} size={[openW, Math.max(0.05, BOARD_OPENING.y0)]} />
+      <GhostPlaster
+        position={[0.012, (BOARD_OPENING.y1 + ROOM.height) / 2, openZ]}
+        size={[openW, Math.max(0.05, ROOM.height - BOARD_OPENING.y1)]}
+      />
+
+      <Timber maps={hMaps} position={[cx, ROOM.plate / 2, ROOM.depth / 2]} args={[s, ROOM.plate, ROOM.depth + s]} />
+      <Timber
+        maps={hMaps}
+        position={[cx, ROOM.height - ROOM.plate / 2, ROOM.depth / 2]}
+        args={[s, ROOM.plate, ROOM.depth + s]}
+      />
+      <Timber
+        maps={hMaps}
+        position={[cx, ROOM.height - ROOM.plate - ROOM.plate / 2, ROOM.depth / 2]}
+        args={[s, ROOM.plate, ROOM.depth + s]}
+      />
+
+      {boardZs.map((z) =>
+        openingHitsZ(z) ? null : (
+          <Timber key={`bz-${z}`} maps={vMaps} position={[cx, studY, z]} args={[s, studH, s]} />
+        ),
+      )}
+
+      {NOGGIN_YS.map((y) =>
+        boardZs.slice(0, -1).map((z) => {
+          const mid = z + ROOM.studSpacing / 2;
+          if (openingHitsZ(mid) && openingHitsY(y)) return null;
+          return (
+            <Timber
+              key={`bn-${y}-${z}`}
+              maps={hMaps}
+              position={[cx, y, mid]}
+              args={[s, s * 0.82, ROOM.studSpacing - s]}
+            />
+          );
+        }),
+      )}
+
+      <Timber maps={vMaps} position={[cx, studY, BOARD_OPENING.z0]} args={[s, studH, s]} />
+      <Timber maps={vMaps} position={[cx, studY, BOARD_OPENING.z1]} args={[s, studH, s]} />
+      <Timber maps={hMaps} position={[cx, sillY, openZ]} args={[s, lintelT, openW - s]} />
+      <Timber maps={hMaps} position={[cx, headY, openZ]} args={[s, lintelT, openW - s]} />
+      <Timber maps={vMaps} position={[cx, crippleBelowY, crippleZ]} args={[s, crippleBelowH, s]} />
+      <Timber maps={vMaps} position={[cx, crippleAboveY, crippleZ]} args={[s, crippleAboveH, s]} />
+
+      <mesh position={[0.02, openY, openZ]} receiveShadow>
+        <boxGeometry args={[0.012, openH - 0.02, openW - 0.02]} />
         <meshStandardMaterial
-          color="#f1f0ec"
-          roughness={0.94}
-          transparent
-          opacity={ROOM.plasterOpacity}
-          depthWrite={false}
+          map={plyMaps.map}
+          normalMap={plyMaps.normalMap}
+          roughnessMap={plyMaps.roughnessMap}
+          color="#d7c49a"
+          roughness={1}
+          metalness={0.04}
+          envMapIntensity={0.55}
+          normalScale={[0.4, 0.4]}
         />
       </mesh>
 
-      <mesh position={[HEIGHTS.cavityX, ROOM.plate / 2, ROOM.depth / 2]} receiveShadow>
-        <boxGeometry args={[s, ROOM.plate, ROOM.depth + s]} />
-        <meshStandardMaterial color={timberDark} roughness={0.9} />
-      </mesh>
-      <mesh position={[HEIGHTS.cavityX, ROOM.height - ROOM.plate / 2, ROOM.depth / 2]} receiveShadow>
-        <boxGeometry args={[s, ROOM.plate, ROOM.depth + s]} />
-        <meshStandardMaterial color={timberDark} roughness={0.9} />
-      </mesh>
-
-      {boardZs.map((z) => (
-        <Stud key={`bz-${z}`} position={[HEIGHTS.cavityX, studY, z]} args={[s, studH, s]} />
-      ))}
-
-      {boardZs.slice(0, -1).map((z) => (
-        <mesh
-          key={`bn-${z}`}
-          position={[HEIGHTS.cavityX, ROOM.nogginY, z + ROOM.studSpacing / 2]}
-          receiveShadow
-        >
-          <boxGeometry args={[s, s * 0.8, ROOM.studSpacing - s]} />
-          <meshStandardMaterial color={timber} roughness={0.86} />
-        </mesh>
-      ))}
-
-      {/* Fridge wall plaster — faces +Z */}
-      <mesh position={[ROOM.width / 2, ROOM.height / 2, 0.012]} renderOrder={1}>
+      <mesh position={[ROOM.width / 2, ROOM.height / 2, 0.012]} renderOrder={1} raycast={skipRaycast}>
         <planeGeometry args={[ROOM.width, ROOM.height]} />
         <meshStandardMaterial
-          color="#f1f0ec"
+          color="#f3f1ec"
           roughness={0.94}
           transparent
           opacity={ROOM.plasterOpacity}
@@ -84,29 +183,32 @@ export function FramedWalls() {
         />
       </mesh>
 
-      <mesh position={[ROOM.width / 2, ROOM.plate / 2, HEIGHTS.cavityZ]} receiveShadow>
-        <boxGeometry args={[ROOM.width + s, ROOM.plate, s]} />
-        <meshStandardMaterial color={timberDark} roughness={0.9} />
-      </mesh>
-      <mesh position={[ROOM.width / 2, ROOM.height - ROOM.plate / 2, HEIGHTS.cavityZ]} receiveShadow>
-        <boxGeometry args={[ROOM.width + s, ROOM.plate, s]} />
-        <meshStandardMaterial color={timberDark} roughness={0.9} />
-      </mesh>
+      <Timber maps={hMaps} position={[ROOM.width / 2, ROOM.plate / 2, cz]} args={[ROOM.width + s, ROOM.plate, s]} />
+      <Timber
+        maps={hMaps}
+        position={[ROOM.width / 2, ROOM.height - ROOM.plate / 2, cz]}
+        args={[ROOM.width + s, ROOM.plate, s]}
+      />
+      <Timber
+        maps={hMaps}
+        position={[ROOM.width / 2, ROOM.height - ROOM.plate - ROOM.plate / 2, cz]}
+        args={[ROOM.width + s, ROOM.plate, s]}
+      />
 
       {fridgeXs.map((x) => (
-        <Stud key={`fx-${x}`} position={[x, studY, HEIGHTS.cavityZ]} args={[s, studH, s]} />
+        <Timber key={`fx-${x}`} maps={vMaps} position={[x, studY, cz]} args={[s, studH, s]} />
       ))}
 
-      {fridgeXs.slice(0, -1).map((x) => (
-        <mesh
-          key={`fn-${x}`}
-          position={[x + ROOM.studSpacing / 2, ROOM.nogginY, HEIGHTS.cavityZ]}
-          receiveShadow
-        >
-          <boxGeometry args={[ROOM.studSpacing - s, s * 0.8, s]} />
-          <meshStandardMaterial color={timber} roughness={0.86} />
-        </mesh>
-      ))}
+      {NOGGIN_YS.map((y) =>
+        fridgeXs.slice(0, -1).map((x) => (
+          <Timber
+            key={`fn-${y}-${x}`}
+            maps={hMaps}
+            position={[x + ROOM.studSpacing / 2, y, cz]}
+            args={[ROOM.studSpacing - s, s * 0.82, s]}
+          />
+        )),
+      )}
     </group>
   );
 }

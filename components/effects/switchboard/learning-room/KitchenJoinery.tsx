@@ -10,14 +10,14 @@ import { useSizedPbr } from './room-textures';
 /** Light oak tint — keeps Poly Haven kitchen wood in the same family as the marble bench. */
 export const JOINERY = '#efe6d8';
 const JOINERY_IN = '#cbbba6';
-const KICK = '#2a2d31';
+const KICK = '#3d4248';
 const STEEL = '#c5c9ce';
 
 const PANEL = 0.018;
 const REVEAL = 0.002;
 const STILE = 0.062;
 const DOOR_T = 0.018;
-const KICK_RECESS = 0.048;
+const KICK_RECESS = 0.036;
 const HANDLE_LEN = 0.152;
 const HANDLE_R = 0.006;
 const HANDLE_PROJ = 0.03;
@@ -274,7 +274,7 @@ function SlabDrawer({ w, h }: { w: number; h: number }) {
 }
 
 function KickMat() {
-  return <meshStandardMaterial color={KICK} roughness={0.42} metalness={0.16} envMapIntensity={0.7} />;
+  return <meshStandardMaterial color={KICK} roughness={0.38} metalness={0.18} envMapIntensity={0.85} />;
 }
 
 /** Recessed vinyl plinth — 18 mm front, dark lining so the toe-space is not a cave. */
@@ -409,10 +409,28 @@ export function JoineryFridgeHousing({
   const leftW = openingX - x;
   const rightW = x + w - (openingX + openingW);
   const canopyH = h - openingH;
+  const kickH = KITCHEN.kickH - 0.004;
+  const kickZ = KITCHEN.benchDepth + DOOR_T - KICK_RECESS - 0.009;
   return (
     <group>
       <JoineryEndPanel x={x} w={leftW} h={h} depth={depth} />
       <JoineryEndPanel x={openingX + openingW} w={rightW} h={h} depth={depth} />
+      {leftW > 0.008 && (
+        <mesh position={[x + leftW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow>
+          <boxGeometry args={[leftW, kickH, 0.018]} />
+          <KickMat />
+        </mesh>
+      )}
+      {rightW > 0.008 && (
+        <mesh position={[openingX + openingW + rightW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow>
+          <boxGeometry args={[rightW, kickH, 0.018]} />
+          <KickMat />
+        </mesh>
+      )}
+      <mesh position={[openingX + openingW / 2, 0.055, kickZ + 0.004]} receiveShadow>
+        <boxGeometry args={[openingW - 0.01, 0.1, 0.012]} />
+        <meshStandardMaterial color="#2c3034" roughness={0.45} metalness={0.35} />
+      </mesh>
       {canopyH > 0.02 && (
         <>
           <Box
@@ -420,7 +438,7 @@ export function JoineryFridgeHousing({
             h={canopyH}
             d={PANEL}
             position={[openingX + openingW / 2, openingH + canopyH / 2, depth - PANEL / 2]}
-            grain="v"
+            grain="h"
             uvW={openingW}
             uvH={canopyH}
           />

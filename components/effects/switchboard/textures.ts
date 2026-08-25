@@ -98,28 +98,24 @@ export function useRcboFaceTexture(rating: string) {
 export function useCircuitLabelTexture(label: string) {
   return useMemo(
     () =>
-      makeCanvas(256, 64, (ctx) => {
+      makeCanvas(256, 96, (ctx) => {
+        ctx.fillStyle = '#f4f1ea';
+        ctx.fillRect(0, 0, 256, 96);
         ctx.fillStyle = '#1e3a5f';
-        ctx.fillRect(0, 0, 256, 64);
-        ctx.fillStyle = '#1e4a8c';
-        ctx.fillRect(3, 3, 250, 58);
-        ctx.strokeStyle = '#0f172a';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(3, 3, 250, 58);
-
+        ctx.fillRect(4, 4, 248, 88);
         ctx.fillStyle = '#f8fafc';
-        ctx.font = '600 14px "Segoe UI", system-ui, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const words = label.split(' ');
-        if (label.length > 18 && words.length > 2) {
-          ctx.font = '600 12px "Segoe UI", system-ui, sans-serif';
-          ctx.fillText(words.slice(0, 2).join(' '), 128, 22);
-          ctx.fillText(words.slice(2).join(' '), 128, 42);
+        if (words.length > 1 && label.length > 10) {
+          ctx.font = '700 22px "Segoe UI", system-ui, sans-serif';
+          ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 128, 34);
+          ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 128, 64);
         } else {
-          ctx.fillText(label, 128, 32);
+          ctx.font = '700 26px "Segoe UI", system-ui, sans-serif';
+          ctx.fillText(label, 128, 48);
         }
-        paperGrain(ctx, 256, 64, 0.06);
+        paperGrain(ctx, 256, 96, 0.06);
       }),
     [label]
   );

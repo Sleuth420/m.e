@@ -107,17 +107,15 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
 
         {!open && (
           <Html
-            transform
-            occlude
-            distanceFactor={1.35}
-            position={[panelW / 2, -0.05, 0.05]}
+            center
+            position={[panelW / 2, -0.12, 0.08]}
             style={{ pointerEvents: 'none', userSelect: 'none' }}
           >
-            <div className="w-[9.5rem] select-none text-center">
-              <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-zinc-900">
+            <div className="w-[11rem] select-none rounded-md bg-amber-200/95 px-2 py-1.5 text-center shadow-md ring-1 ring-zinc-800/30">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-900">
                 Danger — live parts
               </p>
-              <p className="mt-0.5 text-[8px] font-medium text-zinc-800/90">Tap cover to open</p>
+              <p className="mt-0.5 text-[11px] font-semibold text-zinc-800">Tap cover to open</p>
             </div>
           </Html>
         )}

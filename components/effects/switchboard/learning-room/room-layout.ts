@@ -10,8 +10,8 @@ export const ROOM = {
   studSpacing: 0.45,
   studSize: 0.09,
   plate: 0.09,
-  nogginY: 0.72,
-  plasterOpacity: 0.56,
+  nogginYs: [0.9, 1.8] as const,
+  plasterOpacity: 0.34,
 } as const;
 
 export const ROOM_LOADS = {
@@ -30,6 +30,16 @@ export const BOARD_MOUNT = {
   x: 0.04 + (BOARD.depth / 2) * BOARD_SCALE,
   y: 1.22 + (BOARD.height / 2) * BOARD_SCALE,
   z: 5.35,
+} as const;
+
+const BOARD_WORLD_W = BOARD.width * BOARD_MOUNT.scale;
+const BOARD_WORLD_H = BOARD.height * BOARD_MOUNT.scale;
+/** Framed opening in the board wall — trimmers sit just outside this. */
+export const BOARD_OPENING = {
+  z0: BOARD_MOUNT.z - BOARD_WORLD_W / 2 - 0.05,
+  z1: BOARD_MOUNT.z + BOARD_WORLD_W / 2 + 0.05,
+  y0: BOARD_MOUNT.y - BOARD_WORLD_H / 2 - 0.05,
+  y1: BOARD_MOUNT.y + BOARD_WORLD_H / 2 + 0.05,
 } as const;
 
 /** Greyscale carcass sizes. Appliances are fitted to these bays. */

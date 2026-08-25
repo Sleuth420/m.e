@@ -20,7 +20,7 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
-import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
+import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, ROOM, type KitchenInteractId } from './room-layout';
 
 function Hit({
   onToggle,
@@ -60,10 +60,10 @@ const OVEN_H = 0.595;
 const OVEN_DRAWER_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H - OVEN_H;
 const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
 const FILL = 0.018;
-const PACK = 0.007;
+const PACK = 0.01;
 const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
-/** Native French-door is 960×1818; width-fit into the 18 mm scribes, ~40 mm bulkhead left. */
-const FRIDGE_H = HOUSING_H - 0.04;
+const FRIDGE_W = 0.96;
+const FRIDGE_H = 1.82;
 
 function BenchSlab({
   x0,
@@ -219,6 +219,55 @@ function HingedAppliance({
         pivot.current = hingeParts(root, doorMatch, extraMatch);
       }}
     />
+  );
+}
+
+/** Bright stainless integrated door — control strip and handle readable from across the room. */
+function DishwasherDoor({ x, w, open }: { x: number; w: number; open: boolean }) {
+  const hinge = useRef<Group>(null);
+  useFrame((_, delta) => {
+    if (!hinge.current) return;
+    hinge.current.rotation.x = MathUtils.damp(hinge.current.rotation.x, open ? 1.22 : 0, 8, delta);
+  });
+  const h = DW_H - 0.008;
+  const doorW = w - PACK * 2 - 0.002;
+  return (
+    <group ref={hinge} position={[x + w / 2, KITCHEN.kickH + 0.002, FRONT]}>
+      <mesh position={[0, h / 2, 0.011]} castShadow receiveShadow>
+        <boxGeometry args={[doorW, h, 0.022]} />
+        <meshStandardMaterial color="#dfe3e8" metalness={0.82} roughness={0.22} envMapIntensity={1.7} />
+      </mesh>
+      <mesh position={[0, h - 0.055, 0.024]}>
+        <boxGeometry args={[doorW - 0.02, 0.092, 0.008]} />
+        <meshStandardMaterial color="#141618" metalness={0.4} roughness={0.28} envMapIntensity={0.85} />
+      </mesh>
+      <mesh position={[0.11, h - 0.055, 0.029]}>
+        <boxGeometry args={[0.07, 0.028, 0.004]} />
+        <meshStandardMaterial color="#0b0c0d" roughness={0.2} metalness={0.5} />
+      </mesh>
+      {([-0.16, -0.1, -0.04, 0.02, 0.08] as const).map((ox) => (
+        <mesh key={ox} position={[ox, h - 0.055, 0.03]}>
+          <sphereGeometry args={[0.005, 10, 10]} />
+          <meshStandardMaterial
+            color="#9ec5ff"
+            metalness={0.4}
+            roughness={0.2}
+            emissive="#60a5fa"
+            emissiveIntensity={0.7}
+          />
+        </mesh>
+      ))}
+      <mesh position={[0, h - 0.118, 0.032]} castShadow>
+        <boxGeometry args={[doorW - 0.16, 0.014, 0.018]} />
+        <meshStandardMaterial color="#b8bec4" metalness={0.92} roughness={0.14} envMapIntensity={1.7} />
+      </mesh>
+      {Array.from({ length: 9 }, (_, i) => (
+        <mesh key={i} position={[-doorW / 2 + 0.04 + i * ((doorW - 0.08) / 8), 0.046, 0.024]}>
+          <boxGeometry args={[0.028, 0.05, 0.006]} />
+          <meshStandardMaterial color="#9aa1a8" metalness={0.7} roughness={0.3} />
+        </mesh>
+      ))}
+    </group>
   );
 }
 
@@ -411,17 +460,17 @@ export function KitchenRun({
   const dwOpen = !!openById.dishwasher;
   const drawersOpen = !!openById['cabA-base'];
 
-  const fridgeW = fridge.w - FILL * 2;
-  const fridgeLeft = fridge.x + FILL;
-  const fridgeMid = fridgeLeft + fridgeW / 2;
+  const fridgeLeft = fridge.x + (fridge.w - FRIDGE_W) / 2;
+  const fridgeMid = fridgeLeft + FRIDGE_W / 2;
   const ovenY = KITCHEN.kickH + OVEN_DRAWER_H;
   const gableDepth = KITCHEN.benchDepth + 0.018;
   const kickEnd = fridge.x;
   const ovenPackH = OVEN_H + RAIL_H;
+  const chimneyH = Math.max(0.12, ROOM.height - (KITCHEN.upperY + KITCHEN.upperH));
 
   return (
     <group>
-      <JoineryKick x={sink.x} w={kickEnd - sink.x} returns={false} />
+      <JoineryKick x={sink.x - FILL} w={kickEnd - (sink.x - FILL)} returns />
       <JoineryEndPanel x={sink.x - FILL} w={FILL} h={KITCHEN.benchH} depth={gableDepth} />
       <JoineryEndPanel
         x={sink.x - FILL}
@@ -551,7 +600,7 @@ export function KitchenRun({
         align="bottom"
         pin="front"
         preScale={0.001}
-        fit="contain"
+        fit="width"
         envIntensity={1.4}
         open={ovenOpen}
         doorMatch={/glass/i}
@@ -567,34 +616,43 @@ export function KitchenRun({
         fit="width"
         envIntensity={1.5}
       />
+      <mesh
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH + chimneyH / 2, 0.09]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[0.2, chimneyH, 0.16]} />
+        <meshStandardMaterial color="#2a2d32" metalness={0.72} roughness={0.32} envMapIntensity={1.2} />
+      </mesh>
       <JoineryPacker x={dw.x} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <JoineryPacker x={dw.x + dw.w - PACK} y={KITCHEN.kickH} h={DW_H + RAIL_H} depth={FACE} />
       <FittedGltf
         url={ROOM_GLB.dishwasher}
-        maxSize={[dw.w - PACK * 2 - 0.004, DW_H - 0.004, 0.85]}
-        position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
+        maxSize={[dw.w - PACK * 2 - 0.02, DW_H - 0.03, FACE - 0.12]}
+        position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.008, FRONT - 0.06]}
         align="bottom"
         pin="front"
         fit="contain"
-        envIntensity={1.5}
+        envIntensity={1.2}
       />
+      <DishwasherDoor x={dw.x} w={dw.w} open={dwOpen} />
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <JoineryFridgeHousing
         x={fridge.x}
         w={fridge.w}
         h={HOUSING_H}
         openingX={fridgeLeft}
-        openingW={fridgeW}
+        openingW={FRIDGE_W}
         openingH={FRIDGE_H}
         depth={gableDepth}
       />
       <FittedGltf
         url={ROOM_GLB.fridge}
-        maxSize={[fridgeW - 0.008, FRIDGE_H, 0.9]}
+        maxSize={[FRIDGE_W - 0.004, FRIDGE_H, 0.85]}
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        fit="width"
+        fit="contain"
         envIntensity={1.4}
       />
       <FittedGltf
@@ -608,7 +666,7 @@ export function KitchenRun({
       <Hit onToggle={onToggleBoil} size={[0.56, 0.1, 0.48]} position={[cookX, benchY + 0.08, benchZ]} />
       <Hit onToggle={() => onToggle('oven')} size={[cook.w - 0.04, OVEN_H, 0.22]} position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.58]} />
       <Hit onToggle={() => onToggle('dishwasher')} size={[dw.w - 0.04, DW_H, 0.2]} position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.58]} />
-      <Hit onToggle={onToggleFridge} size={[fridgeW, FRIDGE_H, 0.22]} position={[fridgeMid, FRIDGE_H / 2, 0.64]} />
+      <Hit onToggle={onToggleFridge} size={[FRIDGE_W, FRIDGE_H, 0.22]} position={[fridgeMid, FRIDGE_H / 2, 0.64]} />
       <Hit onToggle={() => onToggle('sink-base')} size={[0.7, 0.55, 0.16]} position={[0.68, 0.42, 0.58]} />
       <Hit onToggle={() => onToggle('cabA-base')} size={[0.4, 0.55, 0.16]} position={[1.3, 0.42, 0.58]} />
       <Hit onToggle={() => onToggle('cabL-base')} size={[0.8, 0.55, 0.16]} position={[2.58, 0.42, 0.58]} />

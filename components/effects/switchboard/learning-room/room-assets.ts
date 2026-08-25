@@ -44,6 +44,16 @@ export const POLYHAVEN = {
     nor: '/models/learning-room/polyhaven/textures/oak-veneer/oak_veneer_01_nor_gl_1k.jpg',
     arm: '/models/learning-room/polyhaven/textures/oak-veneer/oak_veneer_01_arm_1k.jpg',
   },
+  pine: {
+    diff: '/models/learning-room/polyhaven/textures/pine/coated_pine_diff_1k.jpg',
+    nor: '/models/learning-room/polyhaven/textures/pine/coated_pine_nor_gl_1k.jpg',
+    arm: '/models/learning-room/polyhaven/textures/pine/coated_pine_arm_1k.jpg',
+  },
+  plywood: {
+    diff: '/models/learning-room/polyhaven/textures/plywood/plywood_diff_1k.jpg',
+    nor: '/models/learning-room/polyhaven/textures/plywood/plywood_nor_gl_1k.jpg',
+    arm: '/models/learning-room/polyhaven/textures/plywood/plywood_arm_1k.jpg',
+  },
 } as const;
 
 export function preloadRoomModelPaths(): string[] {
