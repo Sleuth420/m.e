@@ -345,59 +345,54 @@ function dressSink(root: Object3D) {
 function SteelBasinMat() {
   return (
     <meshStandardMaterial
-      color="#c9d0d6"
-      metalness={0.92}
-      roughness={0.2}
-      envMapIntensity={1.2}
+      color="#d4dbe1"
+      metalness={0.94}
+      roughness={0.18}
+      envMapIntensity={1.35}
       side={DoubleSide}
     />
   );
 }
 
-/** Real wells — floor + walls — so looking down never falls through to oak. */
-function BasinWell({ x, w, d, depth }: { x: number; w: number; d: number; depth: number }) {
-  const t = 0.01;
+/** One rectangular well the size of the marble hole, plus a centre divider. */
+function SinkBasins() {
+  const cx = FIXTURES.sink.x;
   const z = SINK_CUT.cz;
-  const top = KITCHEN.benchH + BENCH_T - 0.004;
+  const t = 0.012;
+  const depth = 0.18;
+  const top = KITCHEN.benchH + BENCH_T - 0.002;
   const floorY = top - depth;
   const midY = floorY + depth / 2;
+  // Walls tuck under the slab so looking down the hole cannot miss the steel.
+  const w = SINK_CUT.w + 0.028;
+  const d = SINK_CUT.d + 0.028;
+  const divX = cx + 0.04;
   return (
     <group>
-      <mesh position={[x, floorY + t / 2, z]} receiveShadow>
+      <mesh position={[cx, floorY + t / 2, z]} receiveShadow>
         <boxGeometry args={[w, t, d]} />
         <SteelBasinMat />
       </mesh>
-      <mesh position={[x, midY, z - d / 2 + t / 2]} receiveShadow>
+      <mesh position={[cx, midY, z - d / 2 + t / 2]} receiveShadow>
         <boxGeometry args={[w, depth, t]} />
         <SteelBasinMat />
       </mesh>
-      <mesh position={[x, midY, z + d / 2 - t / 2]} receiveShadow>
+      <mesh position={[cx, midY, z + d / 2 - t / 2]} receiveShadow>
         <boxGeometry args={[w, depth, t]} />
         <SteelBasinMat />
       </mesh>
-      <mesh position={[x - w / 2 + t / 2, midY, z]} receiveShadow>
+      <mesh position={[cx - w / 2 + t / 2, midY, z]} receiveShadow>
         <boxGeometry args={[t, depth, d]} />
         <SteelBasinMat />
       </mesh>
-      <mesh position={[x + w / 2 - t / 2, midY, z]} receiveShadow>
+      <mesh position={[cx + w / 2 - t / 2, midY, z]} receiveShadow>
         <boxGeometry args={[t, depth, d]} />
         <SteelBasinMat />
       </mesh>
-    </group>
-  );
-}
-
-function SinkBasins() {
-  const cx = FIXTURES.sink.x;
-  const floorY = KITCHEN.benchH + BENCH_T - 0.185;
-  return (
-    <group>
-      <mesh position={[cx, floorY, SINK_CUT.cz]} receiveShadow>
-        <boxGeometry args={[SINK_CUT.w - 0.03, 0.018, SINK_CUT.d - 0.03]} />
+      <mesh position={[divX, midY, z]} receiveShadow>
+        <boxGeometry args={[0.02, depth - 0.004, d - 0.024]} />
         <SteelBasinMat />
       </mesh>
-      <BasinWell x={cx - 0.155} w={0.36} d={0.32} depth={0.17} />
-      <BasinWell x={cx + 0.175} w={0.3} d={0.28} depth={0.15} />
     </group>
   );
 }
