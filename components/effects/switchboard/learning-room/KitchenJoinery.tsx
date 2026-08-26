@@ -324,9 +324,17 @@ export function JoineryFascia({
   depth?: number;
 }) {
   if (h < 0.006) return null;
-  const d = depth ?? KITCHEN.benchDepth + DOOR_T;
+  const face = depth ?? KITCHEN.benchDepth + DOOR_T;
   return (
-    <Box w={w - REVEAL} h={h - REVEAL} d={d} position={[x + w / 2, y + h / 2, d / 2]} grain="v" />
+    <Box
+      w={w - REVEAL}
+      h={h - REVEAL}
+      d={DOOR_T}
+      position={[x + w / 2, y + h / 2, face - DOOR_T / 2]}
+      grain="v"
+      uvW={w}
+      uvH={h}
+    />
   );
 }
 

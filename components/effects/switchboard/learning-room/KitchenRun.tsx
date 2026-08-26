@@ -300,7 +300,7 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
       <FittedGltf
         url={ROOM_GLB.pot}
         maxSize={[0.22, 0.14, 0.22]}
-        position={[0, 0.02, 0]}
+        position={[0, 0, 0]}
         align="bottom"
         pin="center"
         fit="contain"
@@ -601,7 +601,7 @@ export function KitchenRun({
       <Hit onToggle={() => onToggle('cabR-upper')} size={[0.8, 0.45, 0.14]} position={[4.08, 1.78, 0.36]} />
       <Hit onToggle={onToggleToaster} size={[0.32, 0.22, 0.2]} position={[toasterX, benchY + 0.14, benchZ]} />
 
-      <CookPot boiling={hobLive && boiling} position={[cookX, benchTop, FIXTURES.cooktop.z]} />
+      <CookPot boiling={hobLive && boiling} position={[cookX, benchTop + 0.01, FIXTURES.cooktop.z]} />
       {sinkOn && <TapWater x={FIXTURES.sink.x} y={benchTop + 0.14} z={0.28} />}
       {ovenOpen && ovenLive && (
         <FittedGltf

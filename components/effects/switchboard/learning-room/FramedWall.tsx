@@ -4,8 +4,8 @@ import { POLYHAVEN } from './room-assets';
 import { BOARD_OPENING, HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
 import { useSizedPbr, type PbrMaps } from './room-textures';
 
-/** H2 / MGP radiata — pale straw with a hint of treatment, not furniture stain. */
-const PINE = '#dce6b0';
+/** H2 MGP radiata — straw construction timber, not furniture stain. */
+const PINE = '#eee4b4';
 const SARKING = '#3a3a40';
 const NOGGIN_YS = ROOM.nogginYs;
 
