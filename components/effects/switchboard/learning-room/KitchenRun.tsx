@@ -13,6 +13,7 @@ import {
   JoineryFridgeHousing,
   JoineryKick,
   JoineryOvenDrawer,
+  JoineryPacker,
   JoinerySubtop,
 } from './KitchenJoinery';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
@@ -53,7 +54,7 @@ const FACE = KITCHEN.benchDepth;
 /** Center of overlay doors (hinge on FACE, 18 mm thick). */
 const FRONT = FACE + 0.018;
 /** Marble hole sits under the rim so the cupboard never shows around the bowls. */
-const SINK_CUT = { w: 0.7, d: 0.4, cz: 0.3 } as const;
+const SINK_CUT = { w: 0.72, d: 0.42, cz: 0.3 } as const;
 /** Built-in oven is 595 mm; leftover under the bench is an oak drawer + 16 mm rail. */
 const RAIL_H = 0.016;
 const OVEN_H = 0.595;
@@ -341,13 +342,63 @@ function dressSink(root: Object3D) {
   });
 }
 
-/** Stainless tub under the rim so a hollow bowl cannot show oak. */
-function SinkBasinLiners() {
+function SteelBasinMat() {
   return (
-    <mesh position={[FIXTURES.sink.x, 0.73, SINK_CUT.cz]} castShadow receiveShadow>
-      <boxGeometry args={[0.66, 0.14, 0.32]} />
-      <meshStandardMaterial color="#b7bdc3" metalness={0.9} roughness={0.24} envMapIntensity={1} />
-    </mesh>
+    <meshStandardMaterial
+      color="#c9d0d6"
+      metalness={0.92}
+      roughness={0.2}
+      envMapIntensity={1.2}
+      side={DoubleSide}
+    />
+  );
+}
+
+/** Real wells — floor + walls — so looking down never falls through to oak. */
+function BasinWell({ x, w, d, depth }: { x: number; w: number; d: number; depth: number }) {
+  const t = 0.01;
+  const z = SINK_CUT.cz;
+  const top = KITCHEN.benchH + BENCH_T - 0.004;
+  const floorY = top - depth;
+  const midY = floorY + depth / 2;
+  return (
+    <group>
+      <mesh position={[x, floorY + t / 2, z]} receiveShadow>
+        <boxGeometry args={[w, t, d]} />
+        <SteelBasinMat />
+      </mesh>
+      <mesh position={[x, midY, z - d / 2 + t / 2]} receiveShadow>
+        <boxGeometry args={[w, depth, t]} />
+        <SteelBasinMat />
+      </mesh>
+      <mesh position={[x, midY, z + d / 2 - t / 2]} receiveShadow>
+        <boxGeometry args={[w, depth, t]} />
+        <SteelBasinMat />
+      </mesh>
+      <mesh position={[x - w / 2 + t / 2, midY, z]} receiveShadow>
+        <boxGeometry args={[t, depth, d]} />
+        <SteelBasinMat />
+      </mesh>
+      <mesh position={[x + w / 2 - t / 2, midY, z]} receiveShadow>
+        <boxGeometry args={[t, depth, d]} />
+        <SteelBasinMat />
+      </mesh>
+    </group>
+  );
+}
+
+function SinkBasins() {
+  const cx = FIXTURES.sink.x;
+  const floorY = KITCHEN.benchH + BENCH_T - 0.185;
+  return (
+    <group>
+      <mesh position={[cx, floorY, SINK_CUT.cz]} receiveShadow>
+        <boxGeometry args={[SINK_CUT.w - 0.03, 0.018, SINK_CUT.d - 0.03]} />
+        <SteelBasinMat />
+      </mesh>
+      <BasinWell x={cx - 0.155} w={0.36} d={0.32} depth={0.17} />
+      <BasinWell x={cx + 0.175} w={0.3} d={0.28} depth={0.15} />
+    </group>
   );
 }
 
@@ -546,7 +597,7 @@ export function KitchenRun({
         prepare={dressSink}
         envIntensity={1}
       />
-      <SinkBasinLiners />
+      <SinkBasins />
       <FittedGltf
         url={ROOM_GLB.tap}
         maxSize={[0.22, 0.32, 0.22]}
@@ -570,7 +621,7 @@ export function KitchenRun({
         rotation={[0, -Math.PI / 2, 0]}
         align="bottom"
         pin="front"
-        pinPad={0.02}
+        pinPad={0}
         preScale={0.001}
         fit="width"
         envIntensity={1}
@@ -578,11 +629,17 @@ export function KitchenRun({
         doorMatch={/glass/i}
         openAngle={1.15}
       />
+      <JoineryPacker x={cook.x} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
+      <JoineryPacker x={cook.x + cook.w - 0.007} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
       <JoineryFascia x={cook.x + PACK} w={cook.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
+      <mesh position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH / 2, 0.046]}>
+        <boxGeometry args={[cook.w - 0.04, KITCHEN.upperH - 0.02, 0.068]} />
+        <meshStandardMaterial color="#eceae4" roughness={0.94} metalness={0.02} />
+      </mesh>
       <FittedGltf
         url={ROOM_GLB.hood}
         maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.055]}
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.08]}
         align="bottom"
         pin="back"
         fit="width"
