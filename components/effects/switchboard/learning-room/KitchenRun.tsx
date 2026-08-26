@@ -2,7 +2,7 @@
 
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
-import { Box3, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
+import { Box3, DoubleSide, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { dressKitchenProduct } from './appliance-dress';
 import { FittedGltf } from './FittedGltf';
@@ -52,7 +52,8 @@ const BENCH_Y = KITCHEN.benchH + BENCH_T / 2;
 const FACE = KITCHEN.benchDepth;
 /** Center of overlay doors (hinge on FACE, 18 mm thick). */
 const FRONT = FACE + 0.018;
-const SINK_CUT = { w: 0.76, d: 0.46, cz: 0.3 } as const;
+/** Marble hole sits under the rim so the cupboard never shows around the bowls. */
+const SINK_CUT = { w: 0.7, d: 0.4, cz: 0.3 } as const;
 /** Built-in oven is 595 mm; leftover under the bench is an oak drawer + 16 mm rail. */
 const RAIL_H = 0.016;
 const OVEN_H = 0.595;
@@ -318,6 +319,38 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
   );
 }
 
+/** Sink GLB is FrontSide and the bowl floors cull when you look down. */
+function dressSink(root: Object3D) {
+  dressKitchenProduct(root);
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const mat of mats) {
+      const m = mat as MeshStandardMaterial;
+      if (!m) continue;
+      m.side = DoubleSide;
+      m.transparent = false;
+      m.opacity = 1;
+      m.depthWrite = true;
+      m.metalness = Math.max(m.metalness, 0.86);
+      m.roughness = 0.28;
+      if (!m.map) m.color.set('#c8ccd0');
+      m.needsUpdate = true;
+    }
+  });
+}
+
+/** Stainless tub under the rim so a hollow bowl cannot show oak. */
+function SinkBasinLiners() {
+  return (
+    <mesh position={[FIXTURES.sink.x, 0.73, SINK_CUT.cz]} castShadow receiveShadow>
+      <boxGeometry args={[0.66, 0.14, 0.32]} />
+      <meshStandardMaterial color="#b7bdc3" metalness={0.9} roughness={0.24} envMapIntensity={1} />
+    </mesh>
+  );
+}
+
 function TapWater({ x, y, z }: { x: number; y: number; z: number }) {
   return (
     <mesh position={[x, y + 0.02, z]}>
@@ -510,9 +543,10 @@ export function KitchenRun({
         preScale={0.01}
         fit="width"
         align="top"
-        prepare={dressKitchenProduct}
+        prepare={dressSink}
         envIntensity={1}
       />
+      <SinkBasinLiners />
       <FittedGltf
         url={ROOM_GLB.tap}
         maxSize={[0.22, 0.32, 0.22]}
@@ -536,7 +570,7 @@ export function KitchenRun({
         rotation={[0, -Math.PI / 2, 0]}
         align="bottom"
         pin="front"
-        pinPad={0.03}
+        pinPad={0.02}
         preScale={0.001}
         fit="width"
         envIntensity={1}
@@ -548,7 +582,7 @@ export function KitchenRun({
       <FittedGltf
         url={ROOM_GLB.hood}
         maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.02]}
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.055]}
         align="bottom"
         pin="back"
         fit="width"

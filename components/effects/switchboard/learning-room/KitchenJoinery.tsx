@@ -210,25 +210,27 @@ function Carcass({
   const cx = x + w / 2;
   const zMid = depth / 2;
   const innerW = w - 2 * PANEL;
+  const sideH = openTop ? Math.max(0.2, ih - 0.24) : ih;
+  const sideMidY = y0 + sideH / 2;
   return (
     <group>
       <Box
         w={PANEL}
-        h={ih}
+        h={sideH}
         d={depth}
-        position={[x + PANEL / 2, y0 + ih / 2, zMid]}
+        position={[x + PANEL / 2, sideMidY, zMid]}
         grain="v"
         uvW={depth}
-        uvH={ih}
+        uvH={sideH}
       />
       <Box
         w={PANEL}
-        h={ih}
+        h={sideH}
         d={depth}
-        position={[x + w - PANEL / 2, y0 + ih / 2, zMid]}
+        position={[x + w - PANEL / 2, sideMidY, zMid]}
         grain="v"
         uvW={depth}
-        uvH={ih}
+        uvH={sideH}
       />
       <Box
         w={innerW}
@@ -254,9 +256,9 @@ function Carcass({
       )}
       <Box
         w={innerW}
-        h={ih - 2 * PANEL}
+        h={openTop ? sideH - PANEL : ih - 2 * PANEL}
         d={back}
-        position={[cx, y0 + ih / 2, back / 2]}
+        position={[cx, y0 + (openTop ? sideH : ih) / 2, back / 2]}
         interior
         grain="v"
       />
