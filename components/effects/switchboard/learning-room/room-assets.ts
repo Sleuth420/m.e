@@ -56,6 +56,12 @@ export const POLYHAVEN = {
     nor: '/models/learning-room/polyhaven/textures/pine/coated_pine_nor_gl_1k.jpg',
     arm: '/models/learning-room/polyhaven/textures/pine/coated_pine_arm_1k.jpg',
   },
+  /** ambientCG Wood048 — pale construction pine, not furniture stain. */
+  treatedPine: {
+    diff: '/models/learning-room/ambientcg/wood-048/color.jpg',
+    nor: '/models/learning-room/ambientcg/wood-048/normal.jpg',
+    rough: '/models/learning-room/ambientcg/wood-048/roughness.jpg',
+  },
   plywood: {
     diff: '/models/learning-room/polyhaven/textures/plywood/plywood_diff_1k.jpg',
     nor: '/models/learning-room/polyhaven/textures/plywood/plywood_nor_gl_1k.jpg',

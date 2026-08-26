@@ -46,12 +46,14 @@ export function useRepeatingPbr(
 
 /** Cloned maps so each panel can have its own repeat / grain rotation. */
 export function useSizedPbr(
-  urls: { diff: string; nor: string; arm: string },
+  urls: { diff: string; nor: string; arm?: string; rough?: string },
   size: [number, number],
   tileMeters = 0.2,
   rotation = 0,
 ): PbrMaps {
-  const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, urls.arm]);
+  const third = urls.arm ?? urls.rough;
+  if (!third) throw new Error('PBR maps need arm or rough');
+  const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, third]);
   const clones = useMemo(
     () => ({
       map: map.clone(),

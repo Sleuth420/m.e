@@ -75,14 +75,17 @@ function rotatedAabb(
   return box;
 }
 
+export type AlignMode = 'bottom' | 'center' | 'top';
+
 function measureVisible(
   source: Object3D,
   maxSize: [number, number, number],
-  align: 'bottom' | 'center',
+  align: AlignMode,
   pin: 'center' | 'min' | 'front',
   fit: FitMode,
   preScale: number,
-  rotation: [number, number, number]
+  rotation: [number, number, number],
+  pinPad: number
 ) {
   const parent = source.parent;
   const prevPos = source.position.clone();
@@ -141,8 +144,12 @@ function measureVisible(
     localOffset,
     worldShift: [
       pin === 'min' ? -aabb.min.x : -(aabb.min.x + aabb.max.x) / 2,
-      align === 'bottom' ? -aabb.min.y : -(aabb.min.y + aabb.max.y) / 2,
-      pin === 'min' ? -aabb.min.z : pin === 'front' ? -aabb.max.z : -(aabb.min.z + aabb.max.z) / 2,
+      align === 'bottom' ? -aabb.min.y : align === 'top' ? -aabb.max.y : -(aabb.min.y + aabb.max.y) / 2,
+      pin === 'min'
+        ? -aabb.min.z
+        : pin === 'front'
+          ? -(aabb.max.z - pinPad)
+          : -(aabb.min.z + aabb.max.z) / 2,
     ] as [number, number, number],
   };
 }
@@ -152,8 +159,10 @@ type FittedGltfProps = {
   maxSize: [number, number, number];
   position?: [number, number, number];
   rotation?: [number, number, number];
-  align?: 'bottom' | 'center';
+  align?: AlignMode;
   pin?: 'center' | 'min' | 'front';
+  /** When pin=front, sit this far behind the AABB front so handles can project past the joinery. */
+  pinPad?: number;
   hide?: RegExp;
   /** Keep matching nodes (and their ancestors/descendants); hide the rest. */
   keep?: RegExp;
@@ -178,6 +187,7 @@ export function FittedGltf({
   rotation = [0, 0, 0],
   align = 'bottom',
   pin = 'center',
+  pinPad = 0,
   hide,
   keep,
   prepare,
@@ -200,8 +210,8 @@ export function FittedGltf({
   );
 
   const fitResult = useMemo(() => {
-    return measureVisible(source, maxSize, align, pin, fit, preScale, rotation);
-  }, [source, maxSize[0], maxSize[1], maxSize[2], align, pin, fit, preScale, rotation[0], rotation[1], rotation[2]]);
+    return measureVisible(source, maxSize, align, pin, fit, preScale, rotation, pinPad);
+  }, [source, maxSize[0], maxSize[1], maxSize[2], align, pin, pinPad, fit, preScale, rotation[0], rotation[1], rotation[2]]);
 
   useLayoutEffect(() => {
     const g = wrap.current;

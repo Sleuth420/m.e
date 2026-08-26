@@ -4,8 +4,8 @@ import { POLYHAVEN } from './room-assets';
 import { BOARD_OPENING, HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
 import { useSizedPbr, type PbrMaps } from './room-textures';
 
-/** Dressed MGP pine — lift the coated-pine albedo toward straw construction timber. */
-const PINE = '#f3e4c4';
+/** H2 / MGP radiata — pale straw with a hint of treatment, not furniture stain. */
+const PINE = '#dce6b0';
 const SARKING = '#3a3a40';
 const NOGGIN_YS = ROOM.nogginYs;
 
@@ -28,10 +28,10 @@ function Timber({
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
         color={PINE}
-        roughness={1}
-        metalness={0.02}
-        envMapIntensity={0.7}
-        normalScale={[0.55, 0.55]}
+        roughness={0.92}
+        metalness={0}
+        envMapIntensity={0.45}
+        normalScale={[0.85, 0.85]}
       />
     </mesh>
   );
@@ -68,8 +68,8 @@ function openingHitsY(y: number, pad = 0.04) {
 
 /** MGP10 pine frame: plates, studs at 450, noggins at 900 / 1800, switchboard bay trimmed out. */
 export function FramedWalls() {
-  const vMaps = useSizedPbr(POLYHAVEN.pine, [0.09, 2.6], 0.7, 0);
-  const hMaps = useSizedPbr(POLYHAVEN.pine, [2.6, 0.09], 0.7, Math.PI / 2);
+  const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 0.45, 0);
+  const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 0.45, Math.PI / 2);
   const plyMaps = useSizedPbr(POLYHAVEN.plywood, [0.55, 0.7], 0.55, 0);
   const boardZs = boardWallStudZs();
   const fridgeXs = fridgeWallStudXs();
