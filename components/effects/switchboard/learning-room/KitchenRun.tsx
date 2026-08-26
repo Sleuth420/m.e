@@ -528,7 +528,7 @@ export function KitchenRun({
         rotation={[0, -Math.PI / 2, 0]}
         align="bottom"
         pin="front"
-        pinPad={0.03}
+        pinPad={0.07}
         preScale={0.001}
         fit="width"
         envIntensity={1}
@@ -553,6 +553,7 @@ export function KitchenRun({
         position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
         align="bottom"
         pin="front"
+        pinPad={0.04}
         fit="width"
         envIntensity={1}
       />
@@ -572,7 +573,7 @@ export function KitchenRun({
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        pinPad={0.045}
+        pinPad={0.11}
         fit="height"
         prepare={dressKitchenProduct}
         envIntensity={1}
