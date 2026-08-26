@@ -573,7 +573,7 @@ export function KitchenRun({
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
-        pinPad={0.11}
+        pinPad={0.16}
         fit="height"
         prepare={dressKitchenProduct}
         envIntensity={1}
