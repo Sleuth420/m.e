@@ -408,7 +408,14 @@ export function KitchenRun({
         depth={KITCHEN.upperDepth + 0.018}
       />
       <BenchRun startX={KITCHEN.startX} endX={joineryEnd} sinkX={FIXTURES.sink.x} />
-      <JoinerySubtop x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
+      <JoinerySubtop
+        x={KITCHEN.startX}
+        w={joineryEnd - KITCHEN.startX}
+        cutX={FIXTURES.sink.x - SINK_CUT.w / 2}
+        cutW={SINK_CUT.w}
+        cutZ0={SINK_CUT.cz - SINK_CUT.d / 2}
+        cutZ1={SINK_CUT.cz + SINK_CUT.d / 2}
+      />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 
       <JoineryBay
@@ -419,6 +426,7 @@ export function KitchenRun({
         depth={KITCHEN.benchDepth}
         open={!!openById['sink-base']}
         kind="base"
+        openTop
       />
       <JoineryBay
         x={cabA.x}
@@ -528,7 +536,7 @@ export function KitchenRun({
         rotation={[0, -Math.PI / 2, 0]}
         align="bottom"
         pin="front"
-        pinPad={0.07}
+        pinPad={0.03}
         preScale={0.001}
         fit="width"
         envIntensity={1}
@@ -540,9 +548,9 @@ export function KitchenRun({
       <FittedGltf
         url={ROOM_GLB.hood}
         maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
-        position={[FIXTURES.rangehood.x, KITCHEN.upperY, KITCHEN.upperDepth + 0.018]}
+        position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.02]}
         align="bottom"
-        pin="front"
+        pin="min"
         fit="width"
         prepare={dressKitchenProduct}
         envIntensity={1}

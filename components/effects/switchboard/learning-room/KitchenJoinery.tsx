@@ -193,6 +193,7 @@ function Carcass({
   h,
   depth,
   kick = 0,
+  openTop = false,
 }: {
   x: number;
   y: number;
@@ -200,6 +201,8 @@ function Carcass({
   h: number;
   depth: number;
   kick?: number;
+  /** Leave the top open so a sink can drop through. */
+  openTop?: boolean;
 }) {
   const y0 = y + kick;
   const ih = h - kick;
@@ -237,16 +240,18 @@ function Carcass({
         uvW={innerW}
         uvH={depth}
       />
-      <Box
-        w={innerW}
-        h={PANEL}
-        d={depth}
-        position={[cx, y0 + ih - PANEL / 2, zMid]}
-        interior
-        grain="h"
-        uvW={innerW}
-        uvH={depth}
-      />
+      {!openTop && (
+        <Box
+          w={innerW}
+          h={PANEL}
+          d={depth}
+          position={[cx, y0 + ih - PANEL / 2, zMid]}
+          interior
+          grain="h"
+          uvW={innerW}
+          uvH={depth}
+        />
+      )}
       <Box
         w={innerW}
         h={ih - 2 * PANEL}
@@ -255,16 +260,18 @@ function Carcass({
         interior
         grain="v"
       />
-      <Box
-        w={innerW - 0.004}
-        h={PANEL * 0.7}
-        d={depth - back - 0.04}
-        position={[cx, y0 + ih * 0.48, zMid + 0.01]}
-        interior
-        grain="h"
-        uvW={innerW}
-        uvH={depth}
-      />
+      {!openTop && (
+        <Box
+          w={innerW - 0.004}
+          h={PANEL * 0.7}
+          d={depth - back - 0.04}
+          position={[cx, y0 + ih * 0.48, zMid + 0.01]}
+          interior
+          grain="h"
+          uvW={innerW}
+          uvH={depth}
+        />
+      )}
     </group>
   );
 }
@@ -522,17 +529,54 @@ export function JoineryOvenDrawer({ x, w, y, h }: { x: number; w: number; y: num
 }
 
 /** 14 mm oak strip under the marble so the bench isn't floating on a flat hex. */
-export function JoinerySubtop({ x, w }: { x: number; w: number }) {
+export function JoinerySubtop({
+  x,
+  w,
+  cutX,
+  cutW,
+  cutZ0,
+  cutZ1,
+}: {
+  x: number;
+  w: number;
+  cutX?: number;
+  cutW?: number;
+  cutZ0?: number;
+  cutZ1?: number;
+}) {
+  const y = KITCHEN.benchH - 0.006;
+  const d = KITCHEN.benchDepth;
+  const h = 0.014;
+  if (cutX == null || cutW == null || cutZ0 == null || cutZ1 == null) {
+    return (
+      <Box w={w + 0.01} h={h} d={d} position={[x + w / 2, y, d / 2]} grain="h" uvW={w} uvH={d} />
+    );
+  }
+  const x1 = x + w;
+  const cutR = cutX + cutW;
   return (
-    <Box
-      w={w + 0.01}
-      h={0.014}
-      d={KITCHEN.benchDepth}
-      position={[x + w / 2, KITCHEN.benchH - 0.006, KITCHEN.benchDepth / 2]}
-      grain="h"
-      uvW={w}
-      uvH={KITCHEN.benchDepth}
-    />
+    <group>
+      <Box w={cutX - x} h={h} d={d} position={[x + (cutX - x) / 2, y, d / 2]} grain="h" uvW={cutX - x} uvH={d} />
+      <Box w={x1 - cutR} h={h} d={d} position={[cutR + (x1 - cutR) / 2, y, d / 2]} grain="h" uvW={x1 - cutR} uvH={d} />
+      <Box
+        w={cutW}
+        h={h}
+        d={cutZ0}
+        position={[cutX + cutW / 2, y, cutZ0 / 2]}
+        grain="h"
+        uvW={cutW}
+        uvH={cutZ0}
+      />
+      <Box
+        w={cutW}
+        h={h}
+        d={Math.max(0.01, d - cutZ1)}
+        position={[cutX + cutW / 2, y, (cutZ1 + d) / 2]}
+        grain="h"
+        uvW={cutW}
+        uvH={d - cutZ1}
+      />
+    </group>
   );
 }
 
@@ -545,6 +589,7 @@ export function JoineryBay({
   open,
   kind,
   drawers = false,
+  openTop = false,
 }: {
   x: number;
   w: number;
@@ -554,6 +599,7 @@ export function JoineryBay({
   open: boolean;
   kind: 'base' | 'upper';
   drawers?: boolean;
+  openTop?: boolean;
 }) {
   const kick = kind === 'base' ? KITCHEN.kickH : 0;
   const doorY = y + kick + REVEAL;
@@ -612,7 +658,7 @@ export function JoineryBay({
 
   return (
     <group>
-      <Carcass x={x} y={y} w={w} h={h} depth={depth - 0.004} kick={kick} />
+      <Carcass x={x} y={y} w={w} h={h} depth={depth - 0.004} kick={kick} openTop={openTop} />
       {fronts}
     </group>
   );
