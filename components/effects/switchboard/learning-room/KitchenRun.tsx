@@ -413,8 +413,8 @@ export function KitchenRun({
         w={joineryEnd - KITCHEN.startX}
         cutX={sink.x}
         cutW={sink.w}
-        cutZ0={0.05}
-        cutZ1={0.54}
+        cutZ0={0}
+        cutZ1={KITCHEN.benchDepth}
       />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 

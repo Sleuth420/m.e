@@ -554,28 +554,34 @@ export function JoinerySubtop({
   }
   const x1 = x + w;
   const cutR = cutX + cutW;
+  const backD = Math.max(0, cutZ0 - 0);
+  const frontD = Math.max(0, d - cutZ1);
   return (
     <group>
       <Box w={cutX - x} h={h} d={d} position={[x + (cutX - x) / 2, y, d / 2]} grain="h" uvW={cutX - x} uvH={d} />
       <Box w={x1 - cutR} h={h} d={d} position={[cutR + (x1 - cutR) / 2, y, d / 2]} grain="h" uvW={x1 - cutR} uvH={d} />
-      <Box
-        w={cutW}
-        h={h}
-        d={cutZ0}
-        position={[cutX + cutW / 2, y, cutZ0 / 2]}
-        grain="h"
-        uvW={cutW}
-        uvH={cutZ0}
-      />
-      <Box
-        w={cutW}
-        h={h}
-        d={Math.max(0.01, d - cutZ1)}
-        position={[cutX + cutW / 2, y, (cutZ1 + d) / 2]}
-        grain="h"
-        uvW={cutW}
-        uvH={d - cutZ1}
-      />
+      {backD >= 0.004 && (
+        <Box
+          w={cutW}
+          h={h}
+          d={backD}
+          position={[cutX + cutW / 2, y, backD / 2]}
+          grain="h"
+          uvW={cutW}
+          uvH={backD}
+        />
+      )}
+      {frontD >= 0.004 && (
+        <Box
+          w={cutW}
+          h={h}
+          d={frontD}
+          position={[cutX + cutW / 2, y, (cutZ1 + d) / 2]}
+          grain="h"
+          uvW={cutW}
+          uvH={frontD}
+        />
+      )}
     </group>
   );
 }
