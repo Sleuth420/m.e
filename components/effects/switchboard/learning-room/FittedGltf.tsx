@@ -81,7 +81,7 @@ function measureVisible(
   source: Object3D,
   maxSize: [number, number, number],
   align: AlignMode,
-  pin: 'center' | 'min' | 'front',
+  pin: 'center' | 'min' | 'front' | 'back',
   fit: FitMode,
   preScale: number,
   rotation: [number, number, number],
@@ -145,7 +145,7 @@ function measureVisible(
     worldShift: [
       pin === 'min' ? -aabb.min.x : -(aabb.min.x + aabb.max.x) / 2,
       align === 'bottom' ? -aabb.min.y : align === 'top' ? -aabb.max.y : -(aabb.min.y + aabb.max.y) / 2,
-      pin === 'min'
+      pin === 'min' || pin === 'back'
         ? -aabb.min.z
         : pin === 'front'
           ? -(aabb.max.z - pinPad)
@@ -160,7 +160,8 @@ type FittedGltfProps = {
   position?: [number, number, number];
   rotation?: [number, number, number];
   align?: AlignMode;
-  pin?: 'center' | 'min' | 'front';
+  /** min pins the AABB corner; back pins min.z only so a wall hood stays centered. */
+  pin?: 'center' | 'min' | 'front' | 'back';
   /** When pin=front, sit this far behind the AABB front so handles can project past the joinery. */
   pinPad?: number;
   hide?: RegExp;

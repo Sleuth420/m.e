@@ -201,7 +201,7 @@ function HingedAppliance({
   position?: [number, number, number];
   rotation?: [number, number, number];
   align?: 'bottom' | 'center';
-  pin?: 'center' | 'min' | 'front';
+  pin?: 'center' | 'min' | 'front' | 'back';
   pinPad?: number;
   fit?: 'contain' | 'width' | 'height' | 'stretch';
   preScale?: number;
@@ -411,10 +411,10 @@ export function KitchenRun({
       <JoinerySubtop
         x={KITCHEN.startX}
         w={joineryEnd - KITCHEN.startX}
-        cutX={FIXTURES.sink.x - SINK_CUT.w / 2}
-        cutW={SINK_CUT.w}
-        cutZ0={SINK_CUT.cz - SINK_CUT.d / 2}
-        cutZ1={SINK_CUT.cz + SINK_CUT.d / 2}
+        cutX={sink.x}
+        cutW={sink.w}
+        cutZ0={0.05}
+        cutZ1={0.54}
       />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
 
@@ -550,7 +550,7 @@ export function KitchenRun({
         maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
         position={[FIXTURES.rangehood.x, KITCHEN.upperY, 0.02]}
         align="bottom"
-        pin="min"
+        pin="back"
         fit="width"
         prepare={dressKitchenProduct}
         envIntensity={1}
