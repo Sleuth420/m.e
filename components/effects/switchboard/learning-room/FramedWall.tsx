@@ -96,13 +96,13 @@ function FoilSheet({
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
         metalnessMap={maps.metalnessMap}
-        color="#eef2f4"
-        roughness={0.6}
-        metalness={0.18}
-        envMapIntensity={0.78}
+        color="#f3ece3"
+        roughness={0.62}
+        metalness={0.16}
+        envMapIntensity={0.7}
         normalScale={[0.1, 0.1]}
-        emissive="#b7bec6"
-        emissiveIntensity={0.08}
+        emissive="#c6bfb4"
+        emissiveIntensity={0.07}
       />
     </mesh>
   );
