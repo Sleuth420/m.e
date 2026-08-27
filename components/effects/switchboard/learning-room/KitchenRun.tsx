@@ -20,7 +20,7 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
-import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
+import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, ROOM, type KitchenInteractId } from './room-layout';
 
 function Hit({
   onToggle,
@@ -627,9 +627,9 @@ export function KitchenRun({
       <JoineryPacker x={cook.x} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
       <JoineryPacker x={cook.x + cook.w - 0.007} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
       <JoineryFascia x={cook.x + PACK} w={cook.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
-      <mesh position={[FIXTURES.rangehood.x, KITCHEN.upperY + KITCHEN.upperH / 2, 0.046]}>
-        <boxGeometry args={[cook.w - 0.04, KITCHEN.upperH - 0.02, 0.068]} />
-        <meshStandardMaterial color="#eceae4" roughness={0.94} metalness={0.02} />
+      <mesh position={[FIXTURES.rangehood.x, (KITCHEN.benchH + BENCH_T + 0.45 + ROOM.height) / 2, 0.01]}>
+        <boxGeometry args={[cook.w - 0.006, ROOM.height - (KITCHEN.benchH + BENCH_T + 0.45), 0.018]} />
+        <meshStandardMaterial color="#f3f1ec" roughness={0.94} metalness={0.02} />
       </mesh>
       <FittedGltf
         url={ROOM_GLB.hood}
@@ -663,12 +663,12 @@ export function KitchenRun({
       />
       <FittedGltf
         url={ROOM_GLB.fridge}
-        maxSize={[1.02, FRIDGE_H, 0.72]}
+        maxSize={[FRIDGE_W - 0.02, FRIDGE_H, 0.7]}
         position={[fridgeMid, 0, FRONT]}
         align="bottom"
         pin="front"
         pinPad={0.16}
-        fit="height"
+        fit="contain"
         prepare={dressKitchenProduct}
         envIntensity={1}
       />

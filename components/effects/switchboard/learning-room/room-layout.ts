@@ -63,7 +63,7 @@ export const HEIGHTS = {
   ovenY: 0.46,
   switch: 1.16,
   light: 2.18,
-  portrait: 1.38,
+  portrait: 1.58,
   topPlate: ROOM.height - ROOM.plate / 2,
   cavityX: -ROOM.studSize / 2,
   cavityZ: -ROOM.studSize / 2,

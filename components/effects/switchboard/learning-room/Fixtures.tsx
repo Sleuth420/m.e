@@ -70,8 +70,8 @@ export function Fixtures({ lightsOn, lightSwitchOn, onToggleSwitch }: FixturePro
         onToggle={onToggleSwitch}
       />
 
-      <primitive object={sconce1} position={[l1.x, l1.y, l1.z]} rotation={[0, Math.PI / 2, 0]} scale={1.05} />
-      <primitive object={sconce2} position={[l2.x, l2.y, l2.z]} rotation={[0, Math.PI / 2, 0]} scale={1.05} />
+      <primitive object={sconce1} position={[l1.x, l1.y, l1.z]} rotation={[0, Math.PI / 2, 0]} scale={1.45} />
+      <primitive object={sconce2} position={[l2.x, l2.y, l2.z]} rotation={[0, Math.PI / 2, 0]} scale={1.45} />
       {lightsOn && (
         <>
           <pointLight position={[l1.x + 0.28, l1.y, l1.z]} intensity={1.4} distance={5.2} color="#fff4d6" />

@@ -84,30 +84,32 @@ function wrapText(
   if (line) ctx.fillText(line, x, yy);
 }
 
-function PortraitCard({ portrait, visible }: { portrait: Portrait; visible: boolean }) {
+function PortraitCard({ portrait }: { portrait: Portrait }) {
   const map = usePortraitTexture(portrait);
   return (
     <group position={portrait.position} rotation={[0, Math.PI / 2, 0]}>
-      <mesh position={[0, 0, -0.01]}>
-        <boxGeometry args={[0.72, 1.08, 0.03]} />
-        <meshStandardMaterial color="#111113" roughness={0.5} />
+      <mesh position={[0, 0, -0.008]} castShadow receiveShadow>
+        <boxGeometry args={[0.42, 0.56, 0.022]} />
+        <meshStandardMaterial color="#1c1917" roughness={0.42} metalness={0.08} />
       </mesh>
-      {visible && (
-        <mesh position={[0, 0, 0.012]}>
-          <planeGeometry args={[0.64, 0.98]} />
-          <meshStandardMaterial map={map} roughness={0.7} />
-        </mesh>
-      )}
+      <mesh position={[0, 0, 0.004]} receiveShadow>
+        <boxGeometry args={[0.372, 0.512, 0.004]} />
+        <meshStandardMaterial color="#f5f0e8" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0, 0.008]}>
+        <planeGeometry args={[0.348, 0.488]} />
+        <meshStandardMaterial map={map} roughness={0.62} />
+      </mesh>
     </group>
   );
 }
 
-/** About-me wall portraits — content only when the wall lights are on. */
-export function AboutPortraits({ lightsOn }: { lightsOn: boolean }) {
+/** Framed certificates under the wall lights — always on the plaster, not blank boards. */
+export function AboutPortraits({ lightsOn: _lightsOn }: { lightsOn: boolean }) {
   return (
     <group>
       {PORTRAITS.map((p) => (
-        <PortraitCard key={p.kicker} portrait={p} visible={lightsOn} />
+        <PortraitCard key={p.kicker} portrait={p} />
       ))}
     </group>
   );

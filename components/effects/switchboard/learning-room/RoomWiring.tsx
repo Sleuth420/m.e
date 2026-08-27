@@ -25,7 +25,7 @@ type Props = {
 /** In-wall TPS: lighting on the board wall; kitchen circuits on z=0 at staggered heights. */
 export function RoomWiring({ liveById, isolatorOn }: Props) {
   const sheath = useMemo(
-    () => new MeshStandardMaterial({ color: '#b9b3a8', roughness: 0.7, metalness: 0.03 }),
+    () => new MeshStandardMaterial({ color: '#eceae4', roughness: 0.62, metalness: 0.04 }),
     []
   );
 
@@ -122,16 +122,16 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
 
   return (
     <group>
-      <PathWire points={lightingSheath} radius={0.014} material={sheath} live={lightingLive} segments={28} soft={false} />
-      <PathWire points={light1Stub} radius={0.012} material={sheath} live={lightingLive} segments={8} soft={false} />
-      <PathWire points={light2Stub} radius={0.012} material={sheath} live={lightingLive} segments={8} soft={false} />
-      <PathWire points={powerSheath} radius={0.014} material={sheath} live={powerLive} segments={36} soft={false} />
-      <PathWire points={hoodTee} radius={0.012} material={sheath} live={powerLive} segments={10} soft={false} />
-      <PathWire points={dwDrop} radius={0.012} material={sheath} live={powerLive} segments={10} soft={false} />
-      <PathWire points={inductionToIsolator} radius={0.015} material={sheath} live={inductionLive} segments={28} soft={false} />
-      <PathWire points={isolatorFeed} radius={0.015} material={sheath} live={hobLive} segments={16} soft={false} />
-      <PathWire points={ovenSheath} radius={0.014} material={sheath} live={ovenLive} segments={28} soft={false} />
-      <PathWire points={fridgeSheath} radius={0.014} material={sheath} live={fridgeLive} segments={32} soft={false} />
+      <PathWire points={lightingSheath} radius={0.007} material={sheath} live={lightingLive} segments={28} soft={false} />
+      <PathWire points={light1Stub} radius={0.006} material={sheath} live={lightingLive} segments={8} soft={false} />
+      <PathWire points={light2Stub} radius={0.006} material={sheath} live={lightingLive} segments={8} soft={false} />
+      <PathWire points={powerSheath} radius={0.008} material={sheath} live={powerLive} segments={36} soft={false} />
+      <PathWire points={hoodTee} radius={0.007} material={sheath} live={powerLive} segments={10} soft={false} />
+      <PathWire points={dwDrop} radius={0.007} material={sheath} live={powerLive} segments={10} soft={false} />
+      <PathWire points={inductionToIsolator} radius={0.009} material={sheath} live={inductionLive} segments={28} soft={false} />
+      <PathWire points={isolatorFeed} radius={0.009} material={sheath} live={hobLive} segments={16} soft={false} />
+      <PathWire points={ovenSheath} radius={0.008} material={sheath} live={ovenLive} segments={28} soft={false} />
+      <PathWire points={fridgeSheath} radius={0.008} material={sheath} live={fridgeLive} segments={32} soft={false} />
 
       {/* Sheath stays in the cavity and stops behind the plate — no live cores on the plaster. */}
       <PathWire
@@ -139,7 +139,7 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
           [cx, HEIGHTS.switch, sw.z],
           [Math.min(sw.x - 0.006, cx + 0.02), HEIGHTS.switch, sw.z],
         ]}
-        radius={0.012}
+        radius={0.006}
         material={sheath}
         live={lightingLive}
         segments={6}

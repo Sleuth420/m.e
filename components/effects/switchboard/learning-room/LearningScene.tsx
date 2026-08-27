@@ -117,20 +117,17 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         decay={2}
         color="#f7f0e4"
       />
-      <mesh position={[BOARD_MOUNT.x + 0.08, BOARD_OPENING.y1 + 0.08, BOARD_MOUNT.z]} castShadow>
-        <boxGeometry args={[0.05, 0.035, 0.11]} />
-        <meshStandardMaterial color="#c5c9ce" metalness={0.65} roughness={0.28} />
+      <mesh position={[BOARD_MOUNT.x + 0.05, BOARD_OPENING.y1 + 0.042, BOARD_MOUNT.z]} castShadow>
+        <boxGeometry args={[0.036, 0.016, 0.42]} />
+        <meshStandardMaterial color="#c5c9ce" metalness={0.62} roughness={0.26} />
       </mesh>
-      <mesh
-        position={[BOARD_MOUNT.x + 0.11, BOARD_OPENING.y1 + 0.055, BOARD_MOUNT.z]}
-        rotation={[0, 0, Math.PI / 2]}
-      >
-        <cylinderGeometry args={[0.016, 0.018, 0.04, 12]} />
+      <mesh position={[BOARD_MOUNT.x + 0.068, BOARD_OPENING.y1 + 0.038, BOARD_MOUNT.z]}>
+        <boxGeometry args={[0.018, 0.01, 0.39]} />
         <meshStandardMaterial
           color="#fff6e0"
           emissive="#fff1c2"
-          emissiveIntensity={0.85}
-          roughness={0.35}
+          emissiveIntensity={1.05}
+          roughness={0.28}
         />
       </mesh>
       <RoomWiring liveById={liveById} isolatorOn={isolatorOn} />
