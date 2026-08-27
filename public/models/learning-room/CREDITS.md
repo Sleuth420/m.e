@@ -21,10 +21,11 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/switch.glb` | Simple Light Switch | CC BY 4.0 | [32d02fa](https://sketchfab.com/3d-models/simple-light-switch-32d02fa06d474f4db5a433aa134be612) |
 
 Sconce, 1-gang switch, cooktop isolator, and 1-gang GPO are generated in
-`sconce.glb` / `switch.glb` / `isolator.glb` / `gpo-single.glb` — white PC to
-match the Type I double. No CC-BY AU C2000 rocker exists in the same class as
-the Sketchfab GPO (`real/switch.glb` is a US toggle; do not use it here).
-Teaching walls are open timber (no plaster) so TPS stays visible.
+`sconce.glb` / `switch.glb` / `isolator.glb` / `gpo-single.glb` — extruded
+C2000 plates plus PVC wall boxes, white PC matched to the Type I double.
+No CC-BY AU C2000 rocker exists (`real/switch.glb` is a US toggle; do not use).
+Teaching walls are open timber (no plaster). Splash tiles stop short of the
+GPO line so kitchen TPS stays visible.
 Product models sit in the kitchen bays along z=0.
 
 ## Poly Haven (CC0)

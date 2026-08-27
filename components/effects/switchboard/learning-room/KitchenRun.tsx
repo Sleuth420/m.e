@@ -130,7 +130,7 @@ function BenchRun({ startX, endX, sinkX }: { startX: number; endX: number; sinkX
   );
 }
 
-function TiledSplash({ x, w, h = 0.45 }: { x: number; w: number; h?: number }) {
+function TiledSplash({ x, w, h = 0.12 }: { x: number; w: number; h?: number }) {
   const maps = useRepeatingPbr(POLYHAVEN.tiles, [w / 0.62, h / 0.5]);
   return (
     <mesh position={[x + w / 2, KITCHEN.benchH + BENCH_T + h / 2, 0.012]} receiveShadow>
@@ -311,10 +311,10 @@ function WallGpo({
       <FittedGltf
         url={url}
         maxSize={maxSize}
-        position={[0, 0, 0.012]}
+        position={[0, 0, 0]}
         rotation={[0, 0, 0]}
         align="center"
-        pin="front"
+        pin="back"
         share
         envIntensity={live ? 1.1 : 1}
       />
@@ -517,7 +517,7 @@ export function KitchenRun({
   const benchTop = KITCHEN.benchH + BENCH_T;
   const benchZ = 0.32;
   const splashY = KITCHEN.splashGpoY;
-  const splashZ = 0.04;
+  const splashZ = 0.004;
   const hood = FIXTURES.rangehood;
 
   const ovenOpen = !!openById.oven;

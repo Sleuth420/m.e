@@ -10,7 +10,8 @@ export const ROOM = {
   studSpacing: 0.45,
   studSize: 0.09,
   plate: 0.09,
-  nogginYs: [0.9, 1.8] as const,
+  /** 1.14 is the switch / splash-GPO noggin so fittings clip to timber. */
+  nogginYs: [0.9, 1.14, 1.8] as const,
 } as const;
 
 export const ROOM_LOADS = {
@@ -92,7 +93,7 @@ export const KITCHEN_BAYS = {
 } as const;
 
 export const FIXTURES = {
-  lightSwitch: { x: 0.036, y: HEIGHTS.switch, z: 0.52 },
+  lightSwitch: { x: 0.006, y: HEIGHTS.switch, z: 0.52 },
   wallLight1: { x: 0.022, y: HEIGHTS.light, z: 3.25 },
   wallLight2: { x: 0.022, y: HEIGHTS.light, z: 3.95 },
   portrait1: { x: 0.07, y: HEIGHTS.portrait, z: 3.25 },

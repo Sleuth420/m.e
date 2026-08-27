@@ -41,11 +41,22 @@ function between(a: number, b: number, p: number, pad = 0.03) {
   return p > lo && p < hi;
 }
 
+const NOGGIN_YS = ROOM.nogginYs;
+
+function openingHitsZ(z: number, pad = 0.02) {
+  return z > BOARD_OPENING.z0 - pad && z < BOARD_OPENING.z1 + pad;
+}
+
+function openingHitsY(y: number, pad = 0.04) {
+  return y > BOARD_OPENING.y0 - pad && y < BOARD_OPENING.y1 + pad;
+}
+
 function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchenRuns: KitchenRun[] }) {
   const s = ROOM.studSize;
   const cx = HEIGHTS.cavityX;
   const cz = HEIGHTS.cavityZ;
   const hole = 0.012;
+  const nogginHalf = (s * 0.82) / 2 + 0.012;
   return (
     <group>
       {boardWallStudZs().map((z) => {
@@ -60,6 +71,28 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
           );
         });
       })}
+      {NOGGIN_YS.map((ny) =>
+        boardWallStudZs()
+          .slice(0, -1)
+          .map((z) => {
+            const mid = z + ROOM.studSpacing / 2;
+            if (openingHitsZ(mid) && openingHitsY(ny)) return null;
+            return boardRuns.map((run) => {
+              if (Math.abs(run.y - ny) > nogginHalf) return null;
+              if (!between(run.z0, run.z1, mid, -0.02)) return null;
+              return (
+                <mesh
+                  key={`bn-${ny}-${z}-${run.y}`}
+                  position={[cx, run.y, mid]}
+                  rotation={[Math.PI / 2, 0, 0]}
+                >
+                  <cylinderGeometry args={[hole, hole, ROOM.studSpacing - s + 0.01, 8]} />
+                  <meshStandardMaterial color="#2a261c" roughness={1} />
+                </mesh>
+              );
+            });
+          }),
+      )}
       {fridgeWallStudXs().map((x) =>
         kitchenRuns.map((run) => {
           if (!between(run.x0, run.x1, x)) return null;
@@ -70,6 +103,27 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
             </mesh>
           );
         }),
+      )}
+      {NOGGIN_YS.map((ny) =>
+        fridgeWallStudXs()
+          .slice(0, -1)
+          .map((x) => {
+            const mid = x + ROOM.studSpacing / 2;
+            return kitchenRuns.map((run) => {
+              if (Math.abs(run.y - ny) > nogginHalf) return null;
+              if (!between(run.x0, run.x1, mid, -0.02)) return null;
+              return (
+                <mesh
+                  key={`fn-${ny}-${x}-${run.y}`}
+                  position={[mid, run.y, cz]}
+                  rotation={[0, 0, Math.PI / 2]}
+                >
+                  <cylinderGeometry args={[hole, hole, ROOM.studSpacing - s + 0.01, 8]} />
+                  <meshStandardMaterial color="#2a261c" roughness={1} />
+                </mesh>
+              );
+            });
+          }),
       )}
     </group>
   );
@@ -194,6 +248,10 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
   ];
 
   const tps = { sag: true, oval: OVAL, soft: false as const };
+  const faceStub = (x: number, y: number): Vec3[] => [
+    [x, y, cz],
+    [x, y, 0.003],
+  ];
 
   return (
     <group>
@@ -220,6 +278,11 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
         oval={OVAL}
         soft={false}
       />
+      <PathWire points={faceStub(FIXTURES.gpoDouble.x, HEIGHTS.splashGpoY)} radius={0.008} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.gpoSingle.x, HEIGHTS.splashGpoY)} radius={0.0075} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY)} radius={0.0075} material={sheath} live={fridgeLive} segments={6} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.cookIsolator.x, HEIGHTS.splashGpoY)} radius={0.009} material={sheath} live={hobLive} segments={6} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.dwGpo.x, HEIGHTS.gpo)} radius={0.0075} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
       <CableBores boardRuns={boardRuns} kitchenRuns={kitchenRuns} />
     </group>
   );

@@ -110,8 +110,8 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
     >
       <primitive object={root} />
       {isolator && (
-        <mesh position={[0, -0.046, 0.009]} receiveShadow>
-          <planeGeometry args={[0.054, 0.012]} />
+        <mesh position={[0, -0.046, 0.0102]} receiveShadow>
+          <planeGeometry args={[0.048, 0.011]} />
           <meshStandardMaterial map={label} roughness={0.55} metalness={0.02} />
         </mesh>
       )}

@@ -18,9 +18,9 @@ export const ROOM_GLB = {
   /** White double GPO plate — splash double only. */
   gpoDouble: '/models/learning-room/real/gpo-double.glb?v=8',
   /** Generated AU 1-gang GPO for singles (fridge / DW / splash). */
-  gpoSingle: '/models/learning-room/gpo-single.glb?v=3',
-  switch: '/models/learning-room/switch.glb?v=10',
-  isolator: '/models/learning-room/isolator.glb?v=10',
+  gpoSingle: '/models/learning-room/gpo-single.glb?v=4',
+  switch: '/models/learning-room/switch.glb?v=11',
+  isolator: '/models/learning-room/isolator.glb?v=11',
   /** Poly Haven CC0 pliers — player avatar https://polyhaven.com/a/pliers */
   pliers: '/models/learning-room/real/pliers/pliers.gltf?v=4',
 } as const;
