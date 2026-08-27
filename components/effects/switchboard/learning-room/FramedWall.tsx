@@ -34,8 +34,12 @@ function Timber({
     if (uv) {
       const ox = fract(px * 7.13 + pz * 3.71 + py * 1.17);
       const oy = fract(py * 5.29 + px * 2.17 + pz * 4.03);
+      const flipU = fract(px * 4.91 + pz * 7.13 + py * 2.07) > 0.5 ? -1 : 1;
+      const flipV = fract(px * 2.33 + pz * 5.17) > 0.55 ? -1 : 1;
+      const sx = 0.62 + fract(px * 8.41 + py * 3.19) * 0.95;
+      const sy = 0.72 + fract(pz * 6.73 + px * 1.91) * 0.8;
       for (let i = 0; i < uv.count; i++) {
-        uv.setXY(i, uv.getX(i) + ox, uv.getY(i) + oy);
+        uv.setXY(i, uv.getX(i) * sx * flipU + ox, uv.getY(i) * sy * flipV + oy);
       }
       uv.needsUpdate = true;
     }
@@ -92,11 +96,11 @@ function FoilSheet({
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
         metalnessMap={maps.metalnessMap}
-        color="#9aa3ab"
-        roughness={0.5}
-        metalness={0.72}
-        envMapIntensity={1.18}
-        normalScale={[1.05, 1.05]}
+        color="#d8ddd8"
+        roughness={0.66}
+        metalness={0.32}
+        envMapIntensity={0.62}
+        normalScale={[0.2, 0.2]}
       />
     </mesh>
   );
@@ -111,7 +115,7 @@ function Sarking({
   rotation: [number, number, number];
   size: [number, number];
 }) {
-  const maps = useRepeatingPbrMetal(POLYHAVEN.foilSarking, [FOIL_SHEET / 0.78, size[1] / 0.78]);
+  const maps = useRepeatingPbrMetal(POLYHAVEN.foilSarking, [FOIL_SHEET / 1.65, size[1] / 1.65]);
   const count = Math.max(1, Math.ceil((size[0] - FOIL_OVERLAP) / FOIL_PITCH));
   const sheets = Array.from({ length: count }, (_, i) => {
     const x = -size[0] / 2 + FOIL_SHEET / 2 + i * FOIL_PITCH;
@@ -131,8 +135,8 @@ function Sarking({
       ))}
       {sheets.slice(1).map(({ i, x }) => (
         <mesh key={`tape-${i}`} position={[x - FOIL_SHEET / 2 + FOIL_OVERLAP / 2, 0, 0.002]} receiveShadow>
-          <planeGeometry args={[0.048, size[1]]} />
-          <meshStandardMaterial color="#cfd4da" roughness={0.36} metalness={0.8} envMapIntensity={1.2} />
+          <planeGeometry args={[0.07, size[1]]} />
+          <meshStandardMaterial color="#dfe5eb" roughness={0.48} metalness={0.55} envMapIntensity={0.8} />
         </mesh>
       ))}
     </group>
