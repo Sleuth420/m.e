@@ -65,6 +65,19 @@ export const POLYHAVEN = {
     nor: '/models/learning-room/ambientcg/wood-048/normal.jpg',
     rough: '/models/learning-room/ambientcg/wood-048/roughness.jpg',
   },
+  /** ambientCG Foil001 — silver sisalation behind the open frame. */
+  foilSarking: {
+    diff: '/models/learning-room/ambientcg/foil-001/color.jpg',
+    nor: '/models/learning-room/ambientcg/foil-001/normal.jpg',
+    rough: '/models/learning-room/ambientcg/foil-001/roughness.jpg',
+    metal: '/models/learning-room/ambientcg/foil-001/metalness.jpg',
+  },
+  /** ambientCG Paper004 — site printouts on the frame. */
+  sitePaper: {
+    diff: '/models/learning-room/ambientcg/paper-004/color.jpg',
+    nor: '/models/learning-room/ambientcg/paper-004/normal.jpg',
+    rough: '/models/learning-room/ambientcg/paper-004/roughness.jpg',
+  },
   plywood: {
     diff: '/models/learning-room/polyhaven/textures/plywood/plywood_diff_1k.jpg',
     nor: '/models/learning-room/polyhaven/textures/plywood/plywood_nor_gl_1k.jpg',

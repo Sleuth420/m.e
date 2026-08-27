@@ -1,13 +1,21 @@
 'use client';
 
+import { useMemo } from 'react';
+import { BoxGeometry, PlaneGeometry } from 'three';
 import { POLYHAVEN } from './room-assets';
 import { BOARD_OPENING, HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
-import { useSizedPbr, type PbrMaps } from './room-textures';
+import { useRepeatingPbrMetal, useSizedPbr, type PbrMaps } from './room-textures';
 
 /** H2 MGP radiata — straw construction timber, not furniture stain. */
 const PINE = '#eee4b4';
-const SARKING = '#585860';
 const NOGGIN_YS = ROOM.nogginYs;
+const FOIL_SHEET = 1.37;
+const FOIL_OVERLAP = 0.1;
+const FOIL_PITCH = FOIL_SHEET - FOIL_OVERLAP;
+
+function fract(n: number) {
+  return n - Math.floor(n);
+}
 
 function Timber({
   position,
@@ -18,9 +26,24 @@ function Timber({
   args: [number, number, number];
   maps: PbrMaps;
 }) {
+  const [px, py, pz] = position;
+  const [ax, ay, az] = args;
+  const geometry = useMemo(() => {
+    const g = new BoxGeometry(ax, ay, az);
+    const uv = g.attributes.uv;
+    if (uv) {
+      const ox = fract(px * 7.13 + pz * 3.71 + py * 1.17);
+      const oy = fract(py * 5.29 + px * 2.17 + pz * 4.03);
+      for (let i = 0; i < uv.count; i++) {
+        uv.setXY(i, uv.getX(i) + ox, uv.getY(i) + oy);
+      }
+      uv.needsUpdate = true;
+    }
+    return g;
+  }, [ax, ay, az, px, py, pz]);
+
   return (
-    <mesh position={position} castShadow receiveShadow>
-      <boxGeometry args={args} />
+    <mesh geometry={geometry} position={position} castShadow receiveShadow>
       <meshStandardMaterial
         map={maps.map}
         normalMap={maps.normalMap}
@@ -35,6 +58,87 @@ function Timber({
   );
 }
 
+function FoilSheet({
+  maps,
+  width,
+  height,
+  position,
+  seed,
+}: {
+  maps: ReturnType<typeof useRepeatingPbrMetal>;
+  width: number;
+  height: number;
+  position: [number, number, number];
+  seed: number;
+}) {
+  const geometry = useMemo(() => {
+    const g = new PlaneGeometry(width, height);
+    const uv = g.attributes.uv;
+    const ox = fract(seed * 1.71 + 0.13);
+    const oy = fract(seed * 2.33 + 0.29);
+    if (uv) {
+      for (let i = 0; i < uv.count; i++) {
+        uv.setXY(i, uv.getX(i) + ox, uv.getY(i) + oy);
+      }
+      uv.needsUpdate = true;
+    }
+    return g;
+  }, [width, height, seed]);
+
+  return (
+    <mesh geometry={geometry} position={position} receiveShadow>
+      <meshStandardMaterial
+        map={maps.map}
+        normalMap={maps.normalMap}
+        roughnessMap={maps.roughnessMap}
+        metalnessMap={maps.metalnessMap}
+        color="#9aa3ab"
+        roughness={0.5}
+        metalness={0.72}
+        envMapIntensity={1.18}
+        normalScale={[1.05, 1.05]}
+      />
+    </mesh>
+  );
+}
+
+function Sarking({
+  position,
+  rotation,
+  size,
+}: {
+  position: [number, number, number];
+  rotation: [number, number, number];
+  size: [number, number];
+}) {
+  const maps = useRepeatingPbrMetal(POLYHAVEN.foilSarking, [FOIL_SHEET / 0.78, size[1] / 0.78]);
+  const count = Math.max(1, Math.ceil((size[0] - FOIL_OVERLAP) / FOIL_PITCH));
+  const sheets = Array.from({ length: count }, (_, i) => {
+    const x = -size[0] / 2 + FOIL_SHEET / 2 + i * FOIL_PITCH;
+    return { i, x };
+  });
+  return (
+    <group position={position} rotation={rotation}>
+      {sheets.map(({ i, x }) => (
+        <FoilSheet
+          key={`foil-${i}`}
+          maps={maps}
+          width={FOIL_SHEET}
+          height={size[1]}
+          position={[x, 0, i * 0.0007]}
+          seed={i + size[0]}
+        />
+      ))}
+      {sheets.slice(1).map(({ i, x }) => (
+        <mesh key={`tape-${i}`} position={[x - FOIL_SHEET / 2 + FOIL_OVERLAP / 2, 0, 0.002]} receiveShadow>
+          <planeGeometry args={[0.048, size[1]]} />
+          <meshStandardMaterial color="#cfd4da" roughness={0.36} metalness={0.8} envMapIntensity={1.2} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function openingHitsZ(z: number, pad = 0.02) {
   return z > BOARD_OPENING.z0 - pad && z < BOARD_OPENING.z1 + pad;
 }
@@ -45,8 +149,8 @@ function openingHitsY(y: number, pad = 0.04) {
 
 /** Open MGP10 frame (no plaster) so TPS in the cavity stays visible. */
 export function FramedWalls() {
-  const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 0.45, 0);
-  const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 0.45, Math.PI / 2);
+  const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 1.7, 0);
+  const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 1.7, Math.PI / 2);
   const plyMaps = useSizedPbr(POLYHAVEN.plywood, [0.55, 0.7], 0.55, 0);
   const boardZs = boardWallStudZs();
   const fridgeXs = fridgeWallStudXs();
@@ -74,14 +178,16 @@ export function FramedWalls() {
 
   return (
     <group>
-      <mesh position={[-s - 0.012, ROOM.height / 2, ROOM.depth / 2]} receiveShadow>
-        <boxGeometry args={[0.02, ROOM.height, ROOM.depth + 0.2]} />
-        <meshStandardMaterial color={SARKING} roughness={0.95} />
-      </mesh>
-      <mesh position={[ROOM.width / 2, ROOM.height / 2, -s - 0.012]} receiveShadow>
-        <boxGeometry args={[ROOM.width + 0.2, ROOM.height, 0.02]} />
-        <meshStandardMaterial color={SARKING} roughness={0.95} />
-      </mesh>
+      <Sarking
+        position={[-s - 0.014, ROOM.height / 2, ROOM.depth / 2]}
+        rotation={[0, Math.PI / 2, 0]}
+        size={[ROOM.depth + 0.2, ROOM.height]}
+      />
+      <Sarking
+        position={[ROOM.width / 2, ROOM.height / 2, -s - 0.014]}
+        rotation={[0, 0, 0]}
+        size={[ROOM.width + 0.2, ROOM.height]}
+      />
 
       <Timber maps={hMaps} position={[cx, ROOM.plate / 2, ROOM.depth / 2]} args={[s, ROOM.plate, ROOM.depth + s]} />
       <Timber

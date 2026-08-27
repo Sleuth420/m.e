@@ -6,6 +6,7 @@ import { CanvasTexture, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, 
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { ROOM_GLB } from './room-assets';
 import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
+import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 
 type Props = {
   position: [number, number, number];
@@ -47,8 +48,8 @@ function paintRocker(root: Object3D, color: string) {
       const m = mat as MeshStandardMaterial;
       if (!m?.color) continue;
       m.color.set(color);
-      m.roughness = 0.38;
-      m.metalness = 0.08;
+      m.roughness = 0.52;
+      m.metalness = 0.06;
       m.needsUpdate = true;
     }
   });
@@ -61,10 +62,10 @@ function useCooktopLabel() {
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('2D context unavailable');
-    ctx.fillStyle = '#f3f1eb';
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 256, 64);
     ctx.fillStyle = '#9b1c1c';
-    ctx.font = '700 28px "Segoe UI", system-ui, sans-serif';
+    ctx.font = '700 26px "Segoe UI", system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('COOKTOP', 128, 32);
@@ -78,12 +79,14 @@ function useCooktopLabel() {
 /** AU 76×116 C2000-ish plate — generated fitting, not a toy stack of boxes. */
 export function WallSwitch({ position, wall, on, onToggle, isolator = false }: Props) {
   const { scene } = useKeptGltf(isolator ? ROOM_GLB.isolator : ROOM_GLB.switch);
+  const typeI = useTypeIPlateMaterial();
   const label = useCooktopLabel();
   const root = useMemo(() => {
     const g = cloneFitted(scene);
+    paintPlatesFromTypeI(g, typeI);
     if (isolator) paintRocker(g, '#9b1c1c');
     return g;
-  }, [scene, isolator]);
+  }, [scene, isolator, typeI]);
   const rocker = useRef<Object3D>(null);
 
   useLayoutEffect(() => {

@@ -44,7 +44,46 @@ export function useRepeatingPbr(
   return { map, normalMap, roughnessMap };
 }
 
-/** Cloned maps so each panel can have its own repeat / grain rotation. */
+/** PBR with a metalness map (foil sarking). Clones so each sheet can repeat differently. */
+export function useRepeatingPbrMetal(
+  urls: { diff: string; nor: string; rough: string; metal: string },
+  repeat: [number, number],
+): PbrMaps & { metalnessMap: Texture } {
+  const rx = repeat[0];
+  const ry = repeat[1];
+  const [map, normalMap, roughnessMap, metalnessMap] = useTexture([
+    urls.diff,
+    urls.nor,
+    urls.rough,
+    urls.metal,
+  ]);
+  const clones = useMemo(
+    () => ({
+      map: map.clone(),
+      normalMap: normalMap.clone(),
+      roughnessMap: roughnessMap.clone(),
+      metalnessMap: metalnessMap.clone(),
+    }),
+    [map, normalMap, roughnessMap, metalnessMap],
+  );
+  useLayoutEffect(() => {
+    prepColor(clones.map, [rx, ry]);
+    prepData(clones.normalMap, [rx, ry]);
+    prepData(clones.roughnessMap, [rx, ry]);
+    prepData(clones.metalnessMap, [rx, ry]);
+  }, [clones, rx, ry]);
+  useLayoutEffect(
+    () => () => {
+      clones.map.dispose();
+      clones.normalMap.dispose();
+      clones.roughnessMap.dispose();
+      clones.metalnessMap.dispose();
+    },
+    [clones],
+  );
+  return clones;
+}
+
 export function useSizedPbr(
   urls: { diff: string; nor: string; arm?: string; rough?: string },
   size: [number, number],

@@ -134,7 +134,7 @@ const OVAL = 0.55;
 /** In-wall TPS: lighting on the board wall; kitchen circuits on z=0 at staggered heights. */
 export function RoomWiring({ liveById, isolatorOn }: Props) {
   const sheath = useMemo(
-    () => new MeshStandardMaterial({ color: '#eceae4', roughness: 0.62, metalness: 0.04 }),
+    () => new MeshStandardMaterial({ color: '#f3f0e8', roughness: 0.55, metalness: 0.03 }),
     [],
   );
 

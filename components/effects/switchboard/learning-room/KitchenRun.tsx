@@ -21,6 +21,7 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
+import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
 
 function Hit({
@@ -305,6 +306,7 @@ function WallGpo({
   gang?: 'single' | 'double';
 }) {
   const url = gang === 'single' ? ROOM_GLB.gpoSingle : ROOM_GLB.gpoDouble;
+  const typeI = useTypeIPlateMaterial();
   const maxSize: [number, number, number] = gang === 'single' ? [0.08, 0.122, 0.03] : [0.155, 0.1, 0.032];
   return (
     <group position={position}>
@@ -316,7 +318,8 @@ function WallGpo({
         align="center"
         pin="back"
         share
-        envIntensity={live ? 1.1 : 1}
+        envIntensity={live ? 1.15 : 1.05}
+        onReady={gang === 'single' ? (root) => paintPlatesFromTypeI(root, typeI) : undefined}
       />
       {onToggle && <Hit onToggle={onToggle} size={[0.18, 0.12, 0.1]} />}
     </group>
