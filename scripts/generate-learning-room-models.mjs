@@ -182,9 +182,6 @@ function buildRocker(mat, w, h, d) {
   group.name = 'Rocker';
   const body = roundMesh(mat, w, h, d, 0.0028, 6);
   group.add(body);
-  const barrel = new Mesh(new CylinderGeometry(d * 0.42, d * 0.42, w * 0.92, 18), mat);
-  barrel.rotation.z = Math.PI / 2;
-  group.add(barrel);
   const mark = boxMesh(MAT.well(), w * 0.38, 0.0007, 0.0005);
   mark.position.set(0, h * 0.28, d / 2 + 0.0002);
   group.add(mark);
@@ -202,12 +199,12 @@ function gangPlate(root, holes) {
   wallBox(root);
 }
 
-function gridAndRocker(root, mat, { y = 0, w = 0.023, h = 0.042, d = 0.007 } = {}) {
-  const grid = roundMesh(MAT.well(), w + 0.006, h + 0.008, 0.004, 0.0022, 5);
-  grid.position.set(0, y, PLATE_D / 2 + 0.001);
-  add(root, grid);
+function gridAndRocker(root, mat, { y = 0, w = 0.026, h = 0.046, d = 0.007 } = {}) {
+  const lining = roundMesh(MAT.well(), w + 0.0032, h + 0.0036, 0.0024, 0.0018, 4);
+  lining.position.set(0, y, PLATE_D * 0.55);
+  add(root, lining);
   const rocker = buildRocker(mat, w, h, d);
-  rocker.position.set(0, y, PLATE_D + 0.004);
+  rocker.position.set(0, y, PLATE_D + 0.0035);
   root.add(rocker);
 }
 
@@ -223,7 +220,7 @@ function buildIsolator() {
   const root = new Group();
   root.name = 'isolator';
   gangPlate(root, [{ w: 0.032, h: 0.054, r: 0.0035, y: 0.008 }]);
-  gridAndRocker(root, MAT.rockerRed(), { y: 0.008, w: 0.025, h: 0.044, d: 0.008 });
+  gridAndRocker(root, MAT.rockerRed(), { y: 0.008, w: 0.027, h: 0.046, d: 0.008 });
   const pad = roundMesh(MAT.plate(), 0.05, 0.014, 0.0012, 0.002, 4);
   pad.position.set(0, -0.046, PLATE_D + 0.0004);
   add(root, pad);
