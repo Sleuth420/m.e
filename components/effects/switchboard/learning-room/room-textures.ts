@@ -89,6 +89,7 @@ export function useSizedPbr(
   size: [number, number],
   tileMeters = 0.2,
   rotation = 0,
+  minRepeat = 0.35,
 ): PbrMaps {
   const third = urls.arm ?? urls.rough;
   if (!third) throw new Error('PBR maps need arm or rough');
@@ -101,8 +102,8 @@ export function useSizedPbr(
     }),
     [map, normalMap, roughnessMap],
   );
-  const rx = Math.max(0.35, size[0] / tileMeters);
-  const ry = Math.max(0.35, size[1] / tileMeters);
+  const rx = Math.max(minRepeat, size[0] / tileMeters);
+  const ry = Math.max(minRepeat, size[1] / tileMeters);
   useLayoutEffect(() => {
     prepColor(clones.map, [rx, ry]);
     prepData(clones.normalMap, [rx, ry]);

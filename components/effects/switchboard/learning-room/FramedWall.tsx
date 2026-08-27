@@ -96,11 +96,13 @@ function FoilSheet({
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
         metalnessMap={maps.metalnessMap}
-        color="#d8ddd8"
-        roughness={0.66}
-        metalness={0.32}
-        envMapIntensity={0.62}
-        normalScale={[0.2, 0.2]}
+        color="#eef2f4"
+        roughness={0.6}
+        metalness={0.18}
+        envMapIntensity={0.78}
+        normalScale={[0.1, 0.1]}
+        emissive="#b7bec6"
+        emissiveIntensity={0.08}
       />
     </mesh>
   );
@@ -115,7 +117,7 @@ function Sarking({
   rotation: [number, number, number];
   size: [number, number];
 }) {
-  const maps = useRepeatingPbrMetal(POLYHAVEN.foilSarking, [FOIL_SHEET / 1.65, size[1] / 1.65]);
+  const maps = useRepeatingPbrMetal(POLYHAVEN.foilSarking, [FOIL_SHEET / 2.2, size[1] / 2.2]);
   const count = Math.max(1, Math.ceil((size[0] - FOIL_OVERLAP) / FOIL_PITCH));
   const sheets = Array.from({ length: count }, (_, i) => {
     const x = -size[0] / 2 + FOIL_SHEET / 2 + i * FOIL_PITCH;
@@ -134,9 +136,9 @@ function Sarking({
         />
       ))}
       {sheets.slice(1).map(({ i, x }) => (
-        <mesh key={`tape-${i}`} position={[x - FOIL_SHEET / 2 + FOIL_OVERLAP / 2, 0, 0.002]} receiveShadow>
-          <planeGeometry args={[0.07, size[1]]} />
-          <meshStandardMaterial color="#dfe5eb" roughness={0.48} metalness={0.55} envMapIntensity={0.8} />
+        <mesh key={`tape-${i}`} position={[x - FOIL_SHEET / 2 + FOIL_OVERLAP / 2, 0, 0.0024]} receiveShadow>
+          <planeGeometry args={[0.08, size[1]]} />
+          <meshStandardMaterial color="#6a7178" roughness={0.62} metalness={0.22} envMapIntensity={0.45} />
         </mesh>
       ))}
     </group>
@@ -153,8 +155,8 @@ function openingHitsY(y: number, pad = 0.04) {
 
 /** Open MGP10 frame (no plaster) so TPS in the cavity stays visible. */
 export function FramedWalls() {
-  const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 1.7, 0);
-  const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 1.7, Math.PI / 2);
+  const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 1.2, 0, 0.05);
+  const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 1.2, Math.PI / 2, 0.05);
   const plyMaps = useSizedPbr(POLYHAVEN.plywood, [0.55, 0.7], 0.55, 0);
   const boardZs = boardWallStudZs();
   const fridgeXs = fridgeWallStudXs();
