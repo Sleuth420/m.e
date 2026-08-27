@@ -1,21 +1,13 @@
 /**
- * AU wall fittings — C2000-ish sizes, layered so nothing shares a volume.
+ * AU wall fittings — C2000-ish sizes in the same white plastic as the
+ * Sketchfab Type I GPO. No CC-BY AU rocker switch exists in that class, so
+ * these are generated to sit next to `real/gpo-double.glb`.
  * Run: npm run generate:learning-room-models
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  BoxGeometry,
-  CylinderGeometry,
-  Group,
-  LatheGeometry,
-  Mesh,
-  MeshStandardMaterial,
-  Scene,
-  SphereGeometry,
-  Vector2,
-} from 'three';
+import { BoxGeometry, CylinderGeometry, Group, Mesh, MeshStandardMaterial, Scene } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 
@@ -44,16 +36,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '..', 'public', 'models', 'learning-room');
 
 const MAT = {
-  plate: () => new MeshStandardMaterial({ color: '#f3f1eb', roughness: 0.46, metalness: 0.03, name: 'plate' }),
-  bezel: () => new MeshStandardMaterial({ color: '#e6e3db', roughness: 0.5, metalness: 0.04, name: 'bezel' }),
-  rocker: () => new MeshStandardMaterial({ color: '#faf8f3', roughness: 0.4, metalness: 0.03, name: 'rocker' }),
-  rockerRed: () => new MeshStandardMaterial({ color: '#9b1c1c', roughness: 0.38, metalness: 0.08, name: 'rocker' }),
-  well: () => new MeshStandardMaterial({ color: '#1c1c1f', roughness: 0.58, metalness: 0.05, name: 'well' }),
-  shutter: () => new MeshStandardMaterial({ color: '#111113', roughness: 0.42, metalness: 0.08, name: 'shutter' }),
-  screw: () => new MeshStandardMaterial({ color: '#9aa0a6', roughness: 0.22, metalness: 0.88, name: 'screw' }),
-  chrome: () => new MeshStandardMaterial({ color: '#c5c9ce', roughness: 0.18, metalness: 0.92, name: 'chrome' }),
-  opal: () =>
-    new MeshStandardMaterial({ color: '#f4f0e6', roughness: 0.62, metalness: 0.02, name: 'ShadeMat' }),
+  /** Match the Sketchfab Type I GPO plastic (white, rough PC). */
+  plate: () => new MeshStandardMaterial({ color: '#ffffff', roughness: 0.76, metalness: 0, name: 'plate' }),
+  bezel: () => new MeshStandardMaterial({ color: '#f4f4f4', roughness: 0.72, metalness: 0, name: 'bezel' }),
+  rocker: () => new MeshStandardMaterial({ color: '#ffffff', roughness: 0.58, metalness: 0.02, name: 'rocker' }),
+  rockerRed: () => new MeshStandardMaterial({ color: '#9b1c1c', roughness: 0.46, metalness: 0.06, name: 'rocker' }),
+  well: () => new MeshStandardMaterial({ color: '#1a1a1c', roughness: 0.55, metalness: 0.04, name: 'well' }),
+  shutter: () => new MeshStandardMaterial({ color: '#0e0e10', roughness: 0.4, metalness: 0.06, name: 'shutter' }),
+  screw: () => new MeshStandardMaterial({ color: '#c5c9ce', roughness: 0.28, metalness: 0.82, name: 'screw' }),
 };
 
 function add(root, mesh) {
@@ -63,7 +53,7 @@ function add(root, mesh) {
   return mesh;
 }
 
-function roundMesh(mat, w, h, d, r = 0.003, segs = 3) {
+function roundMesh(mat, w, h, d, r = 0.003, segs = 4) {
   return new Mesh(new RoundedBoxGeometry(w, h, d, segs, r), mat);
 }
 
@@ -81,132 +71,103 @@ function layer(mesh, x, y, z0, d) {
   return mesh;
 }
 
-function screwCap(root, x, y) {
-  const cap = cylMesh(MAT.screw(), 0.0038, 0.002, 14);
+function screwCap(root, x, y, z) {
+  const well = cylMesh(MAT.bezel(), 0.0046, 0.0012, 16);
+  well.rotation.x = Math.PI / 2;
+  well.position.set(x, y, z - 0.0004);
+  add(root, well);
+  const cap = cylMesh(MAT.screw(), 0.003, 0.0014, 16);
   cap.rotation.x = Math.PI / 2;
-  cap.position.set(x, y, 0.008);
+  cap.position.set(x, y, z + 0.0004);
   add(root, cap);
+  const slot = boxMesh(MAT.well(), 0.0034, 0.00055, 0.00055);
+  slot.position.set(x, y, z + 0.0012);
+  add(root, slot);
 }
 
+/** Type I socket — earth below, angled actives, same language as the Sketchfab double. */
 function auSocket(root, ox, oy) {
-  add(root, layer(roundMesh(MAT.bezel(), 0.04, 0.048, 0.003, 0.003), ox, oy, 0.007, 0.003));
-  add(root, layer(roundMesh(MAT.well(), 0.032, 0.04, 0.002, 0.002), ox, oy, 0.01, 0.002));
+  add(root, layer(roundMesh(MAT.bezel(), 0.046, 0.056, 0.0036, 0.0045, 5), ox, oy, 0.007, 0.0036));
+  add(root, layer(roundMesh(MAT.well(), 0.036, 0.046, 0.0026, 0.0028, 4), ox, oy, 0.0104, 0.0026));
 
-  const earth = cylMesh(MAT.shutter(), 0.0032, 0.002, 12);
+  const earthRing = cylMesh(MAT.shutter(), 0.0044, 0.0012, 16);
+  earthRing.rotation.x = Math.PI / 2;
+  earthRing.position.set(ox, oy - 0.0124, 0.0136);
+  add(root, earthRing);
+  const earth = cylMesh(MAT.well(), 0.0028, 0.0024, 14);
   earth.rotation.x = Math.PI / 2;
-  earth.position.set(ox, oy - 0.011, 0.013);
+  earth.position.set(ox, oy - 0.0124, 0.014);
   add(root, earth);
 
   for (const [px, rot] of [
-    [-0.007, 0.48],
-    [0.007, -0.48],
+    [-0.0076, 0.54],
+    [0.0076, -0.54],
   ]) {
-    const slot = boxMesh(MAT.shutter(), 0.01, 0.0028, 0.002);
-    slot.position.set(ox + px, oy + 0.01, 0.013);
+    const slot = boxMesh(MAT.shutter(), 0.0124, 0.0025, 0.0024);
+    slot.position.set(ox + px, oy + 0.0112, 0.0138);
     slot.rotation.z = rot;
     add(root, slot);
   }
 }
 
 function socketSwitch(root, ox, oy) {
-  add(root, layer(roundMesh(MAT.bezel(), 0.018, 0.028, 0.003, 0.002), ox, oy, 0.007, 0.003));
-  add(root, layer(roundMesh(MAT.rocker(), 0.013, 0.022, 0.004, 0.002), ox, oy, 0.01, 0.004));
+  add(root, layer(roundMesh(MAT.bezel(), 0.02, 0.03, 0.003, 0.0025, 4), ox, oy, 0.007, 0.003));
+  add(root, layer(roundMesh(MAT.well(), 0.015, 0.024, 0.0016, 0.0015), ox, oy, 0.01, 0.0016));
+  add(root, layer(roundMesh(MAT.rocker(), 0.013, 0.022, 0.0052, 0.002, 4), ox, oy, 0.011, 0.0052));
 }
 
-function buildDolly(w, h, d) {
+function buildRocker(mat, w, h, d) {
   const group = new Group();
   group.name = 'Rocker';
-  const body = roundMesh(MAT.rocker(), w, h, d, 0.002, 3);
+  const body = roundMesh(mat, w, h, d, 0.0026, 5);
   group.add(body);
+  const barrel = roundMesh(mat, w * 0.94, 0.006, d + 0.0018, 0.0016, 4);
+  barrel.position.z = 0.0005;
+  group.add(barrel);
+  const mark = boxMesh(MAT.well(), w * 0.42, 0.0007, 0.00055);
+  mark.position.set(0, h * 0.22, d / 2 + 0.00025);
+  group.add(mark);
   return group;
 }
 
-function buildGpo() {
-  const root = new Group();
-  root.name = 'gpo';
-  add(root, layer(roundMesh(MAT.plate(), 0.122, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
-  auSocket(root, -0.028, 0.02);
-  auSocket(root, 0.028, 0.02);
-  socketSwitch(root, -0.028, -0.034);
-  socketSwitch(root, 0.028, -0.034);
-  screwCap(root, 0, 0.052);
-  screwCap(root, 0, -0.052);
-  return root;
+/** C2000 1-gang plate — 76 × 116 mm, countersunk screws, recessed grid. */
+function gangPlate(root, w = 0.076, h = 0.116) {
+  add(root, layer(roundMesh(MAT.plate(), w, h, 0.0085, 0.007, 6), 0, 0, 0, 0.0085));
+  add(root, layer(roundMesh(MAT.bezel(), w - 0.012, h - 0.012, 0.0014, 0.005, 5), 0, 0, 0.0085, 0.0014));
+  screwCap(root, 0, h / 2 - 0.01, 0.0106);
+  screwCap(root, 0, -h / 2 + 0.01, 0.0106);
+}
+
+function gridAndRocker(root, mat, { y = 0, w = 0.024, h = 0.044, d = 0.008 } = {}) {
+  add(root, layer(roundMesh(MAT.bezel(), w + 0.012, h + 0.014, 0.0032, 0.0036, 5), 0, y, 0.0094, 0.0032));
+  add(root, layer(roundMesh(MAT.well(), w + 0.005, h + 0.006, 0.0024, 0.0022, 4), 0, y, 0.0122, 0.0024));
+  const rocker = buildRocker(mat, w, h, d);
+  rocker.position.set(0, y, 0.018);
+  root.add(rocker);
 }
 
 function buildSwitch() {
   const root = new Group();
   root.name = 'switch';
-  add(root, layer(roundMesh(MAT.plate(), 0.077, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
-  add(root, layer(roundMesh(MAT.bezel(), 0.034, 0.056, 0.003, 0.003), 0, 0, 0.007, 0.003));
-  const rocker = buildDolly(0.026, 0.046, 0.008);
-  rocker.position.set(0, 0, 0.016);
-  root.add(rocker);
-  screwCap(root, 0, 0.052);
-  screwCap(root, 0, -0.052);
+  gangPlate(root);
+  gridAndRocker(root, MAT.rocker());
   return root;
 }
 
 function buildIsolator() {
   const root = new Group();
   root.name = 'isolator';
-  add(root, layer(roundMesh(MAT.plate(), 0.077, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
-  add(root, layer(roundMesh(MAT.bezel(), 0.038, 0.06, 0.003, 0.003), 0, 0.008, 0.007, 0.003));
-  const rocker = new Group();
-  rocker.name = 'Rocker';
-  rocker.add(new Mesh(new RoundedBoxGeometry(0.028, 0.05, 0.009, 3, 0.002), MAT.rockerRed()));
-  rocker.position.set(0, 0.008, 0.016);
-  root.add(rocker);
-  screwCap(root, 0, 0.052);
-  screwCap(root, 0, -0.052);
+  gangPlate(root);
+  gridAndRocker(root, MAT.rockerRed(), { y: 0.006, w: 0.026, h: 0.046, d: 0.009 });
   return root;
 }
 
 function buildGpoSingle() {
   const root = new Group();
   root.name = 'gpo-single';
-  add(root, layer(roundMesh(MAT.plate(), 0.077, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
+  gangPlate(root);
   auSocket(root, 0, 0.016);
   socketSwitch(root, 0, -0.036);
-  screwCap(root, 0, 0.052);
-  screwCap(root, 0, -0.052);
-  return root;
-}
-
-function buildSconce() {
-  const root = new Group();
-  root.name = 'sconce';
-  add(root, layer(roundMesh(MAT.chrome(), 0.078, 0.078, 0.008, 0.008, 4), 0, 0, 0, 0.008));
-  const arm = cylMesh(MAT.chrome(), 0.009, 0.04, 16);
-  arm.rotation.x = Math.PI / 2;
-  arm.position.set(0, 0, 0.028);
-  add(root, arm);
-
-  const shade = new Mesh(
-    new LatheGeometry(
-      [
-        new Vector2(0.018, 0),
-        new Vector2(0.05, 0.008),
-        new Vector2(0.062, 0.04),
-        new Vector2(0.058, 0.09),
-        new Vector2(0.03, 0.1),
-      ],
-      20
-    ),
-    MAT.opal()
-  );
-  shade.name = 'Shade';
-  shade.rotation.x = Math.PI / 2;
-  shade.position.set(0, -0.04, 0.07);
-  shade.castShadow = true;
-  root.add(shade);
-
-  const bulb = new Mesh(
-    new SphereGeometry(0.018, 12, 10),
-    new MeshStandardMaterial({ color: '#fff6d8', roughness: 0.35, name: 'bulb' })
-  );
-  bulb.position.set(0, 0, 0.07);
-  root.add(bulb);
   return root;
 }
 
@@ -220,9 +181,7 @@ async function exportGlb(root, filename) {
 }
 
 mkdirSync(OUT, { recursive: true });
-await exportGlb(buildGpo(), 'gpo.glb');
 await exportGlb(buildGpoSingle(), 'gpo-single.glb');
 await exportGlb(buildSwitch(), 'switch.glb');
 await exportGlb(buildIsolator(), 'isolator.glb');
-await exportGlb(buildSconce(), 'sconce.glb');
 console.log('done');

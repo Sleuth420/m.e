@@ -109,12 +109,12 @@ function PortraitCard({ portrait, lightsOn }: { portrait: Portrait; lightsOn: bo
         <planeGeometry args={[0.348, 0.488]} />
         <meshStandardMaterial
           map={map}
-          color={lightsOn ? '#ffffff' : '#9a958c'}
-          roughness={lightsOn ? 0.52 : 0.78}
+          color={lightsOn ? '#f7f4ee' : '#a09b92'}
+          roughness={lightsOn ? 0.62 : 0.8}
           metalness={0}
-          envMapIntensity={lightsOn ? 1.15 : 0.22}
-          emissive={lightsOn ? '#f3e6c8' : '#000000'}
-          emissiveIntensity={lightsOn ? 0.16 : 0}
+          envMapIntensity={lightsOn ? 0.95 : 0.22}
+          emissive={lightsOn ? '#e8dcc0' : '#000000'}
+          emissiveIntensity={lightsOn ? 0.045 : 0}
         />
       </mesh>
     </group>

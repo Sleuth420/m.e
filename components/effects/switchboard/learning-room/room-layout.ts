@@ -11,7 +11,6 @@ export const ROOM = {
   studSize: 0.09,
   plate: 0.09,
   nogginYs: [0.9, 1.8] as const,
-  plasterOpacity: 0.58,
 } as const;
 
 export const ROOM_LOADS = {

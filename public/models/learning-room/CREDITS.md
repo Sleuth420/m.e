@@ -20,8 +20,11 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/gpo-double.glb` | Wall Power Outlet - Type I | CC BY 4.0 | [7153932](https://sketchfab.com/3d-models/wall-power-outlet-type-i-71539323436c4d93a1532f4cb76252a8) |
 | `real/switch.glb` | Simple Light Switch | CC BY 4.0 | [32d02fa](https://sketchfab.com/3d-models/simple-light-switch-32d02fa06d474f4db5a433aa134be612) |
 
-Sconce on the board wall is still the generated fitting in `sconce.glb`.
-Walls stay ghosted so the TPS run is visible.
+Sconce, 1-gang switch, cooktop isolator, and 1-gang GPO are generated in
+`sconce.glb` / `switch.glb` / `isolator.glb` / `gpo-single.glb` — white PC to
+match the Type I double. No CC-BY AU C2000 rocker exists in the same class as
+the Sketchfab GPO (`real/switch.glb` is a US toggle; do not use it here).
+Teaching walls are open timber (no plaster) so TPS stays visible.
 Product models sit in the kitchen bays along z=0.
 
 ## Poly Haven (CC0)

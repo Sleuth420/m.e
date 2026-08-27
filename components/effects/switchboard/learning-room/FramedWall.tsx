@@ -9,8 +9,6 @@ const PINE = '#eee4b4';
 const SARKING = '#585860';
 const NOGGIN_YS = ROOM.nogginYs;
 
-function skipRaycast() {}
-
 function Timber({
   position,
   args,
@@ -37,42 +35,6 @@ function Timber({
   );
 }
 
-const PLASTER_T = 0.012;
-
-function GhostPlasterMat() {
-  return (
-    <meshStandardMaterial
-      color="#fff8ee"
-      roughness={0.86}
-      metalness={0}
-      transparent
-      opacity={ROOM.plasterOpacity}
-      depthWrite={false}
-      envMapIntensity={0.55}
-    />
-  );
-}
-
-/** 10 mm plasterboard sheet — see-through, but thick enough to read as lining. */
-function GhostPlaster({
-  position,
-  size,
-  wall,
-}: {
-  position: [number, number, number];
-  size: [number, number];
-  wall: 'board' | 'kitchen';
-}) {
-  const args: [number, number, number] =
-    wall === 'board' ? [PLASTER_T, size[1], size[0]] : [size[0], size[1], PLASTER_T];
-  return (
-    <mesh position={position} renderOrder={1} raycast={skipRaycast}>
-      <boxGeometry args={args} />
-      <GhostPlasterMat />
-    </mesh>
-  );
-}
-
 function openingHitsZ(z: number, pad = 0.02) {
   return z > BOARD_OPENING.z0 - pad && z < BOARD_OPENING.z1 + pad;
 }
@@ -81,7 +43,7 @@ function openingHitsY(y: number, pad = 0.04) {
   return y > BOARD_OPENING.y0 - pad && y < BOARD_OPENING.y1 + pad;
 }
 
-/** MGP10 pine frame: plates, studs at 450, noggins at 900 / 1800, switchboard bay trimmed out. */
+/** Open MGP10 frame (no plaster) so TPS in the cavity stays visible. */
 export function FramedWalls() {
   const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 0.45, 0);
   const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 0.45, Math.PI / 2);
@@ -120,27 +82,6 @@ export function FramedWalls() {
         <boxGeometry args={[ROOM.width + 0.2, ROOM.height, 0.02]} />
         <meshStandardMaterial color={SARKING} roughness={0.95} />
       </mesh>
-
-      <GhostPlaster
-        position={[PLASTER_T / 2, ROOM.height / 2, BOARD_OPENING.z0 / 2]}
-        size={[Math.max(0.05, BOARD_OPENING.z0), ROOM.height]}
-        wall="board"
-      />
-      <GhostPlaster
-        position={[PLASTER_T / 2, ROOM.height / 2, (BOARD_OPENING.z1 + ROOM.depth) / 2]}
-        size={[Math.max(0.05, ROOM.depth - BOARD_OPENING.z1), ROOM.height]}
-        wall="board"
-      />
-      <GhostPlaster
-        position={[PLASTER_T / 2, BOARD_OPENING.y0 / 2, openZ]}
-        size={[openW, Math.max(0.05, BOARD_OPENING.y0)]}
-        wall="board"
-      />
-      <GhostPlaster
-        position={[PLASTER_T / 2, (BOARD_OPENING.y1 + ROOM.height) / 2, openZ]}
-        size={[openW, Math.max(0.05, ROOM.height - BOARD_OPENING.y1)]}
-        wall="board"
-      />
 
       <Timber maps={hMaps} position={[cx, ROOM.plate / 2, ROOM.depth / 2]} args={[s, ROOM.plate, ROOM.depth + s]} />
       <Timber
@@ -199,12 +140,6 @@ export function FramedWalls() {
           normalScale={[0.4, 0.4]}
         />
       </mesh>
-
-      <GhostPlaster
-        position={[ROOM.width / 2, ROOM.height / 2, PLASTER_T / 2]}
-        size={[ROOM.width, ROOM.height]}
-        wall="kitchen"
-      />
 
       <Timber maps={hMaps} position={[ROOM.width / 2, ROOM.plate / 2, cz]} args={[ROOM.width + s, ROOM.plate, s]} />
       <Timber

@@ -38,7 +38,7 @@ function FinishedPlaster({
   );
 }
 
-/** Solid gallery shell plus ghost teaching frames on the origin corner. */
+/** Finished far walls plus open timber teaching frames on the origin corner. */
 export function LearningRoom() {
   const midY = ROOM.height / 2;
   const skirting = 0.068;
