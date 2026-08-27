@@ -84,32 +84,49 @@ function wrapText(
   if (line) ctx.fillText(line, x, yy);
 }
 
-function PortraitCard({ portrait }: { portrait: Portrait }) {
+function PortraitCard({ portrait, lightsOn }: { portrait: Portrait; lightsOn: boolean }) {
   const map = usePortraitTexture(portrait);
   return (
     <group position={portrait.position} rotation={[0, Math.PI / 2, 0]}>
       <mesh position={[0, 0, -0.008]} castShadow receiveShadow>
         <boxGeometry args={[0.42, 0.56, 0.022]} />
-        <meshStandardMaterial color="#1c1917" roughness={0.42} metalness={0.08} />
+        <meshStandardMaterial
+          color={lightsOn ? '#1c1917' : '#141311'}
+          roughness={0.42}
+          metalness={0.08}
+          envMapIntensity={lightsOn ? 1 : 0.35}
+        />
       </mesh>
       <mesh position={[0, 0, 0.004]} receiveShadow>
         <boxGeometry args={[0.372, 0.512, 0.004]} />
-        <meshStandardMaterial color="#f5f0e8" roughness={0.7} />
+        <meshStandardMaterial
+          color={lightsOn ? '#f5f0e8' : '#c4bfb4'}
+          roughness={0.7}
+          envMapIntensity={lightsOn ? 1 : 0.28}
+        />
       </mesh>
       <mesh position={[0, 0, 0.008]}>
         <planeGeometry args={[0.348, 0.488]} />
-        <meshStandardMaterial map={map} roughness={0.62} />
+        <meshStandardMaterial
+          map={map}
+          color={lightsOn ? '#ffffff' : '#9a958c'}
+          roughness={lightsOn ? 0.52 : 0.78}
+          metalness={0}
+          envMapIntensity={lightsOn ? 1.15 : 0.22}
+          emissive={lightsOn ? '#f3e6c8' : '#000000'}
+          emissiveIntensity={lightsOn ? 0.16 : 0}
+        />
       </mesh>
     </group>
   );
 }
 
-/** Framed certificates under the wall lights — always on the plaster, not blank boards. */
-export function AboutPortraits({ lightsOn: _lightsOn }: { lightsOn: boolean }) {
+/** Framed certificates under the wall lights — they wash on with the lighting circuit. */
+export function AboutPortraits({ lightsOn }: { lightsOn: boolean }) {
   return (
     <group>
       {PORTRAITS.map((p) => (
-        <PortraitCard key={p.kicker} portrait={p} />
+        <PortraitCard key={p.kicker} portrait={p} lightsOn={lightsOn} />
       ))}
     </group>
   );

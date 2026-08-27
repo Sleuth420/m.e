@@ -170,8 +170,9 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     [FIXTURES.oven.x, HEIGHTS.ovenY, cz],
   ]);
 
-  const fridgeSheath = join(intoCavity(fridgeGland, HEIGHTS.splashGpoY), [
-    [0.38, HEIGHTS.splashGpoY, cz],
+  const fridgeSheath = join(intoCavity(fridgeGland, HEIGHTS.fridgeY), [
+    [0.38, HEIGHTS.fridgeY, cz],
+    [FIXTURES.fridgeGpo.x, HEIGHTS.fridgeY, cz],
     [FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY, cz],
   ]);
 
@@ -179,13 +180,14 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     { y: HEIGHTS.switch, z0: lightingGland[2], z1: sw.z },
     { y: HEIGHTS.light, z0: sw.z, z1: l2.z },
     { y: HEIGHTS.splashGpoY, z0: powerGland[2], z1: cz },
-    { y: HEIGHTS.splashGpoY, z0: fridgeGland[2], z1: cz },
+    { y: HEIGHTS.fridgeY, z0: fridgeGland[2], z1: cz },
     { y: HEIGHTS.inductionY, z0: inductionGland[2], z1: cz },
     { y: HEIGHTS.ovenY, z0: ovenGland[2], z1: cz },
   ];
 
   const kitchenRuns: KitchenRun[] = [
-    { y: HEIGHTS.splashGpoY, x0: 0.38, x1: FIXTURES.fridgeGpo.x },
+    { y: HEIGHTS.splashGpoY, x0: 0.38, x1: FIXTURES.gpoSingle.x },
+    { y: HEIGHTS.fridgeY, x0: 0.38, x1: FIXTURES.fridgeGpo.x },
     { y: HEIGHTS.inductionY, x0: 0.38, x1: FIXTURES.cookIsolator.x },
     { y: HEIGHTS.ovenY, x0: 0.38, x1: FIXTURES.oven.x },
     { y: 0.99, x0: FIXTURES.cookIsolator.x, x1: FIXTURES.cooktop.x },

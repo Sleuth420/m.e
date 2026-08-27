@@ -37,23 +37,38 @@ function Timber({
   );
 }
 
+const PLASTER_T = 0.01;
+
+function GhostPlasterMat() {
+  return (
+    <meshStandardMaterial
+      color="#f4f1ea"
+      roughness={0.9}
+      metalness={0}
+      transparent
+      opacity={ROOM.plasterOpacity}
+      depthWrite={false}
+      envMapIntensity={0.35}
+    />
+  );
+}
+
+/** 10 mm plasterboard sheet — see-through, but thick enough to read as lining. */
 function GhostPlaster({
   position,
   size,
+  wall,
 }: {
   position: [number, number, number];
   size: [number, number];
+  wall: 'board' | 'kitchen';
 }) {
+  const args: [number, number, number] =
+    wall === 'board' ? [PLASTER_T, size[1], size[0]] : [size[0], size[1], PLASTER_T];
   return (
-    <mesh position={position} rotation={[0, Math.PI / 2, 0]} renderOrder={1} raycast={skipRaycast}>
-      <planeGeometry args={size} />
-      <meshStandardMaterial
-        color="#f3f1ec"
-        roughness={0.94}
-        transparent
-        opacity={ROOM.plasterOpacity}
-        depthWrite={false}
-      />
+    <mesh position={position} renderOrder={1} raycast={skipRaycast}>
+      <boxGeometry args={args} />
+      <GhostPlasterMat />
     </mesh>
   );
 }
@@ -107,17 +122,24 @@ export function FramedWalls() {
       </mesh>
 
       <GhostPlaster
-        position={[0.012, ROOM.height / 2, BOARD_OPENING.z0 / 2]}
+        position={[PLASTER_T / 2, ROOM.height / 2, BOARD_OPENING.z0 / 2]}
         size={[Math.max(0.05, BOARD_OPENING.z0), ROOM.height]}
+        wall="board"
       />
       <GhostPlaster
-        position={[0.012, ROOM.height / 2, (BOARD_OPENING.z1 + ROOM.depth) / 2]}
+        position={[PLASTER_T / 2, ROOM.height / 2, (BOARD_OPENING.z1 + ROOM.depth) / 2]}
         size={[Math.max(0.05, ROOM.depth - BOARD_OPENING.z1), ROOM.height]}
+        wall="board"
       />
-      <GhostPlaster position={[0.012, BOARD_OPENING.y0 / 2, openZ]} size={[openW, Math.max(0.05, BOARD_OPENING.y0)]} />
       <GhostPlaster
-        position={[0.012, (BOARD_OPENING.y1 + ROOM.height) / 2, openZ]}
+        position={[PLASTER_T / 2, BOARD_OPENING.y0 / 2, openZ]}
+        size={[openW, Math.max(0.05, BOARD_OPENING.y0)]}
+        wall="board"
+      />
+      <GhostPlaster
+        position={[PLASTER_T / 2, (BOARD_OPENING.y1 + ROOM.height) / 2, openZ]}
         size={[openW, Math.max(0.05, ROOM.height - BOARD_OPENING.y1)]}
+        wall="board"
       />
 
       <Timber maps={hMaps} position={[cx, ROOM.plate / 2, ROOM.depth / 2]} args={[s, ROOM.plate, ROOM.depth + s]} />
@@ -178,16 +200,11 @@ export function FramedWalls() {
         />
       </mesh>
 
-      <mesh position={[ROOM.width / 2, ROOM.height / 2, 0.012]} renderOrder={1} raycast={skipRaycast}>
-        <planeGeometry args={[ROOM.width, ROOM.height]} />
-        <meshStandardMaterial
-          color="#f3f1ec"
-          roughness={0.94}
-          transparent
-          opacity={ROOM.plasterOpacity}
-          depthWrite={false}
-        />
-      </mesh>
+      <GhostPlaster
+        position={[ROOM.width / 2, ROOM.height / 2, PLASTER_T / 2]}
+        size={[ROOM.width, ROOM.height]}
+        wall="kitchen"
+      />
 
       <Timber maps={hMaps} position={[ROOM.width / 2, ROOM.plate / 2, cz]} args={[ROOM.width + s, ROOM.plate, s]} />
       <Timber

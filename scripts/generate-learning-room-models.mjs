@@ -47,6 +47,7 @@ const MAT = {
   plate: () => new MeshStandardMaterial({ color: '#f3f1eb', roughness: 0.46, metalness: 0.03, name: 'plate' }),
   bezel: () => new MeshStandardMaterial({ color: '#e6e3db', roughness: 0.5, metalness: 0.04, name: 'bezel' }),
   rocker: () => new MeshStandardMaterial({ color: '#faf8f3', roughness: 0.4, metalness: 0.03, name: 'rocker' }),
+  rockerRed: () => new MeshStandardMaterial({ color: '#9b1c1c', roughness: 0.38, metalness: 0.08, name: 'rocker' }),
   well: () => new MeshStandardMaterial({ color: '#1c1c1f', roughness: 0.58, metalness: 0.05, name: 'well' }),
   shutter: () => new MeshStandardMaterial({ color: '#111113', roughness: 0.42, metalness: 0.08, name: 'shutter' }),
   screw: () => new MeshStandardMaterial({ color: '#9aa0a6', roughness: 0.22, metalness: 0.88, name: 'screw' }),
@@ -150,10 +151,23 @@ function buildIsolator() {
   const root = new Group();
   root.name = 'isolator';
   add(root, layer(roundMesh(MAT.plate(), 0.077, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
-  add(root, layer(roundMesh(MAT.bezel(), 0.038, 0.06, 0.003, 0.003), 0, 0.004, 0.007, 0.003));
-  const rocker = buildDolly(0.028, 0.05, 0.009);
-  rocker.position.set(0, 0.004, 0.016);
+  add(root, layer(roundMesh(MAT.bezel(), 0.038, 0.06, 0.003, 0.003), 0, 0.008, 0.007, 0.003));
+  const rocker = new Group();
+  rocker.name = 'Rocker';
+  rocker.add(new Mesh(new RoundedBoxGeometry(0.028, 0.05, 0.009, 3, 0.002), MAT.rockerRed()));
+  rocker.position.set(0, 0.008, 0.016);
   root.add(rocker);
+  screwCap(root, 0, 0.052);
+  screwCap(root, 0, -0.052);
+  return root;
+}
+
+function buildGpoSingle() {
+  const root = new Group();
+  root.name = 'gpo-single';
+  add(root, layer(roundMesh(MAT.plate(), 0.077, 0.121, 0.007, 0.006, 4), 0, 0, 0, 0.007));
+  auSocket(root, 0, 0.016);
+  socketSwitch(root, 0, -0.036);
   screwCap(root, 0, 0.052);
   screwCap(root, 0, -0.052);
   return root;
@@ -207,6 +221,7 @@ async function exportGlb(root, filename) {
 
 mkdirSync(OUT, { recursive: true });
 await exportGlb(buildGpo(), 'gpo.glb');
+await exportGlb(buildGpoSingle(), 'gpo-single.glb');
 await exportGlb(buildSwitch(), 'switch.glb');
 await exportGlb(buildIsolator(), 'isolator.glb');
 await exportGlb(buildSconce(), 'sconce.glb');

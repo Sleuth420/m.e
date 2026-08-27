@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
-import { MathUtils, type Group } from 'three';
+import { CanvasTexture, MathUtils, SRGBColorSpace, type Group } from 'three';
 import { BOARD } from './circuit-data';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
@@ -78,13 +77,7 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
           </mesh>
         )}
 
-        {/* Warning label */}
-        {!open && (
-          <mesh position={[panelW / 2, 0.35, 0.022]} rotation={[0, 0, 0]}>
-            <boxGeometry args={[panelW * 0.72, 0.14, 0.004]} />
-            <meshStandardMaterial color="#eab308" roughness={0.55} metalness={0.05} />
-          </mesh>
-        )}
+        {!open && <DangerSticker x={panelW / 2} />}
 
         {/* Handle */}
         <mesh position={[panelW - 0.12, 0, 0.042]} material={materials.plasticDark}>
@@ -105,21 +98,42 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
           </mesh>
         ))}
 
-        {!open && (
-          <Html
-            center
-            position={[panelW / 2, -0.12, 0.08]}
-            style={{ pointerEvents: 'none', userSelect: 'none' }}
-          >
-            <div className="w-[11rem] select-none rounded-md bg-amber-200/95 px-2 py-1.5 text-center shadow-md ring-1 ring-zinc-800/30">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-900">
-                Danger — live parts
-              </p>
-              <p className="mt-0.5 text-[11px] font-semibold text-zinc-800">Tap cover to open</p>
-            </div>
-          </Html>
-        )}
       </group>
     </group>
+  );
+}
+
+/** Printed AS-style sticker on the door — not a click tooltip. */
+function DangerSticker({ x }: { x: number }) {
+  const map = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('2D context unavailable');
+    ctx.fillStyle = '#eab308';
+    ctx.fillRect(0, 0, 512, 256);
+    ctx.strokeStyle = '#18181b';
+    ctx.lineWidth = 14;
+    ctx.strokeRect(10, 10, 492, 236);
+    ctx.fillStyle = '#18181b';
+    ctx.textAlign = 'center';
+    ctx.font = '800 52px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('DANGER', 256, 88);
+    ctx.font = '700 36px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('LIVE PARTS', 256, 140);
+    ctx.font = '600 22px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('Authorised persons only', 256, 198);
+    const texture = new CanvasTexture(canvas);
+    texture.colorSpace = SRGBColorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+
+  return (
+    <mesh position={[x, 0.42, 0.038]} receiveShadow>
+      <boxGeometry args={[0.72, 0.28, 0.006]} />
+      <meshStandardMaterial map={map} roughness={0.48} metalness={0.04} />
+    </mesh>
   );
 }

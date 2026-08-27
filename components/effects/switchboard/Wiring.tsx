@@ -111,14 +111,16 @@ export function Wiring({
       ))}
 
       {/* One TPS per circuit — straight down through its gland-plate hole */}
-      {paths.outgoingTps.map((pts, i) => (
-        <group key={`tps-${i}`}>
-          <mesh position={pts[0]} material={materials.sheathGrey} castShadow={false}>
-            <sphereGeometry args={[0.024, 10, 10]} />
-          </mesh>
-          <PathWire points={pts} radius={0.022} material={materials.sheathGrey} segments={24} soft={false} />
-        </group>
-      ))}
+      {paths.outgoingTps.map((pts, i) =>
+        pts.length < 2 ? null : (
+          <group key={`tps-${i}`}>
+            <mesh position={pts[0]} material={materials.sheathGrey} castShadow={false}>
+              <sphereGeometry args={[0.024, 10, 10]} />
+            </mesh>
+            <PathWire points={pts} radius={0.022} material={materials.sheathGrey} segments={24} soft={false} />
+          </group>
+        ),
+      )}
     </group>
   );
 }

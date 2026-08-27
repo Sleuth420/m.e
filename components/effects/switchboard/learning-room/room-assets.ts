@@ -15,9 +15,12 @@ export const ROOM_GLB = {
   tap: '/models/learning-room/real/tap.glb?v=8',
   pot: '/models/learning-room/kitchen/pot.glb?v=1',
   roast: '/models/learning-room/kitchen/roast.glb?v=1',
-  /** White double GPO plate — used for every outlet (splash + under-bench). */
+  /** White double GPO plate — splash double only. */
   gpoDouble: '/models/learning-room/real/gpo-double.glb?v=8',
-  switch: '/models/learning-room/real/switch.glb?v=7',
+  /** Generated AU 1-gang GPO for singles (fridge / DW / splash). */
+  gpoSingle: '/models/learning-room/gpo-single.glb?v=1',
+  switch: '/models/learning-room/switch.glb?v=8',
+  isolator: '/models/learning-room/isolator.glb?v=8',
   /** Poly Haven CC0 pliers — player avatar https://polyhaven.com/a/pliers */
   pliers: '/models/learning-room/real/pliers/pliers.gltf?v=4',
 } as const;

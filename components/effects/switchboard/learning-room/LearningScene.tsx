@@ -18,6 +18,36 @@ type Props = {
   onExit: () => void;
 };
 
+function LedBatten({ position }: { position: [number, number, number] }) {
+  const len = 0.48;
+  return (
+    <group position={position}>
+      <mesh castShadow>
+        <boxGeometry args={[0.042, 0.024, len]} />
+        <meshStandardMaterial color="#b8bcc2" metalness={0.72} roughness={0.28} />
+      </mesh>
+      <mesh position={[0.012, -0.004, 0]}>
+        <boxGeometry args={[0.02, 0.014, len - 0.03]} />
+        <meshStandardMaterial
+          color="#fff6e0"
+          emissive="#fff1c2"
+          emissiveIntensity={1.15}
+          roughness={0.32}
+          metalness={0.02}
+        />
+      </mesh>
+      {([-1, 1] as const).map((side) => (
+        <mesh key={side} position={[0, 0, side * (len / 2 - 0.008)]} castShadow>
+          <boxGeometry args={[0.044, 0.026, 0.016]} />
+          <meshStandardMaterial color="#9aa0a6" metalness={0.55} roughness={0.35} />
+        </mesh>
+      ))}
+      <pointLight position={[0.22, -0.02, 0]} intensity={1.25} distance={2.6} decay={2} color="#fff1d4" />
+      <pointLight position={[0.08, -0.01, 0]} intensity={0.4} distance={1.2} decay={2} color="#f7f0e4" />
+    </group>
+  );
+}
+
 function GalleryLighting() {
   return (
     <>
@@ -102,34 +132,8 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           <Switchboard />
         </Suspense>
       </group>
-      {/* Always-on work light so the board stays readable with the lighting circuit off. */}
-      <pointLight
-        position={[BOARD_MOUNT.x + 0.58, BOARD_MOUNT.y + 0.08, BOARD_MOUNT.z]}
-        intensity={1.35}
-        distance={2.8}
-        decay={2}
-        color="#fff1d4"
-      />
-      <pointLight
-        position={[BOARD_MOUNT.x + 0.2, BOARD_MOUNT.y, BOARD_MOUNT.z]}
-        intensity={0.45}
-        distance={1.35}
-        decay={2}
-        color="#f7f0e4"
-      />
-      <mesh position={[BOARD_MOUNT.x + 0.05, BOARD_OPENING.y1 + 0.042, BOARD_MOUNT.z]} castShadow>
-        <boxGeometry args={[0.036, 0.016, 0.42]} />
-        <meshStandardMaterial color="#c5c9ce" metalness={0.62} roughness={0.26} />
-      </mesh>
-      <mesh position={[BOARD_MOUNT.x + 0.068, BOARD_OPENING.y1 + 0.038, BOARD_MOUNT.z]}>
-        <boxGeometry args={[0.018, 0.01, 0.39]} />
-        <meshStandardMaterial
-          color="#fff6e0"
-          emissive="#fff1c2"
-          emissiveIntensity={1.05}
-          roughness={0.28}
-        />
-      </mesh>
+      {/* LED batten over the board — always-on so the enclosure stays readable. */}
+      <LedBatten position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]} />
       <RoomWiring liveById={liveById} isolatorOn={isolatorOn} />
       <Suspense fallback={null}>
         <Fixtures

@@ -11,7 +11,7 @@ export const ROOM = {
   studSize: 0.09,
   plate: 0.09,
   nogginYs: [0.9, 1.8] as const,
-  plasterOpacity: 0.34,
+  plasterOpacity: 0.52,
 } as const;
 
 export const ROOM_LOADS = {
@@ -58,6 +58,8 @@ export const KITCHEN = {
 export const HEIGHTS = {
   gpo: 0.34,
   splashGpoY: KITCHEN.splashGpoY,
+  /** Fridge TPS sits above kitchen power so the two runs don't share a line. */
+  fridgeY: 1.34,
   /** Induction TPS sits a stud above kitchen power so the two runs don't occupy the same line. */
   inductionY: 1.22,
   ovenY: 0.46,

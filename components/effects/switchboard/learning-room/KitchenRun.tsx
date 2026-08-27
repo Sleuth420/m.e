@@ -1,6 +1,7 @@
 'use client';
 
 import { useFrame } from '@react-three/fiber';
+import { RoundedBox } from '@react-three/drei';
 import { useRef } from 'react';
 import { Box3, DoubleSide, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
@@ -63,7 +64,7 @@ const DW_H = KITCHEN.benchH - KITCHEN.kickH - RAIL_H;
 const FILL = 0.018;
 const PACK = 0.01;
 const HOUSING_H = KITCHEN.upperY + KITCHEN.upperH;
-const FRIDGE_W = 0.91;
+const FRIDGE_W = 1.09;
 const FRIDGE_H = 1.82;
 
 function BenchSlab({
@@ -143,6 +144,56 @@ function TiledSplash({ x, w, h = 0.45 }: { x: number; w: number; h?: number }) {
         envMapIntensity={0.85}
       />
     </mesh>
+  );
+}
+
+function SplashUpstand({ x0, x1 }: { x0: number; x1: number }) {
+  const w = x1 - x0;
+  const maps = useRepeatingPbr(POLYHAVEN.marbleSlab, [Math.max(1.2, w / 2.1), 0.12]);
+  return (
+    <group>
+      <mesh position={[(x0 + x1) / 2, KITCHEN.benchH + BENCH_T + 0.012, 0.022]} castShadow receiveShadow>
+        <boxGeometry args={[w, 0.024, 0.018]} />
+        <meshStandardMaterial
+          map={maps.map}
+          normalMap={maps.normalMap}
+          roughnessMap={maps.roughnessMap}
+          roughness={0.38}
+          metalness={0.06}
+          envMapIntensity={1.05}
+        />
+      </mesh>
+      <mesh position={[(x0 + x1) / 2, KITCHEN.benchH + BENCH_T + 0.001, 0.032]}>
+        <boxGeometry args={[w, 0.003, 0.004]} />
+        <meshStandardMaterial color="#2c2c2e" roughness={0.72} metalness={0.04} />
+      </mesh>
+    </group>
+  );
+}
+
+function UnderCabinetLed({ x0, x1, live }: { x0: number; x1: number; live: boolean }) {
+  const w = x1 - x0;
+  if (w < 0.12) return null;
+  const y = KITCHEN.upperY - 0.007;
+  const z = KITCHEN.upperDepth - 0.05;
+  const cx = (x0 + x1) / 2;
+  return (
+    <group>
+      <mesh position={[cx, y, z]} castShadow>
+        <boxGeometry args={[w - 0.06, 0.012, 0.024]} />
+        <meshStandardMaterial color="#c5c9ce" metalness={0.7} roughness={0.28} />
+      </mesh>
+      <mesh position={[cx, y - 0.007, z]}>
+        <boxGeometry args={[w - 0.08, 0.004, 0.016]} />
+        <meshStandardMaterial
+          color="#fff6e0"
+          emissive="#fff1c2"
+          emissiveIntensity={live ? 1.1 : 0.08}
+          roughness={0.3}
+        />
+      </mesh>
+      {live && <pointLight position={[cx, y - 0.05, z + 0.1]} intensity={0.5} distance={1.7} color="#fff4dc" />}
+    </group>
   );
 }
 
@@ -246,16 +297,20 @@ function WallGpo({
   position,
   onToggle,
   live = false,
+  gang = 'double',
 }: {
   position: [number, number, number];
   onToggle?: () => void;
   live?: boolean;
+  gang?: 'single' | 'double';
 }) {
+  const url = gang === 'single' ? ROOM_GLB.gpoSingle : ROOM_GLB.gpoDouble;
+  const maxSize: [number, number, number] = gang === 'single' ? [0.08, 0.122, 0.03] : [0.155, 0.1, 0.032];
   return (
     <group position={position}>
       <FittedGltf
-        url={ROOM_GLB.gpoDouble}
-        maxSize={[0.155, 0.1, 0.032]}
+        url={url}
+        maxSize={maxSize}
         position={[0, 0, 0.012]}
         rotation={[0, 0, 0]}
         align="center"
@@ -310,9 +365,9 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
       />
       <group ref={steam} visible={boiling}>
         {Array.from({ length: 5 }, (_, i) => (
-          <mesh key={i} position={[0, 0.08, 0]}>
-            <sphereGeometry args={[0.014, 8, 8]} />
-            <meshStandardMaterial color="#eef2f6" transparent opacity={0.22} roughness={1} depthWrite={false} />
+          <mesh key={i} position={[0, 0.08, 0]} scale={[0.65, 1.7, 0.65]}>
+            <sphereGeometry args={[0.012, 8, 8]} />
+            <meshStandardMaterial color="#eef2f6" transparent opacity={0.2} roughness={1} depthWrite={false} />
           </mesh>
         ))}
       </group>
@@ -496,6 +551,9 @@ export function KitchenRun({
         cutZ1={KITCHEN.benchDepth}
       />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
+      <SplashUpstand x0={KITCHEN.startX} x1={joineryEnd} />
+      <UnderCabinetLed x0={sink.x} x1={cook.x} live={powerLive} />
+      <UnderCabinetLed x0={cabL.x} x1={fridge.x} live={powerLive} />
 
       <JoineryBay
         x={sink.x}
@@ -710,14 +768,12 @@ export function KitchenRun({
       {fridgeOpen && fridgeLive && <FridgeInterior position={[fridgeMid, 1.05, 0.52]} />}
       {toasterPop && (
         <>
-          <mesh position={[toasterX - 0.038, benchY + 0.24, 0.34]} castShadow>
-            <boxGeometry args={[0.062, 0.08, 0.016]} />
+          <RoundedBox args={[0.062, 0.08, 0.014]} radius={0.004} smoothness={3} position={[toasterX - 0.038, benchY + 0.24, 0.34]} castShadow>
             <meshStandardMaterial color="#c4a06a" roughness={0.88} metalness={0.02} />
-          </mesh>
-          <mesh position={[toasterX + 0.038, benchY + 0.24, 0.34]} castShadow>
-            <boxGeometry args={[0.062, 0.08, 0.016]} />
+          </RoundedBox>
+          <RoundedBox args={[0.062, 0.08, 0.014]} radius={0.004} smoothness={3} position={[toasterX + 0.038, benchY + 0.24, 0.34]} castShadow>
             <meshStandardMaterial color="#b08958" roughness={0.88} metalness={0.02} />
-          </mesh>
+          </RoundedBox>
         </>
       )}
 
@@ -726,9 +782,9 @@ export function KitchenRun({
         live={powerLive}
         onToggle={powerLive ? onToggleToaster : undefined}
       />
-      <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} />
-      <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} />
-      <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} />
+      <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} gang="single" />
+      <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} gang="single" />
+      <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} gang="single" />
       <CookIsolator
         position={[FIXTURES.cookIsolator.x, splashY, splashZ]}
         on={isolatorOn}
@@ -764,6 +820,7 @@ loadKeptGltf(ROOM_GLB.toaster);
 loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
+loadKeptGltf(ROOM_GLB.gpoSingle);
 loadKeptGltf(ROOM_GLB.dishwasher);
 loadKeptGltf(ROOM_GLB.hood);
 loadKeptGltf(ROOM_GLB.pot);

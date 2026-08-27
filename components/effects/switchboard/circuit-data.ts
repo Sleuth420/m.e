@@ -69,6 +69,9 @@ export const CIRCUITS: CircuitPole[] = [
   { id: 'ac', label: 'PROTECTED AIR CON', rating: 'C20', index: 11 },
 ];
 
+/** Circuits that actually leave this board into the room. Spare poles stay capped. */
+export const ROOM_CIRCUIT_IDS = new Set(['hot-plates', 'wall-oven', 'power-1', 'light-1', 'fridge']);
+
 export function modulePitch(): number {
   return BOARD.rcboWidth + BOARD.moduleGap;
 }
