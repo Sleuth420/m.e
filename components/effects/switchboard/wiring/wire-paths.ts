@@ -189,13 +189,12 @@ export function buildWirePaths(): WirePaths {
       join,
     ]);
 
-    // Straight column: join → THIS gland hole → outside (no lateral drift)
+    // Through the floor knockout — room wiring picks up in the cavity.
     outgoingTps.push([
       [x, join[1] - 0.01, gz],
       [x, exit[1] + 0.16, gz],
       exit,
-      [x, exit[1] - 0.2, gz],
-      [x, exit[1] - 0.4, gz],
+      [x, exit[1] - 0.04, gz],
     ]);
   }
 

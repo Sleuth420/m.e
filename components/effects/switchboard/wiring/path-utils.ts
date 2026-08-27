@@ -30,3 +30,27 @@ export function withSoftMids(points: Vec3[]): Vec3[] {
   }
   return out;
 }
+
+/** Insert mid-points so long horizontal TPS sags between studs. */
+export function withSag(points: Vec3[], sag = 0.011): Vec3[] {
+  if (points.length < 2) return points;
+  const out: Vec3[] = [points[0]!];
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = points[i]!;
+    const b = points[i + 1]!;
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const dz = b[2] - a[2];
+    const horiz = Math.hypot(dx, dz);
+    if (horiz > 0.32 && Math.abs(dy) < 0.07) {
+      const n = Math.max(1, Math.round(horiz / 0.42));
+      for (let k = 1; k <= n; k++) {
+        const t = k / (n + 1);
+        const drop = sag * Math.sin(t * Math.PI) * Math.min(1, horiz / 0.85);
+        out.push([a[0] + dx * t, a[1] + dy * t - drop, a[2] + dz * t]);
+      }
+    }
+    out.push(b);
+  }
+  return out;
+}

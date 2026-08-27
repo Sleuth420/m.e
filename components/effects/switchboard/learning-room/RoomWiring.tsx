@@ -4,7 +4,17 @@ import { useMemo } from 'react';
 import { MeshStandardMaterial } from 'three';
 import type { Vec3 } from '../circuit-data';
 import { PathWire } from '../wiring/PathWire';
-import { BOARD_OPENING, FIXTURES, HEIGHTS, KITCHEN, ROOM, ROOM_LOADS, boardWallStudZs, fridgeWallStudXs, worldGland } from './room-layout';
+import {
+  BOARD_OPENING,
+  FIXTURES,
+  HEIGHTS,
+  KITCHEN,
+  ROOM,
+  ROOM_LOADS,
+  boardWallStudZs,
+  fridgeWallStudXs,
+  worldGland,
+} from './room-layout';
 
 function join(...segs: Vec3[][]): Vec3[] {
   const out: Vec3[] = [];
@@ -22,47 +32,56 @@ type Props = {
   isolatorOn: boolean;
 };
 
-function CableBores() {
+type BoardRun = { y: number; z0: number; z1: number };
+type KitchenRun = { y: number; x0: number; x1: number };
+
+function between(a: number, b: number, p: number, pad = 0.03) {
+  const lo = Math.min(a, b) + pad;
+  const hi = Math.max(a, b) - pad;
+  return p > lo && p < hi;
+}
+
+function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchenRuns: KitchenRun[] }) {
   const s = ROOM.studSize;
   const cx = HEIGHTS.cavityX;
   const cz = HEIGHTS.cavityZ;
-  const hole = 0.013;
-  const boardYs = [HEIGHTS.light, HEIGHTS.switch, HEIGHTS.splashGpoY, HEIGHTS.inductionY, HEIGHTS.ovenY];
-  const kitchenYs = [HEIGHTS.splashGpoY, HEIGHTS.inductionY, HEIGHTS.ovenY, HEIGHTS.gpo];
+  const hole = 0.012;
   return (
     <group>
-      {boardWallStudZs().map((z) =>
-        boardYs.map((y) => {
-          if (z > BOARD_OPENING.z0 - 0.06 && z < BOARD_OPENING.z1 + 0.06 && y > BOARD_OPENING.y0 && y < BOARD_OPENING.y1) {
-            return null;
-          }
+      {boardWallStudZs().map((z) => {
+        if (z > BOARD_OPENING.z0 - 0.04 && z < BOARD_OPENING.z1 + 0.04) return null;
+        return boardRuns.map((run) => {
+          if (!between(run.z0, run.z1, z)) return null;
           return (
-            <mesh key={`bz-${z}-${y}`} position={[cx, y, z]} rotation={[Math.PI / 2, 0, 0]}>
+            <mesh key={`bz-${z}-${run.y}-${run.z0}`} position={[cx, run.y, z]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[hole, hole, s + 0.01, 8]} />
+              <meshStandardMaterial color="#2a261c" roughness={1} />
+            </mesh>
+          );
+        });
+      })}
+      {fridgeWallStudXs().map((x) =>
+        kitchenRuns.map((run) => {
+          if (!between(run.x0, run.x1, x)) return null;
+          return (
+            <mesh key={`fx-${x}-${run.y}-${run.x0}`} position={[x, run.y, cz]} rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[hole, hole, s + 0.01, 8]} />
               <meshStandardMaterial color="#2a261c" roughness={1} />
             </mesh>
           );
         }),
       )}
-      {fridgeWallStudXs()
-        .filter((x) => x <= KITCHEN.endX + 0.4)
-        .map((x) =>
-          kitchenYs.map((y) => (
-            <mesh key={`fx-${x}-${y}`} position={[x, y, cz]} rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[hole, hole, s + 0.01, 8]} />
-              <meshStandardMaterial color="#2a261c" roughness={1} />
-            </mesh>
-          )),
-        )}
     </group>
   );
 }
+
+const OVAL = 0.55;
 
 /** In-wall TPS: lighting on the board wall; kitchen circuits on z=0 at staggered heights. */
 export function RoomWiring({ liveById, isolatorOn }: Props) {
   const sheath = useMemo(
     () => new MeshStandardMaterial({ color: '#eceae4', roughness: 0.62, metalness: 0.04 }),
-    []
+    [],
   );
 
   const cx = HEIGHTS.cavityX;
@@ -85,10 +104,19 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
   const sw = FIXTURES.lightSwitch;
   const sconceFaceX = l1.x + 0.028;
 
+  /** Leave the knockout and go straight into the stud bay — no dangling room stubs. */
+  const intoCavity = (gland: Vec3, y: number): Vec3[] => [
+    gland,
+    [cx, gland[1] - 0.006, gland[2]],
+    [cx, y, gland[2]],
+    [cx, y, cz],
+    [0.38, y, cz],
+  ];
+
   const lightingSheath: Vec3[] = [
     lightingGland,
-    [lightingGland[0], lightingGland[1] - 0.08, lightingGland[2]],
-    [cx, lightingGland[1] - 0.1, lightingGland[2]],
+    [cx, lightingGland[1] - 0.006, lightingGland[2]],
+    [cx, HEIGHTS.switch, lightingGland[2]],
     [cx, HEIGHTS.switch, sw.z],
     [cx, HEIGHTS.light, sw.z],
     [cx, HEIGHTS.light, l1.z],
@@ -106,16 +134,7 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     [l2.x, HEIGHTS.light, l2.z],
   ];
 
-  const toKitchen = (gland: Vec3, y: number): Vec3[] => [
-    gland,
-    [gland[0], gland[1] - 0.04, gland[2]],
-    [cx, gland[1] - 0.05, gland[2]],
-    [cx, y, gland[2]],
-    [cx, y, cz],
-    [0.38, y, cz],
-  ];
-
-  const powerSheath = join(toKitchen(powerGland, HEIGHTS.splashGpoY), [
+  const powerSheath = join(intoCavity(powerGland, HEIGHTS.splashGpoY), [
     [0.38, HEIGHTS.splashGpoY, cz],
     [FIXTURES.rangehood.x, HEIGHTS.splashGpoY, cz],
     [FIXTURES.gpoDouble.x, HEIGHTS.splashGpoY, cz],
@@ -133,7 +152,7 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     [FIXTURES.dwGpo.x, HEIGHTS.gpo, cz],
   ];
 
-  const inductionToIsolator = join(toKitchen(inductionGland, HEIGHTS.inductionY), [
+  const inductionToIsolator = join(intoCavity(inductionGland, HEIGHTS.inductionY), [
     [0.38, HEIGHTS.inductionY, cz],
     [FIXTURES.cookIsolator.x, HEIGHTS.inductionY, cz],
   ]);
@@ -146,30 +165,47 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     [FIXTURES.cooktop.x, KITCHEN.benchH - 0.02, cz],
   ];
 
-  const ovenSheath = join(toKitchen(ovenGland, HEIGHTS.ovenY), [
+  const ovenSheath = join(intoCavity(ovenGland, HEIGHTS.ovenY), [
     [0.38, HEIGHTS.ovenY, cz],
     [FIXTURES.oven.x, HEIGHTS.ovenY, cz],
   ]);
 
-  const fridgeSheath = join(toKitchen(fridgeGland, HEIGHTS.splashGpoY), [
+  const fridgeSheath = join(intoCavity(fridgeGland, HEIGHTS.splashGpoY), [
     [0.38, HEIGHTS.splashGpoY, cz],
     [FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY, cz],
   ]);
 
+  const boardRuns: BoardRun[] = [
+    { y: HEIGHTS.switch, z0: lightingGland[2], z1: sw.z },
+    { y: HEIGHTS.light, z0: sw.z, z1: l2.z },
+    { y: HEIGHTS.splashGpoY, z0: powerGland[2], z1: cz },
+    { y: HEIGHTS.splashGpoY, z0: fridgeGland[2], z1: cz },
+    { y: HEIGHTS.inductionY, z0: inductionGland[2], z1: cz },
+    { y: HEIGHTS.ovenY, z0: ovenGland[2], z1: cz },
+  ];
+
+  const kitchenRuns: KitchenRun[] = [
+    { y: HEIGHTS.splashGpoY, x0: 0.38, x1: FIXTURES.fridgeGpo.x },
+    { y: HEIGHTS.inductionY, x0: 0.38, x1: FIXTURES.cookIsolator.x },
+    { y: HEIGHTS.ovenY, x0: 0.38, x1: FIXTURES.oven.x },
+    { y: 0.99, x0: FIXTURES.cookIsolator.x, x1: FIXTURES.cooktop.x },
+  ];
+
+  const tps = { sag: true, oval: OVAL, soft: false as const };
+
   return (
     <group>
-      <PathWire points={lightingSheath} radius={0.0085} material={sheath} live={lightingLive} segments={28} soft={false} />
-      <PathWire points={light1Stub} radius={0.0075} material={sheath} live={lightingLive} segments={8} soft={false} />
-      <PathWire points={light2Stub} radius={0.0075} material={sheath} live={lightingLive} segments={8} soft={false} />
-      <PathWire points={powerSheath} radius={0.01} material={sheath} live={powerLive} segments={36} soft={false} />
-      <PathWire points={hoodTee} radius={0.009} material={sheath} live={powerLive} segments={10} soft={false} />
-      <PathWire points={dwDrop} radius={0.009} material={sheath} live={powerLive} segments={10} soft={false} />
-      <PathWire points={inductionToIsolator} radius={0.011} material={sheath} live={inductionLive} segments={28} soft={false} />
-      <PathWire points={isolatorFeed} radius={0.011} material={sheath} live={hobLive} segments={16} soft={false} />
-      <PathWire points={ovenSheath} radius={0.01} material={sheath} live={ovenLive} segments={28} soft={false} />
-      <PathWire points={fridgeSheath} radius={0.01} material={sheath} live={fridgeLive} segments={32} soft={false} />
+      <PathWire points={lightingSheath} radius={0.0085} material={sheath} live={lightingLive} segments={48} {...tps} />
+      <PathWire points={light1Stub} radius={0.0075} material={sheath} live={lightingLive} segments={10} oval={OVAL} soft={false} />
+      <PathWire points={light2Stub} radius={0.0075} material={sheath} live={lightingLive} segments={10} oval={OVAL} soft={false} />
+      <PathWire points={powerSheath} radius={0.01} material={sheath} live={powerLive} segments={56} {...tps} />
+      <PathWire points={hoodTee} radius={0.009} material={sheath} live={powerLive} segments={12} oval={OVAL} soft={false} />
+      <PathWire points={dwDrop} radius={0.009} material={sheath} live={powerLive} segments={12} oval={OVAL} soft={false} />
+      <PathWire points={inductionToIsolator} radius={0.011} material={sheath} live={inductionLive} segments={48} {...tps} />
+      <PathWire points={isolatorFeed} radius={0.011} material={sheath} live={hobLive} segments={20} oval={OVAL} sag soft={false} />
+      <PathWire points={ovenSheath} radius={0.01} material={sheath} live={ovenLive} segments={48} {...tps} />
+      <PathWire points={fridgeSheath} radius={0.01} material={sheath} live={fridgeLive} segments={52} {...tps} />
 
-      {/* Sheath stays in the cavity and stops behind the plate — no live cores on the plaster. */}
       <PathWire
         points={[
           [cx, HEIGHTS.switch, sw.z],
@@ -179,9 +215,10 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
         material={sheath}
         live={lightingLive}
         segments={6}
+        oval={OVAL}
         soft={false}
       />
-      <CableBores />
+      <CableBores boardRuns={boardRuns} kitchenRuns={kitchenRuns} />
     </group>
   );
 }
