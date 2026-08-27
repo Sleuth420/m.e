@@ -6,7 +6,7 @@ import { useSizedPbr, type PbrMaps } from './room-textures';
 
 /** H2 MGP radiata — straw construction timber, not furniture stain. */
 const PINE = '#eee4b4';
-const SARKING = '#3a3a40';
+const SARKING = '#585860';
 const NOGGIN_YS = ROOM.nogginYs;
 
 function skipRaycast() {}
@@ -37,18 +37,18 @@ function Timber({
   );
 }
 
-const PLASTER_T = 0.01;
+const PLASTER_T = 0.012;
 
 function GhostPlasterMat() {
   return (
     <meshStandardMaterial
-      color="#f4f1ea"
-      roughness={0.9}
+      color="#fff8ee"
+      roughness={0.86}
       metalness={0}
       transparent
       opacity={ROOM.plasterOpacity}
       depthWrite={false}
-      envMapIntensity={0.35}
+      envMapIntensity={0.55}
     />
   );
 }
