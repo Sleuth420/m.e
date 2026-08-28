@@ -227,6 +227,35 @@ function buildIsolator() {
   return root;
 }
 
+/** C2000 rotary dimmer — same plate family as the rocker switch. */
+function buildDimmer() {
+  const root = new Group();
+  root.name = 'dimmer';
+  gangPlate(root, [{ w: 0.038, h: 0.038, r: 0.017, y: 0.008 }]);
+  const well = cylMesh(MAT.well(), 0.017, 0.0028, 28);
+  well.rotation.x = Math.PI / 2;
+  well.position.set(0, 0.008, PLATE_D * 0.55);
+  add(root, well);
+  const knob = new Group();
+  knob.name = 'Knob';
+  const body = cylMesh(MAT.rocker(), 0.0135, 0.011, 28);
+  body.rotation.x = Math.PI / 2;
+  knob.add(body);
+  const cap = cylMesh(MAT.rocker(), 0.011, 0.004, 28);
+  cap.rotation.x = Math.PI / 2;
+  cap.position.set(0, 0, 0.005);
+  knob.add(cap);
+  const tick = boxMesh(MAT.well(), 0.0024, 0.0075, 0.0012);
+  tick.position.set(0, 0.006, 0.007);
+  knob.add(tick);
+  knob.position.set(0, 0.008, PLATE_D + 0.007);
+  root.add(knob);
+  const pad = roundMesh(MAT.plate(), 0.042, 0.012, 0.0012, 0.002, 4);
+  pad.position.set(0, -0.044, PLATE_D + 0.0004);
+  add(root, pad);
+  return root;
+}
+
 function buildGpoSingle() {
   const root = new Group();
   root.name = 'gpo-single';
@@ -257,4 +286,5 @@ mkdirSync(OUT, { recursive: true });
 await exportGlb(buildGpoSingle(), 'gpo-single.glb');
 await exportGlb(buildSwitch(), 'switch.glb');
 await exportGlb(buildIsolator(), 'isolator.glb');
+await exportGlb(buildDimmer(), 'dimmer.glb');
 console.log('done');

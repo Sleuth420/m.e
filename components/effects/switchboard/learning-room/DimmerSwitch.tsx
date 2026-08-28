@@ -10,12 +10,10 @@ import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 
 type Props = {
   position: [number, number, number];
-  /** Board wall faces +X (Ry 90). Kitchen splash faces +Z. Lounge wall faces -Z. */
   wall: 'board' | 'kitchen' | 'lounge';
-  on: boolean;
-  onToggle: () => void;
-  /** Cooktop isolator uses a red rocker. */
-  isolator?: boolean;
+  level: number;
+  live: boolean;
+  onCycle: () => void;
 };
 
 function cloneFitted(source: Object3D): Group {
@@ -34,28 +32,7 @@ function cloneFitted(source: Object3D): Group {
   return g;
 }
 
-function paintRocker(root: Object3D, color: string) {
-  let rocker: Object3D | null = null;
-  root.traverse((obj) => {
-    if (obj.name === 'Rocker') rocker = obj;
-  });
-  if (!rocker) return;
-  (rocker as Object3D).traverse((obj) => {
-    const mesh = obj as Mesh;
-    if (!mesh.isMesh) return;
-    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    for (const mat of mats) {
-      const m = mat as MeshStandardMaterial;
-      if (!m?.color) continue;
-      m.color.set(color);
-      m.roughness = 0.52;
-      m.metalness = 0.06;
-      m.needsUpdate = true;
-    }
-  });
-}
-
-function useCooktopLabel() {
+function useDimLabel() {
   return useMemo(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 256;
@@ -64,11 +41,11 @@ function useCooktopLabel() {
     if (!ctx) throw new Error('2D context unavailable');
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, 256, 64);
-    ctx.fillStyle = '#9b1c1c';
+    ctx.fillStyle = '#3f3f46';
     ctx.font = '700 26px "Segoe UI", system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('COOKTOP', 128, 32);
+    ctx.fillText('DIM', 128, 32);
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
     texture.needsUpdate = true;
@@ -76,47 +53,54 @@ function useCooktopLabel() {
   }, []);
 }
 
-/** AU 76×116 C2000-ish plate — generated fitting, not a toy stack of boxes. */
-export function WallSwitch({ position, wall, on, onToggle, isolator = false }: Props) {
-  const { scene } = useKeptGltf(isolator ? ROOM_GLB.isolator : ROOM_GLB.switch);
+const KNOB_OFF = 0.55;
+const KNOB_ON = -1.85;
+
+/** C2000 rotary dimmer — click/Use cycles off, 35%, 70%, 100%. */
+export function DimmerSwitch({ position, wall, level, live, onCycle }: Props) {
+  const { scene } = useKeptGltf(ROOM_GLB.dimmer);
   const typeI = useTypeIPlateMaterial();
-  const label = useCooktopLabel();
+  const label = useDimLabel();
   const root = useMemo(() => {
     const g = cloneFitted(scene);
     paintPlatesFromTypeI(g, typeI);
-    if (isolator) paintRocker(g, '#9b1c1c');
     return g;
-  }, [scene, isolator, typeI]);
-  const rocker = useRef<Object3D>(null);
+  }, [scene, typeI]);
+  const knob = useRef<Object3D>(null);
 
   useLayoutEffect(() => {
     let found: Object3D | null = null;
     root.traverse((obj) => {
-      if (obj.name === 'Rocker') found = obj;
+      if (obj.name === 'Knob') found = obj;
     });
-    rocker.current = found;
+    knob.current = found;
   }, [root]);
 
   useFrame((_, delta) => {
-    const r = rocker.current;
-    if (!r) return;
-    r.rotation.x = MathUtils.damp(r.rotation.x, on ? -0.28 : 0.28, 14, delta);
+    const k = knob.current;
+    if (!k) return;
+    const t = MathUtils.clamp(level, 0, 1);
+    k.rotation.z = MathUtils.damp(k.rotation.z, MathUtils.lerp(KNOB_OFF, KNOB_ON, t), 14, delta);
   });
+
+  const rot: [number, number, number] =
+    wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0];
 
   return (
     <group
       position={position}
-      rotation={wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0]}
+      rotation={rot}
       onPointerOver={(e) => onInteractiveEnter(e)}
       onPointerOut={() => onInteractiveLeave()}
-      onClick={(e) => onInteractiveClick(e, onToggle)}
+      onClick={(e) => onInteractiveClick(e, onCycle)}
     >
       <primitive object={root} />
-      {isolator && (
-        <mesh position={[0, -0.046, 0.0102]} receiveShadow>
-          <planeGeometry args={[0.048, 0.011]} />
-          <meshStandardMaterial map={label} roughness={0.55} metalness={0.02} />
-        </mesh>
+      <mesh position={[0, -0.044, 0.0102]} receiveShadow>
+        <planeGeometry args={[0.042, 0.011]} />
+        <meshStandardMaterial map={label} roughness={0.55} metalness={0.02} />
+      </mesh>
+      {live && level > 0.04 && (
+        <pointLight position={[0, 0.01, 0.04]} intensity={0.08 + level * 0.12} distance={0.35} color="#fde68a" />
       )}
       <mesh>
         <boxGeometry args={[0.22, 0.28, 0.16]} />
@@ -126,5 +110,4 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
   );
 }
 
-loadKeptGltf(ROOM_GLB.switch);
-loadKeptGltf(ROOM_GLB.isolator);
+loadKeptGltf(ROOM_GLB.dimmer);

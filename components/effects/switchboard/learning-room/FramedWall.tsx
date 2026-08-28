@@ -280,6 +280,44 @@ export function FramedWalls() {
           />
         )),
       )}
+
+      <Sarking
+        position={[ROOM.width / 2, ROOM.height / 2, ROOM.depth + s + 0.014]}
+        rotation={[0, Math.PI, 0]}
+        size={[ROOM.width + 0.2, ROOM.height]}
+      />
+      <Timber
+        maps={hMaps}
+        position={[ROOM.width / 2, ROOM.plate / 2, HEIGHTS.loungeCavityZ]}
+        args={[ROOM.width + s, ROOM.plate, s]}
+      />
+      <Timber
+        maps={hMaps}
+        position={[ROOM.width / 2, ROOM.height - ROOM.plate / 2, HEIGHTS.loungeCavityZ]}
+        args={[ROOM.width + s, ROOM.plate, s]}
+      />
+      <Timber
+        maps={hMaps}
+        position={[ROOM.width / 2, ROOM.height - ROOM.plate - ROOM.plate / 2, HEIGHTS.loungeCavityZ]}
+        args={[ROOM.width + s, ROOM.plate, s]}
+      />
+      {fridgeXs.map((x) => (
+        <Timber key={`lz-${x}`} maps={vMaps} position={[x, studY, HEIGHTS.loungeCavityZ]} args={[s, studH, s]} />
+      ))}
+      {NOGGIN_YS.map((y) =>
+        fridgeXs.slice(0, -1).map((x, i) => (
+          <Timber
+            key={`ln-${y}-${x}`}
+            maps={nMaps}
+            position={[
+              x + ROOM.studSpacing / 2,
+              nogginY(y, i + 1),
+              HEIGHTS.loungeCavityZ - s / 2 + NOGGIN.depth / 2,
+            ]}
+            args={[ROOM.studSpacing - s, NOGGIN.h, NOGGIN.depth]}
+          />
+        )),
+      )}
     </group>
   );
 }

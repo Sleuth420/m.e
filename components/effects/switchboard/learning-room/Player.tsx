@@ -12,8 +12,8 @@ import {
   ROOM,
   atBoard,
   nearBoard,
-  nearestKitchenInteract,
-  type KitchenInteractId,
+  nearestRoomInteract,
+  type RoomInteractId,
   resolvePlayerPosition,
 } from './room-layout';
 import { useGameInput } from './GameInputContext';
@@ -41,8 +41,8 @@ export type PlayerPose = {
 type Props = {
   enabled: boolean;
   onExit: () => void;
-  onInteract: (id: KitchenInteractId) => void;
-  openById: Partial<Record<KitchenInteractId, boolean>>;
+  onInteract: (id: RoomInteractId) => void;
+  openById: Partial<Record<RoomInteractId, boolean>>;
   fridgeOpen: boolean;
   toasterPop: boolean;
   lightSwitchOn: boolean;
@@ -51,6 +51,10 @@ type Props = {
   sinkOn: boolean;
   boiling: boolean;
   hobLive: boolean;
+  loungePowerLive: boolean;
+  loungeLightLive: boolean;
+  loungeDimmer: number;
+  tvOn: boolean;
 };
 
 type Zoom = {
@@ -85,6 +89,10 @@ export function Player({
   sinkOn,
   boiling,
   hobLive,
+  loungePowerLive,
+  loungeLightLive,
+  loungeDimmer,
+  tvOn,
 }: Props) {
   const { gl } = useThree();
   const { coverOpen, requestCoverOpen } = useSwitchboard();
@@ -174,7 +182,7 @@ export function Player({
           requestCoverOpen();
           return;
         }
-        const hit = nearestKitchenInteract(x, z, [], zoom.current.hold || zoom.current.amount > 0.25);
+        const hit = nearestRoomInteract(x, z, [], zoom.current.hold || zoom.current.amount > 0.25);
         if (hit) onInteract(hit.id);
       }
     };
@@ -269,23 +277,21 @@ export function Player({
 
       if (consumeInteract()) {
         const { x, z } = pose.current;
-        const hit = nearestKitchenInteract(
+        const hit = nearestRoomInteract(
           x,
           z,
           [],
           zoom.current.hold || zoom.current.amount > 0.25 || m.inspect
         );
-        if (hit?.id === 'switch') {
-          onInteract('switch');
+        if (hit) {
+          onInteract(hit.id);
         } else if (nearBoard(x, z) && !coverOpen) {
           requestCoverOpen();
-        } else if (hit) {
-          onInteract(hit.id);
         }
       }
 
       let nextPrompt: string | null = null;
-      const hit = nearestKitchenInteract(
+      const hit = nearestRoomInteract(
         p.x,
         p.z,
         [],
@@ -304,6 +310,18 @@ export function Player({
           nextPrompt = !hobLive ? 'Turn the isolator on' : boiling ? hit.promptClose : hit.promptOpen;
         } else if (hit.id === 'sink') {
           nextPrompt = sinkOn ? hit.promptClose : hit.promptOpen;
+        } else if (hit.id === 'loungeDimmerA' || hit.id === 'loungeDimmerB') {
+          nextPrompt = !loungeLightLive
+            ? 'Lounge lighting is off'
+            : loungeDimmer < 0.12
+              ? 'F · Dim lounge lights'
+              : loungeDimmer < 0.52
+                ? 'F · Dim 70%'
+                : loungeDimmer < 0.88
+                  ? 'F · Dim 100%'
+                  : 'F · Lounge lights off';
+        } else if (hit.id === 'tv' || hit.id === 'tvGpo') {
+          nextPrompt = !loungePowerLive ? 'Lounge power is off' : tvOn ? hit.promptClose : hit.promptOpen;
         } else {
           const isOpen =
             hit.id === 'fridge'
@@ -318,7 +336,7 @@ export function Player({
           ? 'Tap a breaker rocker · TEST trips the RCD'
           : 'Tap the cover or Use · licensed only';
       } else {
-        nextPrompt = 'Walk to the board, the light switch, or the kitchen';
+        nextPrompt = 'Walk to the board, kitchen, or lounge';
       }
       if (nextPrompt !== promptRef.current) {
         promptRef.current = nextPrompt;
@@ -352,7 +370,7 @@ export function Player({
 
     const close = nearBoard(p.x, p.z);
     const leaning = atBoard(p.x, p.z);
-    const inspectHit = nearestKitchenInteract(p.x, p.z, [], zoomT > 0.25);
+    const inspectHit = nearestRoomInteract(p.x, p.z, [], zoomT > 0.25);
     const inspecting = zoomT > 0.2;
 
     const dist = MathUtils.lerp(leaning ? 1.12 : close ? 1.35 : 2.35, leaning || inspecting ? 0.68 : 1.55, zoomT);

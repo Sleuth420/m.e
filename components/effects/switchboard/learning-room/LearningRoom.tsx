@@ -53,21 +53,12 @@ export function LearningRoom() {
         rotation={[0, -Math.PI / 2, 0]}
         size={[ROOM.depth, ROOM.height]}
       />
-      <FinishedPlaster
-        position={[ROOM.width / 2, midY, ROOM.depth]}
-        rotation={[0, Math.PI, 0]}
-        size={[ROOM.width, ROOM.height]}
-      />
 
       <mesh position={[ROOM.width / 2, ROOM.height, ROOM.depth / 2]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[ROOM.width + 4, ROOM.depth + 4]} />
         <meshStandardMaterial color="#d9d6cf" roughness={0.9} metalness={0} envMapIntensity={0.3} />
       </mesh>
 
-      <mesh position={[ROOM.width / 2, skirting / 2, ROOM.depth - skirtT / 2]} receiveShadow>
-        <boxGeometry args={[ROOM.width, skirting, skirtT]} />
-        <meshStandardMaterial color="#efece6" roughness={0.78} metalness={0.02} />
-      </mesh>
       <mesh position={[ROOM.width - skirtT / 2, skirting / 2, ROOM.depth / 2]} receiveShadow>
         <boxGeometry args={[skirtT, skirting, ROOM.depth]} />
         <meshStandardMaterial color="#efece6" roughness={0.78} metalness={0.02} />

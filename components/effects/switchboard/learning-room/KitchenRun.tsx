@@ -35,7 +35,7 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
-import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
+import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type RoomInteractId } from './room-layout';
 
 function Hit({
   onToggle,
@@ -550,8 +550,8 @@ type KitchenProps = {
   toasterPop: boolean;
   sinkOn: boolean;
   boiling: boolean;
-  openById: Partial<Record<KitchenInteractId, boolean>>;
-  onToggle: (id: KitchenInteractId) => void;
+  openById: Partial<Record<RoomInteractId, boolean>>;
+  onToggle: (id: RoomInteractId) => void;
   onToggleFridge: () => void;
   onToggleToaster: () => void;
   onToggleIsolator: () => void;

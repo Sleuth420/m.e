@@ -33,6 +33,8 @@ export const ROOM_LOADS = {
   fridge: 'fridge',
   oven: 'wall-oven',
   induction: 'hot-plates',
+  loungePower: 'power-2',
+  loungeLight: 'light-2',
 } as const;
 
 /** World scale so 13 poles read as a real consumer unit (~36 mm RCBO pitch). */
@@ -83,6 +85,8 @@ export const HEIGHTS = {
   topPlate: ROOM.height - ROOM.plate / 2,
   cavityX: -ROOM.studSize / 2,
   cavityZ: -ROOM.studSize / 2,
+  /** Lounge teaching wall cavity — studs sit just past z = ROOM.depth. */
+  loungeCavityZ: ROOM.depth + ROOM.studSize / 2,
 } as const;
 
 export const IDLE_CAMERA = {
@@ -127,6 +131,25 @@ export const FIXTURES = {
   gpoSingle: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.02 },
   fridge: { x: 5.1, y: 0, z: 0.38 },
   fridgeGpo: { x: 4.95, y: KITCHEN.splashGpoY, z: 0.02 },
+  /** Board wall, lounge side of the enclosure — opposite the kitchen switch. */
+  loungeDimmerA: { x: 0.006, y: HEIGHTS.switch, z: 6.42 },
+  loungeDimmerB: { x: 1.22, y: HEIGHTS.switch, z: ROOM.depth - 0.006 },
+  loungeSconce1: { x: 1.38, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
+  loungeSconce2: { x: 4.62, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
+  loungeGpo: { x: 4.58, y: 1.18, z: ROOM.depth - 0.006 },
+  tv: { x: 3.0, y: 0.96, z: 6.72 },
+} as const;
+
+/**
+ * Open-plan lounge on the far wall (z = ROOM.depth), facing the kitchen.
+ * TV unit against the teaching wall; couch and table sit in the room.
+ */
+export const LOUNGE = {
+  cab: { x: 1.52, w: 2.96, h: 0.48, depth: 0.42, kickH: 0.1 },
+  tv: { w: 1.48, h: 0.84, d: 0.048 },
+  table: { x: 2.42, w: 1.16, d: 0.56, h: 0.4, z: 5.86 },
+  couch: { x: 1.78, w: 2.44, d: 0.94, seatH: 0.42, z: 4.66 },
+  rug: { x: 1.38, w: 3.24, d: 2.18, z: 4.52 },
 } as const;
 
 export type KitchenInteractId =
@@ -149,8 +172,19 @@ export type KitchenInteractId =
   | 'dw-upper'
   | 'cabR-upper';
 
-export const KITCHEN_INTERACTS: {
-  id: KitchenInteractId;
+export type LoungeInteractId =
+  | 'loungeDimmerA'
+  | 'loungeDimmerB'
+  | 'tv'
+  | 'tvGpo'
+  | 'tv-cab-l'
+  | 'tv-cab-m'
+  | 'tv-cab-r';
+
+export type RoomInteractId = KitchenInteractId | LoungeInteractId;
+
+type InteractSpot<T extends string> = {
+  id: T;
   x: number;
   y: number;
   z: number;
@@ -158,7 +192,9 @@ export const KITCHEN_INTERACTS: {
   priority: number;
   promptOpen: string;
   promptClose: string;
-}[] = [
+};
+
+export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
   { id: 'switch', x: FIXTURES.lightSwitch.x, y: FIXTURES.lightSwitch.y, z: FIXTURES.lightSwitch.z, r: 0.7, priority: 2, promptOpen: 'F · Lights on', promptClose: 'F · Lights off' },
   { id: 'sink', x: FIXTURES.sink.x, y: FIXTURES.sink.y + 0.2, z: 0.55, r: 0.95, priority: 2, promptOpen: 'F · Run the tap', promptClose: 'F · Stop tap' },
   { id: 'gpoDouble', x: FIXTURES.gpoDouble.x, y: FIXTURES.gpoDouble.y, z: 0.55, r: 0.85, priority: 2, promptOpen: 'F · Plug / toast', promptClose: 'F · Pop toaster' },
@@ -179,16 +215,96 @@ export const KITCHEN_INTERACTS: {
   { id: 'cabR-upper', x: 4.08, y: 1.78, z: 0.4, r: 1.05, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
 ];
 
-export function nearestKitchenInteract(
+const cabFrontZ = ROOM.depth - LOUNGE.cab.depth;
+const cabMidX = LOUNGE.cab.x + LOUNGE.cab.w / 2;
+const cabDoorW = LOUNGE.cab.w / 3;
+
+export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
+  {
+    id: 'loungeDimmerA',
+    x: FIXTURES.loungeDimmerA.x,
+    y: FIXTURES.loungeDimmerA.y,
+    z: FIXTURES.loungeDimmerA.z,
+    r: 0.75,
+    priority: 2,
+    promptOpen: 'F · Lounge lights',
+    promptClose: 'F · Lounge lights off',
+  },
+  {
+    id: 'loungeDimmerB',
+    x: FIXTURES.loungeDimmerB.x,
+    y: FIXTURES.loungeDimmerB.y,
+    z: FIXTURES.loungeDimmerB.z,
+    r: 0.85,
+    priority: 2,
+    promptOpen: 'F · Lounge lights',
+    promptClose: 'F · Lounge lights off',
+  },
+  {
+    id: 'tv',
+    x: FIXTURES.tv.x,
+    y: FIXTURES.tv.y,
+    z: cabFrontZ - 0.08,
+    r: 1.15,
+    priority: 2,
+    promptOpen: 'F · TV on',
+    promptClose: 'F · TV off',
+  },
+  {
+    id: 'tvGpo',
+    x: FIXTURES.loungeGpo.x,
+    y: FIXTURES.loungeGpo.y,
+    z: cabFrontZ - 0.05,
+    r: 0.85,
+    priority: 2,
+    promptOpen: 'F · TV on',
+    promptClose: 'F · TV off',
+  },
+  {
+    id: 'tv-cab-l',
+    x: LOUNGE.cab.x + cabDoorW * 0.5,
+    y: 0.28,
+    z: cabFrontZ,
+    r: 0.7,
+    priority: 1,
+    promptOpen: 'F · Open TV unit',
+    promptClose: 'F · Close TV unit',
+  },
+  {
+    id: 'tv-cab-m',
+    x: cabMidX,
+    y: 0.28,
+    z: cabFrontZ,
+    r: 0.7,
+    priority: 0,
+    promptOpen: 'F · Open TV unit',
+    promptClose: 'F · Close TV unit',
+  },
+  {
+    id: 'tv-cab-r',
+    x: LOUNGE.cab.x + LOUNGE.cab.w - cabDoorW * 0.5,
+    y: 0.28,
+    z: cabFrontZ,
+    r: 0.7,
+    priority: 1,
+    promptOpen: 'F · Open TV unit',
+    promptClose: 'F · Close TV unit',
+  },
+];
+
+const ROOM_INTERACTS: InteractSpot<RoomInteractId>[] = [...KITCHEN_INTERACTS, ...LOUNGE_INTERACTS];
+
+function pickNearest<T extends InteractSpot<string>>(
+  items: T[],
   px: number,
   pz: number,
-  except: KitchenInteractId[] = [],
-  preferHigh = false
-): (typeof KITCHEN_INTERACTS)[number] | null {
-  const inRange: (typeof KITCHEN_INTERACTS)[number][] = [];
-  let best: (typeof KITCHEN_INTERACTS)[number] | null = null;
+  except: string[],
+  preferHigh: boolean
+): T | null {
+  const inRange: T[] = [];
+  let best: T | null = null;
   let bestD = Infinity;
-  for (const item of KITCHEN_INTERACTS) {
+  for (const item of items) {
     if (except.includes(item.id)) continue;
     const d = dist2(px, pz, item.x, item.z);
     if (d < item.r * item.r) {
@@ -203,7 +319,6 @@ export function nearestKitchenInteract(
   if (preferHigh) {
     return inRange.reduce((a, b) => (b.y > a.y ? b : a));
   }
-  // Stand in a bay → use that bay. Priority only breaks near-ties.
   return inRange.reduce((a, b) => {
     const dax = Math.abs(px - a.x);
     const dbx = Math.abs(px - b.x);
@@ -213,6 +328,24 @@ export function nearestKitchenInteract(
     if (Math.abs(da - db) > 0.05) return da < db ? a : b;
     return a.priority >= b.priority ? a : b;
   });
+}
+
+export function nearestKitchenInteract(
+  px: number,
+  pz: number,
+  except: KitchenInteractId[] = [],
+  preferHigh = false
+): (typeof KITCHEN_INTERACTS)[number] | null {
+  return pickNearest(KITCHEN_INTERACTS, px, pz, except, preferHigh);
+}
+
+export function nearestRoomInteract(
+  px: number,
+  pz: number,
+  except: RoomInteractId[] = [],
+  preferHigh = false
+): InteractSpot<RoomInteractId> | null {
+  return pickNearest(ROOM_INTERACTS, px, pz, except, preferHigh);
 }
 
 export const PLAYER_SPAWN = {
@@ -267,6 +400,31 @@ export function dist2(ax: number, az: number, bx: number, bz: number): number {
   return dx * dx + dz * dz;
 }
 
+function pushAabb(
+  nx: number,
+  nz: number,
+  x0: number,
+  x1: number,
+  z0: number,
+  z1: number,
+  pad: number
+): { x: number; z: number } {
+  const ix0 = x0 - pad;
+  const ix1 = x1 + pad;
+  const iz0 = z0 - pad;
+  const iz1 = z1 + pad;
+  if (nx <= ix0 || nx >= ix1 || nz <= iz0 || nz >= iz1) return { x: nx, z: nz };
+  const dl = nx - ix0;
+  const dr = ix1 - nx;
+  const db = nz - iz0;
+  const dt = iz1 - nz;
+  const m = Math.min(dl, dr, db, dt);
+  if (m === dl) return { x: ix0, z: nz };
+  if (m === dr) return { x: ix1, z: nz };
+  if (m === db) return { x: nx, z: iz0 };
+  return { x: nx, z: iz1 };
+}
+
 export function resolvePlayerPosition(x: number, z: number): { x: number; z: number } {
   const pad = PLAYER.radius;
   let nx = Math.min(ROOM.width - pad - 0.1, Math.max(pad + 0.22, x));
@@ -289,6 +447,27 @@ export function resolvePlayerPosition(x: number, z: number): { x: number; z: num
   if (Math.abs(nx - fridge.x) < fw && nz < fridge.z + fd) {
     nz = fridge.z + fd;
   }
+
+  const cabZ0 = ROOM.depth - LOUNGE.cab.depth;
+  ({ x: nx, z: nz } = pushAabb(nx, nz, LOUNGE.cab.x, LOUNGE.cab.x + LOUNGE.cab.w, cabZ0, ROOM.depth, pad * 0.35));
+  ({ x: nx, z: nz } = pushAabb(
+    nx,
+    nz,
+    LOUNGE.couch.x,
+    LOUNGE.couch.x + LOUNGE.couch.w,
+    LOUNGE.couch.z,
+    LOUNGE.couch.z + LOUNGE.couch.d,
+    pad * 0.45
+  ));
+  ({ x: nx, z: nz } = pushAabb(
+    nx,
+    nz,
+    LOUNGE.table.x,
+    LOUNGE.table.x + LOUNGE.table.w,
+    LOUNGE.table.z,
+    LOUNGE.table.z + LOUNGE.table.d,
+    pad * 0.3
+  ));
 
   return { x: nx, z: nz };
 }

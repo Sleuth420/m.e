@@ -59,9 +59,11 @@ export default function SwitchboardShowcase() {
           Walk a real circuit from the board to the load and discover the world of electricity
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Some circuits leave this switchboard: lighting, kitchen power, induction, oven, and fridge.
-          Open the switchboard cover if you dare, trip RCBOs, and trace TPS through the
-          walls. Dont touch a live wire!
+          Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge
+          power, lounge lighting, induction, oven, and fridge. The lounge is one power
+          feed to the TV and one lighting circuit with two dimmers. Open the switchboard
+          cover if you dare, trip RCBOs, and trace TPS through the walls. Dont touch a
+          live wire!
         </p>
       </div>
 

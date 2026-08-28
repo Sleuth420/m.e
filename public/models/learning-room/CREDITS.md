@@ -20,13 +20,14 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/gpo-double.glb` | Wall Power Outlet - Type I | CC BY 4.0 | [7153932](https://sketchfab.com/3d-models/wall-power-outlet-type-i-71539323436c4d93a1532f4cb76252a8) |
 | `real/switch.glb` | Simple Light Switch | CC BY 4.0 | [32d02fa](https://sketchfab.com/3d-models/simple-light-switch-32d02fa06d474f4db5a433aa134be612) |
 
-Sconce, 1-gang switch, cooktop isolator, and 1-gang GPO are generated in
-`sconce.glb` / `switch.glb` / `isolator.glb` / `gpo-single.glb` — extruded
+Sconce, 1-gang switch, cooktop isolator, rotary dimmer, and 1-gang GPO are generated in
+`sconce.glb` / `switch.glb` / `isolator.glb` / `dimmer.glb` / `gpo-single.glb` — extruded
 C2000 plates plus PVC wall boxes, white PC matched to the Type I double.
 No CC-BY AU C2000 rocker exists (`real/switch.glb` is a US toggle; do not use).
 Teaching walls are open timber (no plaster). Splash tiles stop short of the
 GPO line so kitchen TPS stays visible.
-Product models sit in the kitchen bays along z=0.
+Product models sit in the kitchen bays along z=0. The lounge on the opposite
+wall (z = room depth) is generated joinery plus a Type I GPO for the TV.
 
 ## Poly Haven (CC0)
 

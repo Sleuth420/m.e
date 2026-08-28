@@ -44,17 +44,28 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
   const fridgeGland = worldGland(ROOM_LOADS.fridge);
   const ovenGland = worldGland(ROOM_LOADS.oven);
   const inductionGland = worldGland(ROOM_LOADS.induction);
+  const loungePowerGland = worldGland(ROOM_LOADS.loungePower);
+  const loungeLightGland = worldGland(ROOM_LOADS.loungeLight);
 
   const lightingLive = liveById[ROOM_LOADS.lighting] ?? false;
   const powerLive = liveById[ROOM_LOADS.power] ?? false;
   const fridgeLive = liveById[ROOM_LOADS.fridge] ?? false;
   const ovenLive = liveById[ROOM_LOADS.oven] ?? false;
   const inductionLive = liveById[ROOM_LOADS.induction] ?? false;
+  const loungePowerLive = liveById[ROOM_LOADS.loungePower] ?? false;
+  const loungeLightLive = liveById[ROOM_LOADS.loungeLight] ?? false;
   const hobLive = inductionLive && isolatorOn;
 
   const l1 = FIXTURES.wallLight1;
   const l2 = FIXTURES.wallLight2;
   const sw = FIXTURES.lightSwitch;
+  const da = FIXTURES.loungeDimmerA;
+  const db = FIXTURES.loungeDimmerB;
+  const ls1 = FIXTURES.loungeSconce1;
+  const ls2 = FIXTURES.loungeSconce2;
+  const lg = FIXTURES.loungeGpo;
+  const lz = HEIGHTS.loungeCavityZ;
+  const underBoard = 0.9;
 
   /** Leave the knockout and go straight into the stud bay — no dangling room stubs. */
   const intoCavity = (gland: Vec3, y: number): Vec3[] => [
@@ -153,6 +164,93 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
         segments={6}
         oval={OVAL}
         soft={false}
+      />
+
+      <PathWire
+        points={[
+          loungeLightGland,
+          [cx, loungeLightGland[1] - 0.006, loungeLightGland[2]],
+          [cx, underBoard, loungeLightGland[2]],
+          [cx, underBoard, da.z],
+          [cx, HEIGHTS.switch, da.z],
+          [cx, HEIGHTS.light, da.z],
+          [cx, HEIGHTS.light, lz],
+          [ls1.x, HEIGHTS.light, lz],
+          [ls2.x, HEIGHTS.light, lz],
+        ]}
+        radius={0.0085}
+        material={sheath}
+        live={loungeLightLive}
+        segments={56}
+        {...tps}
+      />
+      <PathWire
+        points={[
+          [cx, HEIGHTS.switch, da.z],
+          [da.x - 0.008, HEIGHTS.switch, da.z],
+        ]}
+        radius={0.0075}
+        material={sheath}
+        live={loungeLightLive}
+        segments={6}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={[
+          [ls1.x, HEIGHTS.light, lz],
+          [ls1.x, HEIGHTS.light, ls1.z + 0.006],
+        ]}
+        radius={0.0075}
+        material={sheath}
+        live={loungeLightLive}
+        segments={6}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={[
+          [ls2.x, HEIGHTS.light, lz],
+          [ls2.x, HEIGHTS.light, ls2.z + 0.006],
+        ]}
+        radius={0.0075}
+        material={sheath}
+        live={loungeLightLive}
+        segments={6}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={[
+          [ls1.x, HEIGHTS.light, lz],
+          [db.x, HEIGHTS.light, lz],
+          [db.x, HEIGHTS.switch, lz],
+          [db.x, HEIGHTS.switch, db.z + 0.006],
+        ]}
+        radius={0.0075}
+        material={sheath}
+        live={loungeLightLive}
+        segments={16}
+        oval={OVAL}
+        sag
+        soft={false}
+      />
+      <PathWire
+        points={[
+          loungePowerGland,
+          [cx, loungePowerGland[1] - 0.006, loungePowerGland[2]],
+          [cx, underBoard, loungePowerGland[2]],
+          [cx, underBoard, lz],
+          [0.4, underBoard, lz],
+          [lg.x, underBoard, lz],
+          [lg.x, lg.y, lz],
+          [lg.x, lg.y, lg.z + 0.006],
+        ]}
+        radius={0.01}
+        material={sheath}
+        live={loungePowerLive}
+        segments={52}
+        {...tps}
       />
     </group>
   );

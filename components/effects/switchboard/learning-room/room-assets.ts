@@ -21,6 +21,7 @@ export const ROOM_GLB = {
   gpoSingle: '/models/learning-room/gpo-single.glb?v=4',
   switch: '/models/learning-room/switch.glb?v=12',
   isolator: '/models/learning-room/isolator.glb?v=12',
+  dimmer: '/models/learning-room/dimmer.glb?v=1',
   /** Poly Haven CC0 pliers — player avatar https://polyhaven.com/a/pliers */
   pliers: '/models/learning-room/real/pliers/pliers.gltf?v=4',
 } as const;

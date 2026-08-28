@@ -8,9 +8,10 @@ import { AboutPortraits } from './AboutPortraits';
 import { Fixtures } from './Fixtures';
 import { KitchenRun } from './KitchenRun';
 import { LearningRoom } from './LearningRoom';
+import { LoungeRun } from './LoungeRun';
 import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
-import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type KitchenInteractId } from './room-layout';
+import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type RoomInteractId } from './room-layout';
 import { POLYHAVEN } from './room-assets';
 
 type Props = {
@@ -77,6 +78,13 @@ function GalleryLighting() {
   );
 }
 
+function cycleDimmer(v: number) {
+  if (v < 0.12) return 0.35;
+  if (v < 0.52) return 0.7;
+  if (v < 0.88) return 1;
+  return 0;
+}
+
 function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const { liveById } = useSwitchboard();
   const [lightSwitchOn, setLightSwitchOn] = useState(false);
@@ -85,13 +93,17 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const [isolatorOn, setIsolatorOn] = useState(true);
   const [sinkOn, setSinkOn] = useState(false);
   const [boiling, setBoiling] = useState(false);
-  const [openById, setOpenById] = useState<Partial<Record<KitchenInteractId, boolean>>>({});
+  const [openById, setOpenById] = useState<Partial<Record<RoomInteractId, boolean>>>({});
+  const [loungeDimmer, setLoungeDimmer] = useState(0);
+  const [tvOn, setTvOn] = useState(false);
 
   const lightingLive = liveById[ROOM_LOADS.lighting] ?? false;
   const powerLive = liveById[ROOM_LOADS.power] ?? false;
   const fridgeLive = liveById[ROOM_LOADS.fridge] ?? false;
   const ovenLive = liveById[ROOM_LOADS.oven] ?? false;
   const inductionLive = liveById[ROOM_LOADS.induction] ?? false;
+  const loungePowerLive = liveById[ROOM_LOADS.loungePower] ?? false;
+  const loungeLightLive = liveById[ROOM_LOADS.loungeLight] ?? false;
   const hobLive = inductionLive && isolatorOn;
   const lightsOn = lightingLive && lightSwitchOn;
 
@@ -103,11 +115,15 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
     if (!hobLive) setBoiling(false);
   }, [hobLive]);
 
-  const toggleOpen = (id: KitchenInteractId) => {
+  useEffect(() => {
+    if (!loungePowerLive) setTvOn(false);
+  }, [loungePowerLive]);
+
+  const toggleOpen = (id: RoomInteractId) => {
     setOpenById((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const onInteract = (id: KitchenInteractId) => {
+  const onInteract = (id: RoomInteractId) => {
     if (id === 'switch') setLightSwitchOn((v) => !v);
     else if (id === 'toaster' || id === 'gpoDouble') {
       if (powerLive) setToasterPop((v) => !v);
@@ -116,7 +132,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
     else if (id === 'cooktop') {
       if (hobLive) setBoiling((v) => !v);
     } else if (id === 'sink') setSinkOn((v) => !v);
-    else toggleOpen(id);
+    else if (id === 'loungeDimmerA' || id === 'loungeDimmerB') setLoungeDimmer(cycleDimmer);
+    else if (id === 'tv' || id === 'tvGpo') {
+      if (loungePowerLive) setTvOn((v) => !v);
+    } else toggleOpen(id);
   };
 
   return (
@@ -166,6 +185,20 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           }}
         />
       </Suspense>
+      <Suspense fallback={null}>
+        <LoungeRun
+          powerLive={loungePowerLive}
+          lightLive={loungeLightLive}
+          dimmer={loungeDimmer}
+          tvOn={tvOn}
+          openById={openById}
+          onCycleDimmer={() => setLoungeDimmer(cycleDimmer)}
+          onToggleTv={() => {
+            if (loungePowerLive) setTvOn((v) => !v);
+          }}
+          onToggle={toggleOpen}
+        />
+      </Suspense>
       <AboutPortraits lightsOn={lightsOn} />
       <Player
         enabled={controlsEnabled}
@@ -180,6 +213,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         sinkOn={sinkOn}
         boiling={boiling}
         hobLive={hobLive}
+        loungePowerLive={loungePowerLive}
+        loungeLightLive={loungeLightLive}
+        loungeDimmer={loungeDimmer}
+        tvOn={tvOn}
       />
       <ContactShadows
         position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
