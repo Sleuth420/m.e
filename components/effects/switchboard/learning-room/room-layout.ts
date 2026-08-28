@@ -137,7 +137,7 @@ export const FIXTURES = {
   loungeSconce1: { x: 1.38, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
   loungeSconce2: { x: 4.62, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
   loungeGpo: { x: 4.58, y: 1.18, z: ROOM.depth - 0.006 },
-  tv: { x: 3.0, y: 0.96, z: 6.72 },
+  tv: { x: 3.0, y: 1.03, z: 6.62 },
 } as const;
 
 /**
@@ -145,9 +145,10 @@ export const FIXTURES = {
  * TV unit against the teaching wall; couch and table sit in the room.
  */
 export const LOUNGE = {
-  cab: { x: 1.52, w: 2.96, h: 0.48, depth: 0.42, kickH: 0.1 },
-  tv: { w: 1.48, h: 0.84, d: 0.048 },
-  table: { x: 2.42, w: 1.16, d: 0.5, h: 0.4, z: 5.7 },
+  /** Poly Haven modern wooden cabinet — native ~2.44 × 0.68 × 0.52. */
+  cab: { x: 1.78, w: 2.44, h: 0.68, depth: 0.52, kickH: 0.1 },
+  tv: { w: 0.92, h: 0.7, d: 0.28 },
+  table: { x: 2.4, w: 1.2, d: 0.6, h: 0.39, z: 5.7 },
   couch: { x: 1.78, w: 2.44, d: 0.94, seatH: 0.42, z: 4.66 },
   rug: { x: 1.38, w: 3.24, d: 2.18, z: 4.52 },
 } as const;
@@ -178,7 +179,6 @@ export type LoungeInteractId =
   | 'tv'
   | 'tvGpo'
   | 'tv-cab-l'
-  | 'tv-cab-m'
   | 'tv-cab-r';
 
 export type RoomInteractId = KitchenInteractId | LoungeInteractId;
@@ -216,8 +216,7 @@ export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
 ];
 
 const cabFrontZ = ROOM.depth - LOUNGE.cab.depth;
-const cabMidX = LOUNGE.cab.x + LOUNGE.cab.w / 2;
-const cabDoorW = LOUNGE.cab.w / 3;
+const cabDoorW = LOUNGE.cab.w / 2;
 
 export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
   {
@@ -263,7 +262,7 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
   {
     id: 'tv-cab-l',
     x: LOUNGE.cab.x + cabDoorW * 0.5,
-    y: 0.28,
+    y: 0.34,
     z: cabFrontZ - 0.2,
     r: 1.15,
     priority: 1,
@@ -271,19 +270,9 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
     promptClose: 'F · Close TV unit',
   },
   {
-    id: 'tv-cab-m',
-    x: cabMidX,
-    y: 0.28,
-    z: cabFrontZ - 0.2,
-    r: 1.15,
-    priority: 0,
-    promptOpen: 'F · Open TV unit',
-    promptClose: 'F · Close TV unit',
-  },
-  {
     id: 'tv-cab-r',
     x: LOUNGE.cab.x + LOUNGE.cab.w - cabDoorW * 0.5,
-    y: 0.28,
+    y: 0.34,
     z: cabFrontZ - 0.2,
     r: 1.15,
     priority: 1,

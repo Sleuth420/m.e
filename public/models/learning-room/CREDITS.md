@@ -27,7 +27,9 @@ No CC-BY AU C2000 rocker exists (`real/switch.glb` is a US toggle; do not use).
 Teaching walls are open timber (no plaster). Splash tiles stop short of the
 GPO line so kitchen TPS stays visible.
 Product models sit in the kitchen bays along z=0. The lounge on the opposite
-wall (z = room depth) is generated joinery plus a Type I GPO for the TV.
+wall (z = room depth) uses Poly Haven CC0 furniture (sofa, coffee table,
+TV, wooden cabinet) plus a Type I GPO for the TV feed. Dimmers stay generated
+C2000 plates (no CC-BY AU rotary exists).
 
 ## Poly Haven (CC0)
 
@@ -43,6 +45,11 @@ Same source as the pliers avatar. https://polyhaven.com
 | `ambientcg/foil-001/` | [Foil 001](https://ambientcg.com/a/Foil001) | CC0 |
 | `ambientcg/paper-004/` | [Paper 004](https://ambientcg.com/a/Paper004) | CC0 |
 | `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
+| `polyhaven/textures/dirty_carpet/dirty_carpet_*_1k.jpg` | [Dirty Carpet](https://polyhaven.com/a/dirty_carpet) | CC0 |
+| `polyhaven/sofa_03/` | [Sofa 03](https://polyhaven.com/a/sofa_03) | CC0 |
+| `polyhaven/modern_coffee_table_01/` | [Modern Coffee Table 01](https://polyhaven.com/a/modern_coffee_table_01) | CC0 |
+| `polyhaven/television_02/` | [Television 02](https://polyhaven.com/a/television_02) | CC0 |
+| `polyhaven/modern_wooden_cabinet/` | [Modern Wooden Cabinet](https://polyhaven.com/a/modern_wooden_cabinet) | CC0 |
 | `polyhaven/textures/oak-veneer/oak_veneer_01_*_1k.jpg` | [Oak Veneer 01](https://polyhaven.com/a/oak_veneer_01) | CC0 |
 | `polyhaven/textures/pine/coated_pine_*_1k.jpg` | [Coated Pine](https://polyhaven.com/a/coated_pine) | CC0 |
 | `polyhaven/textures/plywood/plywood_*_1k.jpg` | [Plywood](https://polyhaven.com/a/plywood) | CC0 |
