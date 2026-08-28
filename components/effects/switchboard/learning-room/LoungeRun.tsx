@@ -547,20 +547,24 @@ export function LoungeRun({
 
       <Hit
         onToggle={onToggleTv}
-        size={[LOUNGE.tv.w + 0.08, LOUNGE.tv.h + 0.06, 0.2]}
-        position={[tv.x, cab.h + 0.06 + LOUNGE.tv.h / 2, zFront + 0.08]}
+        size={[LOUNGE.tv.w + 0.04, LOUNGE.tv.h - 0.08, 0.14]}
+        position={[tv.x, cab.h + 0.1 + LOUNGE.tv.h / 2, zFront + 0.1]}
       />
       <Hit onToggle={onToggleTv} size={[0.24, 0.18, 0.14]} position={[gpo.x, gpo.y, zFront + 0.05]} />
-      <Hit onToggle={() => onToggle('tv-cab-l')} size={[0.9, 0.42, 0.16]} position={[cab.x + 0.5, 0.28, zFront]} />
+      <Hit
+        onToggle={() => onToggle('tv-cab-l')}
+        size={[0.92, 0.4, 0.22]}
+        position={[cab.x + 0.5, 0.28, zFront - 0.04]}
+      />
       <Hit
         onToggle={() => onToggle('tv-cab-m')}
-        size={[0.9, 0.42, 0.16]}
-        position={[cab.x + cab.w / 2, 0.28, zFront]}
+        size={[0.92, 0.4, 0.22]}
+        position={[cab.x + cab.w / 2, 0.28, zFront - 0.04]}
       />
       <Hit
         onToggle={() => onToggle('tv-cab-r')}
-        size={[0.9, 0.42, 0.16]}
-        position={[cab.x + cab.w - 0.5, 0.28, zFront]}
+        size={[0.92, 0.4, 0.22]}
+        position={[cab.x + cab.w - 0.5, 0.28, zFront - 0.04]}
       />
     </group>
   );
