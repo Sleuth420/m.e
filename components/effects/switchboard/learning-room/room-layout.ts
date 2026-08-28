@@ -14,6 +14,19 @@ export const ROOM = {
   nogginYs: [0.9, 1.14, 1.8] as const,
 } as const;
 
+/** 35×38 dwangs — staggered, not a 90 mm block filling the stud depth. */
+export const NOGGIN = {
+  h: 0.035,
+  depth: 0.038,
+  stagger: 0.05,
+} as const;
+
+export function nogginY(baseY: number, bayIndex: number) {
+  const service = Math.abs(baseY - 1.14) < 0.02;
+  const amp = service ? 0.018 : NOGGIN.stagger;
+  return baseY + (bayIndex % 2 === 0 ? -amp : amp);
+}
+
 export const ROOM_LOADS = {
   lighting: 'light-1',
   power: 'power-1',
@@ -96,8 +109,8 @@ export const FIXTURES = {
   lightSwitch: { x: 0.006, y: HEIGHTS.switch, z: 0.52 },
   wallLight1: { x: 0.022, y: HEIGHTS.light, z: 3.25 },
   wallLight2: { x: 0.022, y: HEIGHTS.light, z: 3.95 },
-  portrait1: { x: 0.012, y: HEIGHTS.portrait, z: 3.25 },
-  portrait2: { x: 0.012, y: HEIGHTS.portrait, z: 3.95 },
+  portrait1: { x: 0.014, y: HEIGHTS.portrait, z: 3.25 },
+  portrait2: { x: 0.014, y: HEIGHTS.portrait, z: 3.95 },
   sink: { x: 0.68, y: KITCHEN.benchH, z: 0.32 },
   cooktop: { x: 1.83, y: KITCHEN.benchH, z: 0.3 },
   oven: { x: 1.83, y: 0, z: 0.3 },

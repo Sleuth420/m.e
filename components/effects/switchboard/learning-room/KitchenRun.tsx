@@ -2,10 +2,24 @@
 
 import { useFrame } from '@react-three/fiber';
 import { RoundedBox } from '@react-three/drei';
-import { useRef } from 'react';
-import { Box3, DoubleSide, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
+import { useRef, useMemo } from 'react';
+import {
+  Box3,
+  CanvasTexture,
+  DoubleSide,
+  Group,
+  MathUtils,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Quaternion,
+  RepeatWrapping,
+  SRGBColorSpace,
+  Vector3,
+} from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
-import { dressKitchenProduct } from './appliance-dress';
+import { PathWire } from '../wiring/PathWire';
+import { dressBlackAppliance, dressKitchenProduct } from './appliance-dress';
 import { FittedGltf } from './FittedGltf';
 import {
   JoineryBay,
@@ -131,18 +145,53 @@ function BenchRun({ startX, endX, sinkX }: { startX: number; endX: number; sinkX
   );
 }
 
-function TiledSplash({ x, w, h = 0.12 }: { x: number; w: number; h?: number }) {
-  const maps = useRepeatingPbr(POLYHAVEN.tiles, [w / 0.62, h / 0.5]);
+/** Emerald subway with white grout — repeating atlas so grout stays sharp. */
+function useEmeraldSubway(w: number, h: number) {
+  return useMemo(() => {
+    const tileW = 0.15;
+    const tileH = 0.075;
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('2D context unavailable');
+    ctx.fillStyle = '#f4f1ea';
+    ctx.fillRect(0, 0, 512, 256);
+    const gx = 7;
+    const gy = 7;
+    const tw = 256;
+    const th = 128;
+    const paint = (x: number, y: number, n: number) => {
+      ctx.fillStyle = `rgb(${20 + n}, ${94 + n}, ${70 + n})`;
+      ctx.fillRect(x + gx, y + gy, tw - gx * 2, th - gy * 2);
+    };
+    paint(0, 0, 0);
+    paint(256, 0, 2);
+    paint(-128, 128, -2);
+    paint(128, 128, 1);
+    paint(384, 128, 3);
+    const map = new CanvasTexture(canvas);
+    map.colorSpace = SRGBColorSpace;
+    map.wrapS = RepeatWrapping;
+    map.wrapT = RepeatWrapping;
+    map.anisotropy = 8;
+    map.repeat.set(w / (tileW * 2), h / (tileH * 2));
+    map.needsUpdate = true;
+    return map;
+  }, [w, h]);
+}
+
+function TiledSplash({ x, w, h, z }: { x: number; w: number; h: number; z: number }) {
+  const map = useEmeraldSubway(w, h);
+  const t = 0.01;
   return (
-    <mesh position={[x + w / 2, KITCHEN.benchH + BENCH_T + h / 2, 0.012]} receiveShadow>
-      <boxGeometry args={[w, h, 0.008]} />
+    <mesh position={[x + w / 2, KITCHEN.benchH + BENCH_T + h / 2, z - t / 2]} receiveShadow>
+      <boxGeometry args={[w, h, t]} />
       <meshStandardMaterial
-        map={maps.map}
-        normalMap={maps.normalMap}
-        roughnessMap={maps.roughnessMap}
-        roughness={0.72}
-        metalness={0.02}
-        envMapIntensity={0.85}
+        map={map}
+        roughness={0.42}
+        metalness={0.04}
+        envMapIntensity={0.95}
       />
     </mesh>
   );
@@ -195,6 +244,36 @@ function UnderCabinetLed({ x0, x1, live }: { x0: number; x1: number; live: boole
       </mesh>
       {live && <pointLight position={[cx, y - 0.05, z + 0.1]} intensity={0.5} distance={1.7} color="#fff4dc" />}
     </group>
+  );
+}
+
+function ToasterFlex({ live }: { live: boolean }) {
+  const mat = useMemo(
+    () => new MeshStandardMaterial({ color: '#1c1d20', roughness: 0.64, metalness: 0.06 }),
+    [],
+  );
+  const t = FIXTURES.toaster;
+  const g = FIXTURES.gpoSingle;
+  const bench = KITCHEN.benchH + BENCH_T;
+  return (
+    <PathWire
+      points={[
+        [t.x + 0.04, bench + 0.018, t.z + 0.02],
+        [t.x + 0.1, bench + 0.01, 0.42],
+        [t.x + 0.22, bench + 0.008, 0.22],
+        [g.x - 0.02, bench + 0.01, 0.08],
+        [g.x, KITCHEN.splashGpoY - 0.09, 0.04],
+        [g.x, KITCHEN.splashGpoY - 0.058, 0.036],
+        [g.x, KITCHEN.splashGpoY - 0.05, 0.026],
+      ]}
+      radius={0.0046}
+      material={mat}
+      live={live}
+      segments={36}
+      oval={0.38}
+      sag
+      soft={false}
+    />
   );
 }
 
@@ -520,7 +599,8 @@ export function KitchenRun({
   const benchTop = KITCHEN.benchH + BENCH_T;
   const benchZ = 0.32;
   const splashY = KITCHEN.splashGpoY;
-  const splashZ = 0.004;
+  const splashZ = 0.018;
+  const splashH = KITCHEN.upperY - (KITCHEN.benchH + BENCH_T) - 0.01;
   const hood = FIXTURES.rangehood;
 
   const ovenOpen = !!openById.oven;
@@ -553,7 +633,7 @@ export function KitchenRun({
         cutZ0={0}
         cutZ1={KITCHEN.benchDepth}
       />
-      <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} />
+      <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} h={splashH} z={splashZ} />
       <SplashUpstand x0={KITCHEN.startX} x1={joineryEnd} />
       <UnderCabinetLed x0={sink.x} x1={cook.x} live={powerLive} />
       <UnderCabinetLed x0={cabL.x} x1={fridge.x} live={powerLive} />
@@ -667,6 +747,7 @@ export function KitchenRun({
         position={[FIXTURES.cooktop.x, benchTop, FIXTURES.cooktop.z]}
         align="bottom"
         fit="width"
+        prepare={dressBlackAppliance}
         envIntensity={1}
       />
       <JoineryOvenDrawer x={cook.x} w={cook.w} y={KITCHEN.kickH} h={OVEN_DRAWER_H} />
@@ -681,6 +762,7 @@ export function KitchenRun({
         preScale={0.001}
         fit="width"
         envIntensity={1}
+        prepare={dressBlackAppliance}
         open={ovenOpen}
         doorMatch={/glass/i}
         openAngle={1.15}
@@ -695,7 +777,7 @@ export function KitchenRun({
         align="bottom"
         pin="back"
         fit="width"
-        prepare={dressKitchenProduct}
+        prepare={dressBlackAppliance}
         envIntensity={1}
       />
       <FittedGltf
@@ -706,6 +788,7 @@ export function KitchenRun({
         pin="front"
         pinPad={0.04}
         fit="width"
+        prepare={dressBlackAppliance}
         envIntensity={1}
       />
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
@@ -726,7 +809,7 @@ export function KitchenRun({
         pin="front"
         pinPad={0.16}
         fit="contain"
-        prepare={dressKitchenProduct}
+        prepare={dressBlackAppliance}
         envIntensity={1}
       />
       <FittedGltf
@@ -789,6 +872,7 @@ export function KitchenRun({
         on={isolatorOn}
         onToggle={onToggleIsolator}
       />
+      <ToasterFlex live={powerLive} />
 
       {hobLive && boiling && (
         <pointLight position={[cookX, benchY + 0.18, 0.3]} intensity={0.18} distance={0.5} color="#fdba74" />

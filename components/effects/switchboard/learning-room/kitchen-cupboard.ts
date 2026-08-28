@@ -17,8 +17,8 @@ export const CUPBOARD_BASE_KEEP =
 /** Door leaves + handles only, so wall cupboards don't inherit the base kick gap. */
 export const CUPBOARD_UPPER_KEEP = /Cabinet_FrontA\.005|Cabinet_Handle\.013|Cabinet_Handle\.014/;
 
-const JOINERY = '#cfc8bc';
-const JOINERY_INNER = '#b9b1a6';
+const JOINERY = '#f3f1ec';
+const JOINERY_INNER = '#e4e0d8';
 const HANDLE = '#c5c9ce';
 
 function findNamed(root: Object3D, match: RegExp): Object3D | null {
@@ -107,9 +107,9 @@ function paintKitchenJoinery(root: Object3D) {
     } else {
       const inner = /shelf|back|side/i.test(label);
       mat.color.set(inner ? JOINERY_INNER : JOINERY);
-      mat.metalness = 0.04;
-      mat.roughness = inner ? 0.62 : 0.48;
-      mat.envMapIntensity = 1.15;
+      mat.metalness = 0.05;
+      mat.roughness = inner ? 0.7 : 0.58;
+      mat.envMapIntensity = 0.85;
     }
     mat.needsUpdate = true;
     mesh.material = mat;

@@ -133,3 +133,33 @@ export function dressKitchenProduct(root: Object3D) {
     mesh.material = Array.isArray(mesh.material) ? next : next[0]!;
   });
 }
+
+/** Black stainless bodies; chrome handles and glass stay. */
+export function dressBlackAppliance(root: Object3D) {
+  dressKitchenProduct(root);
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const mat of mats) {
+      const m = mat as MeshStandardMaterial;
+      if (!m?.color) continue;
+      const n = `${mesh.name} ${m.name ?? ''}`.toLowerCase();
+      if (/handle|chrome|button|dispenser|ice/.test(n) && m.metalness > 0.55) continue;
+      if (/glass|translucent/.test(n)) {
+        m.color.set('#121316');
+        m.roughness = 0.08;
+        m.metalness = 0.12;
+        m.needsUpdate = true;
+        continue;
+      }
+      if (m.metalness > 0.28 || /steel|body|door|metal|housing|panel|gorenje|hood/.test(n)) {
+        m.color.set('#24262b');
+        m.metalness = 0.7;
+        m.roughness = Math.max(0.28, Math.min(m.roughness, 0.42));
+        m.envMapIntensity = 1.15;
+        m.needsUpdate = true;
+      }
+    }
+  });
+}

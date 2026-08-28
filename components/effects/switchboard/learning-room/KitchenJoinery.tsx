@@ -7,11 +7,11 @@ import { POLYHAVEN } from './room-assets';
 import { KITCHEN } from './room-layout';
 import { useSizedPbr } from './room-textures';
 
-/** Light oak tint — keeps Poly Haven kitchen wood in the same family as the marble bench. */
-export const JOINERY = '#efe6d8';
-const JOINERY_IN = '#cbbba6';
-const KICK = '#4a4f55';
-const STEEL = '#c5c9ce';
+/** Textured 2-pack white — not furniture oak. */
+export const JOINERY = '#f4f2ed';
+const JOINERY_IN = '#e2ddd4';
+const KICK = '#3a3d42';
+const HANDLE = '#2a2c30';
 
 const PANEL = 0.018;
 const REVEAL = 0.002;
@@ -42,23 +42,22 @@ function WoodMat({
     WOOD_TILE,
     grain === 'h' ? Math.PI / 2 : 0,
   );
-  const tint = interior ? JOINERY_IN : panel ? '#e4d7c6' : JOINERY;
+  const tint = interior ? JOINERY_IN : panel ? '#f7f5f0' : JOINERY;
   return (
     <meshStandardMaterial
-      map={maps.map}
       normalMap={maps.normalMap}
       roughnessMap={maps.roughnessMap}
       color={tint}
-      roughness={1}
-      metalness={0.02}
-      envMapIntensity={interior ? 0.7 : panel ? 0.95 : 1.08}
-      normalScale={[0.22, 0.22]}
+      roughness={interior ? 0.72 : 0.48}
+      metalness={0.06}
+      envMapIntensity={interior ? 0.5 : panel ? 0.78 : 0.9}
+      normalScale={[0.08, 0.08]}
     />
   );
 }
 
-function SteelMat() {
-  return <meshStandardMaterial color={STEEL} roughness={0.28} metalness={0.92} envMapIntensity={1.65} />;
+function HandleMat() {
+  return <meshStandardMaterial color={HANDLE} roughness={0.38} metalness={0.72} envMapIntensity={1.15} />;
 }
 
 function Box({
@@ -108,7 +107,7 @@ function BarHandle({
     <group position={position}>
       <mesh rotation={vertical ? [0, 0, 0] : [0, 0, Math.PI / 2]} castShadow>
         <cylinderGeometry args={[HANDLE_R, HANDLE_R, length, 18]} />
-        <SteelMat />
+        <HandleMat />
       </mesh>
       {([-span, span] as const).map((off) => (
         <mesh
@@ -118,7 +117,7 @@ function BarHandle({
           castShadow
         >
           <cylinderGeometry args={[HANDLE_R * 0.78, HANDLE_R * 0.78, HANDLE_PROJ, 12]} />
-          <SteelMat />
+          <HandleMat />
         </mesh>
       ))}
     </group>

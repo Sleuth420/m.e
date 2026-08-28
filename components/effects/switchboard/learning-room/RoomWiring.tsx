@@ -9,10 +9,12 @@ import {
   FIXTURES,
   HEIGHTS,
   KITCHEN,
+  NOGGIN,
   ROOM,
   ROOM_LOADS,
   boardWallStudZs,
   fridgeWallStudXs,
+  nogginY,
   worldGland,
 } from './room-layout';
 
@@ -56,7 +58,7 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
   const cx = HEIGHTS.cavityX;
   const cz = HEIGHTS.cavityZ;
   const hole = 0.012;
-  const nogginHalf = (s * 0.82) / 2 + 0.012;
+  const nogginHalf = NOGGIN.h / 2 + NOGGIN.stagger + 0.02;
   return (
     <group>
       {boardWallStudZs().map((z) => {
@@ -76,14 +78,15 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
           .slice(0, -1)
           .map((z) => {
             const mid = z + ROOM.studSpacing / 2;
+            const nyStagger = nogginY(ny, boardWallStudZs().indexOf(z));
             if (openingHitsZ(mid) && openingHitsY(ny)) return null;
             return boardRuns.map((run) => {
-              if (Math.abs(run.y - ny) > nogginHalf) return null;
+              if (Math.abs(run.y - nyStagger) > nogginHalf) return null;
               if (!between(run.z0, run.z1, mid, -0.02)) return null;
               return (
                 <mesh
                   key={`bn-${ny}-${z}-${run.y}`}
-                  position={[cx, run.y, mid]}
+                  position={[cx + s / 2 - NOGGIN.depth / 2, run.y, mid]}
                   rotation={[Math.PI / 2, 0, 0]}
                 >
                   <cylinderGeometry args={[hole, hole, ROOM.studSpacing - s + 0.01, 8]} />
@@ -109,13 +112,14 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
           .slice(0, -1)
           .map((x) => {
             const mid = x + ROOM.studSpacing / 2;
+            const nyStagger = nogginY(ny, fridgeWallStudXs().indexOf(x));
             return kitchenRuns.map((run) => {
-              if (Math.abs(run.y - ny) > nogginHalf) return null;
+              if (Math.abs(run.y - nyStagger) > nogginHalf) return null;
               if (!between(run.x0, run.x1, mid, -0.02)) return null;
               return (
                 <mesh
                   key={`fn-${ny}-${x}-${run.y}`}
-                  position={[mid, run.y, cz]}
+                  position={[mid, run.y, cz + s / 2 - NOGGIN.depth / 2]}
                   rotation={[0, 0, Math.PI / 2]}
                 >
                   <cylinderGeometry args={[hole, hole, ROOM.studSpacing - s + 0.01, 8]} />
@@ -129,7 +133,7 @@ function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchen
   );
 }
 
-const OVAL = 0.55;
+const OVAL = 0.36;
 
 /** In-wall TPS: lighting on the board wall; kitchen circuits on z=0 at staggered heights. */
 export function RoomWiring({ liveById, isolatorOn }: Props) {
@@ -248,9 +252,12 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
   ];
 
   const tps = { sag: true, oval: OVAL, soft: false as const };
-  const faceStub = (x: number, y: number): Vec3[] => [
+  const faceStub = (x: number, y: number, top = 0.052): Vec3[] => [
     [x, y, cz],
-    [x, y, 0.003],
+    [x, y + top + 0.03, cz],
+    [x, y + top + 0.02, 0.038],
+    [x, y + top + 0.004, 0.042],
+    [x, y + top - 0.002, 0.028],
   ];
 
   return (
@@ -278,11 +285,11 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
         oval={OVAL}
         soft={false}
       />
-      <PathWire points={faceStub(FIXTURES.gpoDouble.x, HEIGHTS.splashGpoY)} radius={0.008} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
-      <PathWire points={faceStub(FIXTURES.gpoSingle.x, HEIGHTS.splashGpoY)} radius={0.0075} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
-      <PathWire points={faceStub(FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY)} radius={0.0075} material={sheath} live={fridgeLive} segments={6} oval={OVAL} soft={false} />
-      <PathWire points={faceStub(FIXTURES.cookIsolator.x, HEIGHTS.splashGpoY)} radius={0.009} material={sheath} live={hobLive} segments={6} oval={OVAL} soft={false} />
-      <PathWire points={faceStub(FIXTURES.dwGpo.x, HEIGHTS.gpo)} radius={0.0075} material={sheath} live={powerLive} segments={6} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.gpoDouble.x, HEIGHTS.splashGpoY, 0.052)} radius={0.008} material={sheath} live={powerLive} segments={8} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.gpoSingle.x, HEIGHTS.splashGpoY, 0.062)} radius={0.0075} material={sheath} live={powerLive} segments={8} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY, 0.062)} radius={0.0075} material={sheath} live={fridgeLive} segments={8} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.cookIsolator.x, HEIGHTS.splashGpoY, 0.055)} radius={0.009} material={sheath} live={hobLive} segments={8} oval={OVAL} soft={false} />
+      <PathWire points={faceStub(FIXTURES.dwGpo.x, HEIGHTS.gpo, 0.062)} radius={0.0075} material={sheath} live={powerLive} segments={8} oval={OVAL} soft={false} />
       <CableBores boardRuns={boardRuns} kitchenRuns={kitchenRuns} />
     </group>
   );

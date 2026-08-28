@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { BoxGeometry, PlaneGeometry } from 'three';
 import { POLYHAVEN } from './room-assets';
-import { BOARD_OPENING, HEIGHTS, ROOM, boardWallStudZs, fridgeWallStudXs } from './room-layout';
+import { BOARD_OPENING, HEIGHTS, NOGGIN, ROOM, boardWallStudZs, fridgeWallStudXs, nogginY } from './room-layout';
 import { useRepeatingPbrMetal, useSizedPbr, type PbrMaps } from './room-textures';
 
 /** H2 MGP radiata — straw construction timber, not furniture stain. */
@@ -157,6 +157,7 @@ function openingHitsY(y: number, pad = 0.04) {
 export function FramedWalls() {
   const vMaps = useSizedPbr(POLYHAVEN.treatedPine, [0.09, 2.6], 1.2, 0, 0.05);
   const hMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.09], 1.2, Math.PI / 2, 0.05);
+  const nMaps = useSizedPbr(POLYHAVEN.treatedPine, [2.6, 0.035], 1.2, Math.PI / 2, 0.05);
   const plyMaps = useSizedPbr(POLYHAVEN.plywood, [0.55, 0.7], 0.55, 0);
   const boardZs = boardWallStudZs();
   const fridgeXs = fridgeWallStudXs();
@@ -214,15 +215,15 @@ export function FramedWalls() {
       )}
 
       {NOGGIN_YS.map((y) =>
-        boardZs.slice(0, -1).map((z) => {
+        boardZs.slice(0, -1).map((z, i) => {
           const mid = z + ROOM.studSpacing / 2;
           if (openingHitsZ(mid) && openingHitsY(y)) return null;
           return (
             <Timber
               key={`bn-${y}-${z}`}
-              maps={hMaps}
-              position={[cx, y, mid]}
-              args={[s, s * 0.82, ROOM.studSpacing - s]}
+              maps={nMaps}
+              position={[cx + s / 2 - NOGGIN.depth / 2, nogginY(y, i), mid]}
+              args={[NOGGIN.depth, NOGGIN.h, ROOM.studSpacing - s]}
             />
           );
         }),
@@ -270,12 +271,12 @@ export function FramedWalls() {
       ))}
 
       {NOGGIN_YS.map((y) =>
-        fridgeXs.slice(0, -1).map((x) => (
+        fridgeXs.slice(0, -1).map((x, i) => (
           <Timber
             key={`fn-${y}-${x}`}
-            maps={hMaps}
-            position={[x + ROOM.studSpacing / 2, y, cz]}
-            args={[ROOM.studSpacing - s, s * 0.82, s]}
+            maps={nMaps}
+            position={[x + ROOM.studSpacing / 2, nogginY(y, i), cz + s / 2 - NOGGIN.depth / 2]}
+            args={[ROOM.studSpacing - s, NOGGIN.h, NOGGIN.depth]}
           />
         )),
       )}
