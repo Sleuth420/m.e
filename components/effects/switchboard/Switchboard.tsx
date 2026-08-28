@@ -1,6 +1,6 @@
 'use client';
 
-import { BOARD, CIRCUITS, mainSwitchX, moduleBodyZ, rcboX } from './circuit-data';
+import { BOARD, CIRCUITS, circuitDisplayName, mainSwitchX, moduleBodyZ, rcboX } from './circuit-data';
 import { CombBus } from './CombBus';
 import { DinRail } from './DinRail';
 import { Enclosure } from './Enclosure';
@@ -14,15 +14,11 @@ import { useSwitchboard } from './SwitchboardContext';
 import { useCircuitLabelTexture } from './textures';
 import { Wiring } from './Wiring';
 
-function circuitName(label: string) {
-  return label.replace(/^PROTECTED\s+/i, '');
-}
-
 function PoleIdLabel({ x, text }: { x: number; text: string }) {
   const map = useCircuitLabelTexture(text);
   return (
-    <mesh position={[x, -BOARD.moduleHeight / 2 - 0.2, moduleBodyZ() + 0.27]} rotation={[-0.08, 0, 0]}>
-      <boxGeometry args={[BOARD.rcboWidth - 0.016, 0.24, 0.012]} />
+    <mesh position={[x, -BOARD.moduleHeight / 2 - 0.26, moduleBodyZ() + 0.3]} rotation={[-0.1, 0, 0]}>
+      <boxGeometry args={[BOARD.rcboWidth - 0.006, 0.34, 0.014]} />
       <meshStandardMaterial map={map} roughness={0.46} metalness={0.04} />
     </mesh>
   );
@@ -95,7 +91,7 @@ export function Switchboard() {
         ))}
         <PoleIdLabel x={mainSwitchX()} text="MAIN" />
         {CIRCUITS.map((circuit) => (
-          <PoleIdLabel key={`id-${circuit.id}`} x={rcboX(circuit.index)} text={circuitName(circuit.label)} />
+          <PoleIdLabel key={`id-${circuit.id}`} x={rcboX(circuit.index)} text={circuitDisplayName(circuit.label)} />
         ))}
       </group>
 

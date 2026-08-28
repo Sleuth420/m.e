@@ -72,6 +72,11 @@ export function RockerLever({
         onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
         onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
       >
+        {/* Finger-sized tap target — visible paddle is ~18 mm at board scale. */}
+        <mesh position={[0, 0, depth * 0.9]} renderOrder={8}>
+          <boxGeometry args={[width * 1.9, height * 1.85, Math.max(depth * 5, 0.09)]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
         <mesh castShadow={false} material={material} position={[0, 0, depth * 0.15]}>
           <boxGeometry args={[width * 0.98, height * 0.72, depth * 0.7]} />
         </mesh>

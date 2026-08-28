@@ -10,6 +10,7 @@ import {
   PLAYER,
   PLAYER_SPAWN,
   ROOM,
+  atBoard,
   nearBoard,
   nearestKitchenInteract,
   type KitchenInteractId,
@@ -87,7 +88,7 @@ export function Player({
 }: Props) {
   const { gl } = useThree();
   const { coverOpen, requestCoverOpen } = useSwitchboard();
-  const { mobileKeys, consumeInteract, isStunned, setStunned } = useGameInput();
+  const { mobileKeys, consumeInteract, isStunned, setStunned, setActionPrompt } = useGameInput();
   const keys = useRef<Keys>(emptyKeys());
   const zoom = useRef<Zoom>({ hold: false, amount: 0 });
   const pose = useRef<PlayerPose>({
@@ -105,6 +106,23 @@ export function Player({
   const [prompt, setPrompt] = useState<string | null>(null);
   const promptRef = useRef<string | null>(null);
   const shake = useRef(0);
+  const coarseRef = useRef(false);
+  const [coarse, setCoarse] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(pointer: coarse), (max-width: 768px)');
+    const update = () => {
+      coarseRef.current = mq.matches;
+      setCoarse(mq.matches);
+    };
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) setActionPrompt(null);
+  }, [enabled, setActionPrompt]);
 
   useEffect(() => {
     const onShock = () => setStunned(1800);
@@ -297,17 +315,22 @@ export function Player({
         }
       } else if (nearBoard(p.x, p.z)) {
         nextPrompt = coverOpen
-          ? 'Click poles / TEST · live wires shock'
-          : 'Tap cover or Use · licensed only';
+        ? 'Tap a breaker rocker · TEST trips the RCD'
+        : 'Tap the cover or Use · licensed only';
       }
       if (nextPrompt !== promptRef.current) {
         promptRef.current = nextPrompt;
         setPrompt(nextPrompt);
+        setActionPrompt(nextPrompt);
       }
     }
 
     const zoomT = enabled
-      ? Math.max(zoom.current.hold || m.inspect ? 1 : 0, zoom.current.amount)
+      ? Math.max(
+          zoom.current.hold || m.inspect ? 1 : 0,
+          zoom.current.amount,
+          atBoard(p.x, p.z) && coarseRef.current ? 0.82 : 0
+        )
       : 0;
     const targetFov = MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
     if (Math.abs(persp.fov - targetFov) > 0.05) {
@@ -326,18 +349,19 @@ export function Player({
     }
 
     const close = nearBoard(p.x, p.z);
+    const leaning = atBoard(p.x, p.z);
     const inspectHit = nearestKitchenInteract(p.x, p.z, [], zoomT > 0.25);
     const inspecting = zoomT > 0.2;
 
-    const dist = MathUtils.lerp(close ? 1.45 : 2.35, close || inspecting ? 0.9 : 1.55, zoomT);
-    const height = MathUtils.lerp(close ? 1.5 : 1.72, inspecting ? 1.4 : 1.58, zoomT);
+    const dist = MathUtils.lerp(leaning ? 1.12 : close ? 1.35 : 2.35, leaning || inspecting ? 0.68 : 1.55, zoomT);
+    const height = MathUtils.lerp(leaning ? 1.48 : close ? 1.5 : 1.72, inspecting ? 1.42 : 1.58, zoomT);
 
     let lookX = p.x + Math.sin(p.yaw) * 1.55;
     let lookY = 1.28;
     let lookZ = p.z + Math.cos(p.yaw) * 1.55;
-    if (close) {
+    if (leaning || close) {
       lookX = BOARD_MOUNT.x + 0.12;
-      lookY = BOARD_MOUNT.y;
+      lookY = BOARD_MOUNT.y - 0.04;
       lookZ = BOARD_MOUNT.z;
     } else if (inspecting && inspectHit) {
       lookX = inspectHit.x;
@@ -345,7 +369,11 @@ export function Player({
       lookZ = inspectHit.z;
     }
 
-    dummy.position.set(p.x - Math.sin(p.yaw) * dist, height, p.z - Math.cos(p.yaw) * dist);
+    if (leaning) {
+      dummy.position.set(BOARD_MOUNT.x + dist, height, BOARD_MOUNT.z);
+    } else {
+      dummy.position.set(p.x - Math.sin(p.yaw) * dist, height, p.z - Math.cos(p.yaw) * dist);
+    }
     dummy.position.x = MathUtils.clamp(dummy.position.x, 0.28, ROOM.width - 0.2);
     dummy.position.z = MathUtils.clamp(dummy.position.z, 0.28, ROOM.depth - 0.2);
     dummy.position.y = MathUtils.clamp(dummy.position.y, 0.85, ROOM.height - 0.2);
@@ -363,7 +391,7 @@ export function Player({
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });
 
-  return enabled ? <PliersCharacter pose={pose} prompt={prompt} /> : null;
+  return enabled ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt={coarse} /> : null;
 }
 
 /** Poly Haven pliers as the player avatar — https://polyhaven.com/a/pliers */
@@ -412,7 +440,15 @@ function PliersAvatar() {
   return <primitive object={root} />;
 }
 
-function PliersCharacter({ pose, prompt }: { pose: RefObject<PlayerPose>; prompt: string | null }) {
+function PliersCharacter({
+  pose,
+  prompt,
+  hidePrompt,
+}: {
+  pose: RefObject<PlayerPose>;
+  prompt: string | null;
+  hidePrompt: boolean;
+}) {
   const group = useRef<Group>(null);
   const bob = useRef(0);
 
@@ -452,9 +488,9 @@ function PliersCharacter({ pose, prompt }: { pose: RefObject<PlayerPose>; prompt
       >
         <PliersAvatar />
       </Suspense>
-      {prompt && (
-        <Html center position={[0, 1.5, 0]} style={{ pointerEvents: 'none', whiteSpace: 'nowrap' }}>
-          <div className="rounded-md bg-black/75 px-2 py-1 text-[11px] font-medium tracking-wide text-white shadow-md">
+      {prompt && !hidePrompt && (
+        <Html center position={[0, 1.42, 0]} style={{ pointerEvents: 'none', whiteSpace: 'normal', maxWidth: '16rem' }}>
+          <div className="rounded-md bg-black/75 px-2 py-1 text-center text-[11px] font-medium tracking-wide text-white shadow-md">
             {prompt}
           </div>
         </Html>

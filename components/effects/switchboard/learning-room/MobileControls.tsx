@@ -58,7 +58,7 @@ export function MobileControls({ visible }: Props) {
   };
 
   const applyStick = (dx: number, dy: number) => {
-    const max = 42;
+    const max = 48;
     const nx = Math.max(-1, Math.min(1, dx / max));
     const ny = Math.max(-1, Math.min(1, dy / max));
     mobileKeys.current.forward = ny < -0.25;
@@ -102,7 +102,7 @@ export function MobileControls({ visible }: Props) {
     <div className="pointer-events-none absolute inset-0 z-40">
       <div
         ref={stickRef}
-        className="pointer-events-auto absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-3 h-24 w-24 touch-none sm:left-4"
+        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[6.75rem] w-[6.75rem] touch-none"
         onTouchStart={onStickStart}
         onTouchMove={onStickMove}
         onTouchEnd={onStickEnd}
@@ -111,38 +111,38 @@ export function MobileControls({ visible }: Props) {
         <div className="absolute inset-0 rounded-full border border-white/20 bg-black/35 backdrop-blur-sm" />
         <div
           ref={knobRef}
-          className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 bg-white/25 shadow-md"
+          className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 bg-white/25 shadow-md"
         />
         <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-medium uppercase tracking-wider text-white/80">
           Move
         </span>
       </div>
 
-      <div className="pointer-events-auto absolute bottom-[max(1rem,env(safe-area-inset-bottom))] right-3 flex flex-col items-end gap-2 sm:right-4">
-        <div className="flex gap-2">
+      <div className="pointer-events-auto absolute bottom-[max(1.1rem,calc(env(safe-area-inset-bottom)+0.4rem))] right-[max(0.75rem,env(safe-area-inset-right))] flex flex-col items-end gap-2.5">
+        <div className="flex gap-2.5">
           <TouchBtn
             label="Turn L"
-            icon={<RotateCcw className="h-4 w-4" />}
+            icon={<RotateCcw className="h-5 w-5" />}
             onDown={() => hold('turnLeft', true)}
             onUp={() => hold('turnLeft', false)}
           />
           <TouchBtn
             label="Turn R"
-            icon={<RotateCw className="h-4 w-4" />}
+            icon={<RotateCw className="h-5 w-5" />}
             onDown={() => hold('turnRight', true)}
             onUp={() => hold('turnRight', false)}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2.5">
           <TouchBtn
             label="Use"
-            icon={<Hand className="h-4 w-4" />}
+            icon={<Hand className="h-5 w-5" />}
             onTap={pulseInteract}
             large
           />
           <TouchBtn
             label="Look"
-            icon={<Search className="h-4 w-4" />}
+            icon={<Search className="h-5 w-5" />}
             onDown={() => hold('inspect', true)}
             onUp={() => hold('inspect', false)}
           />
@@ -172,8 +172,8 @@ function TouchBtn({
       type="button"
       aria-label={label}
       className={cn(
-        'chrome-border flex flex-col items-center justify-center gap-0.5 rounded-xl border border-white/25 bg-black/40 text-white backdrop-blur-md active:scale-95',
-        large ? 'h-14 w-14' : 'h-12 w-12'
+        'chrome-border flex touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl border border-white/25 bg-black/40 text-white backdrop-blur-md active:scale-95',
+        large ? 'h-16 w-16' : 'h-14 w-14'
       )}
       onTouchStart={(e) => {
         e.preventDefault();

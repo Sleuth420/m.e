@@ -3,15 +3,25 @@
 import { useEffect, useState } from 'react';
 import { Keyboard, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CIRCUITS, circuitDisplayName } from '../circuit-data';
 import { useSwitchboard } from '../SwitchboardContext';
+import { useGameInput } from './GameInputContext';
 import { ROOM_LOADS } from './room-layout';
 
 type Props = {
   visible: boolean;
 };
 
+function hoveredCircuitLabel(hovered: string | null) {
+  if (!hovered) return null;
+  if (hovered === 'main') return 'MAIN isolator';
+  const circuit = CIRCUITS.find((c) => c.id === hovered);
+  return circuit ? circuitDisplayName(circuit.label) : hovered;
+}
+
 export function LearningHud({ visible }: Props) {
-  const { mainOn, liveById, coverOpen, tripReason, shockActive } = useSwitchboard();
+  const { mainOn, liveById, coverOpen, tripReason, shockActive, hovered } = useSwitchboard();
+  const { actionPrompt } = useGameInput();
   const [keysOpen, setKeysOpen] = useState(false);
   const [coarse, setCoarse] = useState(false);
 
@@ -66,9 +76,22 @@ export function LearningHud({ visible }: Props) {
     </ul>
   );
 
+  const hoveredName = coverOpen ? hoveredCircuitLabel(hovered) : null;
+  const status = shockActive
+    ? 'RCD tripped — you got shocked'
+    : !coverOpen
+      ? 'Board locked — tap the cover (licensed only)'
+      : tripReason === 'test'
+        ? 'RCD test trip'
+        : hoveredName
+          ? `${hoveredName} — tap rocker to isolate · TEST trips the RCD`
+          : 'Cover open — tap a breaker · avoid live red conductors';
+
+  const bannerText = shockActive ? status : coarse && actionPrompt ? actionPrompt : status;
+
   return (
     <>
-      <div className="pointer-events-none absolute inset-x-0 top-12 z-20 flex flex-col items-center gap-2 px-3 sm:top-14">
+      <div className="pointer-events-none absolute inset-x-0 top-[max(3.25rem,calc(env(safe-area-inset-top)+2.6rem))] z-20 flex flex-col items-center gap-2 px-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:top-[max(3.75rem,calc(env(safe-area-inset-top)+2.85rem))]">
         <div
           className={cn(
             'chrome-border max-w-md rounded-xl border px-3 py-2 text-center shadow-md backdrop-blur-md',
@@ -80,22 +103,23 @@ export function LearningHud({ visible }: Props) {
           )}
         >
           {shockActive ? (
-            <p className="text-xs font-semibold sm:text-sm">RCD tripped — you got shocked</p>
-          ) : !coverOpen ? (
+            <p className="text-xs font-semibold sm:text-sm">{bannerText}</p>
+          ) : !coverOpen && !(coarse && actionPrompt) ? (
             <p className="flex items-center justify-center gap-1.5 text-xs font-medium sm:text-sm">
               <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
-              Board locked — tap the cover (licensed only)
+              {bannerText}
             </p>
-          ) : tripReason === 'test' ? (
-            <p className="text-xs font-medium text-amber-700 dark:text-amber-300">RCD test trip</p>
           ) : (
-            <p className="text-xs font-medium sm:text-sm">
-              Cover open — avoid live red conductors
-            </p>
+            <p className="text-xs font-medium sm:text-sm">{bannerText}</p>
           )}
         </div>
-        {coarse && circuitList}
       </div>
+
+      {coarse && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-[max(8.75rem,calc(env(safe-area-inset-bottom)+7.75rem))] z-20 flex justify-center px-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]">
+          {circuitList}
+        </div>
+      )}
 
       {!coarse && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4">
@@ -103,7 +127,7 @@ export function LearningHud({ visible }: Props) {
             <div className="pointer-events-auto">
               {keysOpen ? (
                 <div className="chrome-border w-[13.5rem] rounded-xl border border-border/60 bg-background/92 p-2.5 shadow-lg backdrop-blur-md">
-                  <div className="mb-1.5 flex items-center justify-between">
+                  <div className="mb-1.5 flex items-center gap-1 justify-between">
                     <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
                       <Keyboard className="h-3 w-3" />
                       Controls

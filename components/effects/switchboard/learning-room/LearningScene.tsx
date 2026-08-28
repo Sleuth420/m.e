@@ -19,7 +19,7 @@ type Props = {
 };
 
 function LedBatten({ position }: { position: [number, number, number] }) {
-  const len = 0.48;
+  const len = BOARD_OPENING.z1 - BOARD_OPENING.z0 - 0.1;
   return (
     <group position={position}>
       <mesh castShadow>

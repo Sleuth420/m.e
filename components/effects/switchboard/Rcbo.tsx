@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { MathUtils, type Mesh } from 'three';
 import { MODULE_TARGET, MODULE_WELLS } from './assets/module-assets';
-import { BOARD, moduleBodyZ, rcboX, type CircuitPole } from './circuit-data';
+import { BOARD, circuitDisplayName, moduleBodyZ, rcboX, type CircuitPole } from './circuit-data';
 import { ROCKER_OFF, ROCKER_ON, useDampRotation } from './hooks/useDampRotation';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
@@ -36,7 +36,7 @@ export function Rcbo({
   disabled = false,
 }: Props) {
   const x = rcboX(circuit.index);
-  const face = useRcboFaceTexture(circuit.rating);
+  const face = useRcboFaceTexture(circuit.rating, circuitDisplayName(circuit.label));
   const leverRef = useDampRotation(on ? ROCKER_ON : ROCKER_OFF);
   const testRef = useRef<Mesh>(null);
   const testPress = useRef(0);
@@ -59,6 +59,7 @@ export function Rcbo({
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
+        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       {/* Thin face plate seated in the molded pocket (box, not a floating plane) */}
@@ -90,6 +91,24 @@ export function Rcbo({
 
       {/* Proud TEST button — blue pad + white T */}
       <group position={[0, wells.test.y, faceZ + wells.test.zPad]}>
+        <mesh
+          position={[0, 0, 0.04]}
+          renderOrder={9}
+          onClick={
+            disabled
+              ? undefined
+              : (e) =>
+                  onInteractiveClick(e, () => {
+                    testPress.current = 1;
+                    onTest();
+                  })
+          }
+          onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
+          onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
+        >
+          <boxGeometry args={[size.width * 1.05, 0.08, 0.08]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
         <mesh
           ref={testRef}
           castShadow={false}

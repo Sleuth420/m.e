@@ -6,6 +6,7 @@ import {
   useContext,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from 'react';
 
@@ -26,6 +27,8 @@ export type GameInputApi = {
   stunUntil: React.RefObject<number>;
   setStunned: (ms: number) => void;
   isStunned: () => boolean;
+  actionPrompt: string | null;
+  setActionPrompt: (prompt: string | null) => void;
 };
 
 const defaultKeys = (): MobileKeys => ({
@@ -44,6 +47,7 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
   const mobileKeys = useRef<MobileKeys>(defaultKeys());
   const interactQueued = useRef(false);
   const stunUntil = useRef(0);
+  const [actionPrompt, setActionPrompt] = useState<string | null>(null);
 
   const pulseInteract = useCallback(() => {
     interactQueued.current = true;
@@ -69,8 +73,10 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
       stunUntil,
       setStunned,
       isStunned,
+      actionPrompt,
+      setActionPrompt,
     }),
-    [pulseInteract, consumeInteract, setStunned, isStunned]
+    [pulseInteract, consumeInteract, setStunned, isStunned, actionPrompt]
   );
 
   return <GameInputContext.Provider value={value}>{children}</GameInputContext.Provider>;

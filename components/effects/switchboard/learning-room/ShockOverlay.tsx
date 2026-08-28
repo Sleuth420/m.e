@@ -22,7 +22,7 @@ export function ShockOverlay() {
       )}
       aria-live="assertive"
     >
-      <div className="mx-4 max-w-sm rounded-2xl border border-red-300/40 bg-black/80 px-5 py-4 text-center shadow-2xl backdrop-blur-md">
+      <div className="mx-4 max-w-sm rounded-2xl border border-red-300/40 bg-black/80 px-5 py-4 text-center shadow-2xl backdrop-blur-md max-sm:mb-[env(safe-area-inset-bottom)]">
         <Zap className="mx-auto h-10 w-10 text-yellow-300" strokeWidth={2.2} />
         <p className="mt-2 font-display text-xl font-bold text-red-100">{label}</p>
         <p className="mt-1 text-sm text-red-200/90">

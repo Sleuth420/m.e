@@ -72,6 +72,11 @@ export const CIRCUITS: CircuitPole[] = [
 /** Circuits that actually leave this board into the room. Spare poles stay capped. */
 export const ROOM_CIRCUIT_IDS = new Set(['hot-plates', 'wall-oven', 'power-1', 'light-1', 'fridge']);
 
+/** Strip the PROTECTED prefix used on schedule labels. */
+export function circuitDisplayName(label: string) {
+  return label.replace(/^PROTECTED\s+/i, '').trim();
+}
+
 export function modulePitch(): number {
   return BOARD.rcboWidth + BOARD.moduleGap;
 }

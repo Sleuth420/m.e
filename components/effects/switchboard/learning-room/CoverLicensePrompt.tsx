@@ -11,7 +11,7 @@ export function CoverLicensePrompt() {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 p-4 backdrop-blur-[2px] sm:items-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-[2px] sm:items-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby="cover-license-title"
@@ -36,13 +36,13 @@ export function CoverLicensePrompt() {
           <Button
             type="button"
             variant="outline"
-            className="min-h-11 gap-2"
+            className="min-h-11 touch-manipulation gap-2"
             onClick={denyCoverOpen}
           >
             <ShieldX className="h-4 w-4" />
             No — keep it shut
           </Button>
-          <Button type="button" className="min-h-11 gap-2" onClick={confirmCoverOpen}>
+          <Button type="button" className="min-h-11 touch-manipulation gap-2" onClick={confirmCoverOpen}>
             <ShieldCheck className="h-4 w-4" />
             Yes — I&apos;m licensed
           </Button>

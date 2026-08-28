@@ -33,89 +33,100 @@ function paperGrain(ctx: CanvasRenderingContext2D, w: number, h: number, alpha =
 export function useMainSwitchFaceTexture() {
   return useMemo(
     () =>
-      makeCanvas(256, 256, (ctx) => {
+      makeCanvas(512, 512, (ctx) => {
         ctx.fillStyle = '#e8e8ea';
-        ctx.fillRect(0, 0, 256, 256);
+        ctx.fillRect(0, 0, 512, 512);
 
         ctx.fillStyle = '#9b1c1c';
-        ctx.fillRect(20, 16, 216, 28);
+        ctx.fillRect(28, 28, 456, 64);
         ctx.fillStyle = '#fafafa';
-        ctx.font = '700 16px "Segoe UI", system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('MAIN', 128, 36);
+        ctx.font = '800 36px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('MAIN', 256, 72);
 
         ctx.fillStyle = '#27272a';
-        ctx.font = '600 14px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('ISOLATOR', 128, 72);
-        ctx.font = '700 36px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('63A', 128, 118);
-        ctx.font = '500 13px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('240V~  50Hz', 128, 148);
-        ctx.font = '400 11px "Segoe UI", system-ui, sans-serif';
+        ctx.font = '700 32px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('ISOLATOR', 256, 148);
+        ctx.font = '800 84px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('63A', 256, 248);
+        ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('240V~  50Hz', 256, 308);
+        ctx.font = '500 22px "Segoe UI", system-ui, sans-serif';
         ctx.fillStyle = '#52525b';
-        ctx.fillText('AS/NZS 60947.3', 128, 176);
+        ctx.fillText('AS/NZS 60947.3', 256, 360);
 
-        paperGrain(ctx, 256, 256, 0.04);
+        paperGrain(ctx, 512, 512, 0.04);
       }),
     []
   );
 }
 
-export function useRcboFaceTexture(rating: string) {
+export function useRcboFaceTexture(rating: string, circuitName = '') {
   return useMemo(
     () =>
-      makeCanvas(256, 256, (ctx) => {
+      makeCanvas(512, 512, (ctx) => {
         ctx.fillStyle = '#e8e8ea';
-        ctx.fillRect(0, 0, 256, 256);
+        ctx.fillRect(0, 0, 512, 512);
 
         ctx.fillStyle = '#1e4a8c';
-        ctx.fillRect(18, 14, 220, 26);
+        ctx.fillRect(24, 24, 464, 56);
         ctx.fillStyle = '#f8fafc';
-        ctx.font = '700 14px "Segoe UI", system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('RCBO', 128, 33);
+        ctx.font = '800 32px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('RCBO', 256, 64);
 
         ctx.fillStyle = '#27272a';
-        ctx.font = '600 13px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('MAX SERIES', 128, 64);
+        ctx.font = '800 80px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText(rating, 256, 176);
 
-        ctx.font = '700 34px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText(rating, 128, 108);
+        const name = circuitName.trim();
+        if (name) {
+          ctx.fillStyle = '#1e3a5f';
+          const words = name.split(' ');
+          if (words.length > 1 && name.length > 10) {
+            ctx.font = '800 28px "Segoe UI", system-ui, sans-serif';
+            ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 256, 236);
+            ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 256, 272);
+          } else {
+            ctx.font = '800 32px "Segoe UI", system-ui, sans-serif';
+            ctx.fillText(name, 256, 250);
+          }
+        }
 
-        ctx.font = '500 12px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('240V~   30mA   6kA', 128, 136);
-
+        ctx.fillStyle = '#3f3f46';
+        ctx.font = '600 24px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('240V~   30mA   6kA', 256, 330);
         ctx.fillStyle = '#52525b';
-        ctx.font = '400 10px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('AS/NZS 61009.1  Type A', 128, 168);
+        ctx.font = '500 20px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('AS/NZS 61009.1  Type A', 256, 372);
 
-        paperGrain(ctx, 256, 256, 0.04);
+        paperGrain(ctx, 512, 512, 0.04);
       }),
-    [rating]
+    [rating, circuitName]
   );
 }
 
 export function useCircuitLabelTexture(label: string) {
   return useMemo(
     () =>
-      makeCanvas(256, 96, (ctx) => {
+      makeCanvas(512, 192, (ctx) => {
         ctx.fillStyle = '#f4f1ea';
-        ctx.fillRect(0, 0, 256, 96);
+        ctx.fillRect(0, 0, 512, 192);
         ctx.fillStyle = '#1e3a5f';
-        ctx.fillRect(4, 4, 248, 88);
+        ctx.fillRect(8, 8, 496, 176);
         ctx.fillStyle = '#f8fafc';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const words = label.split(' ');
         if (words.length > 1 && label.length > 10) {
-          ctx.font = '700 22px "Segoe UI", system-ui, sans-serif';
-          ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 128, 34);
-          ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 128, 64);
+          ctx.font = '800 44px "Segoe UI", system-ui, sans-serif';
+          ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 256, 70);
+          ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 256, 126);
         } else {
-          ctx.font = '700 26px "Segoe UI", system-ui, sans-serif';
-          ctx.fillText(label, 128, 48);
+          ctx.font = '800 52px "Segoe UI", system-ui, sans-serif';
+          ctx.fillText(label, 256, 96);
         }
-        paperGrain(ctx, 256, 96, 0.06);
+        paperGrain(ctx, 512, 192, 0.06);
       }),
     [label]
   );

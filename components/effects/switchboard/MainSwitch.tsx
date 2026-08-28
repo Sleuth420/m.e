@@ -3,7 +3,7 @@
 import { MODULE_TARGET, MODULE_WELLS } from './assets/module-assets';
 import { BOARD, mainSwitchX, moduleBodyZ } from './circuit-data';
 import { ROCKER_OFF, ROCKER_ON, useDampRotation } from './hooks/useDampRotation';
-import { onInteractiveEnter, onInteractiveLeave } from './interaction';
+import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
 import { ModuleShell } from './parts/ModuleShell';
 import { RockerLever } from './parts/RockerLever';
@@ -35,6 +35,7 @@ export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disa
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover('main'))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
+        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       <mesh position={[0, wells.face.y, faceZ + wells.face.zPad]}>

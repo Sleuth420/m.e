@@ -393,7 +393,7 @@ function WallGpo({
         share
         envIntensity={live ? 1.15 : 1.05}
       />
-      {onToggle && <Hit onToggle={onToggle} size={[0.18, 0.12, 0.1]} />}
+      {onToggle && <Hit onToggle={onToggle} size={[0.24, 0.18, 0.14]} />}
     </group>
   );
 }

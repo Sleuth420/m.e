@@ -119,7 +119,7 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
         </mesh>
       )}
       <mesh>
-        <boxGeometry args={[0.14, 0.18, 0.1]} />
+        <boxGeometry args={[0.22, 0.28, 0.16]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
     </group>

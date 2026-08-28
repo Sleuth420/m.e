@@ -35,7 +35,8 @@ export const ROOM_LOADS = {
   induction: 'hot-plates',
 } as const;
 
-const BOARD_SCALE = 0.155;
+/** World scale so 13 poles read as a real consumer unit (~36 mm RCBO pitch). */
+const BOARD_SCALE = 0.23;
 
 export const BOARD_MOUNT = {
   scale: BOARD_SCALE,
@@ -298,4 +299,9 @@ export function nearPoint(px: number, pz: number, x: number, z: number, radius =
 
 export function nearBoard(px: number, pz: number): boolean {
   return nearPoint(px, pz, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z, 1.7);
+}
+
+/** Close enough to lean the camera into the poles for reading / tapping. */
+export function atBoard(px: number, pz: number): boolean {
+  return nearPoint(px, pz, BOARD_MOUNT.x + 0.55, BOARD_MOUNT.z, 1.05);
 }
