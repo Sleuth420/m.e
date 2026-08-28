@@ -79,15 +79,15 @@ export function LearningHud({ visible }: Props) {
   const hoveredName = coverOpen ? hoveredCircuitLabel(hovered) : null;
   const status = shockActive
     ? 'RCD tripped — you got shocked'
-    : !coverOpen
-      ? 'Board locked — tap the cover (licensed only)'
-      : tripReason === 'test'
-        ? 'RCD test trip'
-        : hoveredName
-          ? `${hoveredName} — tap rocker to isolate · TEST trips the RCD`
-          : 'Cover open — tap a breaker · avoid live red conductors';
+    : tripReason === 'test'
+      ? 'RCD test trip'
+      : hoveredName
+        ? `${hoveredName} — tap rocker to isolate · TEST trips the RCD`
+        : coverOpen
+          ? 'Cover open — tap a breaker · avoid live red conductors'
+          : 'Walk the install — fittings, GPOs, and the board all operate';
 
-  const bannerText = shockActive ? status : coarse && actionPrompt ? actionPrompt : status;
+  const bannerText = shockActive ? status : actionPrompt || status;
 
   return (
     <>
@@ -97,16 +97,14 @@ export function LearningHud({ visible }: Props) {
             'chrome-border max-w-md rounded-xl border px-3 py-2 text-center shadow-md backdrop-blur-md',
             shockActive
               ? 'border-red-400/50 bg-red-950/80 text-red-100'
-              : !coverOpen
+              : /licensed|cover|breaker|RCD/i.test(bannerText)
                 ? 'border-amber-400/40 bg-amber-950/75 text-amber-50'
                 : 'border-border/60 bg-background/88 text-foreground'
           )}
         >
-          {shockActive ? (
-            <p className="text-xs font-semibold sm:text-sm">{bannerText}</p>
-          ) : !coverOpen && !(coarse && actionPrompt) ? (
+          {shockActive || (!coverOpen && !actionPrompt) ? (
             <p className="flex items-center justify-center gap-1.5 text-xs font-medium sm:text-sm">
-              <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
+              {!shockActive && !actionPrompt && <ShieldAlert className="h-3.5 w-3.5 shrink-0" />}
               {bannerText}
             </p>
           ) : (

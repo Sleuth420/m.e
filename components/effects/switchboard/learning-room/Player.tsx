@@ -315,8 +315,10 @@ export function Player({
         }
       } else if (nearBoard(p.x, p.z)) {
         nextPrompt = coverOpen
-        ? 'Tap a breaker rocker · TEST trips the RCD'
-        : 'Tap the cover or Use · licensed only';
+          ? 'Tap a breaker rocker · TEST trips the RCD'
+          : 'Tap the cover or Use · licensed only';
+      } else {
+        nextPrompt = 'Walk to the board, the light switch, or the kitchen';
       }
       if (nextPrompt !== promptRef.current) {
         promptRef.current = nextPrompt;
