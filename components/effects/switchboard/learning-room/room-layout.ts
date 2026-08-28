@@ -120,8 +120,8 @@ export const FIXTURES = {
   dishwasher: { x: 3.33, y: 0, z: 0.3 },
   dwGpo: { x: 3.33, y: HEIGHTS.gpo, z: 0.02 },
   toaster: { x: 4.08, y: KITCHEN.benchH, z: 0.34 },
-  /** Type I double the toaster plugs into. */
-  gpoDouble: { x: 4.48, y: KITCHEN.splashGpoY, z: 0.02 },
+  /** Type I double the toaster plugs into — fully on the splash, left of the fridge gable. */
+  gpoDouble: { x: 4.32, y: KITCHEN.splashGpoY, z: 0.02 },
   /** Spare Type I double, left of the dishwasher. */
   gpoSingle: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.02 },
   fridge: { x: 5.1, y: 0, z: 0.38 },

@@ -254,23 +254,22 @@ function ToasterFlex({ live }: { live: boolean }) {
   const t = FIXTURES.toaster;
   const g = FIXTURES.gpoDouble;
   const bench = KITCHEN.benchH + BENCH_T;
+  const sy = KITCHEN.splashGpoY;
   return (
     <PathWire
       points={[
-        [t.x + 0.04, bench + 0.018, t.z + 0.02],
-        [t.x + 0.1, bench + 0.01, 0.42],
-        [t.x + 0.22, bench + 0.008, 0.22],
-        [g.x - 0.03, bench + 0.01, 0.1],
-        [g.x + 0.035, KITCHEN.splashGpoY - 0.08, 0.055],
-        [g.x + 0.038, KITCHEN.splashGpoY - 0.018, 0.048],
-        [g.x + 0.038, KITCHEN.splashGpoY - 0.012, 0.034],
+        [t.x + 0.06, bench + 0.022, t.z + 0.01],
+        [t.x + 0.16, bench + 0.006, 0.42],
+        [g.x - 0.14, bench + 0.006, 0.26],
+        [g.x - 0.08, sy + 0.008, 0.1],
+        [g.x - 0.045, sy + 0.008, 0.068],
+        [g.x - 0.03, sy + 0.008, 0.052],
       ]}
-      radius={0.0046}
+      radius={0.0042}
       material={mat}
       live={live}
-      segments={36}
-      oval={0.38}
-      sag
+      segments={20}
+      oval={1}
       soft={false}
     />
   );

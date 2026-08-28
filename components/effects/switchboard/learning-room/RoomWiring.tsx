@@ -5,14 +5,10 @@ import { MeshStandardMaterial } from 'three';
 import type { Vec3 } from '../circuit-data';
 import { PathWire } from '../wiring/PathWire';
 import {
-  BOARD_OPENING,
   FIXTURES,
   HEIGHTS,
   KITCHEN,
-  ROOM,
   ROOM_LOADS,
-  boardWallStudZs,
-  fridgeWallStudXs,
   worldGland,
 } from './room-layout';
 
@@ -31,49 +27,6 @@ type Props = {
   liveById: Record<string, boolean>;
   isolatorOn: boolean;
 };
-
-type BoardRun = { y: number; z0: number; z1: number };
-type KitchenRun = { y: number; x0: number; x1: number };
-
-function between(a: number, b: number, p: number, pad = 0.03) {
-  const lo = Math.min(a, b) + pad;
-  const hi = Math.max(a, b) - pad;
-  return p > lo && p < hi;
-}
-
-function CableBores({ boardRuns, kitchenRuns }: { boardRuns: BoardRun[]; kitchenRuns: KitchenRun[] }) {
-  const s = ROOM.studSize;
-  const cx = HEIGHTS.cavityX;
-  const cz = HEIGHTS.cavityZ;
-  const hole = 0.012;
-  return (
-    <group>
-      {boardWallStudZs().map((z) => {
-        if (z > BOARD_OPENING.z0 - 0.04 && z < BOARD_OPENING.z1 + 0.04) return null;
-        return boardRuns.map((run) => {
-          if (!between(run.z0, run.z1, z)) return null;
-          return (
-            <mesh key={`bz-${z}-${run.y}-${run.z0}`} position={[cx, run.y, z]} rotation={[Math.PI / 2, 0, 0]}>
-              <cylinderGeometry args={[hole, hole, s + 0.01, 8]} />
-              <meshStandardMaterial color="#2a261c" roughness={1} />
-            </mesh>
-          );
-        });
-      })}
-      {fridgeWallStudXs().map((x) =>
-        kitchenRuns.map((run) => {
-          if (!between(run.x0, run.x1, x)) return null;
-          return (
-            <mesh key={`fx-${x}-${run.y}-${run.x0}`} position={[x, run.y, cz]} rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[hole, hole, s + 0.01, 8]} />
-              <meshStandardMaterial color="#2a261c" roughness={1} />
-            </mesh>
-          );
-        }),
-      )}
-    </group>
-  );
-}
 
 const OVAL = 0.36;
 
@@ -174,23 +127,6 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
     [FIXTURES.fridgeGpo.x, HEIGHTS.splashGpoY, cz],
   ]);
 
-  const boardRuns: BoardRun[] = [
-    { y: HEIGHTS.switch, z0: lightingGland[2], z1: sw.z },
-    { y: HEIGHTS.light, z0: l1.z, z1: sw.z },
-    { y: HEIGHTS.splashGpoY, z0: powerGland[2], z1: cz },
-    { y: HEIGHTS.fridgeY, z0: fridgeGland[2], z1: cz },
-    { y: HEIGHTS.inductionY, z0: inductionGland[2], z1: cz },
-    { y: HEIGHTS.ovenY, z0: ovenGland[2], z1: cz },
-  ];
-
-  const kitchenRuns: KitchenRun[] = [
-    { y: HEIGHTS.splashGpoY, x0: 0.38, x1: FIXTURES.gpoDouble.x },
-    { y: HEIGHTS.fridgeY, x0: 0.38, x1: FIXTURES.fridgeGpo.x },
-    { y: HEIGHTS.inductionY, x0: 0.38, x1: FIXTURES.cookIsolator.x },
-    { y: HEIGHTS.ovenY, x0: 0.38, x1: FIXTURES.oven.x },
-    { y: 0.99, x0: FIXTURES.cookIsolator.x, x1: FIXTURES.cooktop.x },
-  ];
-
   const tps = { sag: true, oval: OVAL, soft: false as const };
 
   return (
@@ -218,7 +154,6 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
         oval={OVAL}
         soft={false}
       />
-      <CableBores boardRuns={boardRuns} kitchenRuns={kitchenRuns} />
     </group>
   );
 }
