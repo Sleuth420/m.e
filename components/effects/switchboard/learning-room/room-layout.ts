@@ -106,7 +106,8 @@ export const KITCHEN_BAYS = {
 } as const;
 
 export const FIXTURES = {
-  lightSwitch: { x: 0.006, y: HEIGHTS.switch, z: 0.52 },
+  /** Board (z≈5.35) → this switch → papers/lights → kitchen. */
+  lightSwitch: { x: 0.006, y: HEIGHTS.switch, z: 4.5 },
   wallLight1: { x: 0.022, y: HEIGHTS.light, z: 3.25 },
   wallLight2: { x: 0.022, y: HEIGHTS.light, z: 3.95 },
   portrait1: { x: 0.014, y: HEIGHTS.portrait, z: 3.25 },
@@ -119,8 +120,10 @@ export const FIXTURES = {
   dishwasher: { x: 3.33, y: 0, z: 0.3 },
   dwGpo: { x: 3.33, y: HEIGHTS.gpo, z: 0.02 },
   toaster: { x: 4.08, y: KITCHEN.benchH, z: 0.34 },
-  gpoDouble: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.02 },
-  gpoSingle: { x: 4.48, y: KITCHEN.splashGpoY, z: 0.02 },
+  /** Type I double the toaster plugs into. */
+  gpoDouble: { x: 4.48, y: KITCHEN.splashGpoY, z: 0.02 },
+  /** Spare Type I double, left of the dishwasher. */
+  gpoSingle: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.02 },
   fridge: { x: 5.1, y: 0, z: 0.38 },
   fridgeGpo: { x: 4.95, y: KITCHEN.splashGpoY, z: 0.02 },
 } as const;
@@ -155,9 +158,9 @@ export const KITCHEN_INTERACTS: {
   promptOpen: string;
   promptClose: string;
 }[] = [
-  { id: 'switch', x: FIXTURES.lightSwitch.x, y: FIXTURES.lightSwitch.y, z: FIXTURES.lightSwitch.z, r: 1.2, priority: 2, promptOpen: 'F · Light switch', promptClose: 'F · Light switch' },
+  { id: 'switch', x: FIXTURES.lightSwitch.x, y: FIXTURES.lightSwitch.y, z: FIXTURES.lightSwitch.z, r: 0.7, priority: 2, promptOpen: 'F · Lights on', promptClose: 'F · Lights off' },
   { id: 'sink', x: FIXTURES.sink.x, y: FIXTURES.sink.y + 0.2, z: 0.55, r: 0.95, priority: 2, promptOpen: 'F · Run the tap', promptClose: 'F · Stop tap' },
-  { id: 'gpoDouble', x: FIXTURES.gpoDouble.x, y: FIXTURES.gpoDouble.y, z: 0.55, r: 0.9, priority: 2, promptOpen: 'F · Plug / toast', promptClose: 'F · Pop toaster' },
+  { id: 'gpoDouble', x: FIXTURES.gpoDouble.x, y: FIXTURES.gpoDouble.y, z: 0.55, r: 0.85, priority: 2, promptOpen: 'F · Plug / toast', promptClose: 'F · Pop toaster' },
   { id: 'toaster', x: FIXTURES.toaster.x, y: FIXTURES.toaster.y, z: FIXTURES.toaster.z, r: 0.9, priority: 2, promptOpen: 'F · Toast', promptClose: 'F · Pop toaster' },
   { id: 'cookIsolator', x: FIXTURES.cookIsolator.x, y: FIXTURES.cookIsolator.y, z: 0.55, r: 1.0, priority: 2, promptOpen: 'F · Cooktop isolator', promptClose: 'F · Cooktop isolator' },
   { id: 'cooktop', x: FIXTURES.cooktop.x, y: FIXTURES.cooktop.y, z: 0.55, r: 0.75, priority: 2, promptOpen: 'F · Boil the pot', promptClose: 'F · Take pot off' },

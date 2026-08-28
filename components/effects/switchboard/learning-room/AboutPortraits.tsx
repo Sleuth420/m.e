@@ -111,10 +111,10 @@ function SitePaper({ portrait, lightsOn }: { portrait: Portrait; lightsOn: boole
           map={paper.map}
           normalMap={paper.normalMap}
           roughnessMap={paper.roughnessMap}
-          color={lightsOn ? '#fffaf2' : '#b4afa6'}
+          color={lightsOn ? '#fffaf2' : '#5c5852'}
           roughness={0.86}
           metalness={0}
-          envMapIntensity={lightsOn ? 0.62 : 0.2}
+          envMapIntensity={lightsOn ? 0.62 : 0.08}
           normalScale={[0.28, 0.28]}
         />
       </mesh>
@@ -123,10 +123,10 @@ function SitePaper({ portrait, lightsOn }: { portrait: Portrait; lightsOn: boole
         <meshStandardMaterial
           map={print}
           transparent
-          color={lightsOn ? '#ffffff' : '#a8a49c'}
+          color={lightsOn ? '#ffffff' : '#3f3c38'}
           roughness={0.78}
           metalness={0}
-          envMapIntensity={lightsOn ? 0.55 : 0.18}
+          envMapIntensity={lightsOn ? 0.55 : 0.06}
           emissive={lightsOn ? '#e8dcc0' : '#000000'}
           emissiveIntensity={lightsOn ? 0.03 : 0}
         />

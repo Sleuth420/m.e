@@ -251,16 +251,18 @@ export function Player({
 
       if (consumeInteract()) {
         const { x, z } = pose.current;
-        if (nearBoard(x, z) && !coverOpen) {
+        const hit = nearestKitchenInteract(
+          x,
+          z,
+          [],
+          zoom.current.hold || zoom.current.amount > 0.25 || m.inspect
+        );
+        if (hit?.id === 'switch') {
+          onInteract('switch');
+        } else if (nearBoard(x, z) && !coverOpen) {
           requestCoverOpen();
-        } else {
-          const hit = nearestKitchenInteract(
-            x,
-            z,
-            [],
-            zoom.current.hold || zoom.current.amount > 0.25 || m.inspect
-          );
-          if (hit) onInteract(hit.id);
+        } else if (hit) {
+          onInteract(hit.id);
         }
       }
 

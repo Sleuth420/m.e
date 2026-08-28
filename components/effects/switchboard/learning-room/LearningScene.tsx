@@ -79,7 +79,7 @@ function GalleryLighting() {
 
 function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const { liveById } = useSwitchboard();
-  const [lightSwitchOn, setLightSwitchOn] = useState(true);
+  const [lightSwitchOn, setLightSwitchOn] = useState(false);
   const [fridgeOpen, setFridgeOpen] = useState(false);
   const [toasterPop, setToasterPop] = useState(false);
   const [isolatorOn, setIsolatorOn] = useState(true);

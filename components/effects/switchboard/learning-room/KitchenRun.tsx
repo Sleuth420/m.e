@@ -35,7 +35,6 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
-import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type KitchenInteractId } from './room-layout';
 
 function Hit({
@@ -253,7 +252,7 @@ function ToasterFlex({ live }: { live: boolean }) {
     [],
   );
   const t = FIXTURES.toaster;
-  const g = FIXTURES.gpoSingle;
+  const g = FIXTURES.gpoDouble;
   const bench = KITCHEN.benchH + BENCH_T;
   return (
     <PathWire
@@ -261,10 +260,10 @@ function ToasterFlex({ live }: { live: boolean }) {
         [t.x + 0.04, bench + 0.018, t.z + 0.02],
         [t.x + 0.1, bench + 0.01, 0.42],
         [t.x + 0.22, bench + 0.008, 0.22],
-        [g.x - 0.02, bench + 0.01, 0.08],
-        [g.x, KITCHEN.splashGpoY - 0.09, 0.04],
-        [g.x, KITCHEN.splashGpoY - 0.058, 0.036],
-        [g.x, KITCHEN.splashGpoY - 0.05, 0.026],
+        [g.x - 0.03, bench + 0.01, 0.1],
+        [g.x + 0.035, KITCHEN.splashGpoY - 0.08, 0.055],
+        [g.x + 0.038, KITCHEN.splashGpoY - 0.018, 0.048],
+        [g.x + 0.038, KITCHEN.splashGpoY - 0.012, 0.034],
       ]}
       radius={0.0046}
       material={mat}
@@ -377,20 +376,16 @@ function WallGpo({
   position,
   onToggle,
   live = false,
-  gang = 'double',
 }: {
   position: [number, number, number];
   onToggle?: () => void;
   live?: boolean;
-  gang?: 'single' | 'double';
 }) {
-  const url = gang === 'single' ? ROOM_GLB.gpoSingle : ROOM_GLB.gpoDouble;
-  const typeI = useTypeIPlateMaterial();
-  const maxSize: [number, number, number] = gang === 'single' ? [0.08, 0.122, 0.03] : [0.155, 0.1, 0.032];
+  const maxSize: [number, number, number] = [0.155, 0.1, 0.032];
   return (
     <group position={position}>
       <FittedGltf
-        url={url}
+        url={ROOM_GLB.gpoDouble}
         maxSize={maxSize}
         position={[0, 0, 0]}
         rotation={[0, 0, 0]}
@@ -398,7 +393,6 @@ function WallGpo({
         pin="back"
         share
         envIntensity={live ? 1.15 : 1.05}
-        onReady={gang === 'single' ? (root) => paintPlatesFromTypeI(root, typeI) : undefined}
       />
       {onToggle && <Hit onToggle={onToggle} size={[0.18, 0.12, 0.1]} />}
     </group>
@@ -864,9 +858,9 @@ export function KitchenRun({
         live={powerLive}
         onToggle={powerLive ? onToggleToaster : undefined}
       />
-      <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} gang="single" />
-      <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} gang="single" />
-      <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} gang="single" />
+      <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} />
+      <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} />
+      <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} />
       <CookIsolator
         position={[FIXTURES.cookIsolator.x, splashY, splashZ]}
         on={isolatorOn}
@@ -903,7 +897,6 @@ loadKeptGltf(ROOM_GLB.toaster);
 loadKeptGltf(ROOM_GLB.sink);
 loadKeptGltf(ROOM_GLB.tap);
 loadKeptGltf(ROOM_GLB.gpoDouble);
-loadKeptGltf(ROOM_GLB.gpoSingle);
 loadKeptGltf(ROOM_GLB.dishwasher);
 loadKeptGltf(ROOM_GLB.hood);
 loadKeptGltf(ROOM_GLB.pot);
