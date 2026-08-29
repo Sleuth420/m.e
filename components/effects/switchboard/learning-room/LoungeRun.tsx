@@ -115,7 +115,7 @@ function LoungeTelevision({ on }: { on: boolean }) {
 function Rug() {
   const maps = useRepeatingPbr(POLYHAVEN.knittedFleece, [3.4, 2.6]);
   const { x, w, d, z } = LOUNGE.rug;
-  const h = 0.012;
+  const h = 0.02;
   return (
     <mesh position={[x + w / 2, h / 2, z + d / 2]} receiveShadow>
       <boxGeometry args={[w, h, d]} />
@@ -285,7 +285,6 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         live={powerLive}
         segments={24}
         oval={1}
-        sag
         soft={false}
       />
 

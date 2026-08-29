@@ -188,9 +188,9 @@ function TiledSplash({ x, w, h, z }: { x: number; w: number; h: number; z: numbe
       <boxGeometry args={[w, h, t]} />
       <meshStandardMaterial
         map={map}
-        roughness={0.42}
-        metalness={0.04}
-        envMapIntensity={0.95}
+        roughness={0.58}
+        metalness={0.02}
+        envMapIntensity={0.72}
       />
     </mesh>
   );
@@ -241,12 +241,6 @@ function UnderCabinetLed({ x0, x1, live }: { x0: number; x1: number; live: boole
           roughness={0.3}
         />
       </mesh>
-      {live && (
-        <>
-          <pointLight position={[cx - w * 0.22, y - 0.04, z + 0.12]} intensity={0.2} distance={1.55} color="#fff4dc" />
-          <pointLight position={[cx + w * 0.22, y - 0.04, z + 0.12]} intensity={0.2} distance={1.55} color="#fff4dc" />
-        </>
-      )}
     </group>
   );
 }
@@ -875,7 +869,7 @@ export function KitchenRun({
       {hobLive && boiling && (
         <pointLight position={[cookX, benchY + 0.18, 0.3]} intensity={0.18} distance={0.5} color="#fdba74" />
       )}
-      {powerLive && <pointLight position={[hood.x, 1.48, 0.28]} intensity={0.55} distance={2.2} color="#f4f1ea" />}
+      {powerLive && <pointLight position={[hood.x, 1.48, 0.28]} intensity={0.28} distance={2.6} color="#f4f1ea" />}
       {powerLive && toasterPop && (
         <pointLight position={[toasterX, benchY + 0.26, 0.34]} intensity={0.35} distance={1.1} color="#fde68a" />
       )}
