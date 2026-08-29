@@ -275,14 +275,13 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
       />
       <PathWire
         points={[
-          [tv.x + 0.56, cab.h + 0.28, ROOM.depth - 0.08],
-          [tv.x + 0.64, cab.h + 0.08, ROOM.depth - 0.05],
-          [tv.x + 0.72, cab.h + 0.035, ROOM.depth - 0.042],
-          [gpo.x - 0.1, cab.h + 0.032, ROOM.depth - 0.04],
-          [gpo.x + 0.01, gpo.y + 0.05, ROOM.depth - 0.028],
-          [gpo.x, gpo.y - 0.01, ROOM.depth - 0.016],
+          [tv.x + 0.58, cab.h + 0.22, ROOM.depth - 0.06],
+          [tv.x + 0.66, cab.h + 0.03, ROOM.depth - 0.046],
+          [gpo.x - 0.12, cab.h + 0.028, ROOM.depth - 0.038],
+          [gpo.x + 0.02, gpo.y + 0.04, ROOM.depth - 0.024],
+          [gpo.x, gpo.y - 0.008, ROOM.depth - 0.014],
         ]}
-        radius={0.005}
+        radius={0.006}
         material={flex}
         live={powerLive}
         segments={24}

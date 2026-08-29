@@ -178,12 +178,14 @@ export function Player({
       if (e.repeat) return;
       if (e.code === 'KeyF' || e.code === 'Enter') {
         const { x, z } = pose.current;
-        if (nearBoard(x, z) && !coverOpen) {
-          requestCoverOpen();
+        const hit = nearestRoomInteract(x, z, [], zoom.current.hold || zoom.current.amount > 0.25);
+        if (hit) {
+          onInteract(hit.id);
           return;
         }
-        const hit = nearestRoomInteract(x, z, [], zoom.current.hold || zoom.current.amount > 0.25);
-        if (hit) onInteract(hit.id);
+        if (nearBoard(x, z) && !coverOpen) {
+          requestCoverOpen();
+        }
       }
     };
     const onUp = (e: KeyboardEvent) => setKey(e.code, false);
