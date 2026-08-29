@@ -262,10 +262,11 @@ export function FittedGltf({
         <group rotation={rotation}>
           <group ref={wrap} position={fitResult.localOffset} scale={fitResult.scale}>
             <Clone object={source} castShadow receiveShadow />
+            {/* Children share the fitted model frame (scale + pin + rotation). */}
+            {children}
           </group>
         </group>
       </group>
-      {children}
     </group>
   );
 }

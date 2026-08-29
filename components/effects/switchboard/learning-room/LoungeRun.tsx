@@ -2,8 +2,8 @@
 
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
-import { Color, Group, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { useMemo } from 'react';
+import { CanvasTexture, Color, Group, Mesh, MeshStandardMaterial, Object3D, SRGBColorSpace } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { PathWire } from '../wiring/PathWire';
 import { DimmerSwitch } from './DimmerSwitch';
@@ -35,18 +35,66 @@ function Hit({
   );
 }
 
+function TvScreen({ on, width, height }: { on: boolean; width: number; height: number }) {
+  const map = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 768;
+    canvas.height = 432;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('2D context unavailable');
+    const g = ctx.createLinearGradient(0, 0, 768, 432);
+    g.addColorStop(0, '#1b3a5c');
+    g.addColorStop(0.45, '#2a6a8a');
+    g.addColorStop(1, '#0f1720');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 768, 432);
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.fillRect(40, 48, 420, 240);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('HDMI 1  ·  Lounge', 56, 92);
+    ctx.font = '500 18px "Segoe UI", system-ui, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('Open-plan living  ·  65"', 56, 128);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(56, 168, 8, 8);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.font = '500 16px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('Live', 74, 176);
+    const texture = new CanvasTexture(canvas);
+    texture.colorSpace = SRGBColorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+
+  return (
+    <mesh receiveShadow renderOrder={2}>
+      <planeGeometry args={[width, height]} />
+      <meshStandardMaterial
+        map={on ? map : null}
+        emissive={on ? '#8ecae6' : '#000000'}
+        emissiveMap={on ? map : null}
+        emissiveIntensity={on ? 0.65 : 0}
+        roughness={on ? 0.22 : 0.12}
+        metalness={0.04}
+        transparent={false}
+        depthWrite
+        polygonOffset
+        polygonOffsetFactor={-2}
+        polygonOffsetUnits={-2}
+        color={on ? '#ffffff' : '#050506'}
+      />
+    </mesh>
+  );
+}
+
+/**
+ * Samsung GLB screen in scene-root metres (Sketchfab Rx(-90) already applied).
+ * Overlay is a FittedGltf child, so it inherits contain scale / pin / Ry(π).
+ */
+const TV_SCREEN = { x: 0.13, y: 0.57, z: 0.056, w: 1.42, h: 0.78 };
+
 function LoungeTelevision({ on }: { on: boolean }) {
-  const mats = useRef<MeshStandardMaterial[]>([]);
-  const onRef = useRef(on);
-  onRef.current = on;
-  useFrame(() => {
-    const live = onRef.current;
-    for (const m of mats.current) {
-      if (!m.emissive) continue;
-      m.emissive.set(live ? '#7eb6d4' : '#000000');
-      m.emissiveIntensity = live ? 0.4 : 0;
-    }
-  });
   const cab = LOUNGE.cab;
   const tv = FIXTURES.tv;
   return (
@@ -59,21 +107,12 @@ function LoungeTelevision({ on }: { on: boolean }) {
         align="bottom"
         pin="front"
         fit="contain"
-        onReady={(root) => {
-          const found: MeshStandardMaterial[] = [];
-          root.traverse((obj) => {
-            const mesh = obj as Mesh;
-            if (!mesh.isMesh) return;
-            const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-            for (const mat of list) {
-              const m = mat as MeshStandardMaterial;
-              if (m?.emissive) found.push(m);
-            }
-          });
-          mats.current = found;
-        }}
-      />
-      {on && <pointLight position={[0, 0.42, -0.38]} intensity={0.55} distance={2.4} color="#9ec9e0" />}
+      >
+        <group position={[TV_SCREEN.x, TV_SCREEN.y, TV_SCREEN.z]}>
+          <TvScreen on={on} width={TV_SCREEN.w} height={TV_SCREEN.h} />
+          {on && <pointLight position={[0, 0, 0.18]} intensity={0.55} distance={2.4} color="#9ec9e0" />}
+        </group>
+      </FittedGltf>
     </group>
   );
 }
@@ -205,8 +244,8 @@ type Props = {
 };
 
 export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, onToggleTv }: Props) {
-  const sheath = useMemo(
-    () => new MeshStandardMaterial({ color: '#f3f0e8', roughness: 0.55, metalness: 0.03 }),
+  const flex = useMemo(
+    () => new MeshStandardMaterial({ color: '#1c1d20', roughness: 0.64, metalness: 0.06 }),
     [],
   );
   const lightsOn = lightLive && dimmer > 0.04;
@@ -236,15 +275,17 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
       />
       <PathWire
         points={[
-          [tv.x + 0.22, cab.h + 0.12, zFront + 0.08],
-          [tv.x + 0.38, cab.h + 0.02, zFront + 0.12],
-          [gpo.x - 0.04, cab.h + 0.02, zFront + 0.18],
-          [gpo.x, gpo.y - 0.02, ROOM.depth - 0.04],
+          [tv.x + 0.56, cab.h + 0.28, ROOM.depth - 0.08],
+          [tv.x + 0.64, cab.h + 0.08, ROOM.depth - 0.05],
+          [tv.x + 0.72, cab.h + 0.035, ROOM.depth - 0.042],
+          [gpo.x - 0.1, cab.h + 0.032, ROOM.depth - 0.04],
+          [gpo.x + 0.01, gpo.y + 0.05, ROOM.depth - 0.028],
+          [gpo.x, gpo.y - 0.01, ROOM.depth - 0.016],
         ]}
-        radius={0.004}
-        material={sheath}
+        radius={0.005}
+        material={flex}
         live={powerLive}
-        segments={16}
+        segments={24}
         oval={1}
         soft={false}
       />

@@ -150,9 +150,9 @@ export const LOUNGE = {
   cab: { x: 2.12, w: 1.6, h: 0.45, depth: 0.44, kickH: 0.08 },
   /** ~65" panel after contain. */
   tv: { w: 1.45, h: 0.85, d: 0.3 },
-  table: { x: 2.32, w: 1.2, d: 0.6, h: 0.39, z: 5.42 },
-  couch: { x: 1.48, w: 2.75, d: 0.9, seatH: 0.42, z: 4.22 },
-  rug: { x: 1.28, w: 3.2, d: 2.5, z: 4.08 },
+  table: { x: 2.32, w: 1.2, d: 0.6, h: 0.39, z: 5.18 },
+  couch: { x: 1.48, w: 2.75, d: 0.9, seatH: 0.42, z: 4.05 },
+  rug: { x: 1.28, w: 3.2, d: 2.55, z: 3.92 },
 } as const;
 
 export type KitchenInteractId =
