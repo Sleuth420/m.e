@@ -60,10 +60,11 @@ export const POLYHAVEN = {
     nor: '/models/learning-room/polyhaven/textures/oak-veneer/oak_veneer_01_nor_gl_1k.jpg',
     arm: '/models/learning-room/polyhaven/textures/oak-veneer/oak_veneer_01_arm_1k.jpg',
   },
-  dirtyCarpet: {
-    diff: '/models/learning-room/polyhaven/textures/dirty_carpet/dirty_carpet_diff_1k.jpg',
-    nor: '/models/learning-room/polyhaven/textures/dirty_carpet/dirty_carpet_nor_gl_1k.jpg',
-    rough: '/models/learning-room/polyhaven/textures/dirty_carpet/dirty_carpet_rough_1k.jpg',
+  /** Poly Haven CC0 — charcoal rib knit for the lounge rug. */
+  knittedFleece: {
+    diff: '/models/learning-room/polyhaven/textures/knitted-fleece/knitted_fleece_diff_1k.jpg',
+    nor: '/models/learning-room/polyhaven/textures/knitted-fleece/knitted_fleece_nor_gl_1k.jpg',
+    rough: '/models/learning-room/polyhaven/textures/knitted-fleece/knitted_fleece_rough_1k.jpg',
   },
   pine: {
     diff: '/models/learning-room/polyhaven/textures/pine/coated_pine_diff_1k.jpg',

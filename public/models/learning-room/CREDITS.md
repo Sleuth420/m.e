@@ -48,7 +48,7 @@ Same source as the pliers avatar. https://polyhaven.com
 | `ambientcg/foil-001/` | [Foil 001](https://ambientcg.com/a/Foil001) | CC0 |
 | `ambientcg/paper-004/` | [Paper 004](https://ambientcg.com/a/Paper004) | CC0 |
 | `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
-| `polyhaven/textures/dirty_carpet/dirty_carpet_*_1k.jpg` | [Dirty Carpet](https://polyhaven.com/a/dirty_carpet) | CC0 |
+| `polyhaven/textures/knitted-fleece/knitted_fleece_*_1k.jpg` | [Knitted Fleece](https://polyhaven.com/a/knitted_fleece) | CC0 |
 | `polyhaven/modern_coffee_table_01/` | [Modern Coffee Table 01](https://polyhaven.com/a/modern_coffee_table_01) | CC0 |
 | `polyhaven/textures/oak-veneer/oak_veneer_01_*_1k.jpg` | [Oak Veneer 01](https://polyhaven.com/a/oak_veneer_01) | CC0 |
 | `polyhaven/textures/pine/coated_pine_*_1k.jpg` | [Coated Pine](https://polyhaven.com/a/coated_pine) | CC0 |

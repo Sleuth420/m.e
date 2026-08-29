@@ -118,7 +118,7 @@ function LoungeTelevision({ on }: { on: boolean }) {
 }
 
 function Rug() {
-  const maps = useRepeatingPbr(POLYHAVEN.dirtyCarpet, [2.2, 1.5]);
+  const maps = useRepeatingPbr(POLYHAVEN.knittedFleece, [3.4, 2.6]);
   const { x, w, d, z } = LOUNGE.rug;
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[x + w / 2, 0.01, z + d / 2]} receiveShadow>
@@ -127,10 +127,11 @@ function Rug() {
         map={maps.map}
         normalMap={maps.normalMap}
         roughnessMap={maps.roughnessMap}
-        roughness={0.92}
+        color="#9aa3ad"
+        roughness={0.94}
         metalness={0.02}
-        envMapIntensity={0.35}
-        normalScale={[0.35, 0.35]}
+        envMapIntensity={0.28}
+        normalScale={[0.55, 0.55]}
       />
     </mesh>
   );
@@ -286,6 +287,7 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         live={powerLive}
         segments={24}
         oval={1}
+        sag
         soft={false}
       />
 
