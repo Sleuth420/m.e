@@ -19,6 +19,9 @@ These are real third-party product models, CC Attribution. Downloaded from the
 | `real/toaster.glb` | Smeg Toaster | CC BY 4.0 | [646838d](https://sketchfab.com/3d-models/smeg-toaster-646838d76f204c83ae952e049f2948b1) |
 | `real/gpo-double.glb` | Wall Power Outlet - Type I | CC BY 4.0 | [7153932](https://sketchfab.com/3d-models/wall-power-outlet-type-i-71539323436c4d93a1532f4cb76252a8) |
 | `real/switch.glb` | Simple Light Switch | CC BY 4.0 | [32d02fa](https://sketchfab.com/3d-models/simple-light-switch-32d02fa06d474f4db5a433aa134be612) |
+| `real/sofa-modern.glb` | Modern Couch | CC BY 4.0 | [9b1e09a](https://sketchfab.com/3d-models/modern-couch-9b1e09abe5e34d6397937ebf59901898) |
+| `real/tv-samsung.glb` | SAMSUNG TV LED | CC BY 4.0 | [8e22d78](https://sketchfab.com/3d-models/samsung-tv-led-8e22d78be5f74745a3a48be07afe35e6) |
+| `real/tv-byas.glb` | IKEA BYAS TV bench | CC BY 4.0 | [97fa056](https://sketchfab.com/3d-models/byas-97fa0565dfdd4a23a53fb3b3d17d592b) |
 
 Sconce, 1-gang switch, cooktop isolator, rotary dimmer, and 1-gang GPO are generated in
 `sconce.glb` / `switch.glb` / `isolator.glb` / `dimmer.glb` / `gpo-single.glb` — extruded
@@ -27,9 +30,9 @@ No CC-BY AU C2000 rocker exists (`real/switch.glb` is a US toggle; do not use).
 Teaching walls are open timber (no plaster). Splash tiles stop short of the
 GPO line so kitchen TPS stays visible.
 Product models sit in the kitchen bays along z=0. The lounge on the opposite
-wall (z = room depth) uses Poly Haven CC0 furniture (sofa, coffee table,
-TV, wooden cabinet) plus a Type I GPO for the TV feed. Dimmers stay generated
-C2000 plates (no CC-BY AU rotary exists).
+wall (z = room depth) uses Sketchfab CC-BY furniture (same Objaverse source as
+the kitchen) plus a Poly Haven coffee table and Type I GPO for the TV feed.
+Dimmers stay generated C2000 plates (no CC-BY AU rotary exists).
 
 ## Poly Haven (CC0)
 
@@ -46,10 +49,7 @@ Same source as the pliers avatar. https://polyhaven.com
 | `ambientcg/paper-004/` | [Paper 004](https://ambientcg.com/a/Paper004) | CC0 |
 | `polyhaven/textures/laminate/laminate_floor_02_*_1k.jpg` | [Laminate Floor 02](https://polyhaven.com/a/laminate_floor_02) | CC0 |
 | `polyhaven/textures/dirty_carpet/dirty_carpet_*_1k.jpg` | [Dirty Carpet](https://polyhaven.com/a/dirty_carpet) | CC0 |
-| `polyhaven/sofa_03/` | [Sofa 03](https://polyhaven.com/a/sofa_03) | CC0 |
 | `polyhaven/modern_coffee_table_01/` | [Modern Coffee Table 01](https://polyhaven.com/a/modern_coffee_table_01) | CC0 |
-| `polyhaven/television_02/` | [Television 02](https://polyhaven.com/a/television_02) | CC0 |
-| `polyhaven/modern_wooden_cabinet/` | [Modern Wooden Cabinet](https://polyhaven.com/a/modern_wooden_cabinet) | CC0 |
 | `polyhaven/textures/oak-veneer/oak_veneer_01_*_1k.jpg` | [Oak Veneer 01](https://polyhaven.com/a/oak_veneer_01) | CC0 |
 | `polyhaven/textures/pine/coated_pine_*_1k.jpg` | [Coated Pine](https://polyhaven.com/a/coated_pine) | CC0 |
 | `polyhaven/textures/plywood/plywood_*_1k.jpg` | [Plywood](https://polyhaven.com/a/plywood) | CC0 |

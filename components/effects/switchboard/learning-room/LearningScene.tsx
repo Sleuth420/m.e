@@ -191,12 +191,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           lightLive={loungeLightLive}
           dimmer={loungeDimmer}
           tvOn={tvOn}
-          openById={openById}
           onCycleDimmer={() => setLoungeDimmer(cycleDimmer)}
           onToggleTv={() => {
             if (loungePowerLive) setTvOn((v) => !v);
           }}
-          onToggle={toggleOpen}
         />
       </Suspense>
       <AboutPortraits lightsOn={lightsOn} />

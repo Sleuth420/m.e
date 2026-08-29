@@ -22,11 +22,11 @@ export const ROOM_GLB = {
   switch: '/models/learning-room/switch.glb?v=12',
   isolator: '/models/learning-room/isolator.glb?v=12',
   dimmer: '/models/learning-room/dimmer.glb?v=1',
-  /** Poly Haven CC0 lounge furniture — same library as the pliers. */
-  sofa: '/models/learning-room/polyhaven/sofa_03/sofa_03_1k.gltf?v=1',
+  /** Sketchfab CC-BY lounge furniture — same Objaverse source as the kitchen. */
+  sofa: '/models/learning-room/real/sofa-modern.glb?v=1',
   coffeeTable: '/models/learning-room/polyhaven/modern_coffee_table_01/modern_coffee_table_01_1k.gltf?v=1',
-  television: '/models/learning-room/polyhaven/television_02/television_02_1k.gltf?v=1',
-  tvCabinet: '/models/learning-room/polyhaven/modern_wooden_cabinet/modern_wooden_cabinet_1k.gltf?v=1',
+  television: '/models/learning-room/real/tv-samsung.glb?v=1',
+  tvCabinet: '/models/learning-room/real/tv-byas.glb?v=1',
   /** Poly Haven CC0 pliers — player avatar https://polyhaven.com/a/pliers */
   pliers: '/models/learning-room/real/pliers/pliers.gltf?v=4',
 } as const;

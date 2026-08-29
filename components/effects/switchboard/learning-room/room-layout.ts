@@ -137,20 +137,22 @@ export const FIXTURES = {
   loungeSconce1: { x: 1.38, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
   loungeSconce2: { x: 4.62, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
   loungeGpo: { x: 4.58, y: 1.18, z: ROOM.depth - 0.006 },
-  tv: { x: 3.0, y: 1.03, z: 6.62 },
+  /** Centre of the TV panel, sitting on the media unit. */
+  tv: { x: 2.92, y: 0.88, z: 6.72 },
 } as const;
 
 /**
- * Open-plan lounge on the far wall (z = ROOM.depth), facing the kitchen.
- * TV unit against the teaching wall; couch and table sit in the room.
+ * Open-plan lounge on the far wall (z = ROOM.depth). Sofa faces the TV.
+ * Sizes are native model bounds (contain, never stretch).
  */
 export const LOUNGE = {
-  /** Poly Haven modern wooden cabinet — native ~2.44 × 0.68 × 0.52. */
-  cab: { x: 1.78, w: 2.44, h: 0.68, depth: 0.52, kickH: 0.1 },
-  tv: { w: 0.92, h: 0.7, d: 0.28 },
-  table: { x: 2.4, w: 1.2, d: 0.6, h: 0.39, z: 5.7 },
-  couch: { x: 1.78, w: 2.44, d: 0.94, seatH: 0.42, z: 4.66 },
-  rug: { x: 1.38, w: 3.24, d: 2.18, z: 4.52 },
+  /** IKEA BYAS — native 1.60 × 0.45 × 0.44. */
+  cab: { x: 2.12, w: 1.6, h: 0.45, depth: 0.44, kickH: 0.08 },
+  /** ~65" panel after contain. */
+  tv: { w: 1.45, h: 0.85, d: 0.3 },
+  table: { x: 2.32, w: 1.2, d: 0.6, h: 0.39, z: 5.42 },
+  couch: { x: 1.48, w: 2.75, d: 0.9, seatH: 0.42, z: 4.22 },
+  rug: { x: 1.28, w: 3.2, d: 2.5, z: 4.08 },
 } as const;
 
 export type KitchenInteractId =
@@ -173,13 +175,7 @@ export type KitchenInteractId =
   | 'dw-upper'
   | 'cabR-upper';
 
-export type LoungeInteractId =
-  | 'loungeDimmerA'
-  | 'loungeDimmerB'
-  | 'tv'
-  | 'tvGpo'
-  | 'tv-cab-l'
-  | 'tv-cab-r';
+export type LoungeInteractId = 'loungeDimmerA' | 'loungeDimmerB' | 'tv' | 'tvGpo';
 
 export type RoomInteractId = KitchenInteractId | LoungeInteractId;
 
@@ -216,7 +212,6 @@ export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
 ];
 
 const cabFrontZ = ROOM.depth - LOUNGE.cab.depth;
-const cabDoorW = LOUNGE.cab.w / 2;
 
 export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
   {
@@ -258,26 +253,6 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
     priority: 2,
     promptOpen: 'F · TV on',
     promptClose: 'F · TV off',
-  },
-  {
-    id: 'tv-cab-l',
-    x: LOUNGE.cab.x + cabDoorW * 0.5,
-    y: 0.34,
-    z: cabFrontZ - 0.2,
-    r: 1.15,
-    priority: 1,
-    promptOpen: 'F · Open TV unit',
-    promptClose: 'F · Close TV unit',
-  },
-  {
-    id: 'tv-cab-r',
-    x: LOUNGE.cab.x + LOUNGE.cab.w - cabDoorW * 0.5,
-    y: 0.34,
-    z: cabFrontZ - 0.2,
-    r: 1.15,
-    priority: 1,
-    promptOpen: 'F · Open TV unit',
-    promptClose: 'F · Close TV unit',
   },
 ];
 

@@ -3,22 +3,13 @@
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
-import {
-  CanvasTexture,
-  Color,
-  Group,
-  MathUtils,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  SRGBColorSpace,
-} from 'three';
+import { Color, Group, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { PathWire } from '../wiring/PathWire';
 import { DimmerSwitch } from './DimmerSwitch';
 import { FittedGltf } from './FittedGltf';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
-import { FIXTURES, LOUNGE, ROOM, type LoungeInteractId } from './room-layout';
+import { FIXTURES, LOUNGE, ROOM } from './room-layout';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 
@@ -44,51 +35,46 @@ function Hit({
   );
 }
 
-function TvScreen({ on }: { on: boolean }) {
-  const map = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 768;
-    canvas.height = 432;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('2D context unavailable');
-    const g = ctx.createLinearGradient(0, 0, 768, 432);
-    g.addColorStop(0, '#1b3a5c');
-    g.addColorStop(0.45, '#2a6a8a');
-    g.addColorStop(1, '#0f1720');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 768, 432);
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    ctx.fillRect(40, 48, 420, 240);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('HDMI 1  ·  Lounge', 56, 92);
-    ctx.font = '500 18px "Segoe UI", system-ui, sans-serif';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText('Open-plan living  ·  65"', 56, 128);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(56, 168, 8, 8);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.font = '500 16px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('Live', 74, 176);
-    const texture = new CanvasTexture(canvas);
-    texture.colorSpace = SRGBColorSpace;
-    texture.needsUpdate = true;
-    return texture;
-  }, []);
-
+function LoungeTelevision({ on }: { on: boolean }) {
+  const mats = useRef<MeshStandardMaterial[]>([]);
+  const onRef = useRef(on);
+  onRef.current = on;
+  useFrame(() => {
+    const live = onRef.current;
+    for (const m of mats.current) {
+      if (!m.emissive) continue;
+      m.emissive.set(live ? '#7eb6d4' : '#000000');
+      m.emissiveIntensity = live ? 0.4 : 0;
+    }
+  });
+  const cab = LOUNGE.cab;
+  const tv = FIXTURES.tv;
   return (
-    <mesh receiveShadow>
-      <planeGeometry args={[0.38, 0.28]} />
-      <meshStandardMaterial
-        map={map}
-        emissive={on ? '#8ecae6' : '#000000'}
-        emissiveMap={on ? map : null}
-        emissiveIntensity={on ? 0.7 : 0}
-        roughness={0.22}
-        metalness={0.04}
-        color={on ? '#ffffff' : '#09090b'}
+    <group position={[tv.x, cab.h, ROOM.depth]}>
+      <FittedGltf
+        url={ROOM_GLB.television}
+        maxSize={[LOUNGE.tv.w, LOUNGE.tv.h, LOUNGE.tv.d]}
+        position={[0, 0, 0]}
+        rotation={[0, Math.PI, 0]}
+        align="bottom"
+        pin="front"
+        fit="contain"
+        onReady={(root) => {
+          const found: MeshStandardMaterial[] = [];
+          root.traverse((obj) => {
+            const mesh = obj as Mesh;
+            if (!mesh.isMesh) return;
+            const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            for (const mat of list) {
+              const m = mat as MeshStandardMaterial;
+              if (m?.emissive) found.push(m);
+            }
+          });
+          mats.current = found;
+        }}
       />
-    </mesh>
+      {on && <pointLight position={[0, 0.42, -0.38]} intensity={0.55} distance={2.4} color="#9ec9e0" />}
+    </group>
   );
 }
 
@@ -116,12 +102,12 @@ function Couch() {
   return (
     <FittedGltf
       url={ROOM_GLB.sofa}
-      maxSize={[w, 1.16, d]}
+      maxSize={[w, 0.88, d]}
       position={[x + w / 2, 0, z + d / 2]}
-      rotation={[0, Math.PI, 0]}
+      rotation={[0, 0, 0]}
       align="bottom"
       pin="center"
-      fit="width"
+      fit="contain"
     />
   );
 }
@@ -141,38 +127,17 @@ function CoffeeTable() {
   );
 }
 
-function TvUnit({ openById }: { openById: Partial<Record<LoungeInteractId, boolean>> }) {
-  const left = useRef<Object3D | null>(null);
-  const right = useRef<Object3D | null>(null);
+function TvUnit() {
   const { x, w, h, depth } = LOUNGE.cab;
-  useFrame((_, delta) => {
-    if (left.current) {
-      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, openById['tv-cab-l'] ? 1.2 : 0, 8, delta);
-    }
-    if (right.current) {
-      right.current.rotation.y = MathUtils.damp(
-        right.current.rotation.y,
-        openById['tv-cab-r'] ? Math.PI - 1.2 : Math.PI,
-        8,
-        delta,
-      );
-    }
-  });
   return (
     <FittedGltf
       url={ROOM_GLB.tvCabinet}
-      maxSize={[w, h + 0.04, depth]}
+      maxSize={[w, h + 0.02, depth]}
       position={[x + w / 2, 0, ROOM.depth]}
       rotation={[0, Math.PI, 0]}
       align="bottom"
-      pin="back"
-      fit="width"
-      onReady={(root) => {
-        root.traverse((obj) => {
-          if (obj.name === 'modern_wooden_cabinet_door_l') left.current = obj;
-          if (obj.name === 'modern_wooden_cabinet_door_r') right.current = obj;
-        });
-      }}
+      pin="front"
+      fit="contain"
     />
   );
 }
@@ -222,8 +187,8 @@ function LoungeSconces({ lightsOn, dimmer }: { lightsOn: boolean; dimmer: number
       <primitive object={b} position={[s2.x, s2.y, s2.z]} rotation={[0, Math.PI, 0]} scale={1.18} />
       {lightsOn && (
         <>
-          <pointLight position={[s1.x, s1.y, s1.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
-          <pointLight position={[s2.x, s2.y, s2.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
+          <pointLight position={[s1.x, s1.y - 0.02, s1.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
+          <pointLight position={[s2.x, s2.y - 0.02, s2.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
         </>
       )}
     </group>
@@ -235,22 +200,11 @@ type Props = {
   lightLive: boolean;
   dimmer: number;
   tvOn: boolean;
-  openById: Partial<Record<LoungeInteractId, boolean>>;
   onCycleDimmer: () => void;
   onToggleTv: () => void;
-  onToggle: (id: LoungeInteractId) => void;
 };
 
-export function LoungeRun({
-  powerLive,
-  lightLive,
-  dimmer,
-  tvOn,
-  openById,
-  onCycleDimmer,
-  onToggleTv,
-  onToggle,
-}: Props) {
+export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, onToggleTv }: Props) {
   const sheath = useMemo(
     () => new MeshStandardMaterial({ color: '#f3f0e8', roughness: 0.55, metalness: 0.03 }),
     [],
@@ -267,23 +221,8 @@ export function LoungeRun({
       <Rug />
       <Couch />
       <CoffeeTable />
-      <TvUnit openById={openById} />
-
-      <group position={[tv.x, cab.h, ROOM.depth - 0.04]}>
-        <FittedGltf
-          url={ROOM_GLB.television}
-          maxSize={[0.72, 0.6, 0.45]}
-          position={[0, 0, 0]}
-          rotation={[0, Math.PI, 0]}
-          align="bottom"
-          pin="back"
-          fit="contain"
-        />
-        <group position={[0, 0.28, -0.02]} rotation={[0, Math.PI, 0]}>
-          <TvScreen on={screenOn} />
-          {screenOn && <pointLight position={[0, 0, 0.28]} intensity={0.55} distance={2.4} color="#9ec9e0" />}
-        </group>
-      </group>
+      <TvUnit />
+      <LoungeTelevision on={screenOn} />
 
       <FittedGltf
         url={ROOM_GLB.gpoDouble}
@@ -333,16 +272,6 @@ export function LoungeRun({
         position={[tv.x, cab.h + LOUNGE.tv.h / 2, zFront + 0.06]}
       />
       <Hit onToggle={onToggleTv} size={[0.24, 0.18, 0.14]} position={[gpo.x, gpo.y, zFront + 0.05]} />
-      <Hit
-        onToggle={() => onToggle('tv-cab-l')}
-        size={[cab.w / 2 - 0.08, 0.5, 0.22]}
-        position={[cab.x + cab.w * 0.25, 0.34, zFront - 0.04]}
-      />
-      <Hit
-        onToggle={() => onToggle('tv-cab-r')}
-        size={[cab.w / 2 - 0.08, 0.5, 0.22]}
-        position={[cab.x + cab.w * 0.75, 0.34, zFront - 0.04]}
-      />
     </group>
   );
 }
