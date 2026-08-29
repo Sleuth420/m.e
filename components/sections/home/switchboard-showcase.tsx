@@ -62,7 +62,7 @@ export default function SwitchboardShowcase() {
           Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge
           power, lounge lighting, induction, oven, and fridge. The lounge is one power
           feed to the TV and one lighting circuit with two dimmers. Open the switchboard
-          cover if you dare, trip RCBOs, and trace TPS through the walls. Dont touch a
+          cover if you dare, trip RCBOs, and trace TPS through the walls. Don't touch a
           live wire!
         </p>
       </div>
@@ -128,7 +128,7 @@ export default function SwitchboardShowcase() {
                   Touch · joystick to walk
                 </>
               ) : (
-                <>Keyboard · WASD to walk · click to interact</>
+                <>Keyboard · WASD walk · QE turn · F use</>
               )}
             </p>
           </div>

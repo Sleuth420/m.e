@@ -42,25 +42,20 @@ function TvScreen({ on, width, height }: { on: boolean; width: number; height: n
     canvas.height = 432;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('2D context unavailable');
-    const g = ctx.createLinearGradient(0, 0, 768, 432);
-    g.addColorStop(0, '#1b3a5c');
-    g.addColorStop(0.45, '#2a6a8a');
-    g.addColorStop(1, '#0f1720');
+    const g = ctx.createLinearGradient(0, 0, 0, 432);
+    g.addColorStop(0, '#0b1220');
+    g.addColorStop(0.55, '#16324a');
+    g.addColorStop(1, '#071018');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 768, 432);
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    ctx.fillRect(40, 48, 420, 240);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('HDMI 1  ·  Lounge', 56, 92);
-    ctx.font = '500 18px "Segoe UI", system-ui, sans-serif';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText('Open-plan living  ·  65"', 56, 128);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(56, 168, 8, 8);
-    ctx.fillStyle = '#cbd5e1';
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    ctx.fillRect(0, 0, 768, 8);
+    ctx.fillStyle = '#dbeafe';
+    ctx.font = '600 26px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('HDMI 1', 48, 86);
     ctx.font = '500 16px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('Live', 74, 176);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('Lounge', 48, 118);
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
     texture.needsUpdate = true;
@@ -75,14 +70,14 @@ function TvScreen({ on, width, height }: { on: boolean; width: number; height: n
         emissive={on ? '#8ecae6' : '#000000'}
         emissiveMap={on ? map : null}
         emissiveIntensity={on ? 0.65 : 0}
-        roughness={on ? 0.22 : 0.12}
-        metalness={0.04}
+        roughness={on ? 0.18 : 0.06}
+        metalness={on ? 0.08 : 0.22}
         transparent={false}
         depthWrite
         polygonOffset
         polygonOffsetFactor={-2}
         polygonOffsetUnits={-2}
-        color={on ? '#ffffff' : '#050506'}
+        color={on ? '#ffffff' : '#09090b'}
       />
     </mesh>
   );
@@ -120,9 +115,10 @@ function LoungeTelevision({ on }: { on: boolean }) {
 function Rug() {
   const maps = useRepeatingPbr(POLYHAVEN.knittedFleece, [3.4, 2.6]);
   const { x, w, d, z } = LOUNGE.rug;
+  const h = 0.012;
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[x + w / 2, 0.01, z + d / 2]} receiveShadow>
-      <planeGeometry args={[w, d]} />
+    <mesh position={[x + w / 2, h / 2, z + d / 2]} receiveShadow>
+      <boxGeometry args={[w, h, d]} />
       <meshStandardMaterial
         map={maps.map}
         normalMap={maps.normalMap}
@@ -276,11 +272,13 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
       />
       <PathWire
         points={[
-          [tv.x + 0.58, cab.h + 0.22, ROOM.depth - 0.06],
-          [tv.x + 0.66, cab.h + 0.03, ROOM.depth - 0.046],
-          [gpo.x - 0.12, cab.h + 0.028, ROOM.depth - 0.038],
-          [gpo.x + 0.02, gpo.y + 0.04, ROOM.depth - 0.024],
-          [gpo.x, gpo.y - 0.008, ROOM.depth - 0.014],
+          [tv.x + 0.56, cab.h + 0.2, ROOM.depth - 0.07],
+          [tv.x + 0.64, cab.h + 0.05, ROOM.depth - 0.05],
+          [tv.x + 0.7, cab.h + 0.014, ROOM.depth - 0.042],
+          [gpo.x - 0.22, cab.h + 0.012, ROOM.depth - 0.038],
+          [gpo.x - 0.04, cab.h + 0.02, ROOM.depth - 0.032],
+          [gpo.x + 0.02, gpo.y + 0.05, ROOM.depth - 0.022],
+          [gpo.x, gpo.y - 0.006, ROOM.depth - 0.014],
         ]}
         radius={0.006}
         material={flex}

@@ -218,10 +218,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
       />
       <ContactShadows
         position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
-        opacity={0.38}
+        opacity={0.48}
         scale={16}
-        blur={2}
-        far={5}
+        blur={2.4}
+        far={6}
         color="#3f3f46"
       />
     </>

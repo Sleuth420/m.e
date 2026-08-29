@@ -241,7 +241,12 @@ function UnderCabinetLed({ x0, x1, live }: { x0: number; x1: number; live: boole
           roughness={0.3}
         />
       </mesh>
-      {live && <pointLight position={[cx, y - 0.05, z + 0.1]} intensity={0.5} distance={1.7} color="#fff4dc" />}
+      {live && (
+        <>
+          <pointLight position={[cx - w * 0.22, y - 0.04, z + 0.12]} intensity={0.2} distance={1.55} color="#fff4dc" />
+          <pointLight position={[cx + w * 0.22, y - 0.04, z + 0.12]} intensity={0.2} distance={1.55} color="#fff4dc" />
+        </>
+      )}
     </group>
   );
 }
@@ -871,13 +876,6 @@ export function KitchenRun({
         <pointLight position={[cookX, benchY + 0.18, 0.3]} intensity={0.18} distance={0.5} color="#fdba74" />
       )}
       {powerLive && <pointLight position={[hood.x, 1.48, 0.28]} intensity={0.55} distance={2.2} color="#f4f1ea" />}
-      {powerLive && (
-        <>
-          <pointLight position={[sink.x + sink.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
-          <pointLight position={[cabL.x + cabL.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
-          <pointLight position={[cabR.x + cabR.w / 2, KITCHEN.upperY - 0.02, 0.22]} intensity={0.28} distance={1.4} color="#f4f1ea" />
-        </>
-      )}
       {powerLive && toasterPop && (
         <pointLight position={[toasterX, benchY + 0.26, 0.34]} intensity={0.35} distance={1.1} color="#fde68a" />
       )}
