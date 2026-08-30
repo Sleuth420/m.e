@@ -1,9 +1,7 @@
 'use client';
 
-import { useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import { useMemo } from 'react';
-import { CanvasTexture, Color, Group, Mesh, MeshStandardMaterial, Object3D, SRGBColorSpace } from 'three';
+import { useLayoutEffect, useMemo } from 'react';
+import { CanvasTexture, MeshStandardMaterial, SRGBColorSpace } from 'three';
 import { PathWire } from '../wiring/PathWire';
 import { DimmerSwitch } from './DimmerSwitch';
 import { FittedGltf } from './FittedGltf';
@@ -11,7 +9,8 @@ import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { FIXTURES, LOUNGE, ROOM } from './room-layout';
 import { RoomHit } from './RoomHit';
 import { useRepeatingPbr } from './room-textures';
-import { loadKeptGltf } from './useKeptGltf';
+import { cloneGltfScene, setNamedEmissive } from './scene-graph';
+import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
 
 function TvScreen({ on, width, height }: { on: boolean; width: number; height: number }) {
   const map = useMemo(() => {
@@ -156,43 +155,15 @@ function TvUnit() {
   );
 }
 
-function cloneScene(source: Object3D): Group {
-  const g = source.clone(true) as Group;
-  g.traverse((obj) => {
-    const mesh = obj as Mesh;
-    if (!mesh.isMesh) return;
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.raycast = () => undefined;
-    if (Array.isArray(mesh.material)) mesh.material = mesh.material.map((m) => m.clone());
-    else if (mesh.material) mesh.material = (mesh.material as MeshStandardMaterial).clone();
-  });
-  return g;
-}
-
-function setNamedEmissive(root: Object3D, name: string, on: boolean, intensity: number) {
-  root.traverse((obj) => {
-    if (obj.name !== name) return;
-    const mesh = obj as Mesh;
-    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    for (const mat of mats) {
-      const m = mat as MeshStandardMaterial;
-      if (!m?.emissive) continue;
-      m.emissive = new Color(on ? '#fde68a' : '#000000');
-      m.emissiveIntensity = on ? intensity : 0;
-    }
-  });
-}
-
 function LoungeSconces({ lightsOn, dimmer }: { lightsOn: boolean; dimmer: number }) {
-  const gltf = useGLTF(ROOM_GLB.sconce);
-  const a = useMemo(() => cloneScene(gltf.scene), [gltf.scene]);
-  const b = useMemo(() => cloneScene(gltf.scene), [gltf.scene]);
+  const { scene } = useKeptGltf(ROOM_GLB.sconce);
+  const a = useMemo(() => cloneGltfScene(scene, { skipRaycast: true }), [scene]);
+  const b = useMemo(() => cloneGltfScene(scene, { skipRaycast: true }), [scene]);
   const glow = lightsOn ? 0.7 + dimmer * 1.1 : 0;
-  useFrame(() => {
-    setNamedEmissive(a, 'Shade', lightsOn, glow);
-    setNamedEmissive(b, 'Shade', lightsOn, glow);
-  });
+  useLayoutEffect(() => {
+    setNamedEmissive(a, 'Shade', lightsOn, { intensity: glow });
+    setNamedEmissive(b, 'Shade', lightsOn, { intensity: glow });
+  }, [a, b, lightsOn, glow]);
   const s1 = FIXTURES.loungeSconce1;
   const s2 = FIXTURES.loungeSconce2;
   const intensity = lightsOn ? 0.45 + dimmer * 1.15 : 0;
@@ -247,6 +218,7 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         align="center"
         pin="back"
         share
+        shadows={false}
         envIntensity={powerLive ? 1.15 : 1.05}
       />
       <PathWire
@@ -300,4 +272,3 @@ loadKeptGltf(ROOM_GLB.sofa);
 loadKeptGltf(ROOM_GLB.coffeeTable);
 loadKeptGltf(ROOM_GLB.television);
 loadKeptGltf(ROOM_GLB.tvCabinet);
-useGLTF.preload(ROOM_GLB.sconce);

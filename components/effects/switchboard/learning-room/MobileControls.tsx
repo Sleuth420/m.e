@@ -1,26 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useCoarsePointer } from '@/lib/hooks';
 import { useGameInput } from './GameInputContext';
 
 type Props = {
   visible: boolean;
 };
 
-function useCoarsePointer() {
-  const [coarse, setCoarse] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(pointer: coarse), (max-width: 768px)');
-    const update = () => setCoarse(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-  return coarse;
-}
-
 export function MobileControls({ visible }: Props) {
-  const coarse = useCoarsePointer();
+  const { coarse } = useCoarsePointer();
   const { mobileKeys } = useGameInput();
   const stickRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);

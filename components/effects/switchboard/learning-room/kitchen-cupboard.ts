@@ -1,7 +1,5 @@
 import {
   Box3,
-  BufferAttribute,
-  BufferGeometry,
   Group,
   Mesh,
   MeshStandardMaterial,
@@ -9,6 +7,8 @@ import {
   Quaternion,
   Vector3,
 } from 'three';
+import { extractTriangles } from './mesh-extract';
+import { findNamed } from './scene-graph';
 
 /** Closed 1100 mm two-door base from the modular kitchen kit (no sink, no glass). */
 export const CUPBOARD_BASE_KEEP =
@@ -20,15 +20,6 @@ export const CUPBOARD_UPPER_KEEP = /Cabinet_FrontA\.005|Cabinet_Handle\.013|Cabi
 const JOINERY = '#f3f1ec';
 const JOINERY_INNER = '#e4e0d8';
 const HANDLE = '#c5c9ce';
-
-function findNamed(root: Object3D, match: RegExp): Object3D | null {
-  let found: Object3D | null = null;
-  root.traverse((obj) => {
-    if (found || !obj.name) return;
-    if (match.test(obj.name)) found = obj;
-  });
-  return found;
-}
 
 export function keepNamed(root: Object3D, keep: RegExp) {
   const keepSet = new Set<Object3D>();
@@ -52,35 +43,6 @@ export function pruneHidden(root: Object3D) {
     if (obj !== root && !obj.visible) drop.push(obj);
   });
   for (const obj of drop) obj.parent?.remove(obj);
-}
-
-function extractTriangles(
-  geometry: BufferGeometry,
-  keepCentroid: (x: number, y: number, z: number) => boolean,
-): BufferGeometry {
-  const src = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-  const pos = src.getAttribute('position');
-  if (!pos) return new BufferGeometry();
-  const keep: number[] = [];
-  for (let i = 0; i < pos.count; i += 3) {
-    const cx = (pos.getX(i) + pos.getX(i + 1) + pos.getX(i + 2)) / 3;
-    const cy = (pos.getY(i) + pos.getY(i + 1) + pos.getY(i + 2)) / 3;
-    const cz = (pos.getZ(i) + pos.getZ(i + 1) + pos.getZ(i + 2)) / 3;
-    if (keepCentroid(cx, cy, cz)) keep.push(i, i + 1, i + 2);
-  }
-  const dst = new BufferGeometry();
-  for (const name of Object.keys(src.attributes)) {
-    const attr = src.getAttribute(name) as BufferAttribute;
-    const itemSize = attr.itemSize;
-    const out = new Float32Array(keep.length * itemSize);
-    let o = 0;
-    for (const i of keep) {
-      for (let k = 0; k < itemSize; k++) out[o++] = attr.getComponent(i, k);
-    }
-    dst.setAttribute(name, new BufferAttribute(out, itemSize));
-  }
-  dst.computeVertexNormals();
-  return dst;
 }
 
 function paintKitchenJoinery(root: Object3D) {

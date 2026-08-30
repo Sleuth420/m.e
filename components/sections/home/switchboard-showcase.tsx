@@ -5,6 +5,7 @@ import { DoorOpen, Gamepad2, Play } from 'lucide-react';
 import { HeroScene } from '@/components/effects/hero-scene';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useCoarsePointer } from '@/lib/hooks';
 
 /**
  * Full-bleed learning room. Copy lives above the canvas so it doesn't fight the 3D.
@@ -12,16 +13,8 @@ import { cn } from '@/lib/utils';
  */
 export default function SwitchboardShowcase() {
   const [explore, setExplore] = useState(false);
-  const [coarse, setCoarse] = useState(false);
+  const { coarse } = useCoarsePointer();
   const stageRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(pointer: coarse), (max-width: 768px)');
-    const update = () => setCoarse(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
 
   useEffect(() => {
     if (!explore) return;

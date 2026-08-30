@@ -4,31 +4,10 @@ import { Clone } from '@react-three/drei';
 import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
 import { Box3, Euler, Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { keepNamed, pruneHidden } from './kitchen-cupboard';
+import { hideNamed } from './scene-graph';
 import { useKeptGltf } from './useKeptGltf';
 
-export function findNamed(root: Object3D, match: RegExp): Object3D | null {
-  let found: Object3D | null = null;
-  root.traverse((obj) => {
-    if (found || !obj.name) return;
-    if (match.test(obj.name)) found = obj;
-  });
-  return found;
-}
-
-export function hideNamed(root: Object3D, match: RegExp) {
-  root.traverse((obj) => {
-    if (obj.name && match.test(obj.name)) obj.visible = false;
-    const mesh = obj as Mesh;
-    if (!mesh.isMesh) return;
-    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    for (const mat of mats) {
-      if (mat?.name && match.test(mat.name)) {
-        mesh.visible = false;
-        break;
-      }
-    }
-  });
-}
+export { findNamed, hideNamed } from './scene-graph';
 
 export type FitMode = 'contain' | 'width' | 'height' | 'stretch';
 
@@ -177,6 +156,8 @@ type FittedGltfProps = {
   envIntensity?: number;
   /** Recolor product metal to black stainless. Glass stays dark glass. */
   finish?: 'black-steel';
+  /** Small fittings skip shadows — they don't read at room scale and they cost. */
+  shadows?: boolean;
   onReady?: (root: Object3D) => void;
   children?: ReactNode;
 };
@@ -197,6 +178,7 @@ export function FittedGltf({
   preScale = 1,
   envIntensity = 1,
   finish,
+  shadows = true,
   onReady,
   children,
 }: FittedGltfProps) {
@@ -220,8 +202,8 @@ export function FittedGltf({
     g.traverse((obj) => {
       const mesh = obj as Mesh;
       if (!mesh.isMesh) return;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
+      mesh.castShadow = shadows;
+      mesh.receiveShadow = shadows;
       // Hits in front of fittings own pointer events — GLBs must not steal taps.
       mesh.raycast = () => undefined;
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
@@ -256,14 +238,14 @@ export function FittedGltf({
     });
     g.updateWorldMatrix(true, true);
     onReadyRef.current?.(g);
-  }, [source, fitResult, envIntensity, finish]);
+  }, [source, fitResult, envIntensity, finish, shadows]);
 
   return (
     <group position={position}>
       <group position={fitResult.worldShift}>
         <group rotation={rotation}>
           <group ref={wrap} position={fitResult.localOffset} scale={fitResult.scale}>
-            <Clone object={source} castShadow receiveShadow />
+            <Clone object={source} castShadow={shadows} receiveShadow={shadows} />
             {/* Children share the fitted model frame (scale + pin + rotation). */}
             {children}
           </group>

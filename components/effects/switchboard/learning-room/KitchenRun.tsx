@@ -404,6 +404,7 @@ function WallGpo({
         align="center"
         pin="back"
         share
+        shadows={false}
         envIntensity={live ? 1.15 : 1.05}
       />
       {onToggle && <RoomHit onToggle={onToggle} size={[0.24, 0.18, 0.14]} />}
@@ -746,6 +747,7 @@ export function KitchenRun({
         position={[FIXTURES.sink.x, benchTop, 0.16]}
         prepare={dressKitchenProduct}
         envIntensity={1}
+        shadows={false}
       />
       <FittedGltf
         url={ROOM_GLB.cooktop}

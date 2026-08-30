@@ -192,6 +192,8 @@ type InteractSpot<T extends string> = {
   promptClose: string;
 };
 
+export type { InteractSpot };
+
 export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
   { id: 'switch', x: FIXTURES.lightSwitch.x, y: FIXTURES.lightSwitch.y, z: FIXTURES.lightSwitch.z, r: 0.7, priority: 2, promptOpen: 'F · Lights on', promptClose: 'F · Lights off' },
   { id: 'sink', x: FIXTURES.sink.x, y: FIXTURES.sink.y + 0.2, z: 0.55, r: 0.95, priority: 2, promptOpen: 'F · Run the tap', promptClose: 'F · Stop tap' },

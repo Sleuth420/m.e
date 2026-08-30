@@ -1,8 +1,9 @@
 'use client';
 
-import { Suspense, useEffect, useState, useSyncExternalStore } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@/lib/hooks';
 
 const HeroSceneCanvas = dynamic(() => import('./hero-scene-canvas'), {
   ssr: false,
@@ -20,18 +21,6 @@ function HeroSceneFallback() {
   );
 }
 
-function usePrefersReducedMotion() {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      mq.addEventListener('change', onChange);
-      return () => mq.removeEventListener('change', onChange);
-    },
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    () => false
-  );
-}
-
 interface HeroSceneProps {
   className?: string;
   observeId?: string;
@@ -45,7 +34,7 @@ export function HeroScene({
   controlsEnabled = false,
   onExit,
 }: HeroSceneProps) {
-  const reducedMotion = usePrefersReducedMotion();
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {

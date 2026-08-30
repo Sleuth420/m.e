@@ -7,19 +7,33 @@ export const MODULE_GLB = {
 
 export type ModuleKind = keyof typeof MODULE_GLB;
 
-/** Slight over-width closes rounded-corner visual gaps between poles. */
+function moduleTargets() {
+  return {
+    rcbo: {
+      width: BOARD.rcboWidth + 0.012,
+      height: BOARD.moduleHeight,
+      depth: BOARD.moduleDepth * 0.95,
+    },
+    mainSwitch: {
+      width: BOARD.mainWidth + 0.012,
+      height: BOARD.moduleHeight,
+      depth: BOARD.moduleDepth * 0.98,
+    },
+  } as const;
+}
+
+/**
+ * Slight over-width closes rounded-corner visual gaps between poles.
+ * Lazy so this module can import BOARD without a circular init crash.
+ */
 export const MODULE_TARGET = {
-  rcbo: {
-    width: BOARD.rcboWidth + 0.012,
-    height: BOARD.moduleHeight,
-    depth: BOARD.moduleDepth * 0.95,
+  get rcbo() {
+    return moduleTargets().rcbo;
   },
-  mainSwitch: {
-    width: BOARD.mainWidth + 0.012,
-    height: BOARD.moduleHeight,
-    depth: BOARD.moduleDepth * 0.98,
+  get mainSwitch() {
+    return moduleTargets().mainSwitch;
   },
-} as const;
+};
 
 /**
  * Cable / comb mouths on the TOP and BOTTOM faces (not front screws).

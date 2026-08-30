@@ -1,7 +1,7 @@
 'use client';
 
-import { ContactShadows, Environment } from '@react-three/drei';
-import { Suspense, useEffect, useState } from 'react';
+import { AdaptiveDpr, ContactShadows, Environment } from '@react-three/drei';
+import { Suspense, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Switchboard } from '../Switchboard';
 import { useSwitchboard } from '../SwitchboardContext';
 import { AboutPortraits } from './AboutPortraits';
@@ -13,6 +13,7 @@ import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
 import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type RoomInteractId } from './room-layout';
 import { POLYHAVEN } from './room-assets';
+import { INITIAL_ROOM_PLAY, roomPlayReducer, type RoomLive } from './room-play';
 
 type Props = {
   controlsEnabled: boolean;
@@ -49,7 +50,8 @@ function LedBatten({ position }: { position: [number, number, number] }) {
   );
 }
 
-function GalleryLighting() {
+function GalleryLighting({ playing }: { playing: boolean }) {
+  const shadowMap = playing ? 512 : 1024;
   return (
     <>
       <color attach="background" args={['#c5c2bb']} />
@@ -60,7 +62,7 @@ function GalleryLighting() {
         position={[6.2, 8.4, 6.4]}
         intensity={1.05}
         castShadow
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[shadowMap, shadowMap]}
         shadow-camera-near={1}
         shadow-camera-far={22}
         shadow-camera-left={-8}
@@ -78,24 +80,9 @@ function GalleryLighting() {
   );
 }
 
-function cycleDimmer(v: number) {
-  if (v < 0.12) return 0.35;
-  if (v < 0.52) return 0.7;
-  if (v < 0.88) return 1;
-  return 0;
-}
-
 function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const { liveById } = useSwitchboard();
-  const [lightSwitchOn, setLightSwitchOn] = useState(false);
-  const [fridgeOpen, setFridgeOpen] = useState(false);
-  const [toasterPop, setToasterPop] = useState(false);
-  const [isolatorOn, setIsolatorOn] = useState(true);
-  const [sinkOn, setSinkOn] = useState(false);
-  const [boiling, setBoiling] = useState(false);
-  const [openById, setOpenById] = useState<Partial<Record<RoomInteractId, boolean>>>({});
-  const [loungeDimmer, setLoungeDimmer] = useState(0);
-  const [tvOn, setTvOn] = useState(false);
+  const [play, dispatch] = useReducer(roomPlayReducer, INITIAL_ROOM_PLAY);
 
   const lightingLive = liveById[ROOM_LOADS.lighting] ?? false;
   const powerLive = liveById[ROOM_LOADS.power] ?? false;
@@ -104,43 +91,38 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const inductionLive = liveById[ROOM_LOADS.induction] ?? false;
   const loungePowerLive = liveById[ROOM_LOADS.loungePower] ?? false;
   const loungeLightLive = liveById[ROOM_LOADS.loungeLight] ?? false;
-  const hobLive = inductionLive && isolatorOn;
-  const lightsOn = lightingLive && lightSwitchOn;
+  const hobLive = inductionLive && play.isolatorOn;
+  const lightsOn = lightingLive && play.lightSwitchOn;
+  const live = useMemo<RoomLive>(
+    () => ({ powerLive, hobLive, loungePowerLive }),
+    [powerLive, hobLive, loungePowerLive]
+  );
 
   useEffect(() => {
-    if (!powerLive) setToasterPop(false);
+    if (!powerLive) dispatch({ type: 'power-cut' });
   }, [powerLive]);
 
   useEffect(() => {
-    if (!hobLive) setBoiling(false);
+    if (!hobLive) dispatch({ type: 'hob-cut' });
   }, [hobLive]);
 
   useEffect(() => {
-    if (!loungePowerLive) setTvOn(false);
+    if (!loungePowerLive) dispatch({ type: 'lounge-power-cut' });
   }, [loungePowerLive]);
 
-  const toggleOpen = (id: RoomInteractId) => {
-    setOpenById((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  const onInteract = useCallback(
+    (id: RoomInteractId) => {
+      dispatch({ type: 'interact', id, live });
+    },
+    [live]
+  );
 
-  const onInteract = (id: RoomInteractId) => {
-    if (id === 'switch') setLightSwitchOn((v) => !v);
-    else if (id === 'toaster' || id === 'gpoDouble') {
-      if (powerLive) setToasterPop((v) => !v);
-    } else if (id === 'fridge') setFridgeOpen((v) => !v);
-    else if (id === 'cookIsolator') setIsolatorOn((v) => !v);
-    else if (id === 'cooktop') {
-      if (hobLive) setBoiling((v) => !v);
-    } else if (id === 'sink') setSinkOn((v) => !v);
-    else if (id === 'loungeDimmerA' || id === 'loungeDimmerB') setLoungeDimmer(cycleDimmer);
-    else if (id === 'tv' || id === 'tvGpo') {
-      if (loungePowerLive) setTvOn((v) => !v);
-    } else toggleOpen(id);
-  };
+  const toggleOpen = (id: RoomInteractId) => onInteract(id);
 
   return (
     <>
-      <GalleryLighting />
+      {controlsEnabled && <AdaptiveDpr />}
+      <GalleryLighting playing={controlsEnabled} />
       <LearningRoom />
       <group
         position={[BOARD_MOUNT.x, BOARD_MOUNT.y, BOARD_MOUNT.z]}
@@ -153,12 +135,12 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
       </group>
       {/* LED batten over the board — always-on so the enclosure stays readable. */}
       <LedBatten position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]} />
-      <RoomWiring liveById={liveById} isolatorOn={isolatorOn} />
+      <RoomWiring liveById={liveById} isolatorOn={play.isolatorOn} />
       <Suspense fallback={null}>
         <Fixtures
           lightsOn={lightsOn}
-          lightSwitchOn={lightSwitchOn}
-          onToggleSwitch={() => setLightSwitchOn((v) => !v)}
+          lightSwitchOn={play.lightSwitchOn}
+          onToggleSwitch={() => onInteract('switch')}
         />
       </Suspense>
       <Suspense fallback={null}>
@@ -167,34 +149,28 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           fridgeLive={fridgeLive}
           ovenLive={ovenLive}
           hobLive={hobLive}
-          isolatorOn={isolatorOn}
-          fridgeOpen={fridgeOpen}
-          toasterPop={toasterPop}
-          sinkOn={sinkOn}
-          boiling={boiling}
-          openById={openById}
+          isolatorOn={play.isolatorOn}
+          fridgeOpen={play.fridgeOpen}
+          toasterPop={play.toasterPop}
+          sinkOn={play.sinkOn}
+          boiling={play.boiling}
+          openById={play.openById}
           onToggle={toggleOpen}
-          onToggleFridge={() => setFridgeOpen((v) => !v)}
-          onToggleToaster={() => {
-            if (powerLive) setToasterPop((v) => !v);
-          }}
-          onToggleIsolator={() => setIsolatorOn((v) => !v)}
-          onToggleSink={() => setSinkOn((v) => !v)}
-          onToggleBoil={() => {
-            if (hobLive) setBoiling((v) => !v);
-          }}
+          onToggleFridge={() => onInteract('fridge')}
+          onToggleToaster={() => onInteract('toaster')}
+          onToggleIsolator={() => onInteract('cookIsolator')}
+          onToggleSink={() => onInteract('sink')}
+          onToggleBoil={() => onInteract('cooktop')}
         />
       </Suspense>
       <Suspense fallback={null}>
         <LoungeRun
           powerLive={loungePowerLive}
           lightLive={loungeLightLive}
-          dimmer={loungeDimmer}
-          tvOn={tvOn}
-          onCycleDimmer={() => setLoungeDimmer(cycleDimmer)}
-          onToggleTv={() => {
-            if (loungePowerLive) setTvOn((v) => !v);
-          }}
+          dimmer={play.loungeDimmer}
+          tvOn={play.tvOn}
+          onCycleDimmer={() => onInteract('loungeDimmerA')}
+          onToggleTv={() => onInteract('tv')}
         />
       </Suspense>
       <AboutPortraits lightsOn={lightsOn} />
@@ -202,28 +178,22 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         enabled={controlsEnabled}
         onExit={onExit}
         onInteract={onInteract}
-        openById={openById}
-        fridgeOpen={fridgeOpen}
-        toasterPop={toasterPop}
-        lightSwitchOn={lightSwitchOn}
+        play={play}
         powerLive={powerLive}
-        isolatorOn={isolatorOn}
-        sinkOn={sinkOn}
-        boiling={boiling}
         hobLive={hobLive}
         loungePowerLive={loungePowerLive}
         loungeLightLive={loungeLightLive}
-        loungeDimmer={loungeDimmer}
-        tvOn={tvOn}
       />
-      <ContactShadows
-        position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
-        opacity={0.48}
-        scale={16}
-        blur={2.4}
-        far={6}
-        color="#3f3f46"
-      />
+      {!controlsEnabled && (
+        <ContactShadows
+          position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
+          opacity={0.48}
+          scale={16}
+          blur={2.4}
+          far={6}
+          color="#3f3f46"
+        />
+      )}
     </>
   );
 }

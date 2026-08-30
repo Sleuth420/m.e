@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Keyboard, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCoarsePointer } from '@/lib/hooks';
 import { CIRCUITS, circuitDisplayName } from '../circuit-data';
 import { useSwitchboard } from '../SwitchboardContext';
 import { useGameInput } from './GameInputContext';
@@ -23,15 +24,7 @@ export function LearningHud({ visible }: Props) {
   const { mainOn, liveById, coverOpen, tripReason, shockActive, hovered } = useSwitchboard();
   const { actionPrompt } = useGameInput();
   const [keysOpen, setKeysOpen] = useState(false);
-  const [coarse, setCoarse] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(pointer: coarse), (max-width: 768px)');
-    const update = () => setCoarse(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
+  const { coarse } = useCoarsePointer();
 
   useEffect(() => {
     if (!visible) {

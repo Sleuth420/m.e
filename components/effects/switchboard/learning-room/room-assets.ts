@@ -31,6 +31,33 @@ export const ROOM_GLB = {
   pliers: '/models/learning-room/real/pliers/pliers.gltf?v=4',
 } as const;
 
+/** Models in the idle camera. Pliers load when the player enters. Unused cabinet GLBs stay off this list. */
+const IDLE_ROOM_MODELS = [
+  ROOM_GLB.sconce,
+  ROOM_GLB.fridge,
+  ROOM_GLB.oven,
+  ROOM_GLB.cooktop,
+  ROOM_GLB.dishwasher,
+  ROOM_GLB.hood,
+  ROOM_GLB.toaster,
+  ROOM_GLB.sink,
+  ROOM_GLB.tap,
+  ROOM_GLB.pot,
+  ROOM_GLB.roast,
+  ROOM_GLB.gpoDouble,
+  ROOM_GLB.switch,
+  ROOM_GLB.isolator,
+  ROOM_GLB.dimmer,
+  ROOM_GLB.sofa,
+  ROOM_GLB.coffeeTable,
+  ROOM_GLB.television,
+  ROOM_GLB.tvCabinet,
+] as const;
+
+export function preloadRoomModelPaths(): string[] {
+  return [...IDLE_ROOM_MODELS];
+}
+
 /** Poly Haven CC0 materials / HDRI — same source as the pliers. */
 export const POLYHAVEN = {
   hdri: '/models/learning-room/polyhaven/hdri/kiara_interior_2k.hdr',
@@ -97,6 +124,3 @@ export const POLYHAVEN = {
   },
 } as const;
 
-export function preloadRoomModelPaths(): string[] {
-  return Object.values(ROOM_GLB);
-}

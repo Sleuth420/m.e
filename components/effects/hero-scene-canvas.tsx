@@ -14,10 +14,14 @@ import { LearningScene } from './switchboard/learning-room/LearningScene';
 import { MobileControls } from './switchboard/learning-room/MobileControls';
 import { ShockOverlay } from './switchboard/learning-room/ShockOverlay';
 import { preloadRoomModelPaths } from './switchboard/learning-room/room-assets';
+import { loadKeptGltf } from './switchboard/learning-room/useKeptGltf';
 import { IDLE_CAMERA } from './switchboard/learning-room/room-layout';
 
-for (const path of [...preloadModulePaths(), ...preloadRoomModelPaths()]) {
+for (const path of preloadModulePaths()) {
   useGLTF.preload(path);
+}
+for (const path of preloadRoomModelPaths()) {
+  void loadKeptGltf(path);
 }
 
 interface HeroSceneCanvasProps {
