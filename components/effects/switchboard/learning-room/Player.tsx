@@ -112,10 +112,10 @@ export function Player({
 
       const inspecting = zoomRef.current.hold || zoomRef.current.amount > 0.25 || m.inspect;
       if (consumeInteract()) {
-        tryRoomInteract(next.x, next.z, inspecting, coverOpen, onInteract, requestCoverOpen);
+        tryRoomInteract(next.x, next.z, inspecting, coverOpen, onInteract, requestCoverOpen, next.yaw);
       }
 
-      const hit = nearestRoomInteract(next.x, next.z, [], inspecting);
+      const hit = nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
       const nextPrompt = roomActionPrompt(hit, nearBoard(next.x, next.z), play, {
         powerLive,
         hobLive,
@@ -150,9 +150,7 @@ export function Player({
       return;
     }
 
-    const inspectHit =
-      zoomT > 0.2 ? nearestRoomInteract(pose.current.x, pose.current.z, [], zoomT > 0.25) : null;
-    const anchor = playingCameraAnchor(pose.current, zoomT, inspectHit);
+    const anchor = playingCameraAnchor(pose.current, zoomT);
     dummy.position.set(anchor.posX, anchor.posY, anchor.posZ);
 
     if (shake.current > 0.01) {
@@ -162,11 +160,16 @@ export function Player({
       dummy.position.y += off.y;
     }
 
-    camera.position.lerp(dummy.position, 1 - Math.pow(0.012, dt));
-    const lookLambda = isLookDragActive() ? 24 : 14;
-    look.current.x = MathUtils.damp(look.current.x, anchor.lookX, lookLambda, dt);
-    look.current.y = MathUtils.damp(look.current.y, anchor.lookY, lookLambda, dt);
-    look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, lookLambda, dt);
+    camera.position.lerp(dummy.position, 1 - Math.pow(0.004, dt));
+    if (isLookDragActive()) {
+      look.current.x = anchor.lookX;
+      look.current.y = anchor.lookY;
+      look.current.z = anchor.lookZ;
+    } else {
+      look.current.x = MathUtils.damp(look.current.x, anchor.lookX, 16, dt);
+      look.current.y = MathUtils.damp(look.current.y, anchor.lookY, 16, dt);
+      look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, 16, dt);
+    }
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });
 

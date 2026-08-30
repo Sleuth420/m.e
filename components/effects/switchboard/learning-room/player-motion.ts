@@ -1,5 +1,12 @@
 import { MathUtils } from 'three';
-import { BOARD_MOUNT, PLAYER, ROOM, resolveOpenDoors, resolvePlayerPosition } from './room-layout';
+import {
+  BOARD_MOUNT,
+  PLAYER,
+  ROOM,
+  facingDot,
+  resolveOpenDoors,
+  resolvePlayerPosition,
+} from './room-layout';
 
 export type PlayerPose = {
   x: number;
@@ -84,12 +91,11 @@ export function stepPlayerPose(
     moving = len > 1e-4;
     if (moving) {
       const scale = analogMag > 0 ? analogMag : 1;
-      const next = resolvePlayerPosition(
-        x + (vx / len) * PLAYER.speed * scale * dt,
-        z + (vz / len) * PLAYER.speed * scale * dt
-      );
-      x = next.x;
-      z = next.z;
+      const step = (PLAYER.speed * scale * dt) / len;
+      const alongX = resolvePlayerPosition(x + vx * step, z);
+      const alongZ = resolvePlayerPosition(alongX.x, z + vz * step);
+      x = alongZ.x;
+      z = alongZ.z;
     }
   }
   const after = resolveOpenDoors(x, z, doors);
@@ -108,44 +114,33 @@ export type CameraAnchor = {
 /** 0 far from the board, 1 standing in front of it. */
 export function boardApproach(x: number, z: number): number {
   const dist = Math.hypot(x - (BOARD_MOUNT.x + 0.45), z - BOARD_MOUNT.z);
-  return MathUtils.smoothstep(2.15, 0.7, dist);
+  return 1 - MathUtils.smoothstep(dist, 0.7, 2.15);
 }
 
 /**
  * Third-person follow that never steals aim.
- * Near the board the boom shortens so rockers are readable, but look stays on yaw/pitch.
+ * Boom only shortens when you are close AND looking at the board.
  */
-export function playingCameraAnchor(
-  pose: PlayerPose,
-  zoomT: number,
-  inspectHit: { x: number; y: number; z: number } | null
-): CameraAnchor {
+export function playingCameraAnchor(pose: PlayerPose, zoomT: number): CameraAnchor {
   const pitch = MathUtils.clamp(pose.pitch, PLAYER.pitchMin, PLAYER.pitchMax);
-  const closeT = boardApproach(pose.x, pose.z);
-  const inspecting = zoomT > 0.2;
-  const walkDist = MathUtils.lerp(2.18, 0.84, closeT);
-  const dist = MathUtils.lerp(walkDist, inspecting ? 0.64 : walkDist, zoomT);
-  const height = MathUtils.lerp(MathUtils.lerp(1.7, 1.5, closeT), inspecting ? 1.44 : 1.52, zoomT);
+  const approach = boardApproach(pose.x, pose.z);
+  const facingBoard = facingDot(pose.x, pose.z, pose.yaw, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z);
+  const closeT = approach * MathUtils.smoothstep(facingBoard, 0.12, 0.7);
+  const walkDist = MathUtils.lerp(2.12, 0.9, closeT);
+  const dist = MathUtils.lerp(walkDist, 0.72, zoomT);
+  const height = MathUtils.lerp(MathUtils.lerp(1.68, 1.5, closeT), 1.46, zoomT);
 
   const ahead = 1.55;
   const cp = Math.cos(pitch);
   const sp = Math.sin(pitch);
-  let lookX = pose.x + Math.sin(pose.yaw) * cp * ahead;
-  let lookY = height - 0.2 + sp * ahead;
-  let lookZ = pose.z + Math.cos(pose.yaw) * cp * ahead;
-  if (inspecting && inspectHit) {
-    lookX = inspectHit.x;
-    lookY = inspectHit.y;
-    lookZ = inspectHit.z;
-  }
 
   return {
     posX: MathUtils.clamp(pose.x - Math.sin(pose.yaw) * dist, 0.28, ROOM.width - 0.2),
     posY: MathUtils.clamp(height, 0.85, ROOM.height - 0.2),
     posZ: MathUtils.clamp(pose.z - Math.cos(pose.yaw) * dist, 0.28, ROOM.depth - 0.2),
-    lookX,
-    lookY,
-    lookZ,
+    lookX: pose.x + Math.sin(pose.yaw) * cp * ahead,
+    lookY: height - 0.2 + sp * ahead,
+    lookZ: pose.z + Math.cos(pose.yaw) * cp * ahead,
   };
 }
 

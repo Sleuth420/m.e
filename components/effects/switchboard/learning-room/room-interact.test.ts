@@ -29,4 +29,11 @@ describe('tryRoomInteract', () => {
     expect(onInteract).not.toHaveBeenCalled();
     expect(requestCoverOpen).not.toHaveBeenCalled();
   });
+
+  it('does not open the cover when standing at the board but looking away', () => {
+    const onInteract = vi.fn();
+    const requestCoverOpen = vi.fn();
+    expect(tryRoomInteract(0.5, 5.35, false, false, onInteract, requestCoverOpen, 0)).toBe(false);
+    expect(requestCoverOpen).not.toHaveBeenCalled();
+  });
 });

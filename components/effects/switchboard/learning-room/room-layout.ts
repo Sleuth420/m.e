@@ -262,32 +262,51 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
 
 const ROOM_INTERACTS: InteractSpot<RoomInteractId>[] = [...KITCHEN_INTERACTS, ...LOUNGE_INTERACTS];
 
+/** 1 = looking straight at (ox, oz), -1 = looking directly away. */
+export function facingDot(px: number, pz: number, yaw: number, ox: number, oz: number): number {
+  const dx = ox - px;
+  const dz = oz - pz;
+  const len = Math.hypot(dx, dz);
+  if (len < 1e-4) return 1;
+  return (dx * Math.sin(yaw) + dz * Math.cos(yaw)) / len;
+}
+
 function pickNearest<T extends InteractSpot<string>>(
   items: T[],
   px: number,
   pz: number,
   except: string[],
-  preferHigh: boolean
+  preferHigh: boolean,
+  yaw?: number
 ): T | null {
   const inRange: T[] = [];
-  let best: T | null = null;
-  let bestD = Infinity;
   for (const item of items) {
     if (except.includes(item.id)) continue;
-    const d = dist2(px, pz, item.x, item.z);
-    if (d < item.r * item.r) {
-      inRange.push(item);
-      if (d < bestD) {
-        best = item;
-        bestD = d;
-      }
-    }
+    if (dist2(px, pz, item.x, item.z) < item.r * item.r) inRange.push(item);
   }
-  if (inRange.length === 0) return best;
+  if (inRange.length === 0) return null;
+
+  let candidates = inRange;
+  if (yaw !== undefined && inRange.length > 1) {
+    const ahead = inRange.filter((item) => facingDot(px, pz, yaw, item.x, item.z) > 0.12);
+    if (ahead.length) candidates = ahead;
+  }
+
   if (preferHigh) {
-    return inRange.reduce((a, b) => (b.y > a.y ? b : a));
+    return candidates.reduce((a, b) => (b.y > a.y ? b : a));
   }
-  return inRange.reduce((a, b) => {
+  if (yaw !== undefined && candidates.length > 1) {
+    return candidates.reduce((a, b) => {
+      const fa = facingDot(px, pz, yaw, a.x, a.z);
+      const fb = facingDot(px, pz, yaw, b.x, b.z);
+      if (Math.abs(fa - fb) > 0.22) return fa > fb ? a : b;
+      const da = dist2(px, pz, a.x, a.z);
+      const db = dist2(px, pz, b.x, b.z);
+      if (Math.abs(da - db) > 0.05) return da < db ? a : b;
+      return a.priority >= b.priority ? a : b;
+    });
+  }
+  return candidates.reduce((a, b) => {
     const dax = Math.abs(px - a.x);
     const dbx = Math.abs(px - b.x);
     if (Math.abs(dax - dbx) > 0.12) return dax < dbx ? a : b;
@@ -302,18 +321,20 @@ export function nearestKitchenInteract(
   px: number,
   pz: number,
   except: KitchenInteractId[] = [],
-  preferHigh = false
+  preferHigh = false,
+  yaw?: number
 ): (typeof KITCHEN_INTERACTS)[number] | null {
-  return pickNearest(KITCHEN_INTERACTS, px, pz, except, preferHigh);
+  return pickNearest(KITCHEN_INTERACTS, px, pz, except, preferHigh, yaw);
 }
 
 export function nearestRoomInteract(
   px: number,
   pz: number,
   except: RoomInteractId[] = [],
-  preferHigh = false
+  preferHigh = false,
+  yaw?: number
 ): InteractSpot<RoomInteractId> | null {
-  return pickNearest(ROOM_INTERACTS, px, pz, except, preferHigh);
+  return pickNearest(ROOM_INTERACTS, px, pz, except, preferHigh, yaw);
 }
 
 export const PLAYER_SPAWN = {

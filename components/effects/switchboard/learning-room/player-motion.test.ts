@@ -45,19 +45,26 @@ describe('stepPlayerPose', () => {
     expect(half.z).toBeLessThan(PLAYER_SPAWN.z);
     expect(half.z).toBeGreaterThan(full.z);
   });
+
+  it('slides along the kitchen bench instead of sticking', () => {
+    const start: PlayerPose = { x: 2.2, z: 0.9, yaw: Math.PI, pitch: 0, moving: false };
+    const next = stepPlayerPose(start, { ...still, forward: true, right: true }, 0.35, false, {});
+    expect(next.x).toBeGreaterThan(start.x);
+    expect(next.z).toBeGreaterThanOrEqual(0.65);
+  });
 });
 
 describe('playingCameraAnchor', () => {
   it('sits behind the player looking along yaw', () => {
     const pose = spawn();
-    const cam = playingCameraAnchor(pose, 0, null);
+    const cam = playingCameraAnchor(pose, 0);
     expect(cam.posZ).toBeGreaterThan(pose.z);
     expect(cam.lookZ).toBeLessThan(pose.z);
   });
 
   it('does not lock look or boom to the board when standing in front of it', () => {
     const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
-    const cam = playingCameraAnchor(pose, 0, null);
+    const cam = playingCameraAnchor(pose, 0);
     expect(cam.lookZ).toBeGreaterThan(pose.z);
     expect(cam.lookX).toBeCloseTo(pose.x, 1);
     expect(cam.posZ).toBeLessThan(pose.z);
@@ -65,9 +72,25 @@ describe('playingCameraAnchor', () => {
     expect(Math.abs(cam.posZ - BOARD_MOUNT.z)).toBeGreaterThan(0.15);
   });
 
+  it('keeps a long boom when at the board but looking away', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0);
+    expect(pose.z - cam.posZ).toBeGreaterThan(1.6);
+  });
+
+  it('shortens the boom only when looking at the board', () => {
+    const away: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const at: PlayerPose = { x: 0.7, z: 5.35, yaw: -Math.PI / 2, pitch: 0, moving: false };
+    const camAway = playingCameraAnchor(away, 0);
+    const camAt = playingCameraAnchor(at, 0);
+    const boomAway = Math.hypot(camAway.posX - away.x, camAway.posZ - away.z);
+    const boomAt = Math.hypot(camAt.posX - at.x, camAt.posZ - at.z);
+    expect(boomAt).toBeLessThan(boomAway - 0.4);
+  });
+
   it('aims lower when the player pitches down', () => {
-    const level = playingCameraAnchor(spawn(), 0, null);
-    const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0, null);
+    const level = playingCameraAnchor(spawn(), 0);
+    const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0);
     expect(down.lookY).toBeLessThan(level.lookY);
   });
 });

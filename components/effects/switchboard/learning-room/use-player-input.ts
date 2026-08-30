@@ -102,7 +102,8 @@ export function usePlayerInput({
           zoomRef.current.hold || zoomRef.current.amount > 0.25,
           coverOpen,
           onInteract,
-          requestCoverOpen
+          requestCoverOpen,
+          pose.current.yaw
         );
       }
     };
@@ -133,8 +134,8 @@ export function usePlayerInput({
     canvas.addEventListener('contextmenu', onContext);
 
     const look = { id: -1, x: 0, y: 0, dragging: false, canLook: false };
-    const TAP_PX = 16;
-    const LOOK_SENS = 0.005;
+    const TAP_PX = 18;
+    let nearestTimer = 0;
     const releaseLook = (pointerId: number) => {
       look.id = -1;
       look.dragging = false;
@@ -146,7 +147,15 @@ export function usePlayerInput({
     const useNearest = () => {
       if (wasRecentInteract()) return;
       if (
-        tryRoomInteract(pose.current.x, pose.current.z, false, coverOpen, onInteract, requestCoverOpen)
+        tryRoomInteract(
+          pose.current.x,
+          pose.current.z,
+          false,
+          coverOpen,
+          onInteract,
+          requestCoverOpen,
+          pose.current.yaw
+        )
       ) {
         markInteract();
       }
@@ -159,22 +168,25 @@ export function usePlayerInput({
       look.dragging = false;
       look.canLook = true;
       setLookDragActive(false);
-      try {
-        canvas.setPointerCapture(e.pointerId);
-      } catch {
-        /* capture is optional */
-      }
     };
     const onPointerMove = (e: PointerEvent) => {
       if (look.id !== e.pointerId || !look.canLook) return;
       const dx = e.clientX - look.x;
       const dy = e.clientY - look.y;
       if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
-      look.dragging = true;
-      setLookDragActive(true);
-      pose.current.yaw -= dx * LOOK_SENS;
+      if (!look.dragging) {
+        look.dragging = true;
+        setLookDragActive(true);
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch {
+          /* capture is optional */
+        }
+      }
+      const sens = e.pointerType === 'touch' ? 0.0056 : 0.0042;
+      pose.current.yaw -= dx * sens;
       pose.current.pitch = MathUtils.clamp(
-        pose.current.pitch - dy * LOOK_SENS,
+        pose.current.pitch - dy * sens,
         PLAYER.pitchMin,
         PLAYER.pitchMax
       );
@@ -190,17 +202,27 @@ export function usePlayerInput({
         window.setTimeout(() => setLookDragActive(false), 0);
         return;
       }
-      if (coarseRef.current) window.setTimeout(useNearest, 0);
+      if (coarseRef.current) {
+        window.clearTimeout(nearestTimer);
+        nearestTimer = window.setTimeout(useNearest, 48);
+      }
       window.setTimeout(() => setLookDragActive(false), 0);
+    };
+    const onBlur = () => {
+      keysRef.current = emptyKeys();
+      zoomRef.current.hold = false;
     };
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerup', onPointerUp, true);
     canvas.addEventListener('pointercancel', onPointerUp, true);
+    window.addEventListener('blur', onBlur);
 
     return () => {
+      window.clearTimeout(nearestTimer);
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
+      window.removeEventListener('blur', onBlur);
       canvas.removeEventListener('wheel', onWheel);
       canvas.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);

@@ -13,7 +13,7 @@ export function MobileControls({ visible }: Props) {
   const { mobileKeys } = useGameInput();
   const stickRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
-  const touchId = useRef<number | null>(null);
+  const pointerId = useRef<number | null>(null);
   const origin = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -48,10 +48,10 @@ export function MobileControls({ visible }: Props) {
     });
   };
 
-  const applyStick = (dx: number, dy: number) => {
-    const max = 48;
-    const nx = Math.max(-1, Math.min(1, dx / max));
-    const ny = Math.max(-1, Math.min(1, dy / max));
+  const applyStick = (clientX: number, clientY: number) => {
+    const max = 56;
+    const nx = Math.max(-1, Math.min(1, (clientX - origin.current.x) / max));
+    const ny = Math.max(-1, Math.min(1, (clientY - origin.current.y) / max));
     mobileKeys.current.stickX = nx;
     mobileKeys.current.stickY = ny;
     mobileKeys.current.forward = ny < -0.25;
@@ -63,27 +63,33 @@ export function MobileControls({ visible }: Props) {
     }
   };
 
-  const onStickStart = (e: React.TouchEvent) => {
-    if (touchId.current !== null) return;
-    const t = e.changedTouches[0];
-    if (!t || !stickRef.current) return;
-    touchId.current = t.identifier;
-    const rect = stickRef.current.getBoundingClientRect();
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    pointerId.current = e.pointerId;
+    const rect = e.currentTarget.getBoundingClientRect();
     origin.current = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    applyStick(t.clientX - origin.current.x, t.clientY - origin.current.y);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture is optional */
+    }
+    applyStick(e.clientX, e.clientY);
   };
 
-  const onStickMove = (e: React.TouchEvent) => {
-    if (touchId.current === null) return;
-    const t = Array.from(e.changedTouches).find((x) => x.identifier === touchId.current);
-    if (!t) return;
-    applyStick(t.clientX - origin.current.x, t.clientY - origin.current.y);
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== e.pointerId) return;
+    e.preventDefault();
+    applyStick(e.clientX, e.clientY);
   };
 
-  const onStickEnd = (e: React.TouchEvent) => {
-    const ended = Array.from(e.changedTouches).some((x) => x.identifier === touchId.current);
-    if (!ended) return;
-    touchId.current = null;
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== e.pointerId) return;
+    pointerId.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
     resetKnob();
   };
 
@@ -92,10 +98,10 @@ export function MobileControls({ visible }: Props) {
       <div
         ref={stickRef}
         className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[7.5rem] w-[7.5rem] touch-none"
-        onTouchStart={onStickStart}
-        onTouchMove={onStickMove}
-        onTouchEnd={onStickEnd}
-        onTouchCancel={onStickEnd}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
         <div className="absolute inset-0 rounded-full border border-white/20 bg-black/35 backdrop-blur-sm" />
         <div

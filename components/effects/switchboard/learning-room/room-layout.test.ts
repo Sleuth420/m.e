@@ -31,6 +31,13 @@ describe('nearestRoomInteract', () => {
     const hit = nearestRoomInteract(2.58, 0.5, [], true);
     expect(hit?.id).toBe('cabL-upper');
   });
+
+  it('prefers the fitting the player is facing when two are in range', () => {
+    const px = 4.2;
+    const pz = 0.85;
+    expect(nearestRoomInteract(px, pz, [], false, Math.PI / 2)?.id).toBe('fridge');
+    expect(nearestRoomInteract(px, pz, [], false, -Math.PI / 2)?.id).toBe('dishwasher');
+  });
 });
 
 describe('resolvePlayerPosition', () => {
