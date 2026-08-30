@@ -87,6 +87,8 @@ export const HEIGHTS = {
   cavityZ: -ROOM.studSize / 2,
   /** Lounge teaching wall cavity — studs sit just past z = ROOM.depth. */
   loungeCavityZ: ROOM.depth + ROOM.studSize / 2,
+  /** Far teaching wall cavity — studs sit just past x = ROOM.width. */
+  endCavityX: ROOM.width + ROOM.studSize / 2,
 } as const;
 
 export const IDLE_CAMERA = {
@@ -198,7 +200,7 @@ export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
   { id: 'cookIsolator', x: FIXTURES.cookIsolator.x, y: FIXTURES.cookIsolator.y, z: 0.55, r: 1.0, priority: 2, promptOpen: 'F · Cooktop isolator', promptClose: 'F · Cooktop isolator' },
   { id: 'cooktop', x: FIXTURES.cooktop.x, y: FIXTURES.cooktop.y, z: 0.55, r: 0.75, priority: 2, promptOpen: 'F · Boil the pot', promptClose: 'F · Take pot off' },
   { id: 'oven', x: FIXTURES.oven.x, y: 0.48, z: 0.58, r: 0.85, priority: 2, promptOpen: 'F · Open oven', promptClose: 'F · Close oven' },
-  { id: 'dishwasher', x: FIXTURES.dishwasher.x, y: 0.42, z: 0.58, r: 0.75, priority: 2, promptOpen: 'F · Open dishwasher', promptClose: 'F · Close dishwasher' },
+  { id: 'dishwasher', x: FIXTURES.dishwasher.x, y: 0.42, z: 0.58, r: 0.95, priority: 2, promptOpen: 'F · Open dishwasher', promptClose: 'F · Close dishwasher' },
   { id: 'fridge', x: FIXTURES.fridge.x, y: 0.95, z: FIXTURES.fridge.z, r: 1.3, priority: 1, promptOpen: 'F · Open fridge', promptClose: 'F · Close fridge' },
   { id: 'sink-base', x: 0.68, y: 0.48, z: 0.58, r: 0.85, priority: 0, promptOpen: 'F · Open cupboard', promptClose: 'F · Close cupboard' },
   { id: 'cabA-base', x: 1.3, y: 0.48, z: 0.58, r: 0.55, priority: 1, promptOpen: 'F · Open drawers', promptClose: 'F · Close drawers' },
@@ -433,6 +435,24 @@ export function resolvePlayerPosition(x: number, z: number): { x: number; z: num
     pad * 0.3
   ));
 
+  return { x: nx, z: nz };
+}
+
+/** Keep the player off dropped / swung doors. */
+export function resolveOpenDoors(
+  x: number,
+  z: number,
+  open: { dishwasher?: boolean; fridge?: boolean }
+): { x: number; z: number } {
+  let nx = x;
+  let nz = z;
+  const pad = PLAYER.radius;
+  if (open.dishwasher && Math.abs(nx - FIXTURES.dishwasher.x) < 0.36 + pad && nz < 1.28) {
+    nz = 1.28;
+  }
+  if (open.fridge && Math.abs(nx - FIXTURES.fridge.x) < 0.62 + pad && nz < 1.18) {
+    nz = 1.18;
+  }
   return { x: nx, z: nz };
 }
 

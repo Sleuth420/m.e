@@ -16,6 +16,7 @@ import {
   nearestRoomInteract,
   type RoomInteractId,
   resolvePlayerPosition,
+  resolveOpenDoors,
 } from './room-layout';
 import { useGameInput } from './GameInputContext';
 import { useSwitchboard } from '../SwitchboardContext';
@@ -338,6 +339,13 @@ export function Player({
         shake.current = Math.max(shake.current, 0.35);
       }
 
+      const doors = resolveOpenDoors(p.x, p.z, {
+        dishwasher: !!openById.dishwasher,
+        fridge: fridgeOpen,
+      });
+      p.x = doors.x;
+      p.z = doors.z;
+
       if (consumeInteract()) {
         const { x, z } = pose.current;
         const hit = nearestRoomInteract(
@@ -477,7 +485,7 @@ export function Player({
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });
 
-  return enabled ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt={coarse} /> : null;
+  return enabled ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt /> : null;
 }
 
 /** Poly Haven pliers as the player avatar — https://polyhaven.com/a/pliers */

@@ -4,10 +4,10 @@ export const ROOM_GLB = {
   cabinetDrawers: '/models/learning-room/real/cabinet-drawers.glb?v=8',
   /** Modular kitchen cupboard kit — one closed two-door unit per bay. */
   cabinetDoors: '/models/learning-room/real/cabinets-modular.glb?v=3',
-  fridge: '/models/learning-room/real/fridge-french.glb?v=9',
+  fridge: '/models/learning-room/real/fridge-french.glb?v=10',
   oven: '/models/learning-room/real/oven.glb?v=15',
   cooktop: '/models/learning-room/real/cooktop-lutz.glb?v=12',
-  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=22',
+  dishwasher: '/models/learning-room/real/dishwasher-phoria.glb?v=23',
   /** One wall canopy — never stack a second chimney mesh on top. */
   hood: '/models/learning-room/real/hood-wall.glb?v=3',
   toaster: '/models/learning-room/real/toaster.glb?v=8',

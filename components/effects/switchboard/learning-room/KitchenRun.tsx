@@ -19,7 +19,7 @@ import {
 } from 'three';
 import { PathWire } from '../wiring/PathWire';
 import { dressBlackAppliance, dressKitchenProduct } from './appliance-dress';
-import { prepareDishwasher, prepareFridge } from './appliance-hinge';
+import { preparePhoriaDishwasher, prepareFrenchFridgeDoors3 } from './appliance-hinge';
 import { FittedGltf, findNamed } from './FittedGltf';
 import {
   JoineryBay,
@@ -374,7 +374,7 @@ function FrenchFridge({
       pin="front"
       pinPad={0.16}
       fit="contain"
-      prepare={prepareFridge}
+      prepare={prepareFrenchFridgeDoors3}
       envIntensity={1}
       onReady={(root) => {
         left.current = findNamed(root, /^door_l$/) as Group | null;
@@ -550,7 +550,7 @@ function TapWater({ x, y, z }: { x: number; y: number; z: number }) {
 }
 
 function FridgeInterior({ position }: { position: [number, number, number] }) {
-  return <pointLight position={position} intensity={0.45} distance={1.4} color="#f3efe6" />;
+  return <pointLight position={position} intensity={0.85} distance={1.6} color="#f3efe6" />;
 }
 
 type KitchenProps = {
@@ -794,7 +794,7 @@ export function KitchenRun({
         pin="front"
         pinPad={0.04}
         fit="width"
-        prepare={prepareDishwasher}
+        prepare={preparePhoriaDishwasher}
         envIntensity={1}
         open={dwOpen}
         doorMatch={/^door_drop$/}
@@ -850,7 +850,7 @@ export function KitchenRun({
           envIntensity={1}
         />
       )}
-      {fridgeOpen && fridgeLive && <FridgeInterior position={[fridgeMid, 1.05, 0.52]} />}
+      {fridgeOpen && <FridgeInterior position={[fridgeMid, 1.05, 0.52]} />}
       {toasterPop && (
         <>
           <RoundedBox args={[0.062, 0.08, 0.014]} radius={0.004} smoothness={3} position={[toasterX - 0.038, benchY + 0.24, 0.34]} castShadow>
