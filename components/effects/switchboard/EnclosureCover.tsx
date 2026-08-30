@@ -36,7 +36,7 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
           position={[panelW / 2, 0, 0.018]}
           castShadow
           receiveShadow
-          onClick={(e) => {
+          onPointerUp={(e) => {
             if (open) return;
             onInteractiveClick(e, onRequestOpen);
           }}
@@ -60,7 +60,7 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
         {!open && (
           <mesh
             position={[panelW / 2, 0, 0.06]}
-            onClick={(e) => onInteractiveClick(e, onRequestOpen)}
+            onPointerUp={(e) => onInteractiveClick(e, onRequestOpen)}
             onPointerOver={(e) => onInteractiveEnter(e)}
             onPointerOut={() => onInteractiveLeave()}
           >

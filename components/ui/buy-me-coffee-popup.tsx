@@ -56,6 +56,7 @@ export function BuyMeCoffeePopup({
 
   return (
     <div
+      data-site-popup
       className={cn(
         'fixed z-40 p-1 shadow-lg rounded-lg bg-gradient-to-r from-amber-500 to-amber-600',
         'bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 right-4 sm:right-auto sm:max-w-[280px]',

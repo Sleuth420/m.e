@@ -113,13 +113,8 @@ export function LearningHud({ visible }: Props) {
             <p className="text-xs font-medium sm:text-sm">{bannerText}</p>
           )}
         </div>
+        {coarse && circuitList}
       </div>
-
-      {coarse && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-[max(8.75rem,calc(env(safe-area-inset-bottom)+7.75rem))] z-20 flex justify-center px-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]">
-          {circuitList}
-        </div>
-      )}
 
       {!coarse && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4">

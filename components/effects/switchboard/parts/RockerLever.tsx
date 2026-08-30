@@ -68,7 +68,7 @@ export function RockerLever({
       <group
         ref={leverRef}
         position={[0, 0, 0.004]}
-        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
         onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
         onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
       >

@@ -59,7 +59,7 @@ export function Rcbo({
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
-        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       {/* Thin face plate seated in the molded pocket (box, not a floating plane) */}
@@ -94,7 +94,7 @@ export function Rcbo({
         <mesh
           position={[0, 0, 0.04]}
           renderOrder={9}
-          onClick={
+          onPointerUp={
             disabled
               ? undefined
               : (e) =>
@@ -112,7 +112,7 @@ export function Rcbo({
         <mesh
           ref={testRef}
           castShadow={false}
-          onClick={
+          onPointerUp={
             disabled
               ? undefined
               : (e) =>

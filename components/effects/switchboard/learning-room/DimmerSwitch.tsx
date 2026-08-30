@@ -92,7 +92,7 @@ export function DimmerSwitch({ position, wall, level, live, onCycle }: Props) {
       rotation={rot}
       onPointerOver={(e) => onInteractiveEnter(e)}
       onPointerOut={() => onInteractiveLeave()}
-      onClick={(e) => onInteractiveClick(e, onCycle)}
+      onPointerUp={(e) => onInteractiveClick(e, onCycle)}
     >
       <primitive object={root} />
       <mesh position={[0, -0.044, 0.0102]} receiveShadow>

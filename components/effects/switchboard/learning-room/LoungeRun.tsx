@@ -4,36 +4,14 @@ import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { CanvasTexture, Color, Group, Mesh, MeshStandardMaterial, Object3D, SRGBColorSpace } from 'three';
-import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { PathWire } from '../wiring/PathWire';
 import { DimmerSwitch } from './DimmerSwitch';
 import { FittedGltf } from './FittedGltf';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { FIXTURES, LOUNGE, ROOM } from './room-layout';
+import { RoomHit } from './RoomHit';
 import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
-
-function Hit({
-  onToggle,
-  size,
-  position = [0, 0, 0],
-}: {
-  onToggle: () => void;
-  size: [number, number, number];
-  position?: [number, number, number];
-}) {
-  return (
-    <mesh
-      position={position}
-      onPointerOver={(e) => onInteractiveEnter(e)}
-      onPointerOut={() => onInteractiveLeave()}
-      onClick={(e) => onInteractiveClick(e, onToggle)}
-    >
-      <boxGeometry args={size} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-    </mesh>
-  );
-}
 
 function TvScreen({ on, width, height }: { on: boolean; width: number; height: number }) {
   const map = useMemo(() => {
@@ -63,7 +41,7 @@ function TvScreen({ on, width, height }: { on: boolean; width: number; height: n
   }, []);
 
   return (
-    <mesh receiveShadow renderOrder={2}>
+    <mesh receiveShadow renderOrder={2} raycast={() => null}>
       <planeGeometry args={[width, height]} />
       <meshStandardMaterial
         map={on ? map : null}
@@ -117,7 +95,7 @@ function Rug() {
   const { x, w, d, z } = LOUNGE.rug;
   const h = 0.02;
   return (
-    <mesh position={[x + w / 2, h / 2, z + d / 2]} receiveShadow>
+    <mesh position={[x + w / 2, h / 2, z + d / 2]} receiveShadow raycast={() => null}>
       <boxGeometry args={[w, h, d]} />
       <meshStandardMaterial
         map={maps.map}
@@ -185,6 +163,7 @@ function cloneScene(source: Object3D): Group {
     if (!mesh.isMesh) return;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    mesh.raycast = () => undefined;
     if (Array.isArray(mesh.material)) mesh.material = mesh.material.map((m) => m.clone());
     else if (mesh.material) mesh.material = (mesh.material as MeshStandardMaterial).clone();
   });
@@ -305,12 +284,12 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
 
       <LoungeSconces lightsOn={lightsOn} dimmer={dimmer} />
 
-      <Hit
+      <RoomHit
         onToggle={onToggleTv}
-        size={[LOUNGE.tv.w + 0.06, LOUNGE.tv.h + 0.04, 0.18]}
-        position={[tv.x, cab.h + LOUNGE.tv.h / 2, zFront + 0.06]}
+        size={[LOUNGE.tv.w + 0.06, LOUNGE.tv.h + 0.04, 0.22]}
+        position={[tv.x, cab.h + LOUNGE.tv.h / 2, zFront - 0.1]}
       />
-      <Hit onToggle={onToggleTv} size={[0.24, 0.18, 0.14]} position={[gpo.x, gpo.y, zFront + 0.05]} />
+      <RoomHit onToggle={onToggleTv} size={[0.24, 0.18, 0.14]} position={[gpo.x, gpo.y, zFront - 0.08]} />
     </group>
   );
 }

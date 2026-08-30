@@ -85,7 +85,7 @@ function Box({
   const v = uvH ?? h;
   if (w < 0.004 || h < 0.004 || d < 0.004) return null;
   return (
-    <mesh position={position} castShadow receiveShadow>
+    <mesh position={position} castShadow receiveShadow raycast={() => null}>
       <boxGeometry args={[w, h, d]} />
       <WoodMat w={u} h={v} grain={grain} interior={interior} panel={panel} />
     </mesh>
@@ -105,7 +105,7 @@ function BarHandle({
   const span = length * 0.38;
   return (
     <group position={position}>
-      <mesh rotation={vertical ? [0, 0, 0] : [0, 0, Math.PI / 2]} castShadow>
+      <mesh rotation={vertical ? [0, 0, 0] : [0, 0, Math.PI / 2]} castShadow raycast={() => null}>
         <cylinderGeometry args={[HANDLE_R, HANDLE_R, length, 18]} />
         <HandleMat />
       </mesh>
@@ -115,6 +115,7 @@ function BarHandle({
           position={vertical ? [0, off, -HANDLE_PROJ / 2] : [off, 0, -HANDLE_PROJ / 2]}
           rotation={[Math.PI / 2, 0, 0]}
           castShadow
+          raycast={() => null}
         >
           <cylinderGeometry args={[HANDLE_R * 0.78, HANDLE_R * 0.78, HANDLE_PROJ, 12]} />
           <HandleMat />
@@ -294,21 +295,21 @@ export function JoineryKick({ x, w, returns = true }: { x: number; w: number; re
   const liningZ = frontZ - 0.032;
   return (
     <group>
-      <mesh position={[x + w / 2, y, frontZ - t / 2]} castShadow receiveShadow>
+      <mesh position={[x + w / 2, y, frontZ - t / 2]} castShadow receiveShadow raycast={() => null}>
         <boxGeometry args={[w, h, t]} />
         <KickMat />
       </mesh>
-      <mesh position={[x + w / 2, y, liningZ]} receiveShadow>
+      <mesh position={[x + w / 2, y, liningZ]} receiveShadow raycast={() => null}>
         <boxGeometry args={[Math.max(0.02, w - t * 2), h - 0.006, 0.01]} />
         <meshStandardMaterial color="#16181a" roughness={0.88} metalness={0.04} />
       </mesh>
       {returns && (
         <>
-          <mesh position={[x + t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+          <mesh position={[x + t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow raycast={() => null}>
             <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
             <KickMat />
           </mesh>
-          <mesh position={[x + w - t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow>
+          <mesh position={[x + w - t / 2, y, (frontZ - t) / 2]} castShadow receiveShadow raycast={() => null}>
             <boxGeometry args={[t, h, Math.max(0.02, frontZ - t)]} />
             <KickMat />
           </mesh>
@@ -432,13 +433,13 @@ export function JoineryFridgeHousing({
       <JoineryEndPanel x={x} w={leftW} h={h} depth={depth} />
       <JoineryEndPanel x={openingX + openingW} w={rightW} h={h} depth={depth} />
       {leftW > 0.008 && (
-        <mesh position={[x + leftW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow>
+        <mesh position={[x + leftW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow raycast={() => null}>
           <boxGeometry args={[leftW, kickH, 0.018]} />
           <KickMat />
         </mesh>
       )}
       {rightW > 0.008 && (
-        <mesh position={[openingX + openingW + rightW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow>
+        <mesh position={[openingX + openingW + rightW / 2, kickH / 2 + 0.002, kickZ]} castShadow receiveShadow raycast={() => null}>
           <boxGeometry args={[rightW, kickH, 0.018]} />
           <KickMat />
         </mesh>

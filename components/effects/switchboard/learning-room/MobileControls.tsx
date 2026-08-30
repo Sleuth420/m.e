@@ -96,7 +96,7 @@ export function MobileControls({ visible }: Props) {
     <div className="pointer-events-none absolute inset-0 z-40">
       <div
         ref={stickRef}
-        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[6.75rem] w-[6.75rem] touch-none"
+        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[7.5rem] w-[7.5rem] touch-none"
         onTouchStart={onStickStart}
         onTouchMove={onStickMove}
         onTouchEnd={onStickEnd}
@@ -107,7 +107,7 @@ export function MobileControls({ visible }: Props) {
           ref={knobRef}
           className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 bg-white/25 shadow-md"
         />
-        <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-medium uppercase tracking-wider text-white/80">
+        <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-medium tracking-wider text-white/80">
           Move
         </span>
       </div>

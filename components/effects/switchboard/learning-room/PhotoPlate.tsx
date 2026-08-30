@@ -34,7 +34,7 @@ export function PhotoPlate({
       rotation={rotation}
       onPointerOver={interactive ? (e) => onInteractiveEnter(e) : undefined}
       onPointerOut={interactive ? () => onInteractiveLeave() : undefined}
-      onClick={
+      onPointerUp={
         interactive && onToggle
           ? (e) => onInteractiveClick(e, onToggle)
           : undefined

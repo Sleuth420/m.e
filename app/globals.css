@@ -446,3 +446,7 @@
     opacity: 0;
   }
 }
+
+html.room-playing [data-site-popup] {
+  display: none !important;
+}

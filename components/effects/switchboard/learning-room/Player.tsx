@@ -4,7 +4,7 @@ import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState, type RefObject, Suspense } from 'react';
 import { Group, MathUtils, PerspectiveCamera, Box3, Vector3, type Mesh, type MeshStandardMaterial } from 'three';
-import { setLookDragActive } from '../interaction';
+import { setLookDragActive, markInteract, wasRecentInteract } from '../interaction';
 import {
   BOARD_MOUNT,
   IDLE_CAMERA,
@@ -215,20 +215,32 @@ export function Player({
     window.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('contextmenu', onContext);
 
-    const look = { id: -1, x: 0, y: 0, dragging: false };
+    const look = { id: -1, x: 0, y: 0, dragging: false, canLook: false };
     const TAP_PX = 14;
     const LOOK_SENS = 0.0048;
+    const useNearest = () => {
+      if (wasRecentInteract()) return;
+      const { x, z } = pose.current;
+      const hit = nearestRoomInteract(x, z, [], false);
+      if (hit) {
+        markInteract();
+        onInteract(hit.id);
+      } else if (nearBoard(x, z) && !coverOpen) {
+        markInteract();
+        requestCoverOpen();
+      }
+    };
     const onPointerDown = (e: PointerEvent) => {
       if (!coarseRef.current) return;
-      if (e.pointerType === 'mouse') return;
       look.id = e.pointerId;
       look.x = e.clientX;
       look.y = e.clientY;
       look.dragging = false;
+      look.canLook = e.pointerType !== 'mouse';
       setLookDragActive(false);
     };
     const onPointerMove = (e: PointerEvent) => {
-      if (look.id !== e.pointerId) return;
+      if (look.id !== e.pointerId || !look.canLook) return;
       const dx = e.clientX - look.x;
       const dy = e.clientY - look.y;
       if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
@@ -240,9 +252,16 @@ export function Player({
     };
     const onPointerUp = (e: PointerEvent) => {
       if (look.id !== e.pointerId) return;
-      if (look.dragging) e.stopImmediatePropagation();
+      const dragged = look.dragging;
       look.id = -1;
       look.dragging = false;
+      if (dragged) {
+        e.stopImmediatePropagation();
+        window.setTimeout(() => setLookDragActive(false), 0);
+        return;
+      }
+      // Let R3F Hits claim the tap first; empty canvas uses the nearest fitting.
+      if (coarseRef.current) window.setTimeout(useNearest, 0);
       window.setTimeout(() => setLookDragActive(false), 0);
     };
     canvas.addEventListener('pointerdown', onPointerDown);

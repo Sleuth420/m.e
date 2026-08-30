@@ -109,7 +109,7 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
       rotation={wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0]}
       onPointerOver={(e) => onInteractiveEnter(e)}
       onPointerOut={() => onInteractiveLeave()}
-      onClick={(e) => onInteractiveClick(e, onToggle)}
+      onPointerUp={(e) => onInteractiveClick(e, onToggle)}
     >
       <primitive object={root} />
       {isolator && (

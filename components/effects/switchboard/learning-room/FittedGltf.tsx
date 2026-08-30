@@ -222,6 +222,8 @@ export function FittedGltf({
       if (!mesh.isMesh) return;
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+      // Hits in front of fittings own pointer events — GLBs must not steal taps.
+      mesh.raycast = () => undefined;
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       const next = mats.map((mat) => {
         const src = mat as MeshStandardMaterial;

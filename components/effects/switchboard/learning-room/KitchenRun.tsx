@@ -17,7 +17,6 @@ import {
   SRGBColorSpace,
   Vector3,
 } from 'three';
-import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { PathWire } from '../wiring/PathWire';
 import { dressBlackAppliance, dressKitchenProduct } from './appliance-dress';
 import { prepareDishwasher, prepareFridge } from './appliance-hinge';
@@ -37,32 +36,7 @@ import { useRepeatingPbr } from './room-textures';
 import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type RoomInteractId } from './room-layout';
-
-function Hit({
-  onToggle,
-  size,
-  position = [0, 0, 0],
-  enabled = true,
-}: {
-  onToggle: () => void;
-  size: [number, number, number];
-  position?: [number, number, number];
-  enabled?: boolean;
-}) {
-  if (!enabled) return null;
-
-  return (
-    <mesh
-      position={position}
-      onPointerOver={(e) => onInteractiveEnter(e)}
-      onPointerOut={() => onInteractiveLeave()}
-      onClick={(e) => onInteractiveClick(e, onToggle)}
-    >
-      <boxGeometry args={size} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-    </mesh>
-  );
-}
+import { RoomHit } from './RoomHit';
 
 const BENCH_T = 0.03;
 const BENCH_Y = KITCHEN.benchH + BENCH_T / 2;
@@ -432,7 +406,7 @@ function WallGpo({
         share
         envIntensity={live ? 1.15 : 1.05}
       />
-      {onToggle && <Hit onToggle={onToggle} size={[0.24, 0.18, 0.14]} />}
+      {onToggle && <RoomHit onToggle={onToggle} size={[0.24, 0.18, 0.14]} />}
     </group>
   );
 }
@@ -849,21 +823,21 @@ export function KitchenRun({
         envIntensity={1}
       />
 
-      <Hit onToggle={onToggleSink} size={[0.55, 0.24, 0.4]} position={[FIXTURES.sink.x, benchY + 0.12, 0.55]} />
-      <Hit onToggle={onToggleBoil} size={[0.56, 0.1, 0.48]} position={[cookX, benchY + 0.08, benchZ]} />
-      <Hit onToggle={() => onToggle('oven')} size={[cook.w - 0.04, OVEN_H, 0.22]} position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.58]} />
-      <Hit onToggle={() => onToggle('dishwasher')} size={[dw.w - 0.04, DW_H, 0.2]} position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.58]} />
-      <Hit onToggle={onToggleFridge} size={[FRIDGE_W, FRIDGE_H, 0.22]} position={[fridgeMid, FRIDGE_H / 2, 0.64]} />
-      <Hit onToggle={() => onToggle('sink-base')} size={[0.7, 0.55, 0.16]} position={[0.68, 0.42, 0.58]} />
-      <Hit onToggle={() => onToggle('cabA-base')} size={[0.4, 0.55, 0.16]} position={[1.3, 0.42, 0.58]} />
-      <Hit onToggle={() => onToggle('cabL-base')} size={[0.8, 0.55, 0.16]} position={[2.58, 0.42, 0.58]} />
-      <Hit onToggle={() => onToggle('cabR-base')} size={[0.8, 0.55, 0.16]} position={[4.08, 0.42, 0.58]} />
-      <Hit onToggle={() => onToggle('sink-upper')} size={[0.7, 0.45, 0.14]} position={[0.68, 1.78, 0.36]} />
-      <Hit onToggle={() => onToggle('cabA-upper')} size={[0.4, 0.45, 0.14]} position={[1.3, 1.78, 0.36]} />
-      <Hit onToggle={() => onToggle('cabL-upper')} size={[0.8, 0.45, 0.14]} position={[2.58, 1.78, 0.36]} />
-      <Hit onToggle={() => onToggle('dw-upper')} size={[0.52, 0.45, 0.14]} position={[3.33, 1.78, 0.36]} />
-      <Hit onToggle={() => onToggle('cabR-upper')} size={[0.8, 0.45, 0.14]} position={[4.08, 1.78, 0.36]} />
-      <Hit onToggle={onToggleToaster} size={[0.32, 0.22, 0.2]} position={[toasterX, benchY + 0.14, benchZ]} />
+      <RoomHit onToggle={onToggleSink} size={[0.55, 0.24, 0.4]} position={[FIXTURES.sink.x, benchY + 0.12, 0.55]} />
+      <RoomHit onToggle={onToggleBoil} size={[0.56, 0.1, 0.48]} position={[cookX, benchY + 0.08, benchZ]} />
+      <RoomHit onToggle={() => onToggle('oven')} size={[cook.w - 0.04, OVEN_H, 0.28]} position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.78]} />
+      <RoomHit onToggle={() => onToggle('dishwasher')} size={[dw.w - 0.04, DW_H, 0.28]} position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.78]} />
+      <RoomHit onToggle={onToggleFridge} size={[FRIDGE_W, FRIDGE_H, 0.32]} position={[fridgeMid, FRIDGE_H / 2, 0.86]} />
+      <RoomHit onToggle={() => onToggle('sink-base')} size={[0.7, 0.55, 0.22]} position={[0.68, 0.42, 0.74]} />
+      <RoomHit onToggle={() => onToggle('cabA-base')} size={[0.4, 0.55, 0.22]} position={[1.3, 0.42, 0.74]} />
+      <RoomHit onToggle={() => onToggle('cabL-base')} size={[0.8, 0.55, 0.22]} position={[2.58, 0.42, 0.74]} />
+      <RoomHit onToggle={() => onToggle('cabR-base')} size={[0.8, 0.55, 0.22]} position={[4.08, 0.42, 0.74]} />
+      <RoomHit onToggle={() => onToggle('sink-upper')} size={[0.7, 0.45, 0.16]} position={[0.68, 1.78, 0.48]} />
+      <RoomHit onToggle={() => onToggle('cabA-upper')} size={[0.4, 0.45, 0.16]} position={[1.3, 1.78, 0.48]} />
+      <RoomHit onToggle={() => onToggle('cabL-upper')} size={[0.8, 0.45, 0.16]} position={[2.58, 1.78, 0.48]} />
+      <RoomHit onToggle={() => onToggle('dw-upper')} size={[0.52, 0.45, 0.16]} position={[3.33, 1.78, 0.48]} />
+      <RoomHit onToggle={() => onToggle('cabR-upper')} size={[0.8, 0.45, 0.16]} position={[4.08, 1.78, 0.48]} />
+      <RoomHit onToggle={onToggleToaster} size={[0.32, 0.22, 0.2]} position={[toasterX, benchY + 0.14, benchZ]} />
 
       <CookPot boiling={hobLive && boiling} position={[cookX, benchTop + 0.01, FIXTURES.cooktop.z]} />
       {sinkOn && <TapWater x={FIXTURES.sink.x} y={benchTop + 0.14} z={0.28} />}

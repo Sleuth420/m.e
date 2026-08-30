@@ -35,7 +35,7 @@ export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disa
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover('main'))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
-        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       <mesh position={[0, wells.face.y, faceZ + wells.face.zPad]}>

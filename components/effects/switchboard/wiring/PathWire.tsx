@@ -100,7 +100,7 @@ export function PathWire({
       geometry={geometry}
       castShadow
       material={mat}
-      onClick={
+      onPointerUp={
         canShock
           ? (e) =>
               onInteractiveClick(e, () => {
