@@ -3,7 +3,7 @@
 import { useEffect, type MutableRefObject, type RefObject } from 'react';
 import { MathUtils, type WebGLRenderer } from 'three';
 import { markInteract, setLookDragActive, wasRecentInteract } from '../interaction';
-import type { RoomInteractId } from './room-layout';
+import { PLAYER, type RoomInteractId } from './room-layout';
 import type { PlayerPose } from './player-motion';
 import { tryRoomInteract } from './room-interact';
 
@@ -55,7 +55,7 @@ function applyKey(keys: Keys, zoom: Zoom, code: string, down: boolean) {
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'KeyZ') zoom.hold = down;
 }
 
-/** Keyboard, wheel zoom, and mobile look-drag / tap-nearest. */
+/** Keyboard, wheel zoom, look-drag (touch + mouse), and mobile tap-nearest. */
 export function usePlayerInput({
   enabled,
   gl,
@@ -133,8 +133,16 @@ export function usePlayerInput({
     canvas.addEventListener('contextmenu', onContext);
 
     const look = { id: -1, x: 0, y: 0, dragging: false, canLook: false };
-    const TAP_PX = 14;
-    const LOOK_SENS = 0.0048;
+    const TAP_PX = 16;
+    const LOOK_SENS = 0.005;
+    const releaseLook = (pointerId: number) => {
+      look.id = -1;
+      look.dragging = false;
+      look.canLook = false;
+      if (canvas.hasPointerCapture(pointerId)) {
+        canvas.releasePointerCapture(pointerId);
+      }
+    };
     const useNearest = () => {
       if (wasRecentInteract()) return;
       if (
@@ -144,13 +152,18 @@ export function usePlayerInput({
       }
     };
     const onPointerDown = (e: PointerEvent) => {
-      if (!coarseRef.current) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
       look.id = e.pointerId;
       look.x = e.clientX;
       look.y = e.clientY;
       look.dragging = false;
-      look.canLook = e.pointerType !== 'mouse';
+      look.canLook = true;
       setLookDragActive(false);
+      try {
+        canvas.setPointerCapture(e.pointerId);
+      } catch {
+        /* capture is optional */
+      }
     };
     const onPointerMove = (e: PointerEvent) => {
       if (look.id !== e.pointerId || !look.canLook) return;
@@ -160,14 +173,18 @@ export function usePlayerInput({
       look.dragging = true;
       setLookDragActive(true);
       pose.current.yaw -= dx * LOOK_SENS;
+      pose.current.pitch = MathUtils.clamp(
+        pose.current.pitch - dy * LOOK_SENS,
+        PLAYER.pitchMin,
+        PLAYER.pitchMax
+      );
       look.x = e.clientX;
       look.y = e.clientY;
     };
     const onPointerUp = (e: PointerEvent) => {
       if (look.id !== e.pointerId) return;
       const dragged = look.dragging;
-      look.id = -1;
-      look.dragging = false;
+      releaseLook(e.pointerId);
       if (dragged) {
         e.stopImmediatePropagation();
         window.setTimeout(() => setLookDragActive(false), 0);

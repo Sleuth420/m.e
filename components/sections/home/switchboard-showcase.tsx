@@ -121,7 +121,7 @@ export default function SwitchboardShowcase() {
                   Touch · drag to look · tap fittings
                 </>
               ) : (
-                <>Keyboard · WASD walk · QE turn · F use</>
+                <>Keyboard · WASD walk · drag to look · F use</>
               )}
             </p>
           </div>

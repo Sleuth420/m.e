@@ -329,6 +329,8 @@ export const PLAYER = {
   height: 1.62,
   speed: 2.4,
   turnSpeed: 2.2,
+  pitchMin: -0.62,
+  pitchMax: 0.78,
 } as const;
 
 export function boardWallStudZs(): number[] {
@@ -463,10 +465,10 @@ export function nearPoint(px: number, pz: number, x: number, z: number, radius =
 }
 
 export function nearBoard(px: number, pz: number): boolean {
-  return nearPoint(px, pz, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z, 1.7);
+  return nearPoint(px, pz, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z, 1.15);
 }
 
-/** Close enough to lean the camera into the poles for reading / tapping. */
+/** Standing in front of the enclosure — close enough to tap rockers. */
 export function atBoard(px: number, pz: number): boolean {
-  return nearPoint(px, pz, BOARD_MOUNT.x + 0.55, BOARD_MOUNT.z, 1.05);
+  return nearPoint(px, pz, BOARD_MOUNT.x + 0.55, BOARD_MOUNT.z, 0.95);
 }

@@ -130,10 +130,10 @@ export function LearningHud({ visible }: Props) {
                   </div>
                   <ul className="space-y-0.5 text-[11px] text-muted-foreground">
                     <li>
-                      <Kbd>WASD</Kbd> move · <Kbd>QE</Kbd> turn
+                      <Kbd>WASD</Kbd> move · drag to look
                     </li>
                     <li>
-                      <Kbd>F</Kbd> use · <Kbd>Shift</Kbd> inspect
+                      <Kbd>QE</Kbd> turn · <Kbd>F</Kbd> use · <Kbd>Shift</Kbd> inspect
                     </li>
                     <li>
                       <Kbd>Esc</Kbd> exit

@@ -18,6 +18,8 @@ export type MobileKeys = {
   turnLeft: boolean;
   turnRight: boolean;
   inspect: boolean;
+  stickX: number;
+  stickY: number;
 };
 
 export type GameInputApi = {
@@ -39,6 +41,8 @@ const defaultKeys = (): MobileKeys => ({
   turnLeft: false,
   turnRight: false,
   inspect: false,
+  stickX: 0,
+  stickY: 0,
 });
 
 const GameInputContext = createContext<GameInputApi | null>(null);

@@ -85,4 +85,8 @@ describe('board proximity', () => {
     expect(nearBoard(0.5, 5.35)).toBe(true);
     expect(atBoard(0.5, 5.35)).toBe(true);
   });
+
+  it('does not treat the lounge dimmer as the board', () => {
+    expect(nearBoard(FIXTURES.loungeDimmerA.x, FIXTURES.loungeDimmerA.z)).toBe(false);
+  });
 });

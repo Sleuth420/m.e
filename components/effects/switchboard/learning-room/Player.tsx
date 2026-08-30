@@ -4,8 +4,9 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import { Group, MathUtils, PerspectiveCamera } from 'three';
 import { useCoarsePointer } from '@/lib/hooks';
-import { IDLE_CAMERA, PLAYER_SPAWN, atBoard, nearBoard, nearestRoomInteract, type RoomInteractId } from './room-layout';
+import { IDLE_CAMERA, PLAYER_SPAWN, nearBoard, nearestRoomInteract, type RoomInteractId } from './room-layout';
 import { useGameInput } from './GameInputContext';
+import { isLookDragActive } from '../interaction';
 import { useSwitchboard } from '../SwitchboardContext';
 import { PliersCharacter } from './PliersCharacter';
 import {
@@ -54,6 +55,7 @@ export function Player({
     x: PLAYER_SPAWN.x,
     z: PLAYER_SPAWN.z,
     yaw: PLAYER_SPAWN.yaw,
+    pitch: 0,
     moving: false,
   });
   const dummyRef = useRef(new Group());
@@ -130,11 +132,7 @@ export function Player({
     }
 
     const zoomT = enabled
-      ? Math.max(
-          zoomRef.current.hold || m.inspect ? 1 : 0,
-          zoomRef.current.amount,
-          atBoard(pose.current.x, pose.current.z) && coarseRef.current ? 0.82 : 0
-        )
+      ? Math.max(zoomRef.current.hold || m.inspect ? 1 : 0, zoomRef.current.amount)
       : 0;
     const targetFov = MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
     if (Math.abs(persp.fov - targetFov) > 0.05) {
@@ -164,10 +162,11 @@ export function Player({
       dummy.position.y += off.y;
     }
 
-    camera.position.lerp(dummy.position, 1 - Math.pow(0.001, dt));
-    look.current.x = MathUtils.lerp(look.current.x, anchor.lookX, 0.12);
-    look.current.y = MathUtils.lerp(look.current.y, anchor.lookY, 0.12);
-    look.current.z = MathUtils.lerp(look.current.z, anchor.lookZ, 0.12);
+    camera.position.lerp(dummy.position, 1 - Math.pow(0.012, dt));
+    const lookLambda = isLookDragActive() ? 24 : 14;
+    look.current.x = MathUtils.damp(look.current.x, anchor.lookX, lookLambda, dt);
+    look.current.y = MathUtils.damp(look.current.y, anchor.lookY, lookLambda, dt);
+    look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, lookLambda, dt);
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });
 

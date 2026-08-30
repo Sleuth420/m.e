@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PLAYER_SPAWN } from './room-layout';
+import { BOARD_MOUNT, PLAYER_SPAWN } from './room-layout';
 import { playingCameraAnchor, shockShakeOffset, stepPlayerPose, type PlayerPose } from './player-motion';
 
 const still = {
@@ -9,10 +9,12 @@ const still = {
   right: false,
   turnLeft: false,
   turnRight: false,
+  stickX: 0,
+  stickY: 0,
 };
 
 function spawn(): PlayerPose {
-  return { x: PLAYER_SPAWN.x, z: PLAYER_SPAWN.z, yaw: PLAYER_SPAWN.yaw, moving: false };
+  return { x: PLAYER_SPAWN.x, z: PLAYER_SPAWN.z, yaw: PLAYER_SPAWN.yaw, pitch: 0, moving: false };
 }
 
 describe('stepPlayerPose', () => {
@@ -35,6 +37,14 @@ describe('stepPlayerPose', () => {
     expect(next.x).toBe(PLAYER_SPAWN.x);
     expect(next.z).toBe(PLAYER_SPAWN.z);
   });
+
+  it('scales walk speed from analog stick magnitude', () => {
+    const full = stepPlayerPose(spawn(), { ...still, stickY: -1 }, 0.25, false, {});
+    const half = stepPlayerPose(spawn(), { ...still, stickY: -0.4 }, 0.25, false, {});
+    expect(full.z).toBeLessThan(PLAYER_SPAWN.z);
+    expect(half.z).toBeLessThan(PLAYER_SPAWN.z);
+    expect(half.z).toBeGreaterThan(full.z);
+  });
 });
 
 describe('playingCameraAnchor', () => {
@@ -43,6 +53,22 @@ describe('playingCameraAnchor', () => {
     const cam = playingCameraAnchor(pose, 0, null);
     expect(cam.posZ).toBeGreaterThan(pose.z);
     expect(cam.lookZ).toBeLessThan(pose.z);
+  });
+
+  it('does not lock look or boom to the board when standing in front of it', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0, null);
+    expect(cam.lookZ).toBeGreaterThan(pose.z);
+    expect(cam.lookX).toBeCloseTo(pose.x, 1);
+    expect(cam.posZ).toBeLessThan(pose.z);
+    expect(Math.abs(cam.lookX - (BOARD_MOUNT.x + 0.12))).toBeGreaterThan(0.2);
+    expect(Math.abs(cam.posZ - BOARD_MOUNT.z)).toBeGreaterThan(0.15);
+  });
+
+  it('aims lower when the player pitches down', () => {
+    const level = playingCameraAnchor(spawn(), 0, null);
+    const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0, null);
+    expect(down.lookY).toBeLessThan(level.lookY);
   });
 });
 

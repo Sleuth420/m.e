@@ -26,6 +26,8 @@ export function MobileControls({ visible }: Props) {
         turnLeft: false,
         turnRight: false,
         inspect: false,
+        stickX: 0,
+        stickY: 0,
       });
     }
   }, [visible, mobileKeys]);
@@ -41,6 +43,8 @@ export function MobileControls({ visible }: Props) {
       back: false,
       left: false,
       right: false,
+      stickX: 0,
+      stickY: 0,
     });
   };
 
@@ -48,6 +52,8 @@ export function MobileControls({ visible }: Props) {
     const max = 48;
     const nx = Math.max(-1, Math.min(1, dx / max));
     const ny = Math.max(-1, Math.min(1, dy / max));
+    mobileKeys.current.stickX = nx;
+    mobileKeys.current.stickY = ny;
     mobileKeys.current.forward = ny < -0.25;
     mobileKeys.current.back = ny > 0.25;
     mobileKeys.current.left = nx < -0.25;
@@ -100,6 +106,9 @@ export function MobileControls({ visible }: Props) {
           Move
         </span>
       </div>
+      <p className="pointer-events-none absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] right-[max(0.75rem,env(safe-area-inset-right))] max-w-[7.5rem] text-right text-[9px] font-medium leading-snug tracking-wider text-white/75">
+        Drag to look
+      </p>
     </div>
   );
 }
