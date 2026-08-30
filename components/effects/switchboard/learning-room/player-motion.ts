@@ -29,6 +29,15 @@ export type MoveKeys = {
 
 const STICK_DEADZONE = 0.1;
 
+/** Map a pointer delta to a circular analog stick in [-1, 1]. */
+export function analogFromDelta(dx: number, dy: number, max: number): { x: number; y: number } {
+  if (!(max > 0) || !Number.isFinite(dx) || !Number.isFinite(dy)) return { x: 0, y: 0 };
+  const mag = Math.hypot(dx, dy);
+  if (mag < 1e-6) return { x: 0, y: 0 };
+  const scale = Math.min(1, mag / max);
+  return { x: (dx / mag) * scale, y: (dy / mag) * scale };
+}
+
 export function mergeMoveKeys(a: MoveKeys, b: MoveKeys): MoveKeys {
   return {
     forward: a.forward || b.forward,
@@ -92,6 +101,7 @@ export function stepPlayerPose(
     if (moving) {
       const scale = analogMag > 0 ? analogMag : 1;
       const step = (PLAYER.speed * scale * dt) / len;
+      // Separate axes so a blocked heading still slides along furniture.
       const alongX = resolvePlayerPosition(x + vx * step, z);
       const alongZ = resolvePlayerPosition(alongX.x, z + vz * step);
       x = alongZ.x;

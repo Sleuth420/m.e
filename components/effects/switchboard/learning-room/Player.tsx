@@ -4,7 +4,13 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import { Group, MathUtils, PerspectiveCamera } from 'three';
 import { useCoarsePointer } from '@/lib/hooks';
-import { IDLE_CAMERA, PLAYER_SPAWN, nearBoard, nearestRoomInteract, type RoomInteractId } from './room-layout';
+import {
+  IDLE_CAMERA,
+  PLAYER_SPAWN,
+  nearBoard,
+  nearestRoomInteract,
+  type RoomInteractId,
+} from './room-layout';
 import { useGameInput } from './GameInputContext';
 import { isLookDragActive } from '../interaction';
 import { useSwitchboard } from '../SwitchboardContext';
@@ -46,7 +52,7 @@ export function Player({
   loungeLightLive,
 }: Props) {
   const { gl } = useThree();
-  const { coverOpen, requestCoverOpen } = useSwitchboard();
+  const { coverOpen, coverPromptOpen, requestCoverOpen, denyCoverOpen } = useSwitchboard();
   const { mobileKeys, consumeInteract, isStunned, setStunned, setActionPrompt } = useGameInput();
   const { coarseRef } = useCoarsePointer();
   const keysRef = useRef(emptyKeys());
@@ -86,9 +92,11 @@ export function Player({
     zoomRef,
     coarseRef,
     coverOpen,
+    coverPromptOpen,
     onExit,
     onInteract,
     requestCoverOpen,
+    denyCoverOpen,
   });
 
   useFrame(({ camera, clock }, delta) => {
@@ -100,19 +108,30 @@ export function Player({
     const p = pose.current;
 
     if (enabled) {
+      const blocked = stunned || coverPromptOpen;
       const next = stepPlayerPose(
         p,
-        mergeMoveKeys(keysRef.current, m),
+        coverPromptOpen
+          ? { ...emptyKeys(), stickX: 0, stickY: 0 }
+          : mergeMoveKeys(keysRef.current, m),
         dt,
-        stunned,
+        blocked,
         { dishwasher: !!play.openById.dishwasher, fridge: play.fridgeOpen }
       );
       pose.current = next;
       if (stunned) shake.current = Math.max(shake.current, 0.35);
 
       const inspecting = zoomRef.current.hold || zoomRef.current.amount > 0.25 || m.inspect;
-      if (consumeInteract()) {
-        tryRoomInteract(next.x, next.z, inspecting, coverOpen, onInteract, requestCoverOpen, next.yaw);
+      if (!coverPromptOpen && consumeInteract()) {
+        tryRoomInteract(
+          next.x,
+          next.z,
+          inspecting,
+          coverOpen,
+          onInteract,
+          requestCoverOpen,
+          next.yaw
+        );
       }
 
       const hit = nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
@@ -160,15 +179,22 @@ export function Player({
       dummy.position.y += off.y;
     }
 
-    camera.position.lerp(dummy.position, 1 - Math.pow(0.004, dt));
+    const turning =
+      keysRef.current.turnLeft || keysRef.current.turnRight || m.turnLeft || m.turnRight;
     if (isLookDragActive()) {
+      camera.position.copy(dummy.position);
       look.current.x = anchor.lookX;
       look.current.y = anchor.lookY;
       look.current.z = anchor.lookZ;
     } else {
-      look.current.x = MathUtils.damp(look.current.x, anchor.lookX, 16, dt);
-      look.current.y = MathUtils.damp(look.current.y, anchor.lookY, 16, dt);
-      look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, 16, dt);
+      const camLambda = turning ? 14 : 9;
+      camera.position.x = MathUtils.damp(camera.position.x, dummy.position.x, camLambda, dt);
+      camera.position.y = MathUtils.damp(camera.position.y, dummy.position.y, camLambda, dt);
+      camera.position.z = MathUtils.damp(camera.position.z, dummy.position.z, camLambda, dt);
+      const lookLambda = turning ? 22 : 16;
+      look.current.x = MathUtils.damp(look.current.x, anchor.lookX, lookLambda, dt);
+      look.current.y = MathUtils.damp(look.current.y, anchor.lookY, lookLambda, dt);
+      look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, lookLambda, dt);
     }
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });

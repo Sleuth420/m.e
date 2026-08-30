@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { BOARD_MOUNT, PLAYER_SPAWN } from './room-layout';
-import { playingCameraAnchor, shockShakeOffset, stepPlayerPose, type PlayerPose } from './player-motion';
+import {
+  analogFromDelta,
+  playingCameraAnchor,
+  shockShakeOffset,
+  stepPlayerPose,
+  type PlayerPose,
+} from './player-motion';
 
 const still = {
   forward: false,
@@ -44,6 +50,15 @@ describe('stepPlayerPose', () => {
     expect(full.z).toBeLessThan(PLAYER_SPAWN.z);
     expect(half.z).toBeLessThan(PLAYER_SPAWN.z);
     expect(half.z).toBeGreaterThan(full.z);
+  });
+
+  it('walks diagonally on analog without exceeding full speed', () => {
+    const forward = stepPlayerPose(spawn(), { ...still, stickY: -1 }, 0.25, false, {});
+    const diag = stepPlayerPose(spawn(), { ...still, stickX: 0.8, stickY: -0.8 }, 0.25, false, {});
+    const fwdDist = Math.hypot(forward.x - PLAYER_SPAWN.x, forward.z - PLAYER_SPAWN.z);
+    const diagDist = Math.hypot(diag.x - PLAYER_SPAWN.x, diag.z - PLAYER_SPAWN.z);
+    expect(diagDist).toBeLessThanOrEqual(fwdDist + 1e-6);
+    expect(diag.x).not.toBeCloseTo(PLAYER_SPAWN.x, 2);
   });
 
   it('slides along the kitchen bench instead of sticking', () => {
@@ -92,6 +107,21 @@ describe('playingCameraAnchor', () => {
     const level = playingCameraAnchor(spawn(), 0);
     const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0);
     expect(down.lookY).toBeLessThan(level.lookY);
+  });
+});
+
+describe('analogFromDelta', () => {
+  it('clamps to a circle so diagonals stay at full throw', () => {
+    const corner = analogFromDelta(56, 56, 56);
+    expect(Math.hypot(corner.x, corner.y)).toBeCloseTo(1, 6);
+    expect(corner.x).toBeCloseTo(Math.SQRT1_2, 5);
+    expect(corner.y).toBeCloseTo(Math.SQRT1_2, 5);
+  });
+
+  it('scales inside the throw radius', () => {
+    const half = analogFromDelta(0, -28, 56);
+    expect(half.x).toBeCloseTo(0, 6);
+    expect(half.y).toBeCloseTo(-0.5, 6);
   });
 });
 

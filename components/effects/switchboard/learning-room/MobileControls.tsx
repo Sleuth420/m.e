@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useCoarsePointer } from '@/lib/hooks';
+import { analogFromDelta } from './player-motion';
 import { useGameInput } from './GameInputContext';
 
 type Props = {
@@ -50,16 +51,11 @@ export function MobileControls({ visible }: Props) {
 
   const applyStick = (clientX: number, clientY: number) => {
     const max = 56;
-    const nx = Math.max(-1, Math.min(1, (clientX - origin.current.x) / max));
-    const ny = Math.max(-1, Math.min(1, (clientY - origin.current.y) / max));
-    mobileKeys.current.stickX = nx;
-    mobileKeys.current.stickY = ny;
-    mobileKeys.current.forward = ny < -0.25;
-    mobileKeys.current.back = ny > 0.25;
-    mobileKeys.current.left = nx < -0.25;
-    mobileKeys.current.right = nx > 0.25;
+    const analog = analogFromDelta(clientX - origin.current.x, clientY - origin.current.y, max);
+    mobileKeys.current.stickX = analog.x;
+    mobileKeys.current.stickY = analog.y;
     if (knobRef.current) {
-      knobRef.current.style.transform = `translate(calc(-50% + ${nx * max}px), calc(-50% + ${ny * max}px))`;
+      knobRef.current.style.transform = `translate(calc(-50% + ${analog.x * max}px), calc(-50% + ${analog.y * max}px))`;
     }
   };
 

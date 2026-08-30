@@ -133,10 +133,10 @@ export function LearningHud({ visible }: Props) {
                       <Kbd>WASD</Kbd> move · drag to look
                     </li>
                     <li>
-                      <Kbd>QE</Kbd> turn · <Kbd>F</Kbd> use · <Kbd>Shift</Kbd> inspect
+                      <Kbd>QE</Kbd> turn · <Kbd>F</Kbd> / <Kbd>Space</Kbd> use
                     </li>
                     <li>
-                      <Kbd>Esc</Kbd> exit
+                      <Kbd>Shift</Kbd> inspect · <Kbd>Esc</Kbd> exit
                     </li>
                   </ul>
                 </div>
