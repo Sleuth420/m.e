@@ -1,5 +1,21 @@
 import type { ThreeEvent } from '@react-three/fiber';
 
+/** Look-drag on mobile: ignore the click that fires when the finger lifts. */
+let lookDragActive = false;
+let lastInteractAt = 0;
+
+export function setLookDragActive(active: boolean) {
+  lookDragActive = active;
+}
+
+export function markInteract() {
+  lastInteractAt = performance.now();
+}
+
+export function wasRecentInteract(windowMs = 280) {
+  return performance.now() - lastInteractAt < windowMs;
+}
+
 /** Stop propagation and set pointer cursor — shared by all interactive board parts. */
 export function onInteractiveEnter(
   e: ThreeEvent<PointerEvent>,
@@ -16,9 +32,12 @@ export function onInteractiveLeave(onHoverEnd?: () => void): void {
 }
 
 export function onInteractiveClick(
-  e: ThreeEvent<MouseEvent>,
+  e: ThreeEvent<MouseEvent> | ThreeEvent<PointerEvent>,
   action: () => void
 ): void {
   e.stopPropagation();
+  if (lookDragActive) return;
+  if (wasRecentInteract()) return;
+  markInteract();
   action();
 }

@@ -14,6 +14,7 @@ type Props = {
   depth?: number;
   showStatusWindow?: boolean;
   statusLive?: boolean;
+  disabled?: boolean;
 };
 
 /**
@@ -30,6 +31,7 @@ export function RockerLever({
   depth = 0.02,
   showStatusWindow = false,
   statusLive = true,
+  disabled = false,
 }: Props) {
   return (
     <group>
@@ -39,8 +41,19 @@ export function RockerLever({
         <meshStandardMaterial color="#e8e8ea" roughness={0.62} metalness={0.04} />
       </mesh>
 
+      {/* I (on) at the top of the collar */}
+      <mesh position={[0, height * 0.7, 0.006]} castShadow={false}>
+        <boxGeometry args={[0.006, 0.014, 0.003]} />
+        <meshStandardMaterial color="#18181b" roughness={0.5} />
+      </mesh>
+      {/* O (off) at the bottom */}
+      <mesh position={[0, -height * 0.7, 0.006]} castShadow={false}>
+        <torusGeometry args={[0.006, 0.0018, 6, 12]} />
+        <meshStandardMaterial color="#18181b" roughness={0.5} />
+      </mesh>
+
       {showStatusWindow && (
-        <mesh position={[0, height * 0.48, 0.004]} castShadow={false}>
+        <mesh position={[0, height * 0.42, 0.004]} castShadow={false}>
           <boxGeometry args={[width * 0.7, 0.009, 0.003]} />
           <meshStandardMaterial
             color={statusLive ? '#1e4a8c' : '#a1a1aa'}
@@ -55,20 +68,24 @@ export function RockerLever({
       <group
         ref={leverRef}
         position={[0, 0, 0.004]}
-        onClick={(e) => onInteractiveClick(e, onToggle)}
-        onPointerOver={(e) => onInteractiveEnter(e)}
-        onPointerOut={() => onInteractiveLeave()}
+        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
+        onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
       >
-        {/* Flat paddle filling the collar opening */}
-        <mesh castShadow={false} material={material} position={[0, 0.01, depth * 0.15]}>
-          <boxGeometry args={[width * 0.98, height * 0.78, depth * 0.7]} />
+        {/* Finger-sized tap target — visible paddle is ~18 mm at board scale. */}
+        <mesh position={[0, 0, depth * 0.9]} renderOrder={8}>
+          <boxGeometry args={[width * 1.9, height * 1.85, Math.max(depth * 5, 0.09)]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
-        <mesh castShadow={false} material={material} position={[0, 0.012, depth * 0.45]}>
-          <boxGeometry args={[width * 0.9, height * 0.55, depth * 0.35]} />
+        <mesh castShadow={false} material={material} position={[0, 0, depth * 0.15]}>
+          <boxGeometry args={[width * 0.98, height * 0.72, depth * 0.7]} />
         </mesh>
-        {/* Accent tip */}
-        <mesh position={[0, -height * 0.3, depth * 0.4]} castShadow={false}>
-          <boxGeometry args={[width * 0.96, height * 0.22, depth * 0.4]} />
+        <mesh castShadow={false} material={material} position={[0, 0.006, depth * 0.45]}>
+          <boxGeometry args={[width * 0.9, height * 0.5, depth * 0.35]} />
+        </mesh>
+        {/* Accent on the I (top) end — proud toward camera when ON */}
+        <mesh position={[0, height * 0.28, depth * 0.4]} castShadow={false}>
+          <boxGeometry args={[width * 0.96, height * 0.2, depth * 0.4]} />
           <meshStandardMaterial color={accentColor} roughness={0.4} metalness={0.08} />
         </mesh>
       </group>

@@ -96,6 +96,12 @@
     overflow-x: clip;
   }
 
+  html.room-playing,
+  html.room-playing body {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'liga' 1, 'kern' 1;
@@ -439,4 +445,8 @@
     transform: translateY(-100px) scale(1.2);
     opacity: 0;
   }
+}
+
+html.room-playing [data-site-popup] {
+  display: none !important;
 }

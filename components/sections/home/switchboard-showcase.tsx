@@ -1,80 +1,131 @@
 'use client';
 
-import { useState } from 'react';
-import { Hand, MousePointer2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { DoorOpen, Gamepad2, Play } from 'lucide-react';
 import { HeroScene } from '@/components/effects/hero-scene';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useCoarsePointer } from '@/lib/hooks';
 
 /**
- * Full-bleed switchboard. Copy lives above the canvas so it doesn't fight the 3D.
- * Orbit is OFF by default; Explore enables drag / zoom / rockers.
+ * Full-bleed learning room. Copy lives above the canvas so it doesn't fight the 3D.
+ * Play is OFF by default so the page can still scroll.
  */
 export default function SwitchboardShowcase() {
   const [explore, setExplore] = useState(false);
+  const { coarse } = useCoarsePointer();
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!explore) return;
+
+    stageRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    html.classList.add('room-playing');
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === 'Escape') setExplore(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      html.classList.remove('room-playing');
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [explore]);
 
   return (
     <section
       id="switchboard-showcase"
-      className="w-full max-w-[100vw] border-y border-border/40 bg-background"
-      aria-label="Interactive switchboard"
+      className="w-full max-w-[100vw] border-y border-border/40 bg-gradient-to-b from-background via-background to-muted/20"
+      aria-label="Interactive switchboard learning room"
     >
-      <div className="container max-w-3xl px-4 py-8 text-center sm:py-10">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Interactive demo</p>
-        <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          Work a real switchboard layout
+      <div className="container max-w-3xl px-4 py-8 text-center sm:py-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Playable Electrical Installation</p>
+        <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          Walk a real circuit from the board to the load and discover the world of electricity
         </h2>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-          Hit Explore to orbit the board, flip the main switch, toggle circuits, and press TEST to trip an RCBO.
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge
+          power, lounge lighting, induction, oven, and fridge. The lounge is one power
+          feed to the TV and one lighting circuit with two dimmers. Open the switchboard
+          cover if you dare, trip RCBOs, and trace TPS through the walls. Don't touch a
+          live wire!
         </p>
       </div>
 
-      <div className="relative isolate min-h-[min(78vh,820px)] w-full overflow-x-clip overflow-y-hidden touch-pan-y">
+      <div
+        ref={stageRef}
+        data-room-stage
+        className="relative isolate min-h-[min(82vh,920px)] w-full overflow-x-clip overflow-y-hidden touch-pan-y sm:min-h-[min(78vh,840px)]"
+      >
         <div
-          className={`absolute inset-0 overflow-hidden ${explore ? '' : 'pointer-events-none'}`}
+          className={cn(
+            'overflow-hidden',
+            explore
+              ? 'fixed inset-0 z-[60] h-dvh w-full overscroll-none touch-none'
+              : 'absolute inset-0 pointer-events-none'
+          )}
           aria-hidden={!explore}
         >
           <HeroScene
             observeId="switchboard-showcase"
             controlsEnabled={explore}
-            className="!relative h-full min-h-[min(78vh,820px)] max-w-full"
+            onExit={() => setExplore(false)}
+            className={cn(
+              '!relative h-full max-w-full',
+              explore ? 'min-h-0 touch-none' : 'min-h-[min(82vh,920px)] touch-pan-y sm:min-h-[min(78vh,840px)]'
+            )}
           />
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 bg-gradient-to-t from-background/90 via-background/40 to-transparent px-4 pb-5 pt-20">
-          <div className="pointer-events-auto">
+        {explore ? (
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] flex justify-end px-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))]">
             <Button
               type="button"
-              size="lg"
-              variant={explore ? 'default' : 'outline'}
-              className={cn(
-                'min-h-11 gap-2',
-                explore
-                  ? 'gradient-bg text-primary-foreground shadow-glow'
-                  : 'chrome-border bg-background/90 backdrop-blur-sm'
-              )}
-              aria-pressed={explore}
-              onClick={() => setExplore((v) => !v)}
+              size="sm"
+              variant="outline"
+              className="pointer-events-auto chrome-border min-h-11 touch-manipulation gap-2 bg-background/92 backdrop-blur-md"
+              aria-pressed
+              onClick={() => setExplore(false)}
             >
-              {explore ? (
-                <>
-                  <Hand className="h-4 w-4" />
-                  Exit explore
-                </>
-              ) : (
-                <>
-                  <MousePointer2 className="h-4 w-4" />
-                  Explore the board
-                </>
-              )}
+              <DoorOpen className="h-4 w-4" />
+              Exit
             </Button>
           </div>
-          {explore ? (
-            <p className="text-center text-xs text-muted-foreground">
-              Drag to orbit, scroll to zoom, click Main / rockers / TEST
+        ) : (
+          <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-4 pb-8">
+            <div className="pointer-events-auto">
+              <Button
+                type="button"
+                size="lg"
+                variant="default"
+                className="chrome-border min-h-12 touch-manipulation gap-2 px-6 shadow-xl"
+                aria-pressed={false}
+                onClick={() => setExplore(true)}
+              >
+                <Play className="h-4 w-4 fill-current" />
+                Enter the room
+              </Button>
+            </div>
+            <p className="flex items-center gap-1.5 rounded-lg bg-background/80 px-3 py-1.5 text-[11px] text-muted-foreground shadow-sm backdrop-blur-sm">
+              {coarse ? (
+                <>
+                  <Gamepad2 className="h-3.5 w-3.5" />
+                  Touch · drag to look · tap fittings
+                </>
+              ) : (
+                <>Keyboard · WASD walk · QE turn · F use</>
+              )}
             </p>
-          ) : null}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

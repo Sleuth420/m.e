@@ -1,6 +1,6 @@
 'use client';
 
-import { BOARD, CIRCUITS, rcboX } from './circuit-data';
+import { BOARD, CIRCUITS, ROOM_CIRCUIT_IDS, rcboX } from './circuit-data';
 import type { SwitchboardMaterials } from './materials';
 import { KnockoutRing } from './parts/KnockoutRing';
 
@@ -113,15 +113,25 @@ export function Enclosure({ materials }: Props) {
       <mesh position={[plateCx, plateY, plateZ]} material={materials.plasticGrey} receiveShadow>
         <boxGeometry args={[plateW, 0.055, 0.3]} />
       </mesh>
-      {exitKnockouts.map(({ key, position }) => (
-        <group key={key} position={position}>
-          <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
-            <cylinderGeometry args={[0.048, 0.048, 0.08, 16]} />
-            <meshStandardMaterial color="#101012" roughness={0.92} metalness={0.04} />
-          </mesh>
-          <KnockoutRing materials={materials} position={[0, 0.03, 0]} radius={0.058} tube={0.012} />
-        </group>
-      ))}
+      {exitKnockouts.map(({ key, position }, i) => {
+        const used = ROOM_CIRCUIT_IDS.has(CIRCUITS[i]!.id);
+        return (
+          <group key={key} position={position}>
+            {used ? (
+              <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
+                <cylinderGeometry args={[0.048, 0.048, 0.08, 16]} />
+                <meshStandardMaterial color="#101012" roughness={0.92} metalness={0.04} />
+              </mesh>
+            ) : (
+              <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0.012, 0]}>
+                <cylinderGeometry args={[0.05, 0.046, 0.03, 16]} />
+                <meshStandardMaterial color="#c5c5c8" roughness={0.42} metalness={0.08} />
+              </mesh>
+            )}
+            <KnockoutRing materials={materials} position={[0, 0.03, 0]} radius={0.058} tube={0.012} />
+          </group>
+        );
+      })}
     </group>
   );
 }

@@ -11,10 +11,20 @@ type Props = {
   materials: SwitchboardMaterials;
   liveById: Record<string, boolean>;
   mainLive: boolean;
+  coverOpen: boolean;
+  onShockWire: (circuitId: string) => void;
+  onShockMains: () => void;
 };
 
 /** Renders board wiring from pure path data. */
-export function Wiring({ materials, liveById, mainLive }: Props) {
+export function Wiring({
+  materials,
+  liveById,
+  mainLive,
+  coverOpen,
+  onShockWire,
+  onShockMains,
+}: Props) {
   const earthMap = useEarthStripeTexture();
   const earthMat = useMemo(() => {
     const m = materials.wireEarth.clone();
@@ -24,6 +34,7 @@ export function Wiring({ materials, liveById, mainLive }: Props) {
   }, [materials.wireEarth, earthMap]);
 
   const paths = buildWirePaths();
+  const shockable = coverOpen;
 
   return (
     <group>
@@ -46,6 +57,9 @@ export function Wiring({ materials, liveById, mainLive }: Props) {
         material={materials.wireActive}
         live={mainLive}
         segments={56}
+        circuitId="main"
+        shockable={shockable}
+        onShock={onShockMains}
       />
       <PathWire
         points={paths.neutralIn}
@@ -57,7 +71,15 @@ export function Wiring({ materials, liveById, mainLive }: Props) {
       <PathWire points={paths.earthIn} radius={0.012} material={earthMat} segments={64} />
 
       <PathWire points={paths.enclosureBond} radius={0.01} material={earthMat} />
-      <PathWire points={paths.mainToComb} radius={0.013} material={materials.wireActive} live={mainLive} />
+      <PathWire
+        points={paths.mainToComb}
+        radius={0.013}
+        material={materials.wireActive}
+        live={mainLive}
+        circuitId="main"
+        shockable={shockable}
+        onShock={onShockMains}
+      />
       <PathWire points={paths.barToNeutComb} radius={0.011} material={materials.wireNeutral} live={mainLive} />
 
       {/* Per-circuit cores: short runs into each TPS join */}
@@ -69,6 +91,9 @@ export function Wiring({ materials, liveById, mainLive }: Props) {
           material={materials.wireActive}
           live={liveById[CIRCUITS[i]!.id] ?? false}
           segments={40}
+          circuitId={CIRCUITS[i]!.id}
+          shockable={shockable}
+          onShock={onShockWire}
         />
       ))}
       {paths.outgoingNeutral.map((pts, i) => (
@@ -86,14 +111,16 @@ export function Wiring({ materials, liveById, mainLive }: Props) {
       ))}
 
       {/* One TPS per circuit — straight down through its gland-plate hole */}
-      {paths.outgoingTps.map((pts, i) => (
-        <group key={`tps-${i}`}>
-          <mesh position={pts[0]} material={materials.sheathGrey} castShadow={false}>
-            <sphereGeometry args={[0.024, 10, 10]} />
-          </mesh>
-          <PathWire points={pts} radius={0.022} material={materials.sheathGrey} segments={24} soft={false} />
-        </group>
-      ))}
+      {paths.outgoingTps.map((pts, i) =>
+        pts.length < 2 ? null : (
+          <group key={`tps-${i}`}>
+            <mesh position={pts[0]} material={materials.sheathGrey} castShadow={false}>
+              <sphereGeometry args={[0.024, 10, 10]} />
+            </mesh>
+            <PathWire points={pts} radius={0.022} material={materials.sheathGrey} segments={24} soft={false} />
+          </group>
+        ),
+      )}
     </group>
   );
 }

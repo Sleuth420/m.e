@@ -64,7 +64,7 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value:
-              "upgrade-insecure-requests; default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self' https:;",
+              "upgrade-insecure-requests; default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' data: https:; connect-src 'self' https: blob:; worker-src 'self' blob:;",
           },
         ],
       },

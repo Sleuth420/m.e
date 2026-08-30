@@ -53,6 +53,7 @@ export function AvailableForWorkPopup({ className }: AvailableForWorkPopupProps)
 
   return (
     <div
+      data-site-popup
       className={cn(
         'fixed z-50 p-1 shadow-lg rounded-lg bg-gradient-to-r from-primary to-amber-500',
         'bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 left-4 sm:left-auto sm:max-w-[320px]',

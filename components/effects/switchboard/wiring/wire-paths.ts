@@ -1,6 +1,7 @@
 import {
   BOARD,
   CIRCUITS,
+  ROOM_CIRCUIT_IDS,
   earthBarScrew,
   mainSwitchX,
   moduleBottomNeutralTerminal,
@@ -155,48 +156,55 @@ export function buildWirePaths(): WirePaths {
     const mouthN: Vec3 = [join[0] - 0.008, join[1] + 0.038, join[2] - 0.005];
     const mouthE: Vec3 = [join[0] + 0.002, join[1] + 0.036, join[2] + 0.008];
 
-    outgoingActive.push([
-      bot,
-      [bot[0], bot[1] - 0.05, bot[2]],
-      [bot[0] + s, under + 0.03, Math.min(bot[2] - 0.04, gz + 0.05)],
-      [x, under, gz],
-      [x, join[1] + 0.05, gz],
-      mouthA,
-      join,
-    ]);
+    const used = ROOM_CIRCUIT_IDS.has(c.id);
 
-    outgoingNeutral.push([
-      nBot,
-      [nBot[0], nBot[1] - 0.05, nBot[2]],
-      [nBot[0] - s, under + 0.02, Math.min(nBot[2] - 0.04, gz + 0.05)],
-      [x - 0.005, under - 0.02, gz],
-      [x, join[1] + 0.045, gz],
-      mouthN,
-      join,
-    ]);
+    if (used) {
+      outgoingActive.push([
+        bot,
+        [bot[0], bot[1] - 0.05, bot[2]],
+        [bot[0] + s, under + 0.03, Math.min(bot[2] - 0.04, gz + 0.05)],
+        [x, under, gz],
+        [x, join[1] + 0.05, gz],
+        mouthA,
+        join,
+      ]);
 
-    const screw = earthBarScrew(i + 2);
-    const [sx, sy, sz] = screw;
-    outgoingEarth.push([
-      screw,
-      [sx, sy - 0.12, sz],
-      [sx, 0.4, back],
-      [sx, under + 0.08, back],
-      [x, under, back + 0.12],
-      [x, under - 0.02, gz],
-      [x, join[1] + 0.04, gz],
-      mouthE,
-      join,
-    ]);
+      outgoingNeutral.push([
+        nBot,
+        [nBot[0], nBot[1] - 0.05, nBot[2]],
+        [nBot[0] - s, under + 0.02, Math.min(nBot[2] - 0.04, gz + 0.05)],
+        [x - 0.005, under - 0.02, gz],
+        [x, join[1] + 0.045, gz],
+        mouthN,
+        join,
+      ]);
 
-    // Straight column: join → THIS gland hole → outside (no lateral drift)
-    outgoingTps.push([
-      [x, join[1] - 0.01, gz],
-      [x, exit[1] + 0.16, gz],
-      exit,
-      [x, exit[1] - 0.2, gz],
-      [x, exit[1] - 0.4, gz],
-    ]);
+      const screw = earthBarScrew(i + 2);
+      const [sx, sy, sz] = screw;
+      outgoingEarth.push([
+        screw,
+        [sx, sy - 0.12, sz],
+        [sx, 0.4, back],
+        [sx, under + 0.08, back],
+        [x, under, back + 0.12],
+        [x, under - 0.02, gz],
+        [x, join[1] + 0.04, gz],
+        mouthE,
+        join,
+      ]);
+
+      outgoingTps.push([
+        [x, join[1] - 0.01, gz],
+        [x, exit[1] + 0.16, gz],
+        exit,
+        [x, exit[1] - 0.04, gz],
+      ]);
+    } else {
+      outgoingActive.push([]);
+      outgoingNeutral.push([]);
+      outgoingEarth.push([]);
+      outgoingTps.push([]);
+    }
   }
 
   return {
