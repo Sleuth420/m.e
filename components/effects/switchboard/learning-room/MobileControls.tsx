@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Hand, RotateCcw, RotateCw, Search } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useGameInput } from './GameInputContext';
 
 type Props = {
@@ -23,7 +21,7 @@ function useCoarsePointer() {
 
 export function MobileControls({ visible }: Props) {
   const coarse = useCoarsePointer();
-  const { mobileKeys, pulseInteract } = useGameInput();
+  const { mobileKeys } = useGameInput();
   const stickRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const touchId = useRef<number | null>(null);
@@ -94,10 +92,6 @@ export function MobileControls({ visible }: Props) {
     resetKnob();
   };
 
-  const hold = (key: 'turnLeft' | 'turnRight' | 'inspect', down: boolean) => {
-    mobileKeys.current[key] = down;
-  };
-
   return (
     <div className="pointer-events-none absolute inset-0 z-40">
       <div
@@ -117,99 +111,6 @@ export function MobileControls({ visible }: Props) {
           Move
         </span>
       </div>
-
-      <div className="pointer-events-auto absolute bottom-[max(1.1rem,calc(env(safe-area-inset-bottom)+0.4rem))] right-[max(0.75rem,env(safe-area-inset-right))] flex flex-col items-end gap-2.5">
-        <div className="flex gap-2.5">
-          <TouchBtn
-            label="Turn L"
-            icon={<RotateCcw className="h-5 w-5" />}
-            onDown={() => hold('turnLeft', true)}
-            onUp={() => hold('turnLeft', false)}
-          />
-          <TouchBtn
-            label="Turn R"
-            icon={<RotateCw className="h-5 w-5" />}
-            onDown={() => hold('turnRight', true)}
-            onUp={() => hold('turnRight', false)}
-          />
-        </div>
-        <div className="flex gap-2.5">
-          <TouchBtn
-            label="Use"
-            icon={<Hand className="h-5 w-5" />}
-            onTap={pulseInteract}
-            large
-          />
-          <TouchBtn
-            label="Look"
-            icon={<Search className="h-5 w-5" />}
-            onDown={() => hold('inspect', true)}
-            onUp={() => hold('inspect', false)}
-          />
-        </div>
-      </div>
     </div>
-  );
-}
-
-function TouchBtn({
-  label,
-  icon,
-  onDown,
-  onUp,
-  onTap,
-  large,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  onDown?: () => void;
-  onUp?: () => void;
-  onTap?: () => void;
-  large?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      className={cn(
-        'chrome-border flex touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl border border-white/25 bg-black/40 text-white backdrop-blur-md active:scale-95',
-        large ? 'h-16 w-16' : 'h-14 w-14'
-      )}
-      onTouchStart={(e) => {
-        e.preventDefault();
-        onDown?.();
-        onTap?.();
-      }}
-      onTouchEnd={(e) => {
-        e.preventDefault();
-        onUp?.();
-      }}
-      onTouchCancel={(e) => {
-        e.preventDefault();
-        onUp?.();
-      }}
-      onPointerDown={(e) => {
-        if (e.pointerType === 'touch') return;
-        onDown?.();
-        onTap?.();
-      }}
-      onPointerUp={(e) => {
-        if (e.pointerType === 'touch') return;
-        onUp?.();
-      }}
-      onPointerLeave={(e) => {
-        if (e.pointerType === 'touch') return;
-        onUp?.();
-      }}
-      onMouseDown={() => {
-        onDown?.();
-        onTap?.();
-      }}
-      onMouseUp={onUp}
-      onMouseLeave={onUp}
-    >
-      {icon}
-      <span className="text-[8px] font-semibold uppercase tracking-wide opacity-90">{label}</span>
-    </button>
   );
 }

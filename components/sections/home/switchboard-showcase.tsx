@@ -125,7 +125,7 @@ export default function SwitchboardShowcase() {
               {coarse ? (
                 <>
                   <Gamepad2 className="h-3.5 w-3.5" />
-                  Touch · joystick to walk
+                  Touch · drag to look · tap fittings
                 </>
               ) : (
                 <>Keyboard · WASD walk · QE turn · F use</>

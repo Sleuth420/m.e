@@ -4,6 +4,7 @@ import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState, type RefObject, Suspense } from 'react';
 import { Group, MathUtils, PerspectiveCamera, Box3, Vector3, type Mesh, type MeshStandardMaterial } from 'three';
+import { setLookDragActive } from '../interaction';
 import {
   BOARD_MOUNT,
   IDLE_CAMERA,
@@ -213,6 +214,42 @@ export function Player({
     canvas.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('contextmenu', onContext);
+
+    const look = { id: -1, x: 0, y: 0, dragging: false };
+    const TAP_PX = 14;
+    const LOOK_SENS = 0.0048;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!coarseRef.current) return;
+      if (e.pointerType === 'mouse') return;
+      look.id = e.pointerId;
+      look.x = e.clientX;
+      look.y = e.clientY;
+      look.dragging = false;
+      setLookDragActive(false);
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      if (look.id !== e.pointerId) return;
+      const dx = e.clientX - look.x;
+      const dy = e.clientY - look.y;
+      if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
+      look.dragging = true;
+      setLookDragActive(true);
+      pose.current.yaw -= dx * LOOK_SENS;
+      look.x = e.clientX;
+      look.y = e.clientY;
+    };
+    const onPointerUp = (e: PointerEvent) => {
+      if (look.id !== e.pointerId) return;
+      if (look.dragging) e.stopImmediatePropagation();
+      look.id = -1;
+      look.dragging = false;
+      window.setTimeout(() => setLookDragActive(false), 0);
+    };
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp, true);
+    canvas.addEventListener('pointercancel', onPointerUp, true);
+
     return () => {
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
@@ -220,6 +257,11 @@ export function Player({
       canvas.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
       canvas.removeEventListener('contextmenu', onContext);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerup', onPointerUp, true);
+      canvas.removeEventListener('pointercancel', onPointerUp, true);
+      setLookDragActive(false);
     };
   }, [enabled, gl, onExit, onInteract, coverOpen, requestCoverOpen]);
 
@@ -336,10 +378,13 @@ export function Player({
       } else if (nearBoard(p.x, p.z)) {
         nextPrompt = coverOpen
           ? 'Tap a breaker rocker · TEST trips the RCD'
-          : 'Tap the cover or Use · licensed only';
+          : coarseRef.current
+            ? 'Tap the cover · licensed only'
+            : 'Tap the cover or F · licensed only';
       } else {
         nextPrompt = 'Walk to the board, kitchen, or lounge';
       }
+      if (coarseRef.current && nextPrompt) nextPrompt = nextPrompt.replaceAll('F · ', 'Tap · ');
       if (nextPrompt !== promptRef.current) {
         promptRef.current = nextPrompt;
         setPrompt(nextPrompt);

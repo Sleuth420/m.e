@@ -20,7 +20,8 @@ import {
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { PathWire } from '../wiring/PathWire';
 import { dressBlackAppliance, dressKitchenProduct } from './appliance-dress';
-import { FittedGltf } from './FittedGltf';
+import { prepareDishwasher, prepareFridge } from './appliance-hinge';
+import { FittedGltf, findNamed } from './FittedGltf';
 import {
   JoineryBay,
   JoineryEndPanel,
@@ -313,6 +314,7 @@ function HingedAppliance({
   doorMatch,
   extraMatch,
   openAngle = 1.2,
+  axis = 'x',
   url,
   maxSize,
   position,
@@ -342,12 +344,15 @@ function HingedAppliance({
   doorMatch: RegExp;
   extraMatch?: RegExp;
   openAngle?: number;
+  axis?: 'x' | 'y';
 }) {
   const pivot = useRef<Group | null>(null);
   useFrame((_, delta) => {
     const g = pivot.current;
     if (!g) return;
-    g.rotation.x = MathUtils.damp(g.rotation.x, open ? openAngle : 0, 8, delta);
+    const target = open ? openAngle : 0;
+    if (axis === 'y') g.rotation.y = MathUtils.damp(g.rotation.y, target, 8, delta);
+    else g.rotation.x = MathUtils.damp(g.rotation.x, target, 8, delta);
   });
   return (
     <FittedGltf
@@ -364,7 +369,42 @@ function HingedAppliance({
       hide={hide}
       prepare={prepare ?? dressKitchenProduct}
       onReady={(root) => {
-        pivot.current = hingeParts(root, doorMatch, extraMatch);
+        const pre = findNamed(root, /^door_drop$/);
+        pivot.current = (pre as Group | null) ?? hingeParts(root, doorMatch, extraMatch);
+      }}
+    />
+  );
+}
+
+function FrenchFridge({
+  open,
+  position,
+  maxSize,
+}: {
+  open: boolean;
+  position: [number, number, number];
+  maxSize: [number, number, number];
+}) {
+  const left = useRef<Group | null>(null);
+  const right = useRef<Group | null>(null);
+  useFrame((_, delta) => {
+    if (left.current) left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? -1.22 : 0, 8, delta);
+    if (right.current) right.current.rotation.y = MathUtils.damp(right.current.rotation.y, open ? 1.22 : 0, 8, delta);
+  });
+  return (
+    <FittedGltf
+      url={ROOM_GLB.fridge}
+      maxSize={maxSize}
+      position={position}
+      align="bottom"
+      pin="front"
+      pinPad={0.16}
+      fit="contain"
+      prepare={prepareFridge}
+      envIntensity={1}
+      onReady={(root) => {
+        left.current = findNamed(root, /^door_l$/) as Group | null;
+        right.current = findNamed(root, /^door_r$/) as Group | null;
       }}
     />
   );
@@ -772,7 +812,7 @@ export function KitchenRun({
         prepare={dressBlackAppliance}
         envIntensity={1}
       />
-      <FittedGltf
+      <HingedAppliance
         url={ROOM_GLB.dishwasher}
         maxSize={[dw.w - 0.01, DW_H - 0.008, 0.58]}
         position={[dw.x + dw.w / 2, KITCHEN.kickH + 0.002, FRONT]}
@@ -780,8 +820,11 @@ export function KitchenRun({
         pin="front"
         pinPad={0.04}
         fit="width"
-        prepare={dressBlackAppliance}
+        prepare={prepareDishwasher}
         envIntensity={1}
+        open={dwOpen}
+        doorMatch={/^door_drop$/}
+        openAngle={1.15}
       />
       <JoineryFascia x={dw.x + PACK} w={dw.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
       <JoineryFridgeHousing
@@ -793,16 +836,10 @@ export function KitchenRun({
         openingH={FRIDGE_H}
         depth={gableDepth}
       />
-      <FittedGltf
-        url={ROOM_GLB.fridge}
+      <FrenchFridge
+        open={fridgeOpen}
         maxSize={[FRIDGE_W - 0.02, FRIDGE_H, 0.7]}
         position={[fridgeMid, 0, FRONT]}
-        align="bottom"
-        pin="front"
-        pinPad={0.16}
-        fit="contain"
-        prepare={dressBlackAppliance}
-        envIntensity={1}
       />
       <FittedGltf
         url={ROOM_GLB.toaster}
