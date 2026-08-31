@@ -1,7 +1,10 @@
 'use client';
 
 import { AdaptiveDpr, ContactShadows, Environment } from '@react-three/drei';
-import { Suspense, useCallback, useEffect, useMemo, useReducer } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Suspense, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import type { MeshStandardMaterial } from 'three';
+import { useMediaQuery } from '@/lib/hooks';
 import { Switchboard } from '../Switchboard';
 import { useSwitchboard } from '../SwitchboardContext';
 import { AboutPortraits } from './AboutPortraits';
@@ -20,8 +23,27 @@ type Props = {
   onExit: () => void;
 };
 
-function LedBatten({ position }: { position: [number, number, number] }) {
+function LedBatten({
+  position,
+  pulse,
+}: {
+  position: [number, number, number];
+  pulse: boolean;
+}) {
   const len = BOARD_OPENING.z1 - BOARD_OPENING.z0 - 0.1;
+  const matRef = useRef<MeshStandardMaterial>(null);
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+
+  useFrame(({ clock }) => {
+    const mat = matRef.current;
+    if (!mat) return;
+    if (!pulse || reducedMotion) {
+      mat.emissiveIntensity = 1.15;
+      return;
+    }
+    mat.emissiveIntensity = 0.82 + (Math.sin(clock.elapsedTime * 2.35) * 0.5 + 0.5) * 0.7;
+  });
+
   return (
     <group position={position}>
       <mesh castShadow>
@@ -31,6 +53,7 @@ function LedBatten({ position }: { position: [number, number, number] }) {
       <mesh position={[0.012, -0.004, 0]}>
         <boxGeometry args={[0.02, 0.014, len - 0.03]} />
         <meshStandardMaterial
+          ref={matRef}
           color="#fff6e0"
           emissive="#fff1c2"
           emissiveIntensity={1.15}
@@ -81,7 +104,8 @@ function GalleryLighting({ playing }: { playing: boolean }) {
 }
 
 function LearningSceneInner({ controlsEnabled, onExit }: Props) {
-  const { liveById } = useSwitchboard();
+  const { liveById, coverOpen } = useSwitchboard();
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [play, dispatch] = useReducer(roomPlayReducer, INITIAL_ROOM_PLAY);
 
   const lightingLive = liveById[ROOM_LOADS.lighting] ?? false;
@@ -121,7 +145,7 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
 
   return (
     <>
-      {controlsEnabled && <AdaptiveDpr />}
+      {controlsEnabled && !reducedMotion && <AdaptiveDpr />}
       <GalleryLighting playing={controlsEnabled} />
       <LearningRoom />
       <group
@@ -134,7 +158,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         </Suspense>
       </group>
       {/* LED batten over the board — always-on so the enclosure stays readable. */}
-      <LedBatten position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]} />
+      <LedBatten
+        position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]}
+        pulse={controlsEnabled && !coverOpen}
+      />
       <RoomWiring liveById={liveById} isolatorOn={play.isolatorOn} />
       <Suspense fallback={null}>
         <Fixtures

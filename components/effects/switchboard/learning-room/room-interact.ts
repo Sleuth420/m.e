@@ -7,7 +7,8 @@ export function tryRoomInteract(
   coverOpen: boolean,
   onInteract: (id: RoomInteractId) => void,
   requestCoverOpen: () => void,
-  yaw?: number
+  yaw?: number,
+  closeCover?: () => void
 ): boolean {
   const hit = nearestRoomInteract(x, z, [], preferHigh, yaw);
   if (hit) {
@@ -16,7 +17,11 @@ export function tryRoomInteract(
   }
   const facingBoard =
     yaw === undefined || facingDot(x, z, yaw, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z) > 0.12;
-  if (nearBoard(x, z) && !coverOpen && facingBoard) {
+  if (nearBoard(x, z) && facingBoard) {
+    if (coverOpen) {
+      closeCover?.();
+      return Boolean(closeCover);
+    }
     requestCoverOpen();
     return true;
   }

@@ -122,17 +122,17 @@ export const FIXTURES = {
   sink: { x: 0.68, y: KITCHEN.benchH, z: 0.32 },
   cooktop: { x: 1.83, y: KITCHEN.benchH, z: 0.3 },
   oven: { x: 1.83, y: 0, z: 0.3 },
-  rangehood: { x: 1.83, y: KITCHEN.upperY, z: 0.2 },
-  cookIsolator: { x: 2.48, y: KITCHEN.splashGpoY, z: 0.02 },
+  rangehood: { x: 1.83, y: KITCHEN.upperY, z: 0.08 },
+  cookIsolator: { x: 2.48, y: KITCHEN.splashGpoY, z: 0.018 },
   dishwasher: { x: 3.33, y: 0, z: 0.3 },
-  dwGpo: { x: 3.33, y: HEIGHTS.gpo, z: 0.02 },
+  dwGpo: { x: 3.33, y: HEIGHTS.gpo, z: 0.018 },
   toaster: { x: 4.08, y: KITCHEN.benchH, z: 0.34 },
   /** Type I double the toaster plugs into — fully on the splash, left of the fridge gable. */
-  gpoDouble: { x: 4.32, y: KITCHEN.splashGpoY, z: 0.02 },
+  gpoDouble: { x: 4.32, y: KITCHEN.splashGpoY, z: 0.018 },
   /** Spare Type I double, left of the dishwasher. */
-  gpoSingle: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.02 },
+  gpoSingle: { x: 2.88, y: KITCHEN.splashGpoY, z: 0.018 },
   fridge: { x: 5.1, y: 0, z: 0.38 },
-  fridgeGpo: { x: 4.95, y: KITCHEN.splashGpoY, z: 0.02 },
+  fridgeGpo: { x: 4.95, y: KITCHEN.splashGpoY, z: 0.018 },
   /** Board wall, lounge side of the enclosure — opposite the kitchen switch. */
   loungeDimmerA: { x: 0.006, y: HEIGHTS.switch, z: 6.42 },
   loungeDimmerB: { x: 1.22, y: HEIGHTS.switch, z: ROOM.depth - 0.006 },
@@ -140,7 +140,7 @@ export const FIXTURES = {
   loungeSconce2: { x: 4.62, y: HEIGHTS.light, z: ROOM.depth - 0.022 },
   loungeGpo: { x: 4.58, y: 1.18, z: ROOM.depth - 0.006 },
   /** Centre of the TV panel, sitting on the media unit. */
-  tv: { x: 2.92, y: 0.88, z: 6.72 },
+  tv: { x: 2.92, y: 0.875, z: ROOM.depth - 0.15 },
 } as const;
 
 /**
@@ -252,7 +252,7 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
     id: 'tvGpo',
     x: FIXTURES.loungeGpo.x,
     y: FIXTURES.loungeGpo.y,
-    z: cabFrontZ - 0.05,
+    z: FIXTURES.loungeGpo.z - 0.15,
     r: 0.85,
     priority: 2,
     promptOpen: 'F · TV on',
@@ -337,6 +337,44 @@ export function nearestRoomInteract(
   return pickNearest(ROOM_INTERACTS, px, pz, except, preferHigh, yaw);
 }
 
+/** Look-cone hint: visible beyond use radius, never fires interact. */
+export const INTERACT_HINT_RANGE = 2.4;
+export const INTERACT_HINT_FACING = 0.45;
+
+export function nearestRoomHint(
+  px: number,
+  pz: number,
+  yaw: number,
+  except: RoomInteractId[] = []
+): InteractSpot<RoomInteractId> | null {
+  const inCone: InteractSpot<RoomInteractId>[] = [];
+  const max2 = INTERACT_HINT_RANGE * INTERACT_HINT_RANGE;
+  for (const item of ROOM_INTERACTS) {
+    if (except.includes(item.id)) continue;
+    const d2 = dist2(px, pz, item.x, item.z);
+    if (d2 >= max2 || d2 < item.r * item.r) continue;
+    if (facingDot(px, pz, yaw, item.x, item.z) <= INTERACT_HINT_FACING) continue;
+    inCone.push(item);
+  }
+  if (inCone.length === 0) return null;
+  return inCone.reduce((a, b) => {
+    const da = dist2(px, pz, a.x, a.z);
+    const db = dist2(px, pz, b.x, b.z);
+    if (Math.abs(da - db) > 0.05) return da < db ? a : b;
+    const fa = facingDot(px, pz, yaw, a.x, a.z);
+    const fb = facingDot(px, pz, yaw, b.x, b.z);
+    return fa >= fb ? a : b;
+  });
+}
+
+export function boardLookHint(px: number, pz: number, yaw: number): boolean {
+  const ox = BOARD_MOUNT.x + 0.45;
+  const oz = BOARD_MOUNT.z;
+  const d = Math.hypot(px - ox, pz - oz);
+  if (d >= INTERACT_HINT_RANGE || nearBoard(px, pz)) return false;
+  return facingDot(px, pz, yaw, ox, oz) > INTERACT_HINT_FACING;
+}
+
 export const PLAYER_SPAWN = {
   x: 3.4,
   y: 0,
@@ -416,8 +454,8 @@ function pushAabb(
   return { x: nx, z: iz1 };
 }
 
-export function resolvePlayerPosition(x: number, z: number): { x: number; z: number } {
-  const pad = PLAYER.radius;
+/** Same furniture AABBs as the player, with a caller-supplied pad. */
+export function resolveSolidPosition(x: number, z: number, pad: number): { x: number; z: number } {
   let nx = Math.min(ROOM.width - pad - 0.1, Math.max(pad + 0.22, x));
   let nz = Math.min(ROOM.depth - pad - 0.1, Math.max(pad + 0.22, z));
 
@@ -461,6 +499,10 @@ export function resolvePlayerPosition(x: number, z: number): { x: number; z: num
   ));
 
   return { x: nx, z: nz };
+}
+
+export function resolvePlayerPosition(x: number, z: number): { x: number; z: number } {
+  return resolveSolidPosition(x, z, PLAYER.radius);
 }
 
 /** Keep the player off dropped / swung doors. */

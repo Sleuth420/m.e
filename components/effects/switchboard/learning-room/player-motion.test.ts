@@ -5,6 +5,7 @@ import {
   playingCameraAnchor,
   shockShakeOffset,
   stepPlayerPose,
+  stepPlayerPoseBudget,
   type PlayerPose,
 } from './player-motion';
 
@@ -67,6 +68,23 @@ describe('stepPlayerPose', () => {
     expect(next.x).toBeGreaterThan(start.x);
     expect(next.z).toBeGreaterThanOrEqual(0.65);
   });
+
+  it('substeps long frames so wall-clock speed matches two shorter frames', () => {
+    const two = stepPlayerPoseBudget(
+      stepPlayerPoseBudget(spawn(), { ...still, forward: true }, 0.08, false, {}),
+      { ...still, forward: true },
+      0.08,
+      false,
+      {}
+    );
+    const once = stepPlayerPoseBudget(spawn(), { ...still, forward: true }, 0.16, false, {});
+    expect(once.x).toBeCloseTo(two.x, 6);
+    expect(once.z).toBeCloseTo(two.z, 6);
+    const capped = stepPlayerPose(spawn(), { ...still, forward: true }, 0.05, false, {});
+    const onceDist = Math.hypot(once.x - PLAYER_SPAWN.x, once.z - PLAYER_SPAWN.z);
+    const cappedDist = Math.hypot(capped.x - PLAYER_SPAWN.x, capped.z - PLAYER_SPAWN.z);
+    expect(onceDist).toBeGreaterThan(cappedDist + 0.15);
+  });
 });
 
 describe('playingCameraAnchor', () => {
@@ -107,6 +125,13 @@ describe('playingCameraAnchor', () => {
     const level = playingCameraAnchor(spawn(), 0);
     const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0);
     expect(down.lookY).toBeLessThan(level.lookY);
+  });
+
+  it('keeps the boom out of the board enclosure when the player faces into the room', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: Math.PI / 2, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0);
+    expect(cam.posX).toBeGreaterThan(0.42);
+    expect(Math.abs(cam.posX - 0.28)).toBeGreaterThan(0.12);
   });
 });
 

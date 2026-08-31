@@ -20,6 +20,18 @@ describe('tryRoomInteract', () => {
     expect(requestCoverOpen).toHaveBeenCalledOnce();
   });
 
+  it('closes the cover when facing the board with the cover open', () => {
+    const onInteract = vi.fn();
+    const requestCoverOpen = vi.fn();
+    const closeCover = vi.fn();
+    expect(
+      tryRoomInteract(0.5, 5.35, false, true, onInteract, requestCoverOpen, undefined, closeCover)
+    ).toBe(true);
+    expect(closeCover).toHaveBeenCalledOnce();
+    expect(requestCoverOpen).not.toHaveBeenCalled();
+    expect(onInteract).not.toHaveBeenCalled();
+  });
+
   it('does nothing at spawn', () => {
     const onInteract = vi.fn();
     const requestCoverOpen = vi.fn();

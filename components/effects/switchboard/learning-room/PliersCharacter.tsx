@@ -75,7 +75,7 @@ export function PliersCharacter({
     g.position.set(p.x, lift, p.z);
     g.rotation.y = p.yaw;
     const camDist = Math.hypot(camera.position.x - p.x, camera.position.z - p.z);
-    g.visible = camDist > 0.58;
+    g.visible = camDist > 0.9;
   });
 
   return (

@@ -9,6 +9,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import type { RoomInteractId } from './room-layout';
+import type { PromptTone, RoomActionPrompt } from './room-prompt';
 
 export type MobileKeys = {
   forward: boolean;
@@ -30,7 +32,12 @@ export type GameInputApi = {
   setStunned: (ms: number) => void;
   isStunned: () => boolean;
   actionPrompt: string | null;
-  setActionPrompt: (prompt: string | null) => void;
+  actionTone: PromptTone;
+  setActionPrompt: (prompt: RoomActionPrompt | null) => void;
+  highlightedId: RoomInteractId | null;
+  setHighlightedId: (id: RoomInteractId | null) => void;
+  entryHint: boolean;
+  dismissEntryHint: () => void;
 };
 
 const defaultKeys = (): MobileKeys => ({
@@ -51,7 +58,10 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
   const mobileKeys = useRef<MobileKeys>(defaultKeys());
   const interactQueued = useRef(false);
   const stunUntil = useRef(0);
-  const [actionPrompt, setActionPrompt] = useState<string | null>(null);
+  const [actionPrompt, setActionPromptText] = useState<string | null>(null);
+  const [actionTone, setActionTone] = useState<PromptTone>('default');
+  const [highlightedId, setHighlightedId] = useState<RoomInteractId | null>(null);
+  const [entryHint, setEntryHint] = useState(true);
 
   const pulseInteract = useCallback(() => {
     interactQueued.current = true;
@@ -69,6 +79,15 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
 
   const isStunned = useCallback(() => performance.now() < stunUntil.current, []);
 
+  const setActionPrompt = useCallback((prompt: RoomActionPrompt | null) => {
+    setActionPromptText(prompt?.text ?? null);
+    setActionTone(prompt?.tone ?? 'default');
+  }, []);
+
+  const dismissEntryHint = useCallback(() => {
+    setEntryHint(false);
+  }, []);
+
   const value = useMemo(
     () => ({
       mobileKeys,
@@ -78,9 +97,25 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
       setStunned,
       isStunned,
       actionPrompt,
+      actionTone,
       setActionPrompt,
+      highlightedId,
+      setHighlightedId,
+      entryHint,
+      dismissEntryHint,
     }),
-    [pulseInteract, consumeInteract, setStunned, isStunned, actionPrompt]
+    [
+      pulseInteract,
+      consumeInteract,
+      setStunned,
+      isStunned,
+      actionPrompt,
+      actionTone,
+      setActionPrompt,
+      highlightedId,
+      entryHint,
+      dismissEntryHint,
+    ]
   );
 
   return <GameInputContext.Provider value={value}>{children}</GameInputContext.Provider>;

@@ -45,6 +45,8 @@ type Args = {
   onInteract: (id: RoomInteractId) => void;
   requestCoverOpen: () => void;
   denyCoverOpen: () => void;
+  closeCover: () => void;
+  dismissEntryHint: () => void;
 };
 
 function applyKey(keys: Keys, zoom: Zoom, code: string, down: boolean) {
@@ -71,6 +73,8 @@ export function usePlayerInput({
   onInteract,
   requestCoverOpen,
   denyCoverOpen,
+  closeCover,
+  dismissEntryHint,
 }: Args) {
   useEffect(() => {
     if (!enabled) {
@@ -108,16 +112,27 @@ export function usePlayerInput({
         return;
       }
       applyKey(keysRef.current, zoomRef.current, e.code, true);
+      if (
+        keysRef.current.forward ||
+        keysRef.current.back ||
+        keysRef.current.left ||
+        keysRef.current.right ||
+        keysRef.current.turnLeft ||
+        keysRef.current.turnRight
+      ) {
+        dismissEntryHint();
+      }
       if (e.repeat) return;
       if (e.code === 'KeyF' || e.code === 'Enter' || e.code === 'Space') {
         tryRoomInteract(
           pose.current.x,
           pose.current.z,
-          zoomRef.current.hold || zoomRef.current.amount > 0.25,
+          zoomRef.current.hold,
           coverOpen,
           onInteract,
           requestCoverOpen,
-          pose.current.yaw
+          pose.current.yaw,
+          closeCover
         );
       }
     };
@@ -161,6 +176,7 @@ export function usePlayerInput({
       if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
       if (!look.dragging) {
         look.dragging = true;
+        dismissEntryHint();
         setLookDragActive(true);
         try {
           canvas.setPointerCapture(e.pointerId);
@@ -217,7 +233,8 @@ export function usePlayerInput({
           coverOpen,
           onInteract,
           requestCoverOpen,
-          pose.current.yaw
+          pose.current.yaw,
+          closeCover
         )
       ) {
         markInteract();
@@ -273,6 +290,8 @@ export function usePlayerInput({
     coverPromptOpen,
     requestCoverOpen,
     denyCoverOpen,
+    closeCover,
+    dismissEntryHint,
     pose,
     keysRef,
     zoomRef,

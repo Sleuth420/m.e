@@ -1,29 +1,55 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { AlertTriangle, ShieldCheck, ShieldX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSwitchboard } from '../SwitchboardContext';
 
 export function CoverLicensePrompt() {
   const { coverPromptOpen, confirmCoverOpen, denyCoverOpen } = useSwitchboard();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const yesRef = useRef<HTMLButtonElement>(null);
+  const noRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!coverPromptOpen) return;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const focusYes = () => yesRef.current?.focus();
+    const id = window.requestAnimationFrame(focusYes);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'Escape') return;
+      if (e.code === 'Escape') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        denyCoverOpen();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const yes = yesRef.current;
+      const no = noRef.current;
+      if (!yes || !no) return;
+      const cycle = [no, yes];
+      const idx = cycle.indexOf(document.activeElement as HTMLButtonElement);
       e.preventDefault();
-      e.stopImmediatePropagation();
-      denyCoverOpen();
+      if (e.shiftKey) {
+        cycle[(idx <= 0 ? cycle.length : idx) - 1]?.focus();
+      } else {
+        cycle[(idx + 1) % cycle.length]?.focus();
+      }
     };
     window.addEventListener('keydown', onKey, true);
-    return () => window.removeEventListener('keydown', onKey, true);
+    return () => {
+      window.cancelAnimationFrame(id);
+      window.removeEventListener('keydown', onKey, true);
+      previous?.focus();
+    };
   }, [coverPromptOpen, denyCoverOpen]);
 
   if (!coverPromptOpen) return null;
 
   return (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-[2px] sm:items-center"
       role="dialog"
       aria-modal="true"
@@ -53,6 +79,7 @@ export function CoverLicensePrompt() {
 
         <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <Button
+            ref={noRef}
             type="button"
             variant="outline"
             className="min-h-11 touch-manipulation gap-2"
@@ -62,6 +89,7 @@ export function CoverLicensePrompt() {
             No — keep it shut
           </Button>
           <Button
+            ref={yesRef}
             type="button"
             className="min-h-11 touch-manipulation gap-2"
             onClick={confirmCoverOpen}

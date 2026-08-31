@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
-import { useMediaQuery } from '@/lib/hooks';
 
 const HeroSceneCanvas = dynamic(() => import('./hero-scene-canvas'), {
   ssr: false,
@@ -34,7 +33,6 @@ export function HeroScene({
   controlsEnabled = false,
   onExit,
 }: HeroSceneProps) {
-  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -48,10 +46,6 @@ export function HeroScene({
     observer.observe(el);
     return () => observer.disconnect();
   }, [observeId]);
-
-  if (reducedMotion) {
-    return <HeroSceneFallback />;
-  }
 
   return (
     <div

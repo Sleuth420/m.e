@@ -6,6 +6,7 @@ import {
   facingDot,
   resolveOpenDoors,
   resolvePlayerPosition,
+  resolveSolidPosition,
 } from './room-layout';
 
 export type PlayerPose = {
@@ -112,6 +113,26 @@ export function stepPlayerPose(
   return { x: after.x, z: after.z, yaw, pitch, moving };
 }
 
+/** Integrator cap — substep long frames so walk speed stays wall-clock. */
+export const PLAYER_DT_CAP = 0.05;
+
+export function stepPlayerPoseBudget(
+  pose: PlayerPose,
+  keys: MoveKeys,
+  dt: number,
+  stunned: boolean,
+  doors: { dishwasher?: boolean; fridge?: boolean }
+): PlayerPose {
+  let remaining = Math.max(0, dt);
+  let current = pose;
+  while (remaining > 1e-8) {
+    const slice = Math.min(PLAYER_DT_CAP, remaining);
+    current = stepPlayerPose(current, keys, slice, stunned, doors);
+    remaining -= slice;
+  }
+  return current;
+}
+
 export type CameraAnchor = {
   posX: number;
   posY: number;
@@ -130,27 +151,46 @@ export function boardApproach(x: number, z: number): number {
 /**
  * Third-person follow that never steals aim.
  * Boom only shortens when you are close AND looking at the board.
+ * After the boom is placed, push/shorten it out of furniture and the enclosure.
  */
+const CAMERA_PAD = 0.12;
+const CAMERA_MIN_BOOM = 0.38;
+
 export function playingCameraAnchor(pose: PlayerPose, zoomT: number): CameraAnchor {
   const pitch = MathUtils.clamp(pose.pitch, PLAYER.pitchMin, PLAYER.pitchMax);
   const approach = boardApproach(pose.x, pose.z);
   const facingBoard = facingDot(pose.x, pose.z, pose.yaw, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z);
   const closeT = approach * MathUtils.smoothstep(facingBoard, 0.12, 0.7);
   const walkDist = MathUtils.lerp(2.12, 0.9, closeT);
-  const dist = MathUtils.lerp(walkDist, 0.72, zoomT);
+  let dist = MathUtils.lerp(walkDist, 0.72, zoomT);
   const height = MathUtils.lerp(MathUtils.lerp(1.68, 1.5, closeT), 1.46, zoomT);
 
   const ahead = 1.55;
   const cp = Math.cos(pitch);
   const sp = Math.sin(pitch);
+  const sinYaw = Math.sin(pose.yaw);
+  const cosYaw = Math.cos(pose.yaw);
+
+  let posX = pose.x - sinYaw * dist;
+  let posZ = pose.z - cosYaw * dist;
+  for (let i = 0; i < 16; i++) {
+    const rawX = pose.x - sinYaw * dist;
+    const rawZ = pose.z - cosYaw * dist;
+    const pushed = resolveSolidPosition(rawX, rawZ, CAMERA_PAD);
+    posX = pushed.x;
+    posZ = pushed.z;
+    const err = Math.hypot(pushed.x - rawX, pushed.z - rawZ);
+    if (err < 0.015 || dist <= CAMERA_MIN_BOOM) break;
+    dist = Math.max(CAMERA_MIN_BOOM, dist - Math.min(err, 0.2));
+  }
 
   return {
-    posX: MathUtils.clamp(pose.x - Math.sin(pose.yaw) * dist, 0.28, ROOM.width - 0.2),
+    posX: MathUtils.clamp(posX, 0.28, ROOM.width - 0.2),
     posY: MathUtils.clamp(height, 0.85, ROOM.height - 0.2),
-    posZ: MathUtils.clamp(pose.z - Math.cos(pose.yaw) * dist, 0.28, ROOM.depth - 0.2),
-    lookX: pose.x + Math.sin(pose.yaw) * cp * ahead,
+    posZ: MathUtils.clamp(posZ, 0.28, ROOM.depth - 0.2),
+    lookX: pose.x + sinYaw * cp * ahead,
     lookY: height - 0.2 + sp * ahead,
-    lookZ: pose.z + Math.cos(pose.yaw) * cp * ahead,
+    lookZ: pose.z + cosYaw * cp * ahead,
   };
 }
 

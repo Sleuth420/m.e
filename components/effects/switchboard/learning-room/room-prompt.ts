@@ -1,6 +1,13 @@
 import type { InteractSpot, RoomInteractId } from './room-layout';
 import type { RoomPlayState } from './room-play';
 
+export type PromptTone = 'default' | 'caution' | 'danger';
+
+export type RoomActionPrompt = {
+  text: string;
+  tone: PromptTone;
+};
+
 export type RoomPromptLive = {
   powerLive: boolean;
   hobLive: boolean;
@@ -12,6 +19,10 @@ export type RoomPromptLive = {
 
 export function formatInteractVerb(prompt: string, coarse: boolean): string {
   return coarse ? prompt.replaceAll('F · ', 'Tap · ') : prompt;
+}
+
+function stripInteractVerb(prompt: string): string {
+  return prompt.replace(/^(?:F|Tap) · /, '');
 }
 
 export function loungeDimmerPrompt(live: boolean, dimmer: number): string {
@@ -26,23 +37,31 @@ function promptForHit(
   hit: InteractSpot<RoomInteractId>,
   play: RoomPlayState,
   live: RoomPromptLive
-): string {
+): RoomActionPrompt {
   switch (hit.id) {
     case 'toaster':
     case 'gpoDouble':
-      return !live.powerLive ? 'Kitchen power is off' : play.toasterPop ? hit.promptClose : hit.promptOpen;
+      return !live.powerLive
+        ? { text: 'Kitchen power is off', tone: 'caution' }
+        : { text: play.toasterPop ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'cookIsolator':
-      return play.isolatorOn ? 'F · Isolator off' : 'F · Isolator on';
+      return { text: play.isolatorOn ? 'F · Isolator off' : 'F · Isolator on', tone: 'caution' };
     case 'cooktop':
-      return !live.hobLive ? 'Turn the isolator on' : play.boiling ? hit.promptClose : hit.promptOpen;
+      return !live.hobLive
+        ? { text: 'Turn the isolator on', tone: 'caution' }
+        : { text: play.boiling ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'sink':
-      return play.sinkOn ? hit.promptClose : hit.promptOpen;
+      return { text: play.sinkOn ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'loungeDimmerA':
-    case 'loungeDimmerB':
-      return loungeDimmerPrompt(live.loungeLightLive, play.loungeDimmer);
+    case 'loungeDimmerB': {
+      const text = loungeDimmerPrompt(live.loungeLightLive, play.loungeDimmer);
+      return { text, tone: live.loungeLightLive ? 'default' : 'caution' };
+    }
     case 'tv':
     case 'tvGpo':
-      return !live.loungePowerLive ? 'Lounge power is off' : play.tvOn ? hit.promptClose : hit.promptOpen;
+      return !live.loungePowerLive
+        ? { text: 'Lounge power is off', tone: 'caution' }
+        : { text: play.tvOn ? hit.promptClose : hit.promptOpen, tone: 'default' };
     default: {
       const isOpen =
         hit.id === 'fridge'
@@ -50,28 +69,49 @@ function promptForHit(
           : hit.id === 'switch'
             ? play.lightSwitchOn
             : !!play.openById[hit.id];
-      return isOpen ? hit.promptClose : hit.promptOpen;
+      return { text: isOpen ? hit.promptClose : hit.promptOpen, tone: 'default' };
     }
   }
+}
+
+function withVerb(prompt: RoomActionPrompt, coarse: boolean): RoomActionPrompt {
+  return { text: formatInteractVerb(prompt.text, coarse), tone: prompt.tone };
 }
 
 export function roomActionPrompt(
   hit: InteractSpot<RoomInteractId> | null,
   nearTheBoard: boolean,
   play: RoomPlayState,
-  live: RoomPromptLive
-): string {
-  let next: string;
-  if (hit) {
-    next = promptForHit(hit, play, live);
-  } else if (nearTheBoard) {
-    next = live.coverOpen
-      ? 'Tap a breaker rocker · TEST trips the RCD'
-      : live.coarse
-        ? 'Tap the cover · licensed only'
-        : 'Tap the cover or F · licensed only';
-  } else {
-    next = 'Walk to the board, kitchen, or lounge';
+  live: RoomPromptLive,
+  hint: InteractSpot<RoomInteractId> | null = null,
+  boardHint = false
+): RoomActionPrompt {
+  if (hit) return withVerb(promptForHit(hit, play, live), live.coarse);
+
+  if (nearTheBoard) {
+    if (live.coverOpen) {
+      return withVerb({ text: 'F · Close cover', tone: 'caution' }, live.coarse);
+    }
+    return withVerb(
+      {
+        text: live.coarse ? 'Tap the cover · licensed only' : 'Tap the cover or F · licensed only',
+        tone: 'caution',
+      },
+      live.coarse
+    );
   }
-  return formatInteractVerb(next, live.coarse);
+
+  if (hint) {
+    const inner = promptForHit(hint, play, live);
+    return {
+      text: `Walk closer · ${stripInteractVerb(formatInteractVerb(inner.text, live.coarse))}`,
+      tone: inner.tone,
+    };
+  }
+
+  if (boardHint) {
+    return { text: 'Walk closer · Open cover', tone: 'caution' };
+  }
+
+  return { text: 'Walk to the board, kitchen, or lounge', tone: 'default' };
 }

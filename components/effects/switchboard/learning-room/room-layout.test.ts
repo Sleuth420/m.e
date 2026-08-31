@@ -7,6 +7,7 @@ import {
   ROOM,
   atBoard,
   nearBoard,
+  nearestRoomHint,
   nearestRoomInteract,
   resolveOpenDoors,
   resolvePlayerPosition,
@@ -37,6 +38,17 @@ describe('nearestRoomInteract', () => {
     const pz = 0.85;
     expect(nearestRoomInteract(px, pz, [], false, Math.PI / 2)?.id).toBe('fridge');
     expect(nearestRoomInteract(px, pz, [], false, -Math.PI / 2)?.id).toBe('dishwasher');
+  });
+});
+
+describe('nearestRoomHint', () => {
+  it('does not treat a far facing fridge as usable', () => {
+    expect(nearestRoomInteract(FIXTURES.fridge.x, 2.0, [], false, Math.PI)).toBeNull();
+  });
+
+  it('hints at the fridge in a look cone beyond the use radius', () => {
+    const hint = nearestRoomHint(FIXTURES.fridge.x, 2.0, Math.PI);
+    expect(hint?.id).toBe('fridge');
   });
 });
 

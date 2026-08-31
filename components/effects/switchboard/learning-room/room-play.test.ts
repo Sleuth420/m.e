@@ -3,6 +3,12 @@ import { INITIAL_ROOM_PLAY, nextDimmer, roomPlayReducer } from './room-play';
 
 const live = { powerLive: true, hobLive: true, loungePowerLive: true };
 
+describe('INITIAL_ROOM_PLAY', () => {
+  it('starts with the lights on', () => {
+    expect(INITIAL_ROOM_PLAY.lightSwitchOn).toBe(true);
+  });
+});
+
 describe('nextDimmer', () => {
   it('cycles 0 → 35 → 70 → 100 → off', () => {
     expect(nextDimmer(0)).toBe(0.35);
