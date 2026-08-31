@@ -29,7 +29,9 @@ export default function SwitchboardShowcase() {
     html.classList.add('room-playing');
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === 'Escape') setExplore(false);
+      if (e.code !== 'Escape') return;
+      if (document.querySelector('[aria-modal="true"]')) return;
+      setExplore(false);
     };
     window.addEventListener('keydown', onKey);
     return () => {
@@ -47,16 +49,17 @@ export default function SwitchboardShowcase() {
       aria-label="Interactive switchboard learning room"
     >
       <div className="container max-w-3xl px-4 py-8 text-center sm:py-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Playable Electrical Installation</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Playable Electrical Installation
+        </p>
         <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Walk a real circuit from the board to the load and discover the world of electricity
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge
-          power, lounge lighting, induction, oven, and fridge. The lounge is one power
-          feed to the TV and one lighting circuit with two dimmers. Open the switchboard
-          cover if you dare, trip RCBOs, and trace TPS through the walls. Don't touch a
-          live wire!
+          Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge power,
+          lounge lighting, induction, oven, and fridge. The lounge is one power feed to the TV and
+          one lighting circuit with two dimmers. Open the switchboard cover if you dare, trip RCBOs,
+          and trace TPS through the walls. Don't touch a live wire!
         </p>
       </div>
 
@@ -80,7 +83,9 @@ export default function SwitchboardShowcase() {
             onExit={() => setExplore(false)}
             className={cn(
               '!relative h-full max-w-full',
-              explore ? 'min-h-0 touch-none' : 'min-h-[min(82vh,920px)] touch-pan-y sm:min-h-[min(78vh,840px)]'
+              explore
+                ? 'min-h-0 touch-none'
+                : 'min-h-[min(82vh,920px)] touch-pan-y sm:min-h-[min(78vh,840px)]'
             )}
           />
         </div>
@@ -121,7 +126,7 @@ export default function SwitchboardShowcase() {
                   Touch · drag to look · tap fittings
                 </>
               ) : (
-                <>Keyboard · WASD walk · QE turn · F use</>
+                <>Keyboard · WASD walk · drag to look · F use</>
               )}
             </p>
           </div>

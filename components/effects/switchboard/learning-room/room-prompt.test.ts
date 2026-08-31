@@ -37,27 +37,52 @@ describe('loungeDimmerPrompt', () => {
 
 describe('roomActionPrompt', () => {
   it('asks the player to walk when nothing is in range', () => {
-    expect(roomActionPrompt(null, false, INITIAL_ROOM_PLAY, live)).toBe(
-      'Walk to the board, kitchen, or lounge'
-    );
+    expect(roomActionPrompt(null, false, INITIAL_ROOM_PLAY, live)).toEqual({
+      text: 'Walk to the board, kitchen, or lounge',
+      tone: 'default',
+    });
   });
 
   it('uses fridge open/close copy', () => {
-    expect(roomActionPrompt(fridge, false, INITIAL_ROOM_PLAY, live)).toBe('F · Open fridge');
-    expect(roomActionPrompt(fridge, false, { ...INITIAL_ROOM_PLAY, fridgeOpen: true }, live)).toBe(
-      'F · Close fridge'
-    );
+    expect(roomActionPrompt(fridge, false, INITIAL_ROOM_PLAY, live)).toEqual({
+      text: 'F · Open fridge',
+      tone: 'default',
+    });
+    expect(
+      roomActionPrompt(fridge, false, { ...INITIAL_ROOM_PLAY, fridgeOpen: true }, live)
+    ).toEqual({
+      text: 'F · Close fridge',
+      tone: 'default',
+    });
   });
 
   it('blocks the toaster when kitchen power is off', () => {
     expect(
       roomActionPrompt(toaster, false, INITIAL_ROOM_PLAY, { ...live, powerLive: false })
-    ).toBe('Kitchen power is off');
+    ).toEqual({
+      text: 'Kitchen power is off',
+      tone: 'caution',
+    });
   });
 
   it('uses tap wording on mobile at the board', () => {
-    expect(roomActionPrompt(null, true, INITIAL_ROOM_PLAY, { ...live, coarse: true })).toBe(
-      'Tap the cover · licensed only'
-    );
+    expect(roomActionPrompt(null, true, INITIAL_ROOM_PLAY, { ...live, coarse: true })).toEqual({
+      text: 'Tap the cover · licensed only',
+      tone: 'caution',
+    });
+  });
+
+  it('asks to close the cover when it is open at the board', () => {
+    expect(roomActionPrompt(null, true, INITIAL_ROOM_PLAY, { ...live, coverOpen: true })).toEqual({
+      text: 'F · Close cover',
+      tone: 'caution',
+    });
+  });
+
+  it('hints to walk closer without using F when the fitting is only in the look cone', () => {
+    expect(roomActionPrompt(null, false, INITIAL_ROOM_PLAY, live, fridge)).toEqual({
+      text: 'Walk closer · Open fridge',
+      tone: 'default',
+    });
   });
 });

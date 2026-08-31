@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { PLAYER_SPAWN } from './room-layout';
-import { playingCameraAnchor, shockShakeOffset, stepPlayerPose, type PlayerPose } from './player-motion';
+import { BOARD_MOUNT, PLAYER_SPAWN } from './room-layout';
+import {
+  analogFromDelta,
+  playingCameraAnchor,
+  shockShakeOffset,
+  stepPlayerPose,
+  stepPlayerPoseBudget,
+  type PlayerPose,
+} from './player-motion';
 
 const still = {
   forward: false,
@@ -9,10 +16,12 @@ const still = {
   right: false,
   turnLeft: false,
   turnRight: false,
+  stickX: 0,
+  stickY: 0,
 };
 
 function spawn(): PlayerPose {
-  return { x: PLAYER_SPAWN.x, z: PLAYER_SPAWN.z, yaw: PLAYER_SPAWN.yaw, moving: false };
+  return { x: PLAYER_SPAWN.x, z: PLAYER_SPAWN.z, yaw: PLAYER_SPAWN.yaw, pitch: 0, moving: false };
 }
 
 describe('stepPlayerPose', () => {
@@ -35,14 +44,109 @@ describe('stepPlayerPose', () => {
     expect(next.x).toBe(PLAYER_SPAWN.x);
     expect(next.z).toBe(PLAYER_SPAWN.z);
   });
+
+  it('scales walk speed from analog stick magnitude', () => {
+    const full = stepPlayerPose(spawn(), { ...still, stickY: -1 }, 0.25, false, {});
+    const half = stepPlayerPose(spawn(), { ...still, stickY: -0.4 }, 0.25, false, {});
+    expect(full.z).toBeLessThan(PLAYER_SPAWN.z);
+    expect(half.z).toBeLessThan(PLAYER_SPAWN.z);
+    expect(half.z).toBeGreaterThan(full.z);
+  });
+
+  it('walks diagonally on analog without exceeding full speed', () => {
+    const forward = stepPlayerPose(spawn(), { ...still, stickY: -1 }, 0.25, false, {});
+    const diag = stepPlayerPose(spawn(), { ...still, stickX: 0.8, stickY: -0.8 }, 0.25, false, {});
+    const fwdDist = Math.hypot(forward.x - PLAYER_SPAWN.x, forward.z - PLAYER_SPAWN.z);
+    const diagDist = Math.hypot(diag.x - PLAYER_SPAWN.x, diag.z - PLAYER_SPAWN.z);
+    expect(diagDist).toBeLessThanOrEqual(fwdDist + 1e-6);
+    expect(diag.x).not.toBeCloseTo(PLAYER_SPAWN.x, 2);
+  });
+
+  it('slides along the kitchen bench instead of sticking', () => {
+    const start: PlayerPose = { x: 2.2, z: 0.9, yaw: Math.PI, pitch: 0, moving: false };
+    const next = stepPlayerPose(start, { ...still, forward: true, right: true }, 0.35, false, {});
+    expect(next.x).toBeGreaterThan(start.x);
+    expect(next.z).toBeGreaterThanOrEqual(0.65);
+  });
+
+  it('substeps long frames so wall-clock speed matches two shorter frames', () => {
+    const two = stepPlayerPoseBudget(
+      stepPlayerPoseBudget(spawn(), { ...still, forward: true }, 0.08, false, {}),
+      { ...still, forward: true },
+      0.08,
+      false,
+      {}
+    );
+    const once = stepPlayerPoseBudget(spawn(), { ...still, forward: true }, 0.16, false, {});
+    expect(once.x).toBeCloseTo(two.x, 6);
+    expect(once.z).toBeCloseTo(two.z, 6);
+    const capped = stepPlayerPose(spawn(), { ...still, forward: true }, 0.05, false, {});
+    const onceDist = Math.hypot(once.x - PLAYER_SPAWN.x, once.z - PLAYER_SPAWN.z);
+    const cappedDist = Math.hypot(capped.x - PLAYER_SPAWN.x, capped.z - PLAYER_SPAWN.z);
+    expect(onceDist).toBeGreaterThan(cappedDist + 0.15);
+  });
 });
 
 describe('playingCameraAnchor', () => {
   it('sits behind the player looking along yaw', () => {
     const pose = spawn();
-    const cam = playingCameraAnchor(pose, 0, null);
+    const cam = playingCameraAnchor(pose, 0);
     expect(cam.posZ).toBeGreaterThan(pose.z);
     expect(cam.lookZ).toBeLessThan(pose.z);
+  });
+
+  it('does not lock look or boom to the board when standing in front of it', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0);
+    expect(cam.lookZ).toBeGreaterThan(pose.z);
+    expect(cam.lookX).toBeCloseTo(pose.x, 1);
+    expect(cam.posZ).toBeLessThan(pose.z);
+    expect(Math.abs(cam.lookX - (BOARD_MOUNT.x + 0.12))).toBeGreaterThan(0.2);
+    expect(Math.abs(cam.posZ - BOARD_MOUNT.z)).toBeGreaterThan(0.15);
+  });
+
+  it('keeps a long boom when at the board but looking away', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0);
+    expect(pose.z - cam.posZ).toBeGreaterThan(1.6);
+  });
+
+  it('shortens the boom only when looking at the board', () => {
+    const away: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
+    const at: PlayerPose = { x: 0.7, z: 5.35, yaw: -Math.PI / 2, pitch: 0, moving: false };
+    const camAway = playingCameraAnchor(away, 0);
+    const camAt = playingCameraAnchor(at, 0);
+    const boomAway = Math.hypot(camAway.posX - away.x, camAway.posZ - away.z);
+    const boomAt = Math.hypot(camAt.posX - at.x, camAt.posZ - at.z);
+    expect(boomAt).toBeLessThan(boomAway - 0.4);
+  });
+
+  it('aims lower when the player pitches down', () => {
+    const level = playingCameraAnchor(spawn(), 0);
+    const down = playingCameraAnchor({ ...spawn(), pitch: -0.45 }, 0);
+    expect(down.lookY).toBeLessThan(level.lookY);
+  });
+
+  it('keeps the boom out of the board enclosure when the player faces into the room', () => {
+    const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: Math.PI / 2, pitch: 0, moving: false };
+    const cam = playingCameraAnchor(pose, 0);
+    expect(cam.posX).toBeGreaterThan(0.42);
+    expect(Math.abs(cam.posX - 0.28)).toBeGreaterThan(0.12);
+  });
+});
+
+describe('analogFromDelta', () => {
+  it('clamps to a circle so diagonals stay at full throw', () => {
+    const corner = analogFromDelta(56, 56, 56);
+    expect(Math.hypot(corner.x, corner.y)).toBeCloseTo(1, 6);
+    expect(corner.x).toBeCloseTo(Math.SQRT1_2, 5);
+    expect(corner.y).toBeCloseTo(Math.SQRT1_2, 5);
+  });
+
+  it('scales inside the throw radius', () => {
+    const half = analogFromDelta(0, -28, 56);
+    expect(half.x).toBeCloseTo(0, 6);
+    expect(half.y).toBeCloseTo(-0.5, 6);
   });
 });
 

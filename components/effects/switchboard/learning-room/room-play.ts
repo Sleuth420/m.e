@@ -13,7 +13,7 @@ export type RoomPlayState = {
 };
 
 export const INITIAL_ROOM_PLAY: RoomPlayState = {
-  lightSwitchOn: false,
+  lightSwitchOn: true,
   fridgeOpen: false,
   toasterPop: false,
   isolatorOn: true,

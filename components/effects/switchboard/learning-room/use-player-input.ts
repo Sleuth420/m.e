@@ -3,7 +3,7 @@
 import { useEffect, type MutableRefObject, type RefObject } from 'react';
 import { MathUtils, type WebGLRenderer } from 'three';
 import { markInteract, setLookDragActive, wasRecentInteract } from '../interaction';
-import type { RoomInteractId } from './room-layout';
+import { PLAYER, type RoomInteractId } from './room-layout';
 import type { PlayerPose } from './player-motion';
 import { tryRoomInteract } from './room-interact';
 
@@ -40,9 +40,13 @@ type Args = {
   zoomRef: MutableRefObject<Zoom>;
   coarseRef: MutableRefObject<boolean>;
   coverOpen: boolean;
+  coverPromptOpen: boolean;
   onExit: () => void;
   onInteract: (id: RoomInteractId) => void;
   requestCoverOpen: () => void;
+  denyCoverOpen: () => void;
+  closeCover: () => void;
+  dismissEntryHint: () => void;
 };
 
 function applyKey(keys: Keys, zoom: Zoom, code: string, down: boolean) {
@@ -55,7 +59,7 @@ function applyKey(keys: Keys, zoom: Zoom, code: string, down: boolean) {
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'KeyZ') zoom.hold = down;
 }
 
-/** Keyboard, wheel zoom, and mobile look-drag / tap-nearest. */
+/** Keyboard, wheel zoom, look-drag (touch + mouse), and mobile tap-nearest. */
 export function usePlayerInput({
   enabled,
   gl,
@@ -64,9 +68,13 @@ export function usePlayerInput({
   zoomRef,
   coarseRef,
   coverOpen,
+  coverPromptOpen,
   onExit,
   onInteract,
   requestCoverOpen,
+  denyCoverOpen,
+  closeCover,
+  dismissEntryHint,
 }: Args) {
   useEffect(() => {
     if (!enabled) {
@@ -78,9 +86,14 @@ export function usePlayerInput({
     const onDown = (e: KeyboardEvent) => {
       if (e.code === 'Escape') {
         e.preventDefault();
+        if (coverPromptOpen) {
+          denyCoverOpen();
+          return;
+        }
         onExit();
         return;
       }
+      if (coverPromptOpen) return;
       if (
         e.code === 'ArrowUp' ||
         e.code === 'ArrowDown' ||
@@ -92,17 +105,34 @@ export function usePlayerInput({
       ) {
         e.preventDefault();
       }
-      if (e.repeat && (e.code === 'KeyF' || e.code === 'Enter' || e.code === 'Escape')) return;
+      if (
+        e.repeat &&
+        (e.code === 'KeyF' || e.code === 'Enter' || e.code === 'Space' || e.code === 'Escape')
+      ) {
+        return;
+      }
       applyKey(keysRef.current, zoomRef.current, e.code, true);
+      if (
+        keysRef.current.forward ||
+        keysRef.current.back ||
+        keysRef.current.left ||
+        keysRef.current.right ||
+        keysRef.current.turnLeft ||
+        keysRef.current.turnRight
+      ) {
+        dismissEntryHint();
+      }
       if (e.repeat) return;
-      if (e.code === 'KeyF' || e.code === 'Enter') {
+      if (e.code === 'KeyF' || e.code === 'Enter' || e.code === 'Space') {
         tryRoomInteract(
           pose.current.x,
           pose.current.z,
-          zoomRef.current.hold || zoomRef.current.amount > 0.25,
+          zoomRef.current.hold,
           coverOpen,
           onInteract,
-          requestCoverOpen
+          requestCoverOpen,
+          pose.current.yaw,
+          closeCover
         );
       }
     };
@@ -110,7 +140,11 @@ export function usePlayerInput({
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      zoomRef.current.amount = MathUtils.clamp(zoomRef.current.amount + (e.deltaY > 0 ? -0.08 : 0.08), 0, 1);
+      zoomRef.current.amount = MathUtils.clamp(
+        zoomRef.current.amount + (e.deltaY > 0 ? -0.08 : 0.08),
+        0,
+        1
+      );
     };
 
     const onMouseDown = (e: MouseEvent) => {
@@ -133,66 +167,134 @@ export function usePlayerInput({
     canvas.addEventListener('contextmenu', onContext);
 
     const look = { id: -1, x: 0, y: 0, dragging: false, canLook: false };
-    const TAP_PX = 14;
-    const LOOK_SENS = 0.0048;
-    const useNearest = () => {
-      if (wasRecentInteract()) return;
-      if (
-        tryRoomInteract(pose.current.x, pose.current.z, false, coverOpen, onInteract, requestCoverOpen)
-      ) {
-        markInteract();
-      }
-    };
-    const onPointerDown = (e: PointerEvent) => {
-      if (!coarseRef.current) return;
-      look.id = e.pointerId;
-      look.x = e.clientX;
-      look.y = e.clientY;
-      look.dragging = false;
-      look.canLook = e.pointerType !== 'mouse';
-      setLookDragActive(false);
-    };
-    const onPointerMove = (e: PointerEvent) => {
+    const TAP_PX = 18;
+    let nearestTimer = 0;
+    function onPointerMove(e: PointerEvent) {
       if (look.id !== e.pointerId || !look.canLook) return;
       const dx = e.clientX - look.x;
       const dy = e.clientY - look.y;
       if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
-      look.dragging = true;
-      setLookDragActive(true);
-      pose.current.yaw -= dx * LOOK_SENS;
+      if (!look.dragging) {
+        look.dragging = true;
+        dismissEntryHint();
+        setLookDragActive(true);
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch {
+          /* capture is optional — window listeners still track */
+        }
+      }
+      const sens = e.pointerType === 'touch' ? 0.0056 : 0.0042;
+      pose.current.yaw -= dx * sens;
+      pose.current.pitch = MathUtils.clamp(
+        pose.current.pitch - dy * sens,
+        PLAYER.pitchMin,
+        PLAYER.pitchMax
+      );
       look.x = e.clientX;
       look.y = e.clientY;
-    };
-    const onPointerUp = (e: PointerEvent) => {
-      if (look.id !== e.pointerId) return;
-      const dragged = look.dragging;
+    }
+    function unbindLookWindow() {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp, true);
+      window.removeEventListener('pointercancel', onPointerUp, true);
+    }
+    function releaseLook(pointerId: number) {
       look.id = -1;
       look.dragging = false;
+      look.canLook = false;
+      unbindLookWindow();
+      if (canvas.hasPointerCapture(pointerId)) {
+        canvas.releasePointerCapture(pointerId);
+      }
+    }
+    function onPointerUp(e: PointerEvent) {
+      if (look.id !== e.pointerId) return;
+      const dragged = look.dragging;
+      releaseLook(e.pointerId);
       if (dragged) {
         e.stopImmediatePropagation();
         window.setTimeout(() => setLookDragActive(false), 0);
         return;
       }
-      if (coarseRef.current) window.setTimeout(useNearest, 0);
+      if (coarseRef.current) {
+        window.clearTimeout(nearestTimer);
+        nearestTimer = window.setTimeout(useNearest, 48);
+      }
       window.setTimeout(() => setLookDragActive(false), 0);
+    }
+    const useNearest = () => {
+      if (coverPromptOpen || wasRecentInteract()) return;
+      if (
+        tryRoomInteract(
+          pose.current.x,
+          pose.current.z,
+          false,
+          coverOpen,
+          onInteract,
+          requestCoverOpen,
+          pose.current.yaw,
+          closeCover
+        )
+      ) {
+        markInteract();
+      }
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      if (coverPromptOpen) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      look.id = e.pointerId;
+      look.x = e.clientX;
+      look.y = e.clientY;
+      look.dragging = false;
+      look.canLook = true;
+      setLookDragActive(false);
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp, true);
+      window.addEventListener('pointercancel', onPointerUp, true);
+    };
+    const clearHeld = () => {
+      keysRef.current = emptyKeys();
+      zoomRef.current.hold = false;
+      if (look.id !== -1) releaseLook(look.id);
+      setLookDragActive(false);
+    };
+    const onBlur = () => clearHeld();
+    const onVisibility = () => {
+      if (document.visibilityState !== 'visible') clearHeld();
     };
     canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp, true);
-    canvas.addEventListener('pointercancel', onPointerUp, true);
+    window.addEventListener('blur', onBlur);
+    document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
+      window.clearTimeout(nearestTimer);
+      unbindLookWindow();
       window.removeEventListener('keydown', onDown);
       window.removeEventListener('keyup', onUp);
+      window.removeEventListener('blur', onBlur);
+      document.removeEventListener('visibilitychange', onVisibility);
       canvas.removeEventListener('wheel', onWheel);
       canvas.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
       canvas.removeEventListener('contextmenu', onContext);
       canvas.removeEventListener('pointerdown', onPointerDown);
-      canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerup', onPointerUp, true);
-      canvas.removeEventListener('pointercancel', onPointerUp, true);
       setLookDragActive(false);
     };
-  }, [enabled, gl, onExit, onInteract, coverOpen, requestCoverOpen, pose, keysRef, zoomRef, coarseRef]);
+  }, [
+    enabled,
+    gl,
+    onExit,
+    onInteract,
+    coverOpen,
+    coverPromptOpen,
+    requestCoverOpen,
+    denyCoverOpen,
+    closeCover,
+    dismissEntryHint,
+    pose,
+    keysRef,
+    zoomRef,
+    coarseRef,
+  ]);
 }

@@ -22,13 +22,15 @@ function hoveredCircuitLabel(hovered: string | null) {
 
 export function LearningHud({ visible }: Props) {
   const { mainOn, liveById, coverOpen, tripReason, shockActive, hovered } = useSwitchboard();
-  const { actionPrompt } = useGameInput();
+  const { actionPrompt, actionTone, entryHint, dismissEntryHint } = useGameInput();
   const [keysOpen, setKeysOpen] = useState(false);
+  const [circuitsOpen, setCircuitsOpen] = useState(false);
   const { coarse } = useCoarsePointer();
 
   useEffect(() => {
     if (!visible) {
       setKeysOpen(false);
+      setCircuitsOpen(false);
       return;
     }
     const onKey = (e: KeyboardEvent) => {
@@ -39,6 +41,12 @@ export function LearningHud({ visible }: Props) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [visible]);
+
+  useEffect(() => {
+    if (!visible || !entryHint) return;
+    const t = window.setTimeout(dismissEntryHint, 6000);
+    return () => window.clearTimeout(t);
+  }, [visible, entryHint, dismissEntryHint]);
 
   if (!visible) return null;
 
@@ -52,6 +60,7 @@ export function LearningHud({ visible }: Props) {
     { label: 'Oven', on: !!liveById[ROOM_LOADS.oven] },
     { label: 'Fridge', on: !!liveById[ROOM_LOADS.fridge] },
   ];
+  const liveCount = circuits.filter((c) => c.on).length;
 
   const circuitList = (
     <ul className="chrome-border flex max-w-[min(100%,22rem)] flex-wrap justify-center gap-x-2 gap-y-1 rounded-xl border border-border/60 bg-background/88 px-2.5 py-2 shadow-sm backdrop-blur-md sm:max-w-none sm:justify-end">
@@ -83,6 +92,7 @@ export function LearningHud({ visible }: Props) {
           : 'Walk the install — fittings, GPOs, and the board all operate';
 
   const bannerText = shockActive ? status : actionPrompt || status;
+  const tone = shockActive ? 'danger' : actionPrompt ? actionTone : coverOpen ? 'caution' : 'default';
 
   return (
     <>
@@ -90,9 +100,9 @@ export function LearningHud({ visible }: Props) {
         <div
           className={cn(
             'chrome-border max-w-md rounded-xl border px-3 py-2 text-center shadow-md backdrop-blur-md',
-            shockActive
+            tone === 'danger'
               ? 'border-red-400/50 bg-red-950/80 text-red-100'
-              : /licensed|cover|breaker|RCD/i.test(bannerText)
+              : tone === 'caution'
                 ? 'border-amber-400/40 bg-amber-950/75 text-amber-50'
                 : 'border-border/60 bg-background/88 text-foreground'
           )}
@@ -106,7 +116,32 @@ export function LearningHud({ visible }: Props) {
             <p className="text-xs font-medium sm:text-sm">{bannerText}</p>
           )}
         </div>
-        {coarse && circuitList}
+        {entryHint && (
+          <p className="chrome-border max-w-sm rounded-lg border border-border/50 bg-background/80 px-3 py-1.5 text-center text-[11px] font-medium text-foreground/90 shadow-sm backdrop-blur-md">
+            {coarse ? 'Stick to move · drag to look · tap fittings' : 'WASD · drag look · F use'}
+          </p>
+        )}
+        {coarse &&
+          (circuitsOpen ? (
+            <div className="pointer-events-auto flex flex-col items-center gap-1">
+              {circuitList}
+              <button
+                type="button"
+                className="rounded px-2 py-0.5 text-[10px] text-muted-foreground"
+                onClick={() => setCircuitsOpen(false)}
+              >
+                Hide circuits
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="pointer-events-auto chrome-border rounded-lg border border-border/60 bg-background/88 px-2.5 py-1 text-[11px] font-medium text-foreground shadow-sm backdrop-blur-md"
+              onClick={() => setCircuitsOpen(true)}
+            >
+              {liveCount} live
+            </button>
+          ))}
       </div>
 
       {!coarse && (
@@ -130,13 +165,13 @@ export function LearningHud({ visible }: Props) {
                   </div>
                   <ul className="space-y-0.5 text-[11px] text-muted-foreground">
                     <li>
-                      <Kbd>WASD</Kbd> move · <Kbd>QE</Kbd> turn
+                      <Kbd>WASD</Kbd> move · drag to look
                     </li>
                     <li>
-                      <Kbd>F</Kbd> use · <Kbd>Shift</Kbd> inspect
+                      <Kbd>QE</Kbd> turn · <Kbd>F</Kbd> / <Kbd>Space</Kbd> use
                     </li>
                     <li>
-                      <Kbd>Esc</Kbd> exit
+                      <Kbd>Shift</Kbd> inspect · <Kbd>Esc</Kbd> exit
                     </li>
                   </ul>
                 </div>

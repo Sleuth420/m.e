@@ -43,3 +43,27 @@ describe('extractTrianglesAll', () => {
     expect(door.getAttribute('position')?.getZ(0)).toBe(26);
   });
 });
+
+describe('centroid L/R split', () => {
+  it('keeps a full-width spanning quad on left or right so freezer faces survive', () => {
+    const geom = new BufferGeometry();
+    geom.setAttribute(
+      'position',
+      new BufferAttribute(
+        new Float32Array([
+          -10, 0, 24, 10, 0, 24, -10, 20, 24,
+          10, 0, 24, 10, 20, 24, -10, 20, 24,
+        ]),
+        3
+      )
+    );
+    const all = extractTrianglesAll(geom, (x) => x <= 0);
+    const rightAll = extractTrianglesAll(geom, (x) => x > 0);
+    expect((all.getAttribute('position')?.count ?? 0) + (rightAll.getAttribute('position')?.count ?? 0)).toBe(0);
+
+    const left = extractTriangles(geom, (x) => x <= 0);
+    const right = extractTriangles(geom, (x) => x > 0);
+    const kept = (left.getAttribute('position')?.count ?? 0) + (right.getAttribute('position')?.count ?? 0);
+    expect(kept).toBe(6);
+  });
+});

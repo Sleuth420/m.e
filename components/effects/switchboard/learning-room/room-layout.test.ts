@@ -7,6 +7,7 @@ import {
   ROOM,
   atBoard,
   nearBoard,
+  nearestRoomHint,
   nearestRoomInteract,
   resolveOpenDoors,
   resolvePlayerPosition,
@@ -30,6 +31,24 @@ describe('nearestRoomInteract', () => {
   it('prefers the higher fitting when inspecting', () => {
     const hit = nearestRoomInteract(2.58, 0.5, [], true);
     expect(hit?.id).toBe('cabL-upper');
+  });
+
+  it('prefers the fitting the player is facing when two are in range', () => {
+    const px = 4.2;
+    const pz = 0.85;
+    expect(nearestRoomInteract(px, pz, [], false, Math.PI / 2)?.id).toBe('fridge');
+    expect(nearestRoomInteract(px, pz, [], false, -Math.PI / 2)?.id).toBe('dishwasher');
+  });
+});
+
+describe('nearestRoomHint', () => {
+  it('does not treat a far facing fridge as usable', () => {
+    expect(nearestRoomInteract(FIXTURES.fridge.x, 2.0, [], false, Math.PI)).toBeNull();
+  });
+
+  it('hints at the fridge in a look cone beyond the use radius', () => {
+    const hint = nearestRoomHint(FIXTURES.fridge.x, 2.0, Math.PI);
+    expect(hint?.id).toBe('fridge');
   });
 });
 
@@ -84,5 +103,9 @@ describe('board proximity', () => {
   it('detects standing in front of the enclosure', () => {
     expect(nearBoard(0.5, 5.35)).toBe(true);
     expect(atBoard(0.5, 5.35)).toBe(true);
+  });
+
+  it('does not treat the lounge dimmer as the board', () => {
+    expect(nearBoard(FIXTURES.loungeDimmerA.x, FIXTURES.loungeDimmerA.z)).toBe(false);
   });
 });

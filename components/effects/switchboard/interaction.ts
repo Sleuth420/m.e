@@ -8,6 +8,10 @@ export function setLookDragActive(active: boolean) {
   lookDragActive = active;
 }
 
+export function isLookDragActive() {
+  return lookDragActive;
+}
+
 export function markInteract() {
   lastInteractAt = performance.now();
 }

@@ -2,10 +2,12 @@
 
 import { Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@/lib/hooks';
 import { useSwitchboard } from '../SwitchboardContext';
 
 export function ShockOverlay() {
   const { shockActive, shockCircuitId, tripReason } = useSwitchboard();
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   if (!shockActive) return null;
 
@@ -18,7 +20,7 @@ export function ShockOverlay() {
     <div
       className={cn(
         'pointer-events-none fixed inset-0 z-[90] flex items-center justify-center',
-        'animate-pulse bg-red-600/35'
+        reducedMotion ? 'bg-red-600/35' : 'animate-pulse bg-red-600/35'
       )}
       aria-live="assertive"
     >

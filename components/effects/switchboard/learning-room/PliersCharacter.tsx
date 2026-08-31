@@ -66,7 +66,7 @@ export function PliersCharacter({
   const group = useRef<Group>(null);
   const bob = useRef(0);
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
     const g = group.current;
     const p = pose.current;
     if (!g || !p) return;
@@ -74,6 +74,8 @@ export function PliersCharacter({
     const lift = p.moving ? Math.abs(Math.sin(bob.current)) * 0.05 : 0;
     g.position.set(p.x, lift, p.z);
     g.rotation.y = p.yaw;
+    const camDist = Math.hypot(camera.position.x - p.x, camera.position.z - p.z);
+    g.visible = camDist > 0.9;
   });
 
   return (

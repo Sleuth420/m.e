@@ -9,8 +9,8 @@ import {
   Quaternion,
   Vector3,
 } from 'three';
-import { dressBlackAppliance } from './appliance-dress';
-import { extractTrianglesAll, extractTrianglesBy } from './mesh-extract';
+import { dressBlackAppliance, dressFridgeAppliance } from './appliance-dress';
+import { extractTriangles, extractTrianglesAll, extractTrianglesBy } from './mesh-extract';
 
 function copyMesh(source: Mesh, geometry: BufferGeometry, name: string): Mesh {
   const mesh = new Mesh(geometry, source.material);
@@ -103,7 +103,12 @@ function peelFridgeDoorSkin(root: Object3D) {
 function punchFridgeOpening(root: Object3D) {
   const bodies = collectMeshes(root, /Fridge_Body/i);
   for (const mesh of bodies) {
-    const punched = extractTrianglesAll(mesh.geometry, (_x, _y, z) => z <= 18);
+    /** Punch only the upper cavity; keep the lower freezer face as backup. */
+    const punched = extractTrianglesBy(mesh.geometry, (ax, ay, az, bx, by, bz, cx, cy, cz) => {
+      const back = az <= 18 && bz <= 18 && cz <= 18;
+      const lower = (ay + by + cy) / 3 < -30;
+      return back || lower;
+    });
     if ((punched.getAttribute('position')?.count ?? 0) < 9) continue;
     mesh.geometry = punched;
   }
@@ -133,8 +138,8 @@ export function splitFrenchDoors(root: Object3D) {
       maxX = Math.max(maxX, pos.getX(i));
     }
     const mid = (minX + maxX) / 2;
-    const leftGeom = extractTrianglesAll(geom, (x) => x <= mid);
-    const rightGeom = extractTrianglesAll(geom, (x) => x > mid);
+    const leftGeom = extractTriangles(geom, (x) => x <= mid);
+    const rightGeom = extractTriangles(geom, (x) => x > mid);
     if ((leftGeom.getAttribute('position')?.count ?? 0) < 3 || (rightGeom.getAttribute('position')?.count ?? 0) < 3) {
       continue;
     }
@@ -170,8 +175,8 @@ export function splitDishwasherDoor(root: Object3D) {
   let maxZ = -Infinity;
   for (let i = 0; i < pos.count; i++) maxZ = Math.max(maxZ, pos.getZ(i));
   const cut = maxZ - 80;
-  const doorGeom = extractTrianglesAll(geom, (_x, _y, z) => z > cut);
-  const bodyGeom = extractTrianglesAll(geom, (_x, _y, z) => z <= cut);
+  const doorGeom = extractTriangles(geom, (_x, _y, z) => z > cut);
+  const bodyGeom = extractTriangles(geom, (_x, _y, z) => z <= cut);
   if (doorGeom.getAttribute('position')?.count < 9 || bodyGeom.getAttribute('position')?.count < 9) return;
   const parent = mesh.parent ?? root;
   const door = copyMesh(mesh, doorGeom, 'dw_door');
@@ -222,7 +227,7 @@ function addDishwasherTub(body: Mesh) {
 }
 
 export function prepareFrenchFridgeDoors3(root: Object3D) {
-  dressBlackAppliance(root);
+  dressFridgeAppliance(root);
   splitFrenchDoors(root);
 }
 

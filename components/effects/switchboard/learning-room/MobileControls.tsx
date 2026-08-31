@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useCoarsePointer } from '@/lib/hooks';
+import { analogFromDelta } from './player-motion';
 import { useGameInput } from './GameInputContext';
 
 type Props = {
@@ -13,7 +14,7 @@ export function MobileControls({ visible }: Props) {
   const { mobileKeys } = useGameInput();
   const stickRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
-  const touchId = useRef<number | null>(null);
+  const pointerId = useRef<number | null>(null);
   const origin = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -26,6 +27,8 @@ export function MobileControls({ visible }: Props) {
         turnLeft: false,
         turnRight: false,
         inspect: false,
+        stickX: 0,
+        stickY: 0,
       });
     }
   }, [visible, mobileKeys]);
@@ -41,43 +44,48 @@ export function MobileControls({ visible }: Props) {
       back: false,
       left: false,
       right: false,
+      stickX: 0,
+      stickY: 0,
     });
   };
 
-  const applyStick = (dx: number, dy: number) => {
-    const max = 48;
-    const nx = Math.max(-1, Math.min(1, dx / max));
-    const ny = Math.max(-1, Math.min(1, dy / max));
-    mobileKeys.current.forward = ny < -0.25;
-    mobileKeys.current.back = ny > 0.25;
-    mobileKeys.current.left = nx < -0.25;
-    mobileKeys.current.right = nx > 0.25;
+  const applyStick = (clientX: number, clientY: number) => {
+    const max = 42;
+    const analog = analogFromDelta(clientX - origin.current.x, clientY - origin.current.y, max);
+    mobileKeys.current.stickX = analog.x;
+    mobileKeys.current.stickY = analog.y;
     if (knobRef.current) {
-      knobRef.current.style.transform = `translate(calc(-50% + ${nx * max}px), calc(-50% + ${ny * max}px))`;
+      knobRef.current.style.transform = `translate(calc(-50% + ${analog.x * max}px), calc(-50% + ${analog.y * max}px))`;
     }
   };
 
-  const onStickStart = (e: React.TouchEvent) => {
-    if (touchId.current !== null) return;
-    const t = e.changedTouches[0];
-    if (!t || !stickRef.current) return;
-    touchId.current = t.identifier;
-    const rect = stickRef.current.getBoundingClientRect();
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    pointerId.current = e.pointerId;
+    const rect = e.currentTarget.getBoundingClientRect();
     origin.current = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    applyStick(t.clientX - origin.current.x, t.clientY - origin.current.y);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture is optional */
+    }
+    applyStick(e.clientX, e.clientY);
   };
 
-  const onStickMove = (e: React.TouchEvent) => {
-    if (touchId.current === null) return;
-    const t = Array.from(e.changedTouches).find((x) => x.identifier === touchId.current);
-    if (!t) return;
-    applyStick(t.clientX - origin.current.x, t.clientY - origin.current.y);
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== e.pointerId) return;
+    e.preventDefault();
+    applyStick(e.clientX, e.clientY);
   };
 
-  const onStickEnd = (e: React.TouchEvent) => {
-    const ended = Array.from(e.changedTouches).some((x) => x.identifier === touchId.current);
-    if (!ended) return;
-    touchId.current = null;
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== e.pointerId) return;
+    pointerId.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
     resetKnob();
   };
 
@@ -85,21 +93,24 @@ export function MobileControls({ visible }: Props) {
     <div className="pointer-events-none absolute inset-0 z-40">
       <div
         ref={stickRef}
-        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[7.5rem] w-[7.5rem] touch-none"
-        onTouchStart={onStickStart}
-        onTouchMove={onStickMove}
-        onTouchEnd={onStickEnd}
-        onTouchCancel={onStickEnd}
+        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[5.5rem] w-[5.5rem] touch-none"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
         <div className="absolute inset-0 rounded-full border border-white/20 bg-black/35 backdrop-blur-sm" />
         <div
           ref={knobRef}
-          className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 bg-white/25 shadow-md"
+          className="absolute left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 bg-white/25 shadow-md"
         />
         <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-medium tracking-wider text-white/80">
           Move
         </span>
       </div>
+      <p className="pointer-events-none absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] right-[max(0.75rem,env(safe-area-inset-right))] max-w-[7.5rem] text-right text-[9px] font-medium leading-snug tracking-wider text-white/75">
+        Drag to look
+      </p>
     </div>
   );
 }

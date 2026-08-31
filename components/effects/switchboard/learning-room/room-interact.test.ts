@@ -20,6 +20,18 @@ describe('tryRoomInteract', () => {
     expect(requestCoverOpen).toHaveBeenCalledOnce();
   });
 
+  it('closes the cover when facing the board with the cover open', () => {
+    const onInteract = vi.fn();
+    const requestCoverOpen = vi.fn();
+    const closeCover = vi.fn();
+    expect(
+      tryRoomInteract(0.5, 5.35, false, true, onInteract, requestCoverOpen, undefined, closeCover)
+    ).toBe(true);
+    expect(closeCover).toHaveBeenCalledOnce();
+    expect(requestCoverOpen).not.toHaveBeenCalled();
+    expect(onInteract).not.toHaveBeenCalled();
+  });
+
   it('does nothing at spawn', () => {
     const onInteract = vi.fn();
     const requestCoverOpen = vi.fn();
@@ -27,6 +39,13 @@ describe('tryRoomInteract', () => {
       tryRoomInteract(PLAYER_SPAWN.x, PLAYER_SPAWN.z, false, false, onInteract, requestCoverOpen)
     ).toBe(false);
     expect(onInteract).not.toHaveBeenCalled();
+    expect(requestCoverOpen).not.toHaveBeenCalled();
+  });
+
+  it('does not open the cover when standing at the board but looking away', () => {
+    const onInteract = vi.fn();
+    const requestCoverOpen = vi.fn();
+    expect(tryRoomInteract(0.5, 5.35, false, false, onInteract, requestCoverOpen, 0)).toBe(false);
     expect(requestCoverOpen).not.toHaveBeenCalled();
   });
 });

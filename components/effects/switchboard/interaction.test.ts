@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
-import { markInteract, onInteractiveClick, wasRecentInteract } from './interaction';
+import { isLookDragActive, markInteract, onInteractiveClick, setLookDragActive, wasRecentInteract } from './interaction';
+
+describe('look-drag flag', () => {
+  it('tracks whether a look drag is active', () => {
+    setLookDragActive(true);
+    expect(isLookDragActive()).toBe(true);
+    setLookDragActive(false);
+    expect(isLookDragActive()).toBe(false);
+  });
+});
 
 describe('interact debounce', () => {
   it('treats a just-fired action as recent', () => {

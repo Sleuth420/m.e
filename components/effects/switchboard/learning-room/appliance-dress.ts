@@ -163,3 +163,34 @@ export function dressBlackAppliance(root: Object3D) {
     }
   });
 }
+
+/** Charcoal fridge steel that still reads as doors — not void-black. */
+export function dressFridgeAppliance(root: Object3D) {
+  dressKitchenProduct(root);
+  root.traverse((obj) => {
+    const mesh = obj as Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const mat of mats) {
+      const m = mat as MeshStandardMaterial;
+      if (!m?.color) continue;
+      const n = `${mesh.name} ${m.name ?? ''}`.toLowerCase();
+      if (/handle|chrome|button|dispenser|ice/.test(n) && m.metalness > 0.55) continue;
+      if (/gasket|rubber/.test(n)) continue;
+      if (/glass|translucent/.test(n)) {
+        m.color.set('#1a1d22');
+        m.roughness = 0.1;
+        m.metalness = 0.14;
+        m.needsUpdate = true;
+        continue;
+      }
+      if (m.metalness > 0.28 || /steel|stainless|brushed|body|door|metal|housing|panel/.test(n)) {
+        m.color.set('#4a5058');
+        m.metalness = 0.62;
+        m.roughness = 0.34;
+        m.envMapIntensity = 1.4;
+        m.needsUpdate = true;
+      }
+    }
+  });
+}
