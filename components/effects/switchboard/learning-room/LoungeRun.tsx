@@ -216,7 +216,7 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         position={[gpo.x, gpo.y, gpo.z]}
         rotation={[0, Math.PI, 0]}
         align="center"
-        pin="back"
+        pin="front"
         share
         shadows={false}
         envIntensity={powerLive ? 1.15 : 1.05}
@@ -258,10 +258,16 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
 
       <RoomHit
         onToggle={onToggleTv}
+        hitId="tv"
         size={[LOUNGE.tv.w + 0.06, LOUNGE.tv.h + 0.04, 0.22]}
         position={[tv.x, cab.h + LOUNGE.tv.h / 2, zFront - 0.1]}
       />
-      <RoomHit onToggle={onToggleTv} size={[0.24, 0.18, 0.14]} position={[gpo.x, gpo.y, zFront - 0.08]} />
+      <RoomHit
+        onToggle={onToggleTv}
+        hitId="tvGpo"
+        size={[0.24, 0.18, 0.14]}
+        position={[gpo.x, gpo.y, gpo.z - 0.08]}
+      />
     </group>
   );
 }
