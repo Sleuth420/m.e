@@ -90,6 +90,11 @@ export function usePlayerInput({
           denyCoverOpen();
           return;
         }
+        if (coverOpen) {
+          e.stopImmediatePropagation();
+          closeCover();
+          return;
+        }
         onExit();
         return;
       }
@@ -159,7 +164,7 @@ export function usePlayerInput({
     const onContext = (e: MouseEvent) => e.preventDefault();
 
     const canvas = gl.domElement;
-    window.addEventListener('keydown', onDown);
+    window.addEventListener('keydown', onDown, true);
     window.addEventListener('keyup', onUp);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('mousedown', onMouseDown);
@@ -247,7 +252,7 @@ export function usePlayerInput({
       look.x = e.clientX;
       look.y = e.clientY;
       look.dragging = false;
-      look.canLook = true;
+      look.canLook = !coverOpen;
       setLookDragActive(false);
       window.addEventListener('pointermove', onPointerMove);
       window.addEventListener('pointerup', onPointerUp, true);
@@ -270,7 +275,7 @@ export function usePlayerInput({
     return () => {
       window.clearTimeout(nearestTimer);
       unbindLookWindow();
-      window.removeEventListener('keydown', onDown);
+      window.removeEventListener('keydown', onDown, true);
       window.removeEventListener('keyup', onUp);
       window.removeEventListener('blur', onBlur);
       document.removeEventListener('visibilitychange', onVisibility);

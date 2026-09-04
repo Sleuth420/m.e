@@ -74,7 +74,16 @@ describe('roomActionPrompt', () => {
 
   it('asks to close the cover when it is open at the board', () => {
     expect(roomActionPrompt(null, true, INITIAL_ROOM_PLAY, { ...live, coverOpen: true })).toEqual({
-      text: 'F · Close cover',
+      text: 'Tap a breaker · F / Esc closes cover',
+      tone: 'caution',
+    });
+  });
+
+  it('uses step-back wording on mobile while the cover is open', () => {
+    expect(
+      roomActionPrompt(null, false, INITIAL_ROOM_PLAY, { ...live, coverOpen: true, coarse: true })
+    ).toEqual({
+      text: 'Tap a breaker · move to step back',
       tone: 'caution',
     });
   });

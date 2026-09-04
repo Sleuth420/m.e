@@ -61,6 +61,8 @@ export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disa
           showStatusWindow
           statusLive={on}
           disabled={disabled}
+          onHover={() => onHover('main')}
+          onHoverEnd={() => onHover(null)}
         />
       </group>
     </group>

@@ -3,8 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { AvailableForWorkPopup } from '@/components/ui/available-for-work-popup';
-import { BuyMeCoffeePopup } from '@/components/ui/buy-me-coffee-popup';
+import { SitePopups } from '@/components/ui/site-popups';
 import { generateSeoMetadata } from '@/components/seo/Seo';
 import { PostHogProvider } from '@/components/providers/PostHogProvider';
 import { rootStructuredData } from '@/lib/seo/structured-data';
@@ -92,8 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             {children}
-            <AvailableForWorkPopup />
-            <BuyMeCoffeePopup coffeeLink="https://www.buymeacoffee.com/oakcodeandtechsolutions" />
+            <SitePopups />
           </ThemeProvider>
         </PostHogProvider>
       </body>

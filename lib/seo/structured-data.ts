@@ -43,7 +43,7 @@ export const rootStructuredData = [
     name: 'OakCodeAndTechSolutions',
     url: BASE_URL,
     description:
-      'A-Grade licensed electrician and full-stack developer in Melbourne. Electrical work, WordPress sites, and custom web apps for residential, commercial, and industrial clients.',
+      'A-Grade licensed electrician and full-stack developer in Melbourne. Residential, commercial, and industrial electrical work, plus websites, apps, cybersecurity, and marketing.',
     publisher: { '@id': orgId },
     inLanguage: 'en-AU',
   },
@@ -56,15 +56,17 @@ export const rootStructuredData = [
     jobTitle: 'A-Grade Licensed Electrician & Full-Stack Developer',
     worksFor: { '@id': orgId },
     description:
-      'A-Grade licensed electrician and full-stack developer in Melbourne. Residential, commercial, and industrial electrical work, WordPress sites, and custom web applications.',
+      'A-Grade licensed electrician and full-stack developer in Melbourne. Residential, commercial, and industrial electrical work, plus websites, apps, cybersecurity, and marketing.',
     url: BASE_URL,
     address: melbourneAddress,
     knowsAbout: [
       'Licensed electrical work',
       'Residential, commercial, and industrial electrical installations',
-      'WordPress development',
+      'Data cabling and smart home wiring',
+      'WordPress and custom web development',
       'React and Next.js applications',
-      'Vue.js and Django backends',
+      'Cybersecurity',
+      'Digital marketing and SEO',
       'Embedded systems and IoT',
     ],
     sameAs: ['https://github.com/Sleuth420'],
@@ -84,7 +86,7 @@ export const rootStructuredData = [
     name: 'OakCodeAndTechSolutions',
     legalName: 'OakCodeAndTechSolutions',
     description:
-      'Melbourne-based electrical services and web development - licensed trade work and custom software.',
+      'Melbourne-based electrical services, web development, cybersecurity, and marketing.',
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.svg`,
     address: melbourneAddress,
@@ -103,7 +105,7 @@ export const rootStructuredData = [
     '@id': `${BASE_URL}/#electrician`,
     name: 'OakCodeAndTechSolutions',
     description:
-      'Licensed electrician in Melbourne for residential, commercial, and industrial work. Quotes and urgent jobs by appointment via the contact form.',
+      'Licensed electrician in Melbourne for residential, commercial, and industrial work, including data, comms, and smart home. Quotes via the contact form.',
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.svg`,
     address: melbourneAddress,

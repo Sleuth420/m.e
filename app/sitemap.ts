@@ -67,7 +67,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority = 0.9;
     } else if (
       slug.includes('app-development') ||
-      slug.includes('web-developer')
+      slug.includes('web-developer') ||
+      slug.includes('iot-solutions')
     ) {
       priority = 0.8;
     }

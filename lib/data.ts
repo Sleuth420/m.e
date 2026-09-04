@@ -180,7 +180,7 @@ export const homeServiceTeasers: HomeServiceTeaser[] = [
   },
   {
     title: 'Custom Websites',
-    description: 'Modern, responsive websites built for local businesses and tradies.',
+    description: 'Modern, responsive websites for businesses that need more than a template.',
     slug: 'web-developer-melbourne',
     category: 'web-dev',
   },
@@ -197,8 +197,8 @@ export const homeServiceTeasers: HomeServiceTeaser[] = [
     category: 'app-dev',
   },
   {
-    title: 'IoT & Embedded',
-    description: 'Arduino, Raspberry Pi, and custom electronics for real-world systems.',
+    title: 'IoT & Hardware',
+    description: 'Sensors, Raspberry Pi, and other hardware projects.',
     slug: 'iot-solutions-melbourne',
     category: 'app-dev',
   },

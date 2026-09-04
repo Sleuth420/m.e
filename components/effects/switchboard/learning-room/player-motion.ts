@@ -1,5 +1,7 @@
 import { MathUtils } from 'three';
+import { BOARD } from '../circuit-data';
 import {
+  BOARD_INSPECT,
   BOARD_MOUNT,
   PLAYER,
   ROOM,
@@ -37,6 +39,15 @@ export function analogFromDelta(dx: number, dy: number, max: number): { x: numbe
   if (mag < 1e-6) return { x: 0, y: 0 };
   const scale = Math.min(1, mag / max);
   return { x: (dx / mag) * scale, y: (dy / mag) * scale };
+}
+
+export function moveIntent(keys: MoveKeys): boolean {
+  if (keys.forward || keys.back || keys.left || keys.right || keys.turnLeft || keys.turnRight) {
+    return true;
+  }
+  const sx = keys.stickX ?? 0;
+  const sy = keys.stickY ?? 0;
+  return Math.hypot(sx, sy) > STICK_DEADZONE;
 }
 
 export function mergeMoveKeys(a: MoveKeys, b: MoveKeys): MoveKeys {
@@ -191,6 +202,29 @@ export function playingCameraAnchor(pose: PlayerPose, zoomT: number): CameraAnch
     lookX: pose.x + sinYaw * cp * ahead,
     lookY: height - 0.2 + sp * ahead,
     lookZ: pose.z + cosYaw * cp * ahead,
+  };
+}
+
+/** Dolly onto the enclosure face so circuit IDs and rockers are usable. */
+export function boardInspectDistance(aspect = 16 / 9): number {
+  const halfFov = MathUtils.degToRad(BOARD_INSPECT.fov) / 2;
+  const tanHalf = Math.tan(halfFov);
+  const padW = BOARD.width * BOARD_MOUNT.scale * BOARD_INSPECT.widthPad;
+  const padH = BOARD.height * BOARD_MOUNT.scale * BOARD_INSPECT.heightPad;
+  const distH = padH / 2 / tanHalf;
+  const distW = padW / 2 / (tanHalf * Math.max(aspect, 0.35));
+  return Math.max(distH, distW, BOARD_INSPECT.minDistance);
+}
+
+export function boardInspectCameraAnchor(aspect = 16 / 9): CameraAnchor {
+  const dist = boardInspectDistance(aspect);
+  return {
+    posX: BOARD_MOUNT.x + dist,
+    posY: BOARD_MOUNT.y + 0.02,
+    posZ: BOARD_MOUNT.z,
+    lookX: BOARD_MOUNT.x + 0.04,
+    lookY: BOARD_MOUNT.y + BOARD_INSPECT.lookYBias,
+    lookZ: BOARD_MOUNT.z,
   };
 }
 

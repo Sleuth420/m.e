@@ -1,46 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { Github, Zap, Coffee } from 'lucide-react';
+import { Github, Coffee, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getAllServiceSlugs } from '@/lib/services';
+import { BrandMark } from '@/components/layout/brand-mark';
 import {
   footerQuickLinks,
   featuredElectricalLinks,
   featuredWebDevLinks,
-  isElectricalSlug,
-  isWebDevSlug,
-  serviceNavLink,
 } from '@/lib/navigation';
 
 export default function Footer() {
-  const serviceSlugs = getAllServiceSlugs();
-  const extraElectrical = serviceSlugs
-    .filter(isElectricalSlug)
-    .filter((slug) => !featuredElectricalLinks.some((link) => link.href === `/services/${slug}`))
-    .slice(0, 3)
-    .map(serviceNavLink);
-  const extraWebDev = serviceSlugs
-    .filter(isWebDevSlug)
-    .filter((slug) => !featuredWebDevLinks.some((link) => link.href === `/services/${slug}`))
-    .slice(0, 3)
-    .map(serviceNavLink);
-
   return (
     <footer className="relative border-t border-border/50 bg-surface-1/80 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
       <div className="absolute inset-0 retro-grid opacity-30 pointer-events-none" aria-hidden />
       <div className="container relative py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="rounded-full bg-primary p-1.5">
-                <Zap className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-display font-bold gradient-text">Ricky</span>
-            </Link>
+            <BrandMark />
             <p className="text-sm text-muted-foreground text-body">
-              A-Grade licensed electrician and full-stack developer serving Melbourne. Residential,
-              commercial, and industrial electrical work plus web development.
+              A-Grade electrician and developer in Melbourne. Residential, commercial, and
+              industrial electrical, plus websites, apps, security, and marketing.
             </p>
             <div className="flex items-center gap-3">
               <Button size="sm" className="gradient-bg text-primary-foreground text-xs min-h-10" asChild>
@@ -82,7 +62,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-display font-semibold text-sm text-primary">Electrical Services</h3>
+            <h3 className="font-display font-semibold text-sm text-primary">Electrical</h3>
             <ul className="space-y-2 text-sm">
               {featuredElectricalLinks.map((link) => (
                 <li key={link.href}>
@@ -94,29 +74,19 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              {extraElectrical.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
               <li>
                 <Link
                   href="/services"
                   className="text-muted-foreground hover:text-primary transition-colors text-xs"
                 >
-                  View All Electrical Services →
+                  All services
                 </Link>
               </li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-display font-semibold text-sm text-primary">Web Development</h3>
+            <h3 className="font-display font-semibold text-sm text-primary">Digital</h3>
             <ul className="space-y-2 text-sm">
               {featuredWebDevLinks.map((link) => (
                 <li key={link.href}>
@@ -128,38 +98,22 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              {extraWebDev.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/services"
-                  className="text-muted-foreground hover:text-primary transition-colors text-xs"
-                >
-                  View All Web Services →
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-8 border-t border-border/50">
-          <p className="text-xs text-muted-foreground text-center sm:text-right">
-            Built with care by{' '}
+        <div className="flex items-center justify-center pt-8 border-t border-border/50">
+          <p className="text-xs text-muted-foreground text-center inline-flex items-center justify-center flex-wrap gap-x-1">
+            Built with
+            <Heart className="h-3 w-3 fill-primary text-primary" aria-label="love" />
+            by
             <Link
               href="https://github.com/Sleuth420"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium underline underline-offset-4 hover:text-primary"
             >
-              OakCodeAndTechSolutions
+              Oak Code And Tech Solutions
             </Link>
           </p>
         </div>

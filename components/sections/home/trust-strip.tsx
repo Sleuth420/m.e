@@ -3,29 +3,29 @@ import { Shield, MapPin, Award } from 'lucide-react';
 const items = [
   {
     icon: Award,
-    title: 'A-Grade Licensed',
-    description: 'Fully qualified and insured for all your residential, commercial, and industrial electrical needs.',
+    title: 'A-Grade licensed',
+    description: 'Victorian electrical licence. Quoted in writing before work starts.',
   },
   {
     icon: MapPin,
-    title: 'Melbourne Wide',
-    description: 'Local to Melbourne and regularly servicing the CBD, western suburbs, and surrounding regions.',
+    title: 'Melbourne',
+    description: 'Homes, commercial, and industrial across metro Melbourne.',
   },
   {
     icon: Shield,
-    title: 'Dual Trade Expert',
-    description: 'I combine hands-on electrical expertise with modern web development skills to offer a truly unique service.',
+    title: 'Electrical and digital',
+    description: 'Licensed electrical work plus websites, apps, security, and marketing.',
   },
 ];
 
 export default function TrustStrip() {
   return (
-    <section className="py-12 sm:py-16 border-y border-border/50 bg-surface-2/30" aria-label="Credentials">
+    <section className="border-y border-border/50 bg-surface-2/30 py-12 sm:py-16" aria-label="Credentials">
       <div className="container">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
           {items.map((item) => (
-            <div key={item.title} className="flex gap-4 items-start">
-              <div className="rounded-lg bg-primary/10 p-2.5 shrink-0">
+            <div key={item.title} className="flex items-start gap-4">
+              <div className="shrink-0 rounded-lg bg-primary/10 p-2.5">
                 <item.icon className="h-5 w-5 text-primary" aria-hidden />
               </div>
               <div>

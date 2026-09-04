@@ -4,25 +4,30 @@ import { Button } from '@/components/ui/button';
 
 export default function ContactCta() {
   return (
-    <section className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-x-clip">
+    <section className="relative overflow-x-clip py-16 sm:py-20 md:py-24">
       <div className="absolute inset-0 bg-hero-glow" aria-hidden />
       <div className="absolute inset-0 retro-grid opacity-30" aria-hidden />
       <div className="container relative text-center">
-        <h2 className="display-lg font-display font-bold gradient-text glow-text max-w-3xl mx-auto">
-          Ready to start your project?
+        <h2 className="display-lg mx-auto max-w-3xl font-display font-bold gradient-text glow-text">
+          Need a quote?
         </h2>
-        <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto">
-          Whether you are looking for an electrician, a developer, or someone who can do both, I would love to hear from you. Reach out today for a free consultation.
+        <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
+          Electrical or digital. Send the job details and I will reply with a price or the next
+          questions.
         </p>
-        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
-          <Button size="lg" className="gradient-bg text-primary-foreground shadow-glow w-full sm:w-auto min-h-11" asChild>
+        <div className="mt-8 flex flex-col justify-center gap-3 px-2 sm:mt-10 sm:flex-row sm:gap-4">
+          <Button
+            size="lg"
+            className="gradient-bg min-h-11 w-full text-primary-foreground shadow-glow sm:w-auto"
+            asChild
+          >
             <Link href="/contact">
-              Get in touch
+              Get a quote
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" className="chrome-border w-full sm:w-auto min-h-11" asChild>
-            <Link href="/pricing">View pricing</Link>
+          <Button size="lg" variant="outline" className="chrome-border min-h-11 w-full sm:w-auto" asChild>
+            <Link href="/pricing">Pricing</Link>
           </Button>
         </div>
       </div>

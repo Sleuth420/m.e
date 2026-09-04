@@ -15,6 +15,8 @@ type Props = {
   showStatusWindow?: boolean;
   statusLive?: boolean;
   disabled?: boolean;
+  onHover?: () => void;
+  onHoverEnd?: () => void;
 };
 
 /**
@@ -32,6 +34,8 @@ export function RockerLever({
   showStatusWindow = false,
   statusLive = true,
   disabled = false,
+  onHover,
+  onHoverEnd,
 }: Props) {
   return (
     <group>
@@ -69,8 +73,8 @@ export function RockerLever({
         ref={leverRef}
         position={[0, 0, 0.004]}
         onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
-        onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
-        onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
+        onPointerOver={(e) => onInteractiveEnter(e, onHover)}
+        onPointerOut={() => onInteractiveLeave(onHoverEnd)}
       >
         {/* Finger-sized tap target — visible paddle is ~18 mm at board scale. */}
         <mesh position={[0, 0, depth * 0.9]} renderOrder={8}>

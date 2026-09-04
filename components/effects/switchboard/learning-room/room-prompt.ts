@@ -86,12 +86,18 @@ export function roomActionPrompt(
   hint: InteractSpot<RoomInteractId> | null = null,
   boardHint = false
 ): RoomActionPrompt {
+  if (live.coverOpen) {
+    return {
+      text: live.coarse
+        ? 'Tap a breaker · move to step back'
+        : 'Tap a breaker · F / Esc closes cover',
+      tone: 'caution',
+    };
+  }
+
   if (hit) return withVerb(promptForHit(hit, play, live), live.coarse);
 
   if (nearTheBoard) {
-    if (live.coverOpen) {
-      return withVerb({ text: 'F · Close cover', tone: 'caution' }, live.coarse);
-    }
     return withVerb(
       {
         text: live.coarse ? 'Tap the cover · licensed only' : 'Tap the cover or F · licensed only',

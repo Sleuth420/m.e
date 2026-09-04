@@ -36,15 +36,22 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
           position={[panelW / 2, 0, 0.018]}
           castShadow
           receiveShadow
-          onPointerUp={(e) => {
-            if (open) return;
-            onInteractiveClick(e, onRequestOpen);
-          }}
-          onPointerOver={(e) => {
-            if (open) return;
-            onInteractiveEnter(e);
-          }}
-          onPointerOut={() => onInteractiveLeave()}
+          raycast={open ? () => undefined : undefined}
+          onPointerUp={
+            open
+              ? undefined
+              : (e) => {
+                  onInteractiveClick(e, onRequestOpen);
+                }
+          }
+          onPointerOver={
+            open
+              ? undefined
+              : (e) => {
+                  onInteractiveEnter(e);
+                }
+          }
+          onPointerOut={open ? undefined : () => onInteractiveLeave()}
         >
           <boxGeometry args={[panelW, panelH, 0.034]} />
           <meshStandardMaterial

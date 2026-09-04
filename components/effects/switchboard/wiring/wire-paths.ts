@@ -34,6 +34,8 @@ function sway(i: number, amp = 0.05): number {
 
 export type WirePaths = {
   tpsSheath: Vec3[];
+  /** Where the mains sheath ends and the cores peel. */
+  tpsStrip: Vec3;
   tpsActiveCore: Vec3[];
   neutralIn: Vec3[];
   earthIn: Vec3[];
@@ -59,61 +61,62 @@ export function buildWirePaths(): WirePaths {
   const combFeed: Vec3 = [firstTop[0], firstTop[1] + 0.075, firstTop[2]];
   const neutCombFeed: Vec3 = [firstN[0], firstN[1] + 0.058, firstN[2]];
 
-  // --- Incoming mains: ONE TPS through the top-left gland ---
+  // --- Incoming mains: ONE TPS through the top-left gland, dressed down the back wall ---
   const gland = BOARD.mainsKnockout;
   const outside: Vec3 = [gland[0] - 0.1, gland[1] + 0.32, gland[2] - 0.12];
-  const strip: Vec3 = [gland[0] + 0.45, gland[1] - 0.42, gland[2] + 0.35];
+  // Sheath stops just under the gland; cores peel and run flat on the back plane.
+  const strip: Vec3 = [gland[0] + 0.06, gland[1] - 0.26, back];
 
   const tpsSheath: Vec3[] = [
     outside,
-    [gland[0] - 0.04, gland[1] + 0.12, gland[2] - 0.04],
+    [gland[0] - 0.03, gland[1] + 0.1, gland[2] - 0.02],
     gland,
-    [gland[0] + 0.14, gland[1] - 0.12, gland[2] + 0.12],
-    [gland[0] + 0.3, gland[1] - 0.28, gland[2] + 0.25],
+    [gland[0] + 0.03, gland[1] - 0.14, back + 0.01],
     strip,
   ];
 
-  const peelActive: Vec3 = [strip[0] + 0.05, strip[1] - 0.04, strip[2] + 0.03];
-  const peelNeutral: Vec3 = [strip[0] + 0.02, strip[1] - 0.02, strip[2] - 0.04];
-  const peelEarth: Vec3 = [strip[0] + 0.08, strip[1] + 0.02, strip[2] + 0.05];
+  const neutScrew0 = neutralBarScrew(0);
+  const earthScrew0 = earthBarScrew(0);
+  const runY = BOARD.barY + 0.17; // horizontal dressing line just above both bars
+  const leftWallX = mainX - 0.11; // clear of the neutral bar end cap
 
-  // Active to main TOP — stay above / beside the module, not through it
+  // Active: down the left inner wall, then into the MAIN top terminal
   const tpsActiveCore: Vec3[] = [
     strip,
-    peelActive,
-    [mainX - 0.14, mainTop[1] + 0.28, back],
-    [mainX - 0.06, mainTop[1] + 0.14, mainTop[2] - 0.04],
+    [leftWallX, strip[1] - 0.12, back],
+    [leftWallX, mainTop[1] + 0.3, back],
+    [mainTop[0] - 0.03, mainTop[1] + 0.14, mainTop[2] - 0.05],
     [mainTop[0], mainTop[1] + 0.05, mainTop[2]],
     mainTop,
   ];
 
-  // Neutral to back-wall bar — ride along the back
+  // Neutral: short drop straight onto the first neutral-bar screw
   const neutralIn: Vec3[] = [
     strip,
-    peelNeutral,
-    [strip[0] + 0.2, BOARD.barY + 0.08, back],
-    [neutralBarScrew(0)[0] - 0.08, BOARD.barY + 0.06, back],
-    [neutralBarScrew(0)[0], BOARD.barY + 0.02, BOARD.barZ + 0.02],
-    neutralBarScrew(0),
+    [strip[0] + 0.03, strip[1] - 0.1, back],
+    [neutScrew0[0], BOARD.barY + 0.1, back],
+    [neutScrew0[0], BOARD.barY + 0.03, BOARD.barZ + 0.02],
+    neutScrew0,
   ];
 
-  // Earth to back-wall bar — along the back plane
+  // Earth: along the dressing line across the back, then down onto the earth bar
   const earthIn: Vec3[] = [
     strip,
-    peelEarth,
-    [strip[0] + 0.35, BOARD.barY + 0.1, back],
-    [0.1, BOARD.barY + 0.08, back],
-    [earthBarScrew(0)[0] - 0.15, BOARD.barY + 0.05, back],
-    [earthBarScrew(0)[0], BOARD.barY + 0.02, BOARD.barZ + 0.02],
-    earthBarScrew(0),
+    [strip[0] + 0.08, runY, back],
+    [earthScrew0[0] - 0.12, runY, back],
+    [earthScrew0[0], BOARD.barY + 0.1, back],
+    [earthScrew0[0], BOARD.barY + 0.03, BOARD.barZ + 0.02],
+    earthScrew0,
   ];
 
+  // Enclosure bond: earth bar → right inner wall stud
+  const bondX = BOARD.width / 2 - 0.16;
   const enclosureBond: Vec3[] = [
     earthBarScrew(1),
-    [earthBarScrew(1)[0] + 0.08, BOARD.barY - 0.15, back],
-    [BOARD.width / 2 - 0.35, 0.2, back],
-    [BOARD.width / 2 - 0.28, -0.5, back],
-    [BOARD.width / 2 - 0.25, -0.9, -0.35],
+    [earthBarScrew(1)[0], BOARD.barY + 0.1, back],
+    [bondX - 0.05, BOARD.barY + 0.12, back],
+    [bondX, BOARD.barY - 0.02, back],
+    [bondX, BOARD.barY - 0.25, -0.5],
   ];
 
   // Main load → comb: drop below, behind, then up into feed — clear of RCBO bodies
@@ -140,6 +143,12 @@ export function buildWirePaths(): WirePaths {
   const outgoingNeutral: Vec3[][] = [];
   const outgoingEarth: Vec3[][] = [];
   const outgoingTps: Vec3[][] = [];
+
+  // Earth loom: bar → horizontal bundle → right-hand trunk → base bundle → each gland.
+  const usedCircuits = CIRCUITS.filter((c) => ROOM_CIRCUIT_IDS.has(c.id));
+  const trunkX = rcboX(CIRCUITS.length - 1) + 0.16;
+  const loomTopY = BOARD.barY - 0.16;
+  const loomBaseY = under - 0.02;
 
   for (const c of CIRCUITS) {
     const i = c.index;
@@ -181,13 +190,19 @@ export function buildWirePaths(): WirePaths {
 
       const screw = earthBarScrew(i + 2);
       const [sx, sy, sz] = screw;
+      // Stagger each tail a little so the bundle reads as several cores, not one tube
+      const k = usedCircuits.findIndex((u) => u.id === c.id);
+      const lane = (k - (usedCircuits.length - 1) / 2) * 0.014;
       outgoingEarth.push([
         screw,
-        [sx, sy - 0.12, sz],
-        [sx, 0.4, back],
-        [sx, under + 0.08, back],
-        [x, under, back + 0.12],
-        [x, under - 0.02, gz],
+        [sx, sy - 0.06, sz + 0.06],
+        [sx, loomTopY - lane, back],
+        [trunkX - 0.06, loomTopY - lane, back],
+        [trunkX + lane * 0.5, loomTopY - 0.1, back],
+        [trunkX + lane * 0.5, loomBaseY + 0.1, back],
+        [trunkX - 0.06, loomBaseY + lane, back],
+        [x + 0.05, loomBaseY + lane, back],
+        [x, loomBaseY - 0.01, back + 0.16],
         [x, join[1] + 0.04, gz],
         mouthE,
         join,
@@ -209,6 +224,7 @@ export function buildWirePaths(): WirePaths {
 
   return {
     tpsSheath,
+    tpsStrip: strip,
     tpsActiveCore,
     neutralIn,
     earthIn,

@@ -9,8 +9,20 @@ import { Button } from '@/components/ui/button';
 const featured = projects.slice(0, 6);
 
 function MarqueeProjectTeaser({ project }: { project: (typeof featured)[number] }) {
+  const href = project.links[0]?.url ?? '/projects';
+  const isExternal = href.startsWith('http');
+  const rel = isExternal
+    ? project.links[0]?.nofollow
+      ? 'noopener noreferrer nofollow'
+      : 'noopener noreferrer'
+    : undefined;
+
   return (
-    <div className="flex-shrink-0 w-[min(85vw,20rem)] sm:w-72 md:w-80 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm p-5 sm:p-6 chrome-border snap-start">
+    <Link
+      href={href}
+      {...(isExternal ? { target: '_blank', rel } : {})}
+      className="flex-shrink-0 w-[min(85vw,20rem)] sm:w-72 md:w-80 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm p-5 sm:p-6 chrome-border snap-start transition-colors hover:border-primary/40"
+    >
       <h3 className="font-display font-semibold text-foreground mb-2 text-balance">{project.title}</h3>
       <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{project.description}</p>
       <div className="flex flex-wrap gap-1.5">
@@ -20,7 +32,7 @@ function MarqueeProjectTeaser({ project }: { project: (typeof featured)[number] 
           </span>
         ))}
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -29,8 +41,7 @@ export default function FeaturedProjectsMarquee() {
     <section className="overflow-x-clip py-16 sm:py-20 md:py-28 border-y border-border/50 bg-surface-1/50">
       <div className="container mb-8 sm:mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <span className="text-xs font-medium text-primary uppercase tracking-wider">Portfolio</span>
-          <h2 className="display-md font-display font-bold mt-3 sm:mt-4 gradient-text">Featured Projects</h2>
+          <h2 className="display-md font-display font-bold gradient-text">Work I have shipped</h2>
         </div>
         <Button variant="outline" className="chrome-border w-full sm:w-fit min-h-11" asChild>
           <Link href="/projects">

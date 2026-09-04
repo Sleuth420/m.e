@@ -85,6 +85,26 @@ export function circuitDisplayName(label: string) {
   return label.replace(/^PROTECTED\s+/i, '').trim();
 }
 
+/** 1-based circuit designation printed on the label strip and schedule. */
+export function circuitNumber(circuit: CircuitPole): string {
+  return String(circuit.index + 1);
+}
+
+/** Split a display name into short label-strip lines (max 3, ≤ ~9 chars each). */
+export function circuitLabelLines(label: string): string[] {
+  const words = circuitDisplayName(label).split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  for (const word of words) {
+    const last = lines[lines.length - 1];
+    if (last && `${last} ${word}`.length <= 9) {
+      lines[lines.length - 1] = `${last} ${word}`;
+    } else {
+      lines.push(word);
+    }
+  }
+  return lines.slice(0, 3);
+}
+
 export function modulePitch(): number {
   return BOARD.rcboWidth + BOARD.moduleGap;
 }

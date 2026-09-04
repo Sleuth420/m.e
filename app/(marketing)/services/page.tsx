@@ -7,9 +7,9 @@ import { ServiceLinkCard } from '@/components/services/service-link-card';
 import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
-  title: 'Services | Electrical & Web Development Melbourne | OakCodeAndTechSolutions',
+  title: 'Services | Electrical & Digital Melbourne | OakCodeAndTechSolutions',
   description:
-    'Professional residential, commercial, and industrial electrical services and web development in Melbourne. Licensed electrician, WordPress development, custom apps, IoT, SEO, cybersecurity, and CAD design. View all services.',
+    'Electrical, web, apps, IoT, cybersecurity, marketing, and CAD in Melbourne. Licensed A-Grade electrician and developer. View all services.',
   canonical: `${BASE_URL}/services`,
 });
 
@@ -18,11 +18,11 @@ function getCategoryLabel(category: string): string {
     case 'electrical':
       return 'Electrical';
     case 'web-dev':
-      return 'Web Development';
+      return 'Websites';
     case 'app-dev':
-      return 'App & Software';
+      return 'Apps & software';
     case 'other':
-      return 'Other Services';
+      return 'Security, marketing & hardware';
     default:
       return 'Services';
   }
@@ -46,7 +46,7 @@ export default function ServicesIndexPage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'OakCodeAndTechSolutions Services',
-    description: 'Professional electrical and web development services in Melbourne.',
+    description: 'Electrical, web, apps, cybersecurity, marketing, and related services in Melbourne.',
     numberOfItems: slugs.length,
     itemListElement: slugs.map((s, i) => {
       const data = getServicePageData(s);
@@ -71,7 +71,7 @@ export default function ServicesIndexPage() {
       />
       <PageHero
         title="All Services"
-        description="From rewiring a house to building a custom web application, I offer a wide range of electrical and tech services across Melbourne. Take a look at what I can do for you below."
+        description="Residential, commercial, and industrial electrical. Websites, apps, cybersecurity, marketing, IoT, and CAD."
       />
       <section className="py-16 md:py-24">
         <div className="container">

@@ -12,15 +12,14 @@ export const mainNav: NavLink[] = [
 ];
 
 export const featuredElectricalLinks: NavLink[] = [
-  { href: '/services/electrician-melbourne', label: 'Electrician Melbourne' },
-  { href: '/services/electrician-melbourne-cbd', label: 'Electrician Melbourne CBD' },
-  { href: '/services/electrician-western-suburbs', label: 'Western Suburbs' },
+  { href: '/services/electrician-melbourne', label: 'Licensed Electrician' },
+  { href: '/services/electrician-melbourne-cbd', label: 'CBD & Apartments' },
 ];
 
 export const featuredWebDevLinks: NavLink[] = [
-  { href: '/services/wordpress-developer-melbourne', label: 'WordPress Developer' },
   { href: '/services/web-developer-melbourne', label: 'Web Developer' },
-  { href: '/services/app-development-melbourne', label: 'App Development' },
+  { href: '/services/iot-solutions-melbourne', label: 'IoT' },
+  { href: '/services/app-development-melbourne', label: 'Apps' },
 ];
 
 export const companyLinks: NavLink[] = [
@@ -39,13 +38,13 @@ export const footerQuickLinks: NavLink[] = [
 
 export const megaMenuSections = [
   { key: 'electrical' as const, title: 'Electrical', links: featuredElectricalLinks },
-  { key: 'web-dev' as const, title: 'Web Development', links: featuredWebDevLinks },
+  { key: 'web-dev' as const, title: 'Digital', links: featuredWebDevLinks },
   { key: 'company' as const, title: 'Company', links: companyLinks },
 ];
 
 export const megaMenuAllLinks: Record<'electrical' | 'web-dev', NavLink> = {
   electrical: { href: '/services', label: 'All Electrical Services' },
-  'web-dev': { href: '/services', label: 'All Web Services' },
+  'web-dev': { href: '/services', label: 'All digital services' },
 };
 
 export function formatServiceSlug(slug: string): string {

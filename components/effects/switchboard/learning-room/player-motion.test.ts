@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { BOARD_MOUNT, PLAYER_SPAWN } from './room-layout';
 import {
   analogFromDelta,
+  boardInspectCameraAnchor,
+  boardInspectDistance,
+  moveIntent,
   playingCameraAnchor,
   shockShakeOffset,
   stepPlayerPose,
@@ -132,6 +135,29 @@ describe('playingCameraAnchor', () => {
     const cam = playingCameraAnchor(pose, 0);
     expect(cam.posX).toBeGreaterThan(0.42);
     expect(Math.abs(cam.posX - 0.28)).toBeGreaterThan(0.12);
+  });
+});
+
+describe('boardInspectCameraAnchor', () => {
+  it('frames the enclosure from the room, looking at the board face', () => {
+    const cam = boardInspectCameraAnchor(16 / 9);
+    expect(cam.posX).toBeCloseTo(BOARD_MOUNT.x + boardInspectDistance(16 / 9), 5);
+    expect(cam.posZ).toBeCloseTo(BOARD_MOUNT.z, 5);
+    expect(cam.lookX).toBeLessThan(cam.posX);
+    expect(Math.abs(cam.lookZ - BOARD_MOUNT.z)).toBeLessThan(0.02);
+    expect(Math.abs(cam.lookY - BOARD_MOUNT.y)).toBeLessThan(0.12);
+  });
+
+  it('stands farther back in portrait so the pole row still fits', () => {
+    expect(boardInspectDistance(9 / 16)).toBeGreaterThan(boardInspectDistance(16 / 9) + 0.2);
+  });
+});
+
+describe('moveIntent', () => {
+  it('is false while idle and true on stick throw', () => {
+    expect(moveIntent(still)).toBe(false);
+    expect(moveIntent({ ...still, stickY: -0.4 })).toBe(true);
+    expect(moveIntent({ ...still, forward: true })).toBe(true);
   });
 });
 

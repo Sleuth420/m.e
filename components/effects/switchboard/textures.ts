@@ -29,106 +29,177 @@ function paperGrain(ctx: CanvasRenderingContext2D, w: number, h: number, alpha =
   ctx.putImageData(img, 0, 0);
 }
 
+/** Portrait device print — canvas aspect matches the face plate (see MODULE_WELLS.face). */
+const FACE_W = 384;
+const FACE_H = 640;
+
 /** MAX9-style face print: matches body plastic so it reads printed, not a card. */
 export function useMainSwitchFaceTexture() {
   return useMemo(
     () =>
-      makeCanvas(512, 512, (ctx) => {
+      makeCanvas(FACE_W, FACE_H, (ctx) => {
         ctx.fillStyle = '#e8e8ea';
-        ctx.fillRect(0, 0, 512, 512);
+        ctx.fillRect(0, 0, FACE_W, FACE_H);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
 
         ctx.fillStyle = '#9b1c1c';
-        ctx.fillRect(28, 28, 456, 64);
+        ctx.fillRect(20, 20, FACE_W - 40, 96);
         ctx.fillStyle = '#fafafa';
-        ctx.textAlign = 'center';
-        ctx.font = '800 36px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('MAIN', 256, 72);
+        ctx.font = '800 60px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('ISOLATOR', FACE_W / 2, 70);
 
-        ctx.fillStyle = '#27272a';
-        ctx.font = '700 32px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('ISOLATOR', 256, 148);
-        ctx.font = '800 84px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('63A', 256, 248);
-        ctx.font = '600 28px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('240V~  50Hz', 256, 308);
-        ctx.font = '500 22px "Segoe UI", system-ui, sans-serif';
+        ctx.fillStyle = '#18181b';
+        ctx.font = '800 176px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('63A', FACE_W / 2, 250);
+        ctx.font = '700 58px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('240V~  50Hz', FACE_W / 2, 400);
+        ctx.font = '700 50px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('AC-22A', FACE_W / 2, 480);
         ctx.fillStyle = '#52525b';
-        ctx.fillText('AS/NZS 60947.3', 256, 360);
+        ctx.font = '600 38px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('AS/NZS 60947.3', FACE_W / 2, 580);
 
-        paperGrain(ctx, 512, 512, 0.04);
+        paperGrain(ctx, FACE_W, FACE_H, 0.04);
       }),
     []
   );
 }
 
-export function useRcboFaceTexture(rating: string, circuitName = '') {
+export function useRcboFaceTexture(rating: string) {
   return useMemo(
     () =>
-      makeCanvas(512, 512, (ctx) => {
+      makeCanvas(FACE_W, FACE_H, (ctx) => {
         ctx.fillStyle = '#e8e8ea';
-        ctx.fillRect(0, 0, 512, 512);
+        ctx.fillRect(0, 0, FACE_W, FACE_H);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
 
         ctx.fillStyle = '#1e4a8c';
-        ctx.fillRect(24, 24, 464, 56);
+        ctx.fillRect(20, 20, FACE_W - 40, 96);
         ctx.fillStyle = '#f8fafc';
-        ctx.textAlign = 'center';
-        ctx.font = '800 32px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('RCBO', 256, 64);
+        ctx.font = '800 62px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('RCBO', FACE_W / 2, 70);
 
-        ctx.fillStyle = '#27272a';
-        ctx.font = '800 80px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText(rating, 256, 176);
+        ctx.fillStyle = '#18181b';
+        ctx.font = '800 176px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText(rating, FACE_W / 2, 250);
 
-        const name = circuitName.trim();
-        if (name) {
-          ctx.fillStyle = '#1e3a5f';
-          const words = name.split(' ');
-          if (words.length > 1 && name.length > 10) {
-            ctx.font = '800 28px "Segoe UI", system-ui, sans-serif';
-            ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 256, 236);
-            ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 256, 272);
-          } else {
-            ctx.font = '800 32px "Segoe UI", system-ui, sans-serif';
-            ctx.fillText(name, 256, 250);
-          }
-        }
+        ctx.font = '800 96px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('30mA', FACE_W / 2, 400);
 
         ctx.fillStyle = '#3f3f46';
-        ctx.font = '600 24px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('240V~   30mA   6kA', 256, 330);
+        ctx.font = '700 46px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('240V~  6kA  Type A', FACE_W / 2, 490);
         ctx.fillStyle = '#52525b';
-        ctx.font = '500 20px "Segoe UI", system-ui, sans-serif';
-        ctx.fillText('AS/NZS 61009.1  Type A', 256, 372);
+        ctx.font = '600 38px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('AS/NZS 61009.1', FACE_W / 2, 580);
 
-        paperGrain(ctx, 512, 512, 0.04);
+        paperGrain(ctx, FACE_W, FACE_H, 0.04);
       }),
-    [rating, circuitName]
+    [rating]
   );
 }
 
-export function useCircuitLabelTexture(label: string) {
+export type LabelStripCell = {
+  /** Circuit number (AS/NZS 3000 circuit designation) or "MAIN". */
+  id: string;
+  lines: string[];
+  tone?: 'main' | 'circuit' | 'spare';
+};
+
+const STRIP_CELL_W = 320;
+const STRIP_CELL_H = 440;
+
+/**
+ * One engraved label strip under the pole row — one cell per pole.
+ * Landscape canvas so the aspect matches the mesh and the text stays crisp.
+ */
+export function useLabelStripTexture(cells: LabelStripCell[]) {
+  const key = JSON.stringify(cells);
   return useMemo(
     () =>
-      makeCanvas(512, 192, (ctx) => {
-        ctx.fillStyle = '#f4f1ea';
-        ctx.fillRect(0, 0, 512, 192);
-        ctx.fillStyle = '#1e3a5f';
-        ctx.fillRect(8, 8, 496, 176);
-        ctx.fillStyle = '#f8fafc';
+      makeCanvas(STRIP_CELL_W * cells.length, STRIP_CELL_H, (ctx) => {
+        const w = STRIP_CELL_W * cells.length;
+        ctx.fillStyle = '#f7f5ef';
+        ctx.fillRect(0, 0, w, STRIP_CELL_H);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const words = label.split(' ');
-        if (words.length > 1 && label.length > 10) {
-          ctx.font = '800 44px "Segoe UI", system-ui, sans-serif';
-          ctx.fillText(words.slice(0, Math.ceil(words.length / 2)).join(' '), 256, 70);
-          ctx.fillText(words.slice(Math.ceil(words.length / 2)).join(' '), 256, 126);
-        } else {
-          ctx.font = '800 52px "Segoe UI", system-ui, sans-serif';
-          ctx.fillText(label, 256, 96);
-        }
-        paperGrain(ctx, 512, 192, 0.06);
+        cells.forEach((cell, i) => {
+          const x0 = i * STRIP_CELL_W;
+          const cx = x0 + STRIP_CELL_W / 2;
+          const tone = cell.tone ?? 'circuit';
+          const badge = tone === 'main' ? '#9b1c1c' : tone === 'spare' ? '#71717a' : '#1e3a5f';
+
+          // Cell divider
+          ctx.fillStyle = '#c9c4b8';
+          ctx.fillRect(x0, 0, 4, STRIP_CELL_H);
+
+          // Designation badge
+          ctx.fillStyle = badge;
+          ctx.fillRect(x0 + 26, 24, STRIP_CELL_W - 52, 128);
+          ctx.fillStyle = '#fafafa';
+          ctx.font = `800 ${cell.id.length > 2 ? 62 : 92}px "Segoe UI", system-ui, sans-serif`;
+          ctx.fillText(cell.id, cx, 90);
+
+          // Description lines
+          ctx.fillStyle = tone === 'spare' ? '#71717a' : '#18181b';
+          const lines = cell.lines.slice(0, 3);
+          const size = lines.some((l) => l.length > 8) ? 50 : 60;
+          ctx.font = `800 ${size}px "Segoe UI", system-ui, sans-serif`;
+          const lineH = size + 14;
+          const startY = 236 + ((3 - lines.length) * lineH) / 2;
+          lines.forEach((line, li) => ctx.fillText(line, cx, startY + li * lineH));
+        });
+        ctx.fillStyle = '#c9c4b8';
+        ctx.fillRect(w - 4, 0, 4, STRIP_CELL_H);
+        ctx.fillRect(0, 0, w, 4);
+        ctx.fillRect(0, STRIP_CELL_H - 4, w, 4);
+        paperGrain(ctx, w, STRIP_CELL_H, 0.05);
       }),
-    [label]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [key]
+  );
+}
+
+/** Durable RCD notice required on the switchboard (AS/NZS 3000 Section 2). */
+export function useRcdNoticeTexture() {
+  return useMemo(
+    () =>
+      makeCanvas(1024, 256, (ctx) => {
+        ctx.fillStyle = '#fef3c7';
+        ctx.fillRect(0, 0, 1024, 256);
+        ctx.strokeStyle = '#18181b';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(8, 8, 1008, 240);
+        ctx.fillStyle = '#18181b';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '800 54px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('RCD PROTECTION FITTED', 512, 58);
+        ctx.font = '600 38px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('Press the T button regularly to test.', 512, 130);
+        ctx.fillText('If the device does not trip, call a licensed electrician.', 512, 190);
+        paperGrain(ctx, 1024, 256, 0.04);
+      }),
+    []
+  );
+}
+
+/** Main switch designation plate — AS/NZS 3000 requires it to be marked. */
+export function useMainSwitchPlateTexture() {
+  return useMemo(
+    () =>
+      makeCanvas(768, 192, (ctx) => {
+        ctx.fillStyle = '#18181b';
+        ctx.fillRect(0, 0, 768, 192);
+        ctx.fillStyle = '#fafafa';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '800 96px "Segoe UI", system-ui, sans-serif';
+        ctx.fillText('MAIN SWITCH', 384, 96);
+      }),
+    []
   );
 }
 

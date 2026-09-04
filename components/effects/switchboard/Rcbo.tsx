@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { MathUtils, type Mesh } from 'three';
 import { MODULE_TARGET, MODULE_WELLS } from './assets/module-assets';
-import { BOARD, circuitDisplayName, moduleBodyZ, rcboX, type CircuitPole } from './circuit-data';
+import { BOARD, moduleBodyZ, rcboX, type CircuitPole } from './circuit-data';
 import { ROCKER_OFF, ROCKER_ON, useDampRotation } from './hooks/useDampRotation';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
@@ -36,7 +36,7 @@ export function Rcbo({
   disabled = false,
 }: Props) {
   const x = rcboX(circuit.index);
-  const face = useRcboFaceTexture(circuit.rating, circuitDisplayName(circuit.label));
+  const face = useRcboFaceTexture(circuit.rating);
   const leverRef = useDampRotation(on ? ROCKER_ON : ROCKER_OFF);
   const testRef = useRef<Mesh>(null);
   const testPress = useRef(0);
@@ -86,6 +86,8 @@ export function Rcbo({
           showStatusWindow
           statusLive={live}
           disabled={disabled}
+          onHover={() => onHover(circuit.id)}
+          onHoverEnd={() => onHover(null)}
         />
       </group>
 
@@ -103,8 +105,8 @@ export function Rcbo({
                     onTest();
                   })
           }
-          onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
-          onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
+          onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
+          onPointerOut={() => onInteractiveLeave(() => onHover(null))}
         >
           <boxGeometry args={[size.width * 1.05, 0.08, 0.08]} />
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />
@@ -121,8 +123,8 @@ export function Rcbo({
                     onTest();
                   })
           }
-          onPointerOver={disabled ? undefined : (e) => onInteractiveEnter(e)}
-          onPointerOut={disabled ? undefined : () => onInteractiveLeave()}
+          onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
+          onPointerOut={() => onInteractiveLeave(() => onHover(null))}
         >
           <boxGeometry args={[size.width - 0.04, 0.032, 0.014]} />
           <meshStandardMaterial color="#1e4a8c" roughness={0.38} metalness={0.12} />

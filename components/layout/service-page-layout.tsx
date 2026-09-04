@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { DepthCard } from '@/components/ui/depth-card';
 import { PageHero } from '@/components/ui/page-hero';
 import { ServiceLinkCard } from '@/components/services/service-link-card';
-import { CheckCircle2, ArrowRight, MessageSquare } from 'lucide-react';
+import { CheckCircle2, ArrowRight, MessageSquare, ExternalLink } from 'lucide-react';
 import type { ServicePageData } from '@/lib/services';
 
 interface ServicePageLayoutProps {
@@ -19,6 +19,7 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
   const paragraphs = content.paragraphs ?? [];
   const commonJobs = content.commonJobs ?? [];
   const faqs = content.faqs ?? [];
+  const proofItems = content.proofItems ?? [];
 
   return (
     <>
@@ -59,6 +60,71 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
                 </Link>
               </p>
             )}
+          </div>
+        </section>
+      )}
+
+      {proofItems.length > 0 && (
+        <section className="py-16 md:py-24">
+          <div className="container max-w-4xl">
+            <h2 className="font-display text-3xl font-bold text-center mb-10 gradient-text">
+              {content.proofHeading ?? "What's already live"}
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {proofItems.map((item) => {
+                const card = (
+                  <DepthCard className="h-full p-6">
+                    <h3 className="font-display font-semibold text-lg mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.detail}</p>
+                    {item.href && (
+                      <span className="mt-3 inline-flex items-center text-sm font-medium text-primary">
+                        {item.external ? (
+                          <>
+                            Open
+                            <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                          </>
+                        ) : (
+                          <>
+                            View
+                            <ArrowRight className="ml-1.5 h-4 w-4" />
+                          </>
+                        )}
+                      </span>
+                    )}
+                  </DepthCard>
+                );
+
+                if (!item.href) {
+                  return <li key={item.title}>{card}</li>;
+                }
+
+                const isHashLink = item.href.includes('#');
+
+                if (isHashLink) {
+                  return (
+                    <li key={item.title}>
+                      <a href={item.href} className="block h-full group">
+                        {card}
+                      </a>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={item.title}>
+                    <Link
+                      href={item.href}
+                      className="block h-full group"
+                      {...(item.external
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
+                    >
+                      {card}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </section>
       )}
@@ -142,7 +208,7 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         <div className="container max-w-6xl">
           <h2 className="font-display text-3xl font-bold mb-4 text-center">More services</h2>
           <p className="text-muted-foreground mb-10 text-center">
-            Residential, commercial, and industrial electrical work, plus web development, apps, and related services across Melbourne.
+            Electrical, websites, apps, cybersecurity, marketing, and related work across Melbourne.
           </p>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
             {relatedServices.map(({ slug: relatedSlug, data: related }) => (

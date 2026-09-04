@@ -8,6 +8,13 @@ export interface ServiceFaq {
   answer: string;
 }
 
+export interface ServiceProofItem {
+  title: string;
+  detail: string;
+  href?: string;
+  external?: boolean;
+}
+
 export interface ServicePageData {
   slug: string;
   title: string;
@@ -21,6 +28,8 @@ export interface ServicePageData {
     features: string[];
     benefits: string[];
     faqs?: ServiceFaq[];
+    proofHeading?: string;
+    proofItems?: ServiceProofItem[];
     proofLink?: { label: string; url: string };
     cta: string;
   };

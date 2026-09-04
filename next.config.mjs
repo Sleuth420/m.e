@@ -46,6 +46,56 @@ const nextConfig = {
         destination: '/services/app-development-melbourne',
         permanent: true,
       },
+      {
+        source: '/services/electrician-craigieburn',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-caroline-springs',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-port-melbourne',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-essendon',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-st-kilda',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-glenroy',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-glen-waverley',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-south-melbourne',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/electrician-western-suburbs',
+        destination: '/services/electrician-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/services/embedded-systems-melbourne',
+        destination: '/services/iot-solutions-melbourne',
+        permanent: true,
+      },
     ];
   },
   async headers() {

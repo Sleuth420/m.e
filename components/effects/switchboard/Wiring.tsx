@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { BOARD, CIRCUITS } from './circuit-data';
+import { CIRCUITS } from './circuit-data';
 import type { SwitchboardMaterials } from './materials';
 import { useEarthStripeTexture } from './textures';
 import { PathWire } from './wiring/PathWire';
@@ -40,16 +40,9 @@ export function Wiring({
     <group>
       {/* Incoming mains TPS — one thick sheath, then peeled cores */}
       <PathWire points={paths.tpsSheath} radius={0.05} material={materials.sheathGrey} segments={48} />
-      <mesh
-        position={[
-          BOARD.mainsKnockout[0] + 0.52,
-          BOARD.mainsKnockout[1] - 0.5,
-          BOARD.mainsKnockout[2] + 0.52,
-        ]}
-        material={materials.sheathGrey}
-        castShadow={false}
-      >
-        <cylinderGeometry args={[0.052, 0.048, 0.06, 12]} />
+      {/* Sheath cut collar where the cores peel */}
+      <mesh position={paths.tpsStrip} material={materials.sheathGrey} castShadow={false}>
+        <cylinderGeometry args={[0.054, 0.05, 0.05, 12]} />
       </mesh>
       <PathWire
         points={paths.tpsActiveCore}

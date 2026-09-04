@@ -59,7 +59,7 @@ export function ModuleShell({ kind, highlighted = false, onPointerOver, onPointe
   }, [template]);
 
   useFrame((_, delta) => {
-    const target = highlighted ? 0.1 : 0;
+    const target = highlighted ? 0.22 : 0;
     emissive.current = MathUtils.damp(emissive.current, target, 10, delta);
     setShellEmissive(rootRef.current, emissive.current);
   });

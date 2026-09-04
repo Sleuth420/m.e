@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Keyboard, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCoarsePointer } from '@/lib/hooks';
-import { CIRCUITS, circuitDisplayName } from '../circuit-data';
+import { CIRCUITS, circuitDisplayName, circuitNumber } from '../circuit-data';
 import { useSwitchboard } from '../SwitchboardContext';
 import { useGameInput } from './GameInputContext';
 import { ROOM_LOADS } from './room-layout';
@@ -15,9 +15,11 @@ type Props = {
 
 function hoveredCircuitLabel(hovered: string | null) {
   if (!hovered) return null;
-  if (hovered === 'main') return 'MAIN isolator';
+  if (hovered === 'main') return 'MAIN SWITCH';
   const circuit = CIRCUITS.find((c) => c.id === hovered);
-  return circuit ? circuitDisplayName(circuit.label) : hovered;
+  return circuit
+    ? `Circuit ${circuitNumber(circuit)} · ${circuitDisplayName(circuit.label)} (${circuit.rating})`
+    : hovered;
 }
 
 export function LearningHud({ visible }: Props) {
@@ -88,7 +90,7 @@ export function LearningHud({ visible }: Props) {
       : hoveredName
         ? `${hoveredName} — tap rocker to isolate · TEST trips the RCD`
         : coverOpen
-          ? 'Cover open — tap a breaker · avoid live red conductors'
+          ? 'Cover open — tap a breaker to isolate · avoid live red conductors'
           : 'Walk the install — fittings, GPOs, and the board all operate';
 
   const bannerText = shockActive ? status : actionPrompt || status;
@@ -171,8 +173,9 @@ export function LearningHud({ visible }: Props) {
                       <Kbd>QE</Kbd> turn · <Kbd>F</Kbd> / <Kbd>Space</Kbd> use
                     </li>
                     <li>
-                      <Kbd>Shift</Kbd> inspect · <Kbd>Esc</Kbd> exit
+                      <Kbd>Shift</Kbd> inspect · <Kbd>Esc</Kbd> back / exit
                     </li>
+                    <li>Cover open: click a rocker to isolate · T trips the RCD</li>
                   </ul>
                 </div>
               ) : (

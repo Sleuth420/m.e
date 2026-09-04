@@ -12,8 +12,9 @@ Location: Melbourne, Australia
 Business: OakCodeAndTechSolutions
 ABN: 48 113 774 962
 Services:
-- Licensed electrical work (Melbourne)
-- Full-stack and WordPress web development
+- Licensed electrical work: residential, commercial, industrial, data/comms, smart home (Melbourne)
+- Websites, WordPress, custom apps
+- Cybersecurity, SEO, and digital marketing
 - Embedded systems and IoT
 - Independent publisher of Australian directories and guides
 

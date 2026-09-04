@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Code, Wrench, Building2, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { BrandMark } from '@/components/layout/brand-mark';
 import { useScrollPosition } from '@/lib/hooks';
 import {
   mainNav,
@@ -38,16 +39,7 @@ export default function Header() {
       )}
     >
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center group" aria-label="OakCodeAndTechSolutions home">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/icon.svg"
-            alt="OakCodeAndTechSolutions"
-            width={32}
-            height={32}
-            className="h-8 w-8 rounded-lg shadow-glow transition-transform group-hover:scale-105"
-          />
-        </Link>
+        <BrandMark className="pr-3" />
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
           {mainNav.map((item) => (

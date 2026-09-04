@@ -46,21 +46,12 @@ export default function SwitchboardShowcase() {
     <section
       id="switchboard-showcase"
       className="w-full max-w-[100vw] border-y border-border/40 bg-gradient-to-b from-background via-background to-muted/20"
-      aria-label="Interactive switchboard learning room"
+      aria-label="Walk the 3D Electrical Installation"
     >
-      <div className="container max-w-3xl px-4 py-8 text-center sm:py-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-          Playable Electrical Installation
-        </p>
-        <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Walk a real circuit from the board to the load and discover the world of electricity
+      <div className="container max-w-3xl px-4 py-6 text-center sm:py-8">
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Walk the 3D electrical installation
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Some circuits leave this switchboard: kitchen lighting, kitchen power, lounge power,
-          lounge lighting, induction, oven, and fridge. The lounge is one power feed to the TV and
-          one lighting circuit with two dimmers. Open the switchboard cover if you dare, trip RCBOs,
-          and trace TPS through the walls. Don't touch a live wire!
-        </p>
       </div>
 
       <div

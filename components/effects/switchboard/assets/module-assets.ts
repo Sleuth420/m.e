@@ -54,14 +54,18 @@ export function moduleTerminalLocal(kind: ModuleKind = 'rcbo') {
   } as const;
 }
 
+/**
+ * Face print sits between the rocker collar (top ≈ +0.064) and the top screw
+ * heads (≈ +0.33). Plate aspect ≈ 0.6 — keep in step with FACE_W/FACE_H in textures.ts.
+ */
 export const MODULE_WELLS = {
   rcbo: {
-    face: { y: 0.14, zPad: 0.002, widthFactor: 0.78, heightFactor: 0.2 },
+    face: { y: 0.19, zPad: 0.002, widthFactor: 0.82, heightFactor: 0.27 },
     test: { y: -0.12, zPad: 0.018 },
     rocker: { y: 0, zPad: 0.006 },
   },
   mainSwitch: {
-    face: { y: 0.14, zPad: 0.002, widthFactor: 0.78, heightFactor: 0.2 },
+    face: { y: 0.19, zPad: 0.002, widthFactor: 0.82, heightFactor: 0.27 },
     rocker: { y: 0, zPad: 0.006 },
   },
 } as const;

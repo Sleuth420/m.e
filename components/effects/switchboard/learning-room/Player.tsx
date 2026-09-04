@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Group, MathUtils, PerspectiveCamera } from 'three';
 import { useCoarsePointer, useMediaQuery } from '@/lib/hooks';
 import {
+  BOARD_INSPECT,
   IDLE_CAMERA,
   PLAYER_SPAWN,
   boardLookHint,
@@ -18,7 +19,9 @@ import { isLookDragActive } from '../interaction';
 import { useSwitchboard } from '../SwitchboardContext';
 import { PliersCharacter } from './PliersCharacter';
 import {
+  boardInspectCameraAnchor,
   mergeMoveKeys,
+  moveIntent,
   playingCameraAnchor,
   shockShakeOffset,
   stepPlayerPoseBudget,
@@ -42,6 +45,7 @@ type Props = {
 
 const FOV_DEFAULT = 46;
 const FOV_ZOOM = 28;
+const FOV_BOARD = BOARD_INSPECT.fov;
 
 export function Player({
   enabled,
@@ -125,14 +129,16 @@ export function Player({
     const m = mobileKeys.current;
     const p = pose.current;
     const inspecting = zoomRef.current.hold || m.inspect;
+    const merged = mergeMoveKeys(keysRef.current, m);
+    const aspect = persp.aspect > 0.2 ? persp.aspect : 16 / 9;
 
     if (enabled) {
-      const blocked = stunned || coverPromptOpen;
+      if (coverOpen && !coverPromptOpen && moveIntent(merged)) closeCover();
+      const boardLocked = coverOpen || coverPromptOpen;
+      const blocked = stunned || boardLocked;
       const next = stepPlayerPoseBudget(
         p,
-        coverPromptOpen
-          ? { ...emptyKeys(), stickX: 0, stickY: 0 }
-          : mergeMoveKeys(keysRef.current, m),
+        boardLocked ? { ...emptyKeys(), stickX: 0, stickY: 0 } : merged,
         Math.min(delta, 0.25),
         blocked,
         { dishwasher: !!play.openById.dishwasher, fridge: play.fridgeOpen }
@@ -154,8 +160,8 @@ export function Player({
         );
       }
 
-      const hit = nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
-      const hint = hit ? null : nearestRoomHint(next.x, next.z, next.yaw);
+      const hit = coverOpen ? null : nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
+      const hint = hit || coverOpen ? null : nearestRoomHint(next.x, next.z, next.yaw);
       const nextPrompt = roomActionPrompt(
         hit,
         nearBoard(next.x, next.z),
@@ -188,10 +194,10 @@ export function Player({
       if (zoomRef.current.amount < 0.02) zoomRef.current.amount = 0;
     }
 
-    const zoomT = enabled ? Math.max(inspecting ? 1 : 0, zoomRef.current.amount) : 0;
-    const targetFov = MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
+    const zoomT = enabled && !coverOpen ? Math.max(inspecting ? 1 : 0, zoomRef.current.amount) : 0;
+    const targetFov = coverOpen && enabled ? FOV_BOARD : MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
     if (Math.abs(persp.fov - targetFov) > 0.05) {
-      persp.fov = MathUtils.damp(persp.fov, targetFov, 10, delta);
+      persp.fov = MathUtils.damp(persp.fov, targetFov, coverOpen ? 7 : 10, delta);
       persp.updateProjectionMatrix();
     }
 
@@ -205,7 +211,9 @@ export function Player({
       return;
     }
 
-    const anchor = playingCameraAnchor(pose.current, zoomT);
+    const anchor = coverOpen
+      ? boardInspectCameraAnchor(aspect)
+      : playingCameraAnchor(pose.current, zoomT);
     dummy.position.set(anchor.posX, anchor.posY, anchor.posZ);
 
     if (!reducedMotion && shake.current > 0.01) {
@@ -219,17 +227,17 @@ export function Player({
 
     const turning =
       keysRef.current.turnLeft || keysRef.current.turnRight || m.turnLeft || m.turnRight;
-    if (isLookDragActive()) {
+    if (isLookDragActive() && !coverOpen) {
       camera.position.copy(dummy.position);
       look.current.x = anchor.lookX;
       look.current.y = anchor.lookY;
       look.current.z = anchor.lookZ;
     } else {
-      const camLambda = turning ? 14 : 9;
+      const camLambda = coverOpen ? 6.5 : turning ? 14 : 9;
       camera.position.x = MathUtils.damp(camera.position.x, dummy.position.x, camLambda, delta);
       camera.position.y = MathUtils.damp(camera.position.y, dummy.position.y, camLambda, delta);
       camera.position.z = MathUtils.damp(camera.position.z, dummy.position.z, camLambda, delta);
-      const lookLambda = turning ? 22 : 16;
+      const lookLambda = coverOpen ? 8 : turning ? 22 : 16;
       look.current.x = MathUtils.damp(look.current.x, anchor.lookX, lookLambda, delta);
       look.current.y = MathUtils.damp(look.current.y, anchor.lookY, lookLambda, delta);
       look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, lookLambda, delta);
@@ -237,5 +245,5 @@ export function Player({
     camera.lookAt(look.current.x, look.current.y, look.current.z);
   });
 
-  return enabled ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt /> : null;
+  return enabled && !coverOpen ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt /> : null;
 }

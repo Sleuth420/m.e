@@ -48,6 +48,15 @@ export const BOARD_MOUNT = {
   z: 5.35,
 } as const;
 
+/** Face-on close-up while the enclosure cover is open — labels and rockers fill the view. */
+export const BOARD_INSPECT = {
+  fov: 42,
+  lookYBias: -0.05,
+  minDistance: 0.85,
+  widthPad: 1.06,
+  heightPad: 1.08,
+} as const;
+
 const BOARD_WORLD_W = BOARD.width * BOARD_MOUNT.scale;
 const BOARD_WORLD_H = BOARD.height * BOARD_MOUNT.scale;
 /** Framed opening in the board wall — trimmers sit just outside this. */
