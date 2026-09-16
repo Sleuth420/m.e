@@ -22,7 +22,7 @@ function getCategoryLabel(category: string): string {
     case 'app-dev':
       return 'Apps & software';
     case 'other':
-      return 'Security, marketing & hardware';
+      return 'Marketing, security, hardware & design';
     default:
       return 'Services';
   }
@@ -46,7 +46,8 @@ export default function ServicesIndexPage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'OakCodeAndTechSolutions Services',
-    description: 'Electrical, web, apps, cybersecurity, marketing, and related services in Melbourne.',
+    description:
+      'Electrical, web, apps, cybersecurity, marketing, and related services in Melbourne.',
     numberOfItems: slugs.length,
     itemListElement: slugs.map((s, i) => {
       const data = getServicePageData(s);
@@ -71,40 +72,40 @@ export default function ServicesIndexPage() {
       />
       <PageHero
         title="All Services"
-        description="Residential, commercial, and industrial electrical. Websites, apps, cybersecurity, marketing, IoT, and CAD."
+        description="Explore electrical services for Melbourne properties, website and app development, and support with marketing, security and connected hardware."
       />
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="max-w-6xl mx-auto space-y-16">
-              {(Object.entries(byCategory) as [keyof typeof byCategory, string[]][]).map(
-                ([category, categorySlugs]) => {
-                  if (categorySlugs.length === 0) return null;
-                  return (
-                    <div key={category}>
-                      <h2 className="font-display text-2xl font-bold mb-6 text-foreground">
-                        {getCategoryLabel(category)}
-                      </h2>
-                      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {categorySlugs.map((slug) => {
-                          const data = getServicePageData(slug);
-                          if (!data) return null;
-                          return (
-                            <li key={slug}>
-                              <ServiceLinkCard
-                                href={`/services/${slug}`}
-                                title={data.title.split('|')[0].trim()}
-                                description={data.description}
-                              />
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  );
-                }
-              )}
-            </div>
+            {(Object.entries(byCategory) as [keyof typeof byCategory, string[]][]).map(
+              ([category, categorySlugs]) => {
+                if (categorySlugs.length === 0) return null;
+                return (
+                  <div key={category}>
+                    <h2 className="font-display text-2xl font-bold mb-6 text-foreground">
+                      {getCategoryLabel(category)}
+                    </h2>
+                    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {categorySlugs.map((slug) => {
+                        const data = getServicePageData(slug);
+                        if (!data) return null;
+                        return (
+                          <li key={slug}>
+                            <ServiceLinkCard
+                              href={`/services/${slug}`}
+                              title={data.title.split('|')[0].trim()}
+                              description={data.description}
+                            />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              }
+            )}
           </div>
+        </div>
       </section>
     </>
   );

@@ -7,9 +7,9 @@ import { generateSeoMetadata } from '@/components/seo/Seo';
 import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
-  title: 'Projects & Portfolio | Web Development & Electrical Work Melbourne',
+  title: 'Projects & Portfolio | Websites, Apps & Hardware Melbourne',
   description:
-    'Portfolio of web development, WordPress, e-commerce, and electrical projects by OakCodeAndTechSolutions. Melbourne-based dual trade professional.',
+    'Browse websites, online shops, apps and hardware projects built by Ricky at OakCodeAndTechSolutions in Melbourne.',
   canonical: `${BASE_URL}/projects`,
 });
 
@@ -41,11 +41,15 @@ export default function ProjectsPage() {
       <PageHero
         badge="My Work"
         title="Projects"
-        description="A selection of web development, e-commerce, directory sites, and technology projects."
+        description="Websites for clients, tools I’ve built and independent projects I maintain. Browse the work to see what each project does and how it was built."
       />
       <section className="py-16 md:py-24">
         <div className="container">
-          <Suspense fallback={<div className="text-center py-12 text-muted-foreground">Loading projects...</div>}>
+          <Suspense
+            fallback={
+              <div className="text-center py-12 text-muted-foreground">Loading projects...</div>
+            }
+          >
             <ProjectsGrid />
           </Suspense>
         </div>

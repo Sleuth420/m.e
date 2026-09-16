@@ -44,9 +44,11 @@ function rotatedAabb(
   for (const x of [min.x, max.x]) {
     for (const y of [min.y, max.y]) {
       for (const z of [min.z, max.z]) {
-        v.set(x * scale[0] + localOffset[0], y * scale[1] + localOffset[1], z * scale[2] + localOffset[2]).applyEuler(
-          euler
-        );
+        v.set(
+          x * scale[0] + localOffset[0],
+          y * scale[1] + localOffset[1],
+          z * scale[2] + localOffset[2]
+        ).applyEuler(euler);
         box.expandByPoint(v);
       }
     }
@@ -106,7 +108,11 @@ function measureVisible(
   const euler = new Euler(rotation[0], rotation[1], rotation[2], 'XYZ');
   const center = box.getCenter(new Vector3());
   const pre: [number, number, number] = [preScale, preScale, preScale];
-  const preOff: [number, number, number] = [-center.x * preScale, -center.y * preScale, -center.z * preScale];
+  const preOff: [number, number, number] = [
+    -center.x * preScale,
+    -center.y * preScale,
+    -center.z * preScale,
+  ];
   const world0 = rotatedAabb(box.min, box.max, pre, preOff, euler).getSize(new Vector3());
 
   const sx = maxSize[0] / Math.max(world0.x, 1e-6);
@@ -114,16 +120,26 @@ function measureVisible(
   const sz = maxSize[2] / Math.max(world0.z, 1e-6);
   const s = fit === 'width' ? sx : fit === 'height' ? sy : Math.min(sx, sy, sz);
   const scale: [number, number, number] =
-    fit === 'stretch' ? [sx * preScale, sy * preScale, sz * preScale] : [s * preScale, s * preScale, s * preScale];
+    fit === 'stretch'
+      ? [sx * preScale, sy * preScale, sz * preScale]
+      : [s * preScale, s * preScale, s * preScale];
 
-  const localOffset: [number, number, number] = [-center.x * scale[0], -center.y * scale[1], -center.z * scale[2]];
+  const localOffset: [number, number, number] = [
+    -center.x * scale[0],
+    -center.y * scale[1],
+    -center.z * scale[2],
+  ];
   const aabb = rotatedAabb(box.min, box.max, scale, localOffset, euler);
   return {
     scale,
     localOffset,
     worldShift: [
       pin === 'min' ? -aabb.min.x : -(aabb.min.x + aabb.max.x) / 2,
-      align === 'bottom' ? -aabb.min.y : align === 'top' ? -aabb.max.y : -(aabb.min.y + aabb.max.y) / 2,
+      align === 'bottom'
+        ? -aabb.min.y
+        : align === 'top'
+          ? -aabb.max.y
+          : -(aabb.min.y + aabb.max.y) / 2,
       pin === 'min' || pin === 'back'
         ? -aabb.min.z
         : pin === 'front'
@@ -173,7 +189,6 @@ export function FittedGltf({
   hide,
   keep,
   prepare,
-  share: _share = false,
   fit = 'contain',
   preScale = 1,
   envIntensity = 1,
@@ -185,16 +200,29 @@ export function FittedGltf({
   const { scene } = useKeptGltf(url);
   const wrap = useRef<Group>(null);
   const onReadyRef = useRef(onReady);
-  onReadyRef.current = onReady;
+  useLayoutEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   const source = useMemo(
     () => filterScene(scene, keep, hide, prepare),
     [scene, keep, hide, prepare]
   );
 
+  const [width, height, depth] = maxSize;
+  const [rx, ry, rz] = rotation;
   const fitResult = useMemo(() => {
-    return measureVisible(source, maxSize, align, pin, fit, preScale, rotation, pinPad);
-  }, [source, maxSize[0], maxSize[1], maxSize[2], align, pin, pinPad, fit, preScale, rotation[0], rotation[1], rotation[2]]);
+    return measureVisible(
+      source,
+      [width, height, depth],
+      align,
+      pin,
+      fit,
+      preScale,
+      [rx, ry, rz],
+      pinPad
+    );
+  }, [source, width, height, depth, align, pin, pinPad, fit, preScale, rx, ry, rz]);
 
   useLayoutEffect(() => {
     const g = wrap.current;

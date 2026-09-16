@@ -1,7 +1,7 @@
 'use client';
 
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Group, MathUtils, PerspectiveCamera } from 'three';
 import { useCoarsePointer, useMediaQuery } from '@/lib/hooks';
 import {
@@ -17,7 +17,6 @@ import {
 import { useGameInput } from './GameInputContext';
 import { isLookDragActive } from '../interaction';
 import { useSwitchboard } from '../SwitchboardContext';
-import { PliersCharacter } from './PliersCharacter';
 import {
   boardInspectCameraAnchor,
   mergeMoveKeys,
@@ -43,7 +42,7 @@ type Props = {
   loungeLightLive: boolean;
 };
 
-const FOV_DEFAULT = 46;
+const FOV_DEFAULT = 64;
 const FOV_ZOOM = 28;
 const FOV_BOARD = BOARD_INSPECT.fov;
 
@@ -57,8 +56,9 @@ export function Player({
   loungePowerLive,
   loungeLightLive,
 }: Props) {
-  const { gl } = useThree();
-  const { coverOpen, coverPromptOpen, requestCoverOpen, denyCoverOpen, closeCover } = useSwitchboard();
+  const { gl, events } = useThree();
+  const { coverOpen, coverPromptOpen, requestCoverOpen, denyCoverOpen, closeCover } =
+    useSwitchboard();
   const {
     mobileKeys,
     consumeInteract,
@@ -75,8 +75,8 @@ export function Player({
   const pose = useRef<PlayerPose>({
     x: PLAYER_SPAWN.x,
     z: PLAYER_SPAWN.z,
-    yaw: PLAYER_SPAWN.yaw,
-    pitch: 0,
+    yaw: -2.35,
+    pitch: -0.1,
     moving: false,
   });
   const dummyRef = useRef(new Group());
@@ -85,10 +85,10 @@ export function Player({
     y: IDLE_CAMERA.target[1],
     z: IDLE_CAMERA.target[2],
   });
-  const [prompt, setPrompt] = useState<string | null>(null);
   const promptRef = useRef<string | null>(null);
   const highlightRef = useRef<RoomInteractId | null>(null);
   const shake = useRef(0);
+  const hoverRefresh = useRef(0);
 
   useEffect(() => {
     if (!enabled) {
@@ -179,7 +179,6 @@ export function Player({
       );
       if (nextPrompt.text !== promptRef.current) {
         promptRef.current = nextPrompt.text;
-        setPrompt(nextPrompt.text);
         setActionPrompt(nextPrompt);
       }
       const nextHighlight = hit?.id ?? null;
@@ -195,7 +194,8 @@ export function Player({
     }
 
     const zoomT = enabled && !coverOpen ? Math.max(inspecting ? 1 : 0, zoomRef.current.amount) : 0;
-    const targetFov = coverOpen && enabled ? FOV_BOARD : MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
+    const targetFov =
+      coverOpen && enabled ? FOV_BOARD : MathUtils.lerp(FOV_DEFAULT, FOV_ZOOM, zoomT);
     if (Math.abs(persp.fov - targetFov) > 0.05) {
       persp.fov = MathUtils.damp(persp.fov, targetFov, coverOpen ? 7 : 10, delta);
       persp.updateProjectionMatrix();
@@ -243,7 +243,13 @@ export function Player({
       look.current.z = MathUtils.damp(look.current.z, anchor.lookZ, lookLambda, delta);
     }
     camera.lookAt(look.current.x, look.current.y, look.current.z);
+    // Re-pick as the camera moves, even if the mouse stays still.
+    hoverRefresh.current += delta;
+    if (hoverRefresh.current > 0.08) {
+      hoverRefresh.current = 0;
+      events.update?.();
+    }
   });
 
-  return enabled && !coverOpen ? <PliersCharacter pose={pose} prompt={prompt} hidePrompt /> : null;
+  return null;
 }

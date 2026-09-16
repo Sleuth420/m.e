@@ -75,16 +75,26 @@ export function AvailableForWorkPopup({ className }: AvailableForWorkPopupProps)
         <div className="flex flex-col space-y-3 pr-6">
           <div className="flex items-center gap-2">
             <BriefcaseBusiness className="h-5 w-5 text-primary shrink-0" />
-            <h3 className="font-semibold text-foreground">Now Available for Work</h3>
+            <h3 className="font-semibold text-foreground">Have a project in mind?</h3>
           </div>
           <p className="text-sm text-muted-foreground">
-            Open to new opportunities and freelance projects in Melbourne and remotely.
+            Tell me about your electrical job, website or app. I’ll confirm availability and the
+            next steps.
           </p>
           <div className="flex flex-col sm:flex-row gap-2">
-            <Button size="sm" className="gradient-bg text-primary-foreground w-full sm:w-auto" asChild>
+            <Button
+              size="sm"
+              className="gradient-bg text-primary-foreground w-full sm:w-auto"
+              asChild
+            >
               <Link href="/contact">Contact Me</Link>
             </Button>
-            <Button size="sm" variant="outline" className="outline-brand w-full sm:w-auto" onClick={dismissPopup}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="outline-brand w-full sm:w-auto"
+              onClick={dismissPopup}
+            >
               Dismiss
             </Button>
           </div>

@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CIRCUITS } from './circuit-data';
+import { CIRCUITS, ROOM_CIRCUIT_IDS } from './circuit-data';
 
 export type TripReason = 'test' | 'shock' | null;
 
 function initialRcboState(): Record<string, boolean> {
-  return Object.fromEntries(CIRCUITS.map((c) => [c.id, true]));
+  return Object.fromEntries(CIRCUITS.map((c) => [c.id, ROOM_CIRCUIT_IDS.has(c.id)]));
 }
 
 /** Board interaction state; separate from 3D composition. */
@@ -29,15 +29,20 @@ export function useSwitchboardState() {
     setRcboOn((prev) => ({ ...prev, [id]: !(prev[id] ?? true) }));
   }, []);
 
-  const tripRcbo = useCallback((id: string, reason: TripReason = 'test') => {
-    setRcboOn((prev) => ({ ...prev, [id]: false }));
-    setTripFlashId(id);
-    setTripReason(reason);
-  }, []);
+  const tripRcbo = useCallback(
+    (id: string, reason: TripReason = 'test') => {
+      // A push-button test needs an energised, closed device.
+      if (reason === 'test' && (!mainOn || !rcboOn[id])) return;
+      setRcboOn((prev) => ({ ...prev, [id]: false }));
+      setTripFlashId(id);
+      setTripReason(reason);
+    },
+    [mainOn, rcboOn]
+  );
 
   const requestCoverOpen = useCallback(() => {
     if (coverOpen) return;
-    setCoverPromptOpen(true);
+    setCoverOpen(true);
   }, [coverOpen]);
 
   const confirmCoverOpen = useCallback(() => {
@@ -65,13 +70,13 @@ export function useSwitchboardState() {
   );
 
   const shockOnMains = useCallback(() => {
-    if (shockActive || !mainOn) return;
-    setMainOn(false);
+    if (shockActive) return;
+    // An isolator is not an RCD. Incoming supply remains live with main OFF.
     setTripReason('shock');
     setShockCircuitId('main');
     setShockActive(true);
     window.dispatchEvent(new CustomEvent('switchboard-shock'));
-  }, [mainOn, shockActive]);
+  }, [shockActive]);
 
   useEffect(() => {
     if (!tripFlashId) return;
@@ -94,9 +99,10 @@ export function useSwitchboardState() {
 
   const liveById = useMemo(
     () =>
-      Object.fromEntries(
-        CIRCUITS.map((c) => [c.id, mainOn && (rcboOn[c.id] ?? false)])
-      ) as Record<string, boolean>,
+      Object.fromEntries(CIRCUITS.map((c) => [c.id, mainOn && (rcboOn[c.id] ?? false)])) as Record<
+        string,
+        boolean
+      >,
     [mainOn, rcboOn]
   );
 

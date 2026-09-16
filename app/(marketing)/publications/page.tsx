@@ -11,7 +11,7 @@ import { BASE_URL } from '@/lib/site';
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Publications | Independent Australian directories & guides | OakCodeAndTechSolutions',
   description:
-    'Independent Australian directories and research sites built and maintained by OakCodeAndTechSolutions. Each property has its own editorial standards.',
+    'Australian directories and guides built and maintained by OakCodeAndTechSolutions, covering local services, shopping, housing and home technology.',
   type: 'website',
   canonical: `${BASE_URL}/publications`,
 });
@@ -35,14 +35,16 @@ export default function PublicationsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <PageHero
-        badge="Operator portfolio"
+        badge="Directories & guides"
         title="Publications"
-        description="Independent Australian directories and research sites, each with its own name, editorial standards, and audience."
+        description="Alongside client work, I build and maintain Australian directories and guides that help people find local services and research everyday decisions."
       />
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
           <p className="text-muted-foreground mb-10">
-            These are genuine, reader-first resources. They aren&apos;t part of a link network - each site stands on its own and links back here only through standard footer disclosures.
+            Each site focuses on a different subject, from finding an op shop to comparing home
+            technology. I handle the websites and their ongoing development. Explore them below to
+            see the content and features.
           </p>
           <ul className="grid gap-6">
             {operatedPublications.map((pub) => (
@@ -53,7 +55,7 @@ export default function PublicationsPage() {
                     <ArrowRight className="h-5 w-5 text-primary flex-shrink-0" />
                   </div>
                   <p className="text-muted-foreground mb-2">{pub.description}</p>
-                  <p className="text-xs text-muted-foreground mb-4">Stack: {pub.stack}</p>
+                  <p className="text-xs text-muted-foreground mb-4">Built with: {pub.stack}</p>
                   <Button asChild variant="outline" size="sm" className="chrome-border">
                     <Link href={pub.url} rel="noopener noreferrer">
                       Visit {pub.name}
@@ -65,7 +67,7 @@ export default function PublicationsPage() {
           </ul>
           <div className="mt-12 text-center">
             <Button asChild size="lg" className="gradient-bg text-primary-foreground">
-              <Link href="/contact">Contact via form</Link>
+              <Link href="/contact">Discuss a website project</Link>
             </Button>
           </div>
         </div>

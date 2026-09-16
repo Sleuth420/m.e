@@ -35,4 +35,6 @@ next-env.d.ts
 pnpm-lock.yaml
 .cursor
 
-.vercel
+# Local agent configuration and browser verification output
+.codex/
+.playwright-mcp/

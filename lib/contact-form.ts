@@ -6,17 +6,17 @@ export interface ContactFormData {
   urgency: string;
 }
 
-export const CONTACT_FORM_STEPS = ['Service', 'Details', 'Message'] as const;
+export const CONTACT_FORM_STEPS = ['Service', 'Your details', 'The job'] as const;
 
 export const PROJECT_TYPES = [
   { value: 'website', label: 'Website Development' },
   { value: 'custom_app', label: 'Custom Application' },
   { value: 'electrical', label: 'Electrical Services' },
-  { value: 'embedded', label: 'Embedded Systems / IoT' },
+  { value: 'embedded', label: 'Connected Devices / IoT' },
   { value: 'marketing', label: 'Marketing & SEO' },
   { value: 'it_setup', label: 'IT & Business Setup' },
   { value: 'security', label: 'Cybersecurity' },
-  { value: 'design', label: 'Design & 3D Modeling' },
+  { value: 'design', label: 'CAD & 3D Design' },
   { value: 'other', label: 'Other' },
 ] as const;
 

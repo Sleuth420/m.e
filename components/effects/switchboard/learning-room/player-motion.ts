@@ -4,11 +4,8 @@ import {
   BOARD_INSPECT,
   BOARD_MOUNT,
   PLAYER,
-  ROOM,
-  facingDot,
   resolveOpenDoors,
   resolvePlayerPosition,
-  resolveSolidPosition,
 } from './room-layout';
 
 export type PlayerPose = {
@@ -159,52 +156,21 @@ export function boardApproach(x: number, z: number): number {
   return 1 - MathUtils.smoothstep(dist, 0.7, 2.15);
 }
 
-/**
- * Third-person follow that never steals aim.
- * Boom only shortens when you are close AND looking at the board.
- * After the boom is placed, push/shorten it out of furniture and the enclosure.
- */
-const CAMERA_PAD = 0.12;
-const CAMERA_MIN_BOOM = 0.38;
-
-export function playingCameraAnchor(pose: PlayerPose, zoomT: number): CameraAnchor {
+/** Eye-level first-person camera: looking never moves the viewer backwards. */
+export function playingCameraAnchor(pose: PlayerPose, _zoomT: number): CameraAnchor {
+  // Zoom changes the lens in Player, never the eye position.
+  void _zoomT;
   const pitch = MathUtils.clamp(pose.pitch, PLAYER.pitchMin, PLAYER.pitchMax);
-  const approach = boardApproach(pose.x, pose.z);
-  const facingBoard = facingDot(pose.x, pose.z, pose.yaw, BOARD_MOUNT.x + 0.45, BOARD_MOUNT.z);
-  const closeT = approach * MathUtils.smoothstep(facingBoard, 0.12, 0.7);
-  const walkDist = MathUtils.lerp(2.12, 0.9, closeT);
-  let dist = MathUtils.lerp(walkDist, 0.72, zoomT);
-  const height = MathUtils.lerp(MathUtils.lerp(1.68, 1.5, closeT), 1.46, zoomT);
-
-  const ahead = 1.55;
-  const cp = Math.cos(pitch);
-  const sp = Math.sin(pitch);
-  const sinYaw = Math.sin(pose.yaw);
-  const cosYaw = Math.cos(pose.yaw);
-
-  let posX = pose.x - sinYaw * dist;
-  let posZ = pose.z - cosYaw * dist;
-  for (let i = 0; i < 16; i++) {
-    const rawX = pose.x - sinYaw * dist;
-    const rawZ = pose.z - cosYaw * dist;
-    const pushed = resolveSolidPosition(rawX, rawZ, CAMERA_PAD);
-    posX = pushed.x;
-    posZ = pushed.z;
-    const err = Math.hypot(pushed.x - rawX, pushed.z - rawZ);
-    if (err < 0.015 || dist <= CAMERA_MIN_BOOM) break;
-    dist = Math.max(CAMERA_MIN_BOOM, dist - Math.min(err, 0.2));
-  }
-
+  const height = PLAYER.height;
   return {
-    posX: MathUtils.clamp(posX, 0.28, ROOM.width - 0.2),
-    posY: MathUtils.clamp(height, 0.85, ROOM.height - 0.2),
-    posZ: MathUtils.clamp(posZ, 0.28, ROOM.depth - 0.2),
-    lookX: pose.x + sinYaw * cp * ahead,
-    lookY: height - 0.2 + sp * ahead,
-    lookZ: pose.z + cosYaw * cp * ahead,
+    posX: pose.x,
+    posY: height,
+    posZ: pose.z,
+    lookX: pose.x + Math.sin(pose.yaw) * Math.cos(pitch) * 3,
+    lookY: height + Math.sin(pitch) * 3,
+    lookZ: pose.z + Math.cos(pose.yaw) * Math.cos(pitch) * 3,
   };
 }
-
 /** Dolly onto the enclosure face so circuit IDs and rockers are usable. */
 export function boardInspectDistance(aspect = 16 / 9): number {
   const halfFov = MathUtils.degToRad(BOARD_INSPECT.fov) / 2;

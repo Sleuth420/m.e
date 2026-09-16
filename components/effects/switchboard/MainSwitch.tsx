@@ -18,7 +18,14 @@ type Props = {
   disabled?: boolean;
 };
 
-export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disabled = false }: Props) {
+export function MainSwitch({
+  materials,
+  on,
+  highlighted,
+  onToggle,
+  onHover,
+  disabled = false,
+}: Props) {
   const x = mainSwitchX();
   const face = useMainSwitchFaceTexture();
   const leverRef = useDampRotation(on ? ROCKER_ON : ROCKER_OFF);
@@ -29,27 +36,23 @@ export function MainSwitch({ materials, on, highlighted, onToggle, onHover, disa
   const bodyZ = moduleBodyZ();
 
   return (
-    <group position={[x, BOARD.railY, bodyZ]}>
+    <group name="main-switch" position={[x, BOARD.railY, bodyZ]}>
       <ModuleShell
         kind="mainSwitch"
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover('main'))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
-        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       <mesh position={[0, wells.face.y, faceZ + wells.face.zPad]}>
         <boxGeometry
-          args={[
-            size.width * wells.face.widthFactor,
-            size.height * wells.face.heightFactor,
-            0.004,
-          ]}
+          args={[size.width * wells.face.widthFactor, size.height * wells.face.heightFactor, 0.004]}
         />
         <meshStandardMaterial map={face} roughness={0.72} metalness={0.02} />
       </mesh>
 
-      <group position={[0, wells.rocker.y, faceZ + wells.rocker.zPad]}>
+      <group name="interact:main-rocker" position={[0, wells.rocker.y, faceZ + wells.rocker.zPad]}>
         <RockerLever
           leverRef={leverRef}
           material={materials.plasticRed}

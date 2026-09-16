@@ -19,19 +19,19 @@ const timeline = [
     year: 'Trade Foundation',
     title: 'A-Grade Licensed Electrician',
     description:
-      'I have spent years building my career as an electrician handling homes, commercial fit-outs, and industrial sites across Melbourne.',
+      'My background is in electrical work for homes, commercial fit-outs and industrial sites across Melbourne.',
   },
   {
     year: 'Business Experience',
     title: 'Past Business Owner',
     description:
-      'Running my own company taught me exactly what small businesses need to succeed in the real world.',
+      'Running a trade business gave me firsthand experience with quoting, scheduling, customer enquiries and the work that happens between jobs.',
   },
   {
     year: 'Today',
     title: 'Full-Stack Developer & Electrician',
     description:
-      'Today, I combine my hands-on electrical background with modern web development to offer a truly unique service.',
+      'I now work across electrical installations, websites, web apps and connected hardware, using both backgrounds to solve practical problems.',
   },
 ];
 
@@ -43,24 +43,24 @@ const cards: {
 }[] = [
   {
     icon: Zap,
-    title: 'Dual Trade Professional',
+    title: 'Trade and technical experience',
     subtitle: 'A-Grade Electrician & Full-Stack Developer',
     description:
-      'I am fully licensed to handle all your electrical requirements and equally qualified to build your next web application.',
+      'I bring an A-Grade electrical licence and hands-on development experience to projects that involve buildings, software or both.',
   },
   {
     icon: Building,
-    title: 'Business Minded',
+    title: 'An understanding of small business',
     subtitle: 'Past Business Owner',
     description:
-      'Running my own trade business gave me firsthand experience with the challenges companies face. Now I use those insights to help others grow online.',
+      'A website or app needs to fit the way you work. I ask about your customers and day-to-day tasks before recommending features.',
   },
   {
     icon: Heart,
-    title: 'Problem Solver',
-    subtitle: 'Customer Focused',
+    title: 'Clear communication',
+    subtitle: 'Scope, progress and handover',
     description:
-      'I prefer practical, no-nonsense solutions. I just want to do great work and build lasting relationships with my clients.',
+      'I explain the options, agree on the scope and keep you involved as the work progresses. You know what is being done and what comes next.',
   },
 ];
 
@@ -68,8 +68,7 @@ const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'About Ricky - OakCodeAndTechSolutions',
-  description:
-    'A-Grade licensed electrician and full-stack developer in Melbourne.',
+  description: 'A-Grade licensed electrician and full-stack developer in Melbourne.',
   url: `${BASE_URL}/about`,
   mainEntity: { '@id': `${BASE_URL}/#person` },
 };
@@ -83,19 +82,20 @@ export default function AboutPage() {
       />
       <PageHero
         badge="Who I Am"
-        title="About Me"
-        description="I'm the electrician who codes, and the developer who understands what real businesses need."
+        title="Hi, I’m Ricky"
+        description="I’m an A-Grade electrician and web developer based in Melbourne, working under the name OakCodeAndTechSolutions."
       />
 
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl text-center">
           <h2 className="display-md font-display font-bold gradient-text mb-8">
-            Bringing traditional trades and modern technology
+            Electrical work and software, with a practical focus
           </h2>
           <p className="text-lg text-muted-foreground text-body">
-            <span className="font-semibold text-primary">OakCodeAndTechSolutions</span> brings
-            together residential, commercial, and industrial electrical contracting with web
-            development, marketing, and business advisory. I offer practical, straightforward solutions for homes, worksites, and growing businesses.
+            <span className="font-semibold text-primary">OakCodeAndTechSolutions</span> is where I
+            bring my electrical and development work together. I help with installations and
+            repairs, build websites for businesses, and create software for tasks such as quoting
+            and job management. You can work with me on one service or a project that needs both.
           </p>
         </div>
       </section>
@@ -103,7 +103,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-surface-1/50 border-y border-border/50">
         <div className="container">
           <h2 className="display-md font-display font-bold text-center mb-12 gradient-text">
-            My Journey
+            My background
           </h2>
           <div className="max-w-3xl mx-auto space-y-8">
             {timeline.map((item, i) => (
@@ -129,7 +129,7 @@ export default function AboutPage() {
 
       <section className="py-16 md:py-24">
         <div className="container">
-          <h2 className="display-md font-display font-bold text-center mb-12">Core Values</h2>
+          <h2 className="display-md font-display font-bold text-center mb-12">How I work</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {cards.map((card) => {
               const Icon = card.icon;
@@ -150,7 +150,9 @@ export default function AboutPage() {
 
       <section className="py-16 md:py-24 bg-surface-1/50 border-t border-border/50">
         <div className="container">
-          <h2 className="display-md font-display font-bold text-center mb-12">Skills & Expertise</h2>
+          <h2 className="display-md font-display font-bold text-center mb-12">
+            Skills & Expertise
+          </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {skills.map((skill) => {
               const Icon = skill.icon;
@@ -172,7 +174,8 @@ export default function AboutPage() {
         <div className="container max-w-3xl text-center">
           <blockquote className="neumorphic rounded-2xl p-8 md:p-10">
             <p className="text-lg md:text-xl text-muted-foreground font-medium italic">
-              &ldquo;I don&apos;t just write code or run cables. I want to help businesses get exactly what they need to thrive in a digital world without any of the usual hassle.&rdquo;
+              My aim is to make the job easier to understand, carry out the agreed work and leave
+              you with something you can use and maintain.
             </p>
           </blockquote>
         </div>

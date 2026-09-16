@@ -53,28 +53,27 @@ export function Rcbo({
   const bodyZ = moduleBodyZ();
 
   return (
-    <group position={[x, BOARD.railY, bodyZ]}>
+    <group name={`rcbo:${circuit.id}`} position={[x, BOARD.railY, bodyZ]}>
       <ModuleShell
         kind="rcbo"
         highlighted={highlighted}
         onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
         onPointerOut={() => onInteractiveLeave(() => onHover(null))}
-        onPointerUp={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
+        onClick={disabled ? undefined : (e) => onInteractiveClick(e, onToggle)}
       />
 
       {/* Thin face plate seated in the molded pocket (box, not a floating plane) */}
       <mesh position={[0, wells.face.y, faceZ + wells.face.zPad]}>
         <boxGeometry
-          args={[
-            size.width * wells.face.widthFactor,
-            size.height * wells.face.heightFactor,
-            0.004,
-          ]}
+          args={[size.width * wells.face.widthFactor, size.height * wells.face.heightFactor, 0.004]}
         />
         <meshStandardMaterial map={face} roughness={0.72} metalness={0.02} />
       </mesh>
 
-      <group position={[0, wells.rocker.y, faceZ + wells.rocker.zPad]}>
+      <group
+        name={`interact:${circuit.id}:rocker`}
+        position={[0, wells.rocker.y, faceZ + wells.rocker.zPad]}
+      >
         <RockerLever
           leverRef={leverRef}
           material={materials.plasticBlue}
@@ -94,9 +93,10 @@ export function Rcbo({
       {/* Proud TEST button — blue pad + white T */}
       <group position={[0, wells.test.y, faceZ + wells.test.zPad]}>
         <mesh
+          name={`interact:${circuit.id}:test`}
           position={[0, 0, 0.04]}
           renderOrder={9}
-          onPointerUp={
+          onClick={
             disabled
               ? undefined
               : (e) =>
@@ -108,13 +108,13 @@ export function Rcbo({
           onPointerOver={(e) => onInteractiveEnter(e, () => onHover(circuit.id))}
           onPointerOut={() => onInteractiveLeave(() => onHover(null))}
         >
-          <boxGeometry args={[size.width * 1.05, 0.08, 0.08]} />
+          <boxGeometry args={[size.width * 0.88, 0.055, 0.06]} />
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
         <mesh
           ref={testRef}
           castShadow={false}
-          onPointerUp={
+          onClick={
             disabled
               ? undefined
               : (e) =>

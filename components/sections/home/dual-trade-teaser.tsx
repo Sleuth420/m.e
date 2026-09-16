@@ -11,25 +11,26 @@ const panels = [
     href: '/services/electrician-melbourne',
     icon: Zap,
     title: 'Electrical',
-    description: 'A-Grade work across homes, commercial sites, and industrial.',
+    description: 'Electrical installations, repairs and maintenance across Melbourne.',
     jobs: [
       'Residential, commercial, and industrial',
-      'Data, comms, and smart home',
+      'Data cabling and smart home wiring',
       'Switchboards, lighting, and fault finding',
     ],
     cta: 'Electrical services',
   },
   {
-    href: '/services/web-developer-melbourne',
+    href: '/services',
     icon: Code,
-    title: 'Digital',
-    description: 'Websites, apps, security, and marketing — the same person who can also wire the site.',
+    title: 'Websites & Technology',
+    description:
+      'Websites that explain your business, apps that support your team and devices that connect to the real world.',
     jobs: [
       'Websites, WordPress, and custom apps',
       'IoT and connected hardware',
       'Cybersecurity, SEO, and marketing',
     ],
-    cta: 'Digital services',
+    cta: 'Explore services',
   },
 ];
 
@@ -39,7 +40,7 @@ export default function DualTradeTeaser() {
       <div className="absolute inset-0 retro-grid opacity-40" aria-hidden />
       <div className="container relative">
         <div className="mb-10 text-center sm:mb-12">
-          <h2 className="display-md font-display font-bold gradient-text">What I take on</h2>
+          <h2 className="display-md font-display font-bold gradient-text">How I can help</h2>
         </div>
         <motion.div
           variants={staggerContainer}

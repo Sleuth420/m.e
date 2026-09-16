@@ -4,23 +4,28 @@ const items = [
   {
     icon: Award,
     title: 'A-Grade licensed',
-    description: 'Victorian electrical licence. Quoted in writing before work starts.',
+    description: 'Licensed electrician for residential, commercial and industrial work.',
   },
   {
     icon: MapPin,
-    title: 'Melbourne',
-    description: 'Homes, commercial, and industrial across metro Melbourne.',
+    title: 'Melbourne based',
+    description:
+      'Electrical work across metropolitan Melbourne, with remote support for web projects.',
   },
   {
     icon: Shield,
-    title: 'Electrical and digital',
-    description: 'Licensed electrical work plus websites, apps, security, and marketing.',
+    title: 'Work directly with me',
+    description:
+      'Discuss the scope, ask questions and review progress with the person doing the work.',
   },
 ];
 
 export default function TrustStrip() {
   return (
-    <section className="border-y border-border/50 bg-surface-2/30 py-12 sm:py-16" aria-label="Credentials">
+    <section
+      className="border-y border-border/50 bg-surface-2/30 py-12 sm:py-16"
+      aria-label="Credentials"
+    >
       <div className="container">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
           {items.map((item) => (

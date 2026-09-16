@@ -4,11 +4,7 @@ import Link from 'next/link';
 import { Github, Coffee, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BrandMark } from '@/components/layout/brand-mark';
-import {
-  footerQuickLinks,
-  featuredElectricalLinks,
-  featuredWebDevLinks,
-} from '@/lib/navigation';
+import { footerQuickLinks, featuredElectricalLinks, featuredWebDevLinks } from '@/lib/navigation';
 
 export default function Footer() {
   return (
@@ -19,11 +15,15 @@ export default function Footer() {
           <div className="space-y-4">
             <BrandMark />
             <p className="text-sm text-muted-foreground text-body">
-              A-Grade electrician and developer in Melbourne. Residential, commercial, and
-              industrial electrical, plus websites, apps, security, and marketing.
+              Melbourne electrician and developer. Electrical installations and repairs, business
+              websites, web apps and connected hardware.
             </p>
             <div className="flex items-center gap-3">
-              <Button size="sm" className="gradient-bg text-primary-foreground text-xs min-h-10" asChild>
+              <Button
+                size="sm"
+                className="gradient-bg text-primary-foreground text-xs min-h-10"
+                asChild
+              >
                 <Link
                   href="https://www.buymeacoffee.com/oakcodeandtechsolutions"
                   target="_blank"

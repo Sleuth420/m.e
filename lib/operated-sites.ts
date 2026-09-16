@@ -24,7 +24,7 @@ export const operatedSites: OperatedSite[] = [
     portfolioDescription:
       'Op shop directory helping shoppers find charity stores and opening hours across regions.',
     publicationDescription:
-      'Australian directory of op shops, thrift stores, and charity retailers. Built for suburb-level discovery and donation guidance.',
+      'Australian directory of op shops, thrift stores, and charity retailers. Find stores by suburb and read donation guidance.',
   },
   {
     name: 'Dog Grooming Australia',
@@ -40,25 +40,25 @@ export const operatedSites: OperatedSite[] = [
     url: 'https://computerrepairsnear.me',
     stack: 'WordPress, PHP, ACF',
     portfolioDescription:
-      'Programmatic SEO directory for computer repair services with location-based landing pages.',
+      'A directory of computer repair services, organised by location to help people find nearby businesses.',
     publicationDescription:
-      'Local computer repair directory with suburb pages, listing methodology, and practical repair guides.',
+      'Find local computer repair businesses and read guides to common repair questions.',
   },
   {
     name: 'Laundry Services Near Me',
     url: 'https://laundryservicesnear.me',
     stack: 'WordPress, PHP, ACF',
     portfolioDescription:
-      'Programmatic SEO directory for laundry services with location-based pages and service listings.',
+      'A directory for finding laundromats, dry cleaners and laundry services by location.',
     publicationDescription:
-      'Australian laundromat and dry-cleaner directory with suburb finders and service explainers.',
+      'Find Australian laundromats and dry cleaners, with guides to the services they offer.',
   },
   {
     name: 'EV Charger Near Me',
     url: 'https://evchargernear.me',
     stack: 'WordPress, PHP, ACF',
     portfolioDescription:
-      'Programmatic SEO directory for public EV charging stations with location and charger listing pages.',
+      'A directory of public EV charging stations with location search and station details.',
     publicationDescription:
       'Australian EV charger finder with suburb and station pages covering networks across the country.',
   },
@@ -69,14 +69,13 @@ export const operatedSites: OperatedSite[] = [
     portfolioDescription:
       'Granny flat guide with builder listings, cost notes, and community reviews across Australia.',
     publicationDescription:
-      'Independent research on granny flat costs, approval pathways, and state rules - not a builder.',
+      'An Australian guide to granny flat costs, planning considerations and builder listings.',
   },
   {
     name: 'Modern Home Tech',
     url: 'https://modernhome.cloud',
     stack: 'WordPress, PHP',
-    portfolioDescription:
-      'Curated smart home product guides with reviews and comparison tools.',
+    portfolioDescription: 'Curated smart home product guides with reviews and comparison tools.',
     publicationDescription:
       'Smart home guides focused on compatibility, privacy, and total cost of ownership in Australia.',
   },

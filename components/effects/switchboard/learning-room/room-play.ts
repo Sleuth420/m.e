@@ -10,6 +10,8 @@ export type RoomPlayState = {
   openById: Partial<Record<RoomInteractId, boolean>>;
   loungeDimmer: number;
   tvOn: boolean;
+  kitchenSocketOn: boolean;
+  loungeSocketOn: boolean;
 };
 
 export const INITIAL_ROOM_PLAY: RoomPlayState = {
@@ -22,6 +24,8 @@ export const INITIAL_ROOM_PLAY: RoomPlayState = {
   openById: {},
   loungeDimmer: 0,
   tvOn: false,
+  kitchenSocketOn: true,
+  loungeSocketOn: true,
 };
 
 export type RoomLive = {
@@ -60,8 +64,11 @@ export function roomPlayReducer(state: RoomPlayState, action: RoomPlayAction): R
 
 function applyInteract(state: RoomPlayState, id: RoomInteractId, live: RoomLive): RoomPlayState {
   if (id === 'switch') return { ...state, lightSwitchOn: !state.lightSwitchOn };
-  if (id === 'toaster' || id === 'gpoDouble') {
-    if (!live.powerLive) return state;
+  if (id === 'gpoDouble')
+    return { ...state, kitchenSocketOn: !state.kitchenSocketOn, toasterPop: false };
+  if (id === 'tvGpo') return { ...state, loungeSocketOn: !state.loungeSocketOn, tvOn: false };
+  if (id === 'toaster') {
+    if (!live.powerLive || !state.kitchenSocketOn) return state;
     return { ...state, toasterPop: !state.toasterPop };
   }
   if (id === 'fridge') return { ...state, fridgeOpen: !state.fridgeOpen };
@@ -74,8 +81,8 @@ function applyInteract(state: RoomPlayState, id: RoomInteractId, live: RoomLive)
   if (id === 'loungeDimmerA' || id === 'loungeDimmerB') {
     return { ...state, loungeDimmer: nextDimmer(state.loungeDimmer) };
   }
-  if (id === 'tv' || id === 'tvGpo') {
-    if (!live.loungePowerLive) return state;
+  if (id === 'tv') {
+    if (!live.loungePowerLive || !state.loungeSocketOn) return state;
     return { ...state, tvOn: !state.tvOn };
   }
   return { ...state, openById: { ...state.openById, [id]: !state.openById[id] } };

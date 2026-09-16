@@ -11,7 +11,7 @@ import { BASE_URL } from '@/lib/site';
 export const metadata: Metadata = generateSeoMetadata({
   title: 'A-Grade Electrician & Web Developer Melbourne | OakCodeAndTechSolutions',
   description:
-    'A-Grade Electrician in Melbourne for residential, commercial, and industrial work, plus data and smart home. Websites, apps, cybersecurity, and marketing.',
+    'Melbourne electrician and developer for electrical installations, repairs, business websites, web apps and connected hardware. Explore services and projects.',
   type: 'website',
   canonical: BASE_URL,
 });

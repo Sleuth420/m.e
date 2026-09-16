@@ -44,7 +44,7 @@ export function generateBlogListMetadata(): Metadata {
   return generateSeoMetadata({
     title: 'Blog | Web Development & Electrical Services | OakCodeAndTechSolutions',
     description:
-      'Notes on electrical work, web development, and running a dual trade business in Melbourne.',
+      'Project stories and practical notes from a Melbourne electrician and developer, covering websites, software and electrical services.',
     type: 'website',
     canonical: `${BASE_URL}/blog`,
   });

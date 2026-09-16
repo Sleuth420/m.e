@@ -12,8 +12,8 @@ export default function ContactCta() {
           Need a quote?
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-lg text-muted-foreground">
-          Electrical or digital. Send the job details and I will reply with a price or the next
-          questions.
+          Tell me what you need done and when. I’ll reply to confirm the details, discuss
+          availability and work out what’s needed for a quote.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 px-2 sm:mt-10 sm:flex-row sm:gap-4">
           <Button
@@ -26,7 +26,12 @@ export default function ContactCta() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" className="chrome-border min-h-11 w-full sm:w-auto" asChild>
+          <Button
+            size="lg"
+            variant="outline"
+            className="chrome-border min-h-11 w-full sm:w-auto"
+            asChild
+          >
             <Link href="/pricing">Pricing</Link>
           </Button>
         </div>

@@ -12,7 +12,7 @@ type Props = {
   highlighted?: boolean;
   onPointerOver?: (e: ThreeEvent<PointerEvent>) => void;
   onPointerOut?: () => void;
-  onPointerUp?: (e: ThreeEvent<PointerEvent>) => void;
+  onClick?: (e: ThreeEvent<MouseEvent>) => void;
 };
 
 function setShellEmissive(root: Object3D | null, intensity: number) {
@@ -35,7 +35,13 @@ function setShellEmissive(root: Object3D | null, intensity: number) {
  * Static DIN module shell from GLB, plus an invisible hit box for hover.
  * Interactive rocker / TEST / face maps are overlaid by the parent.
  */
-export function ModuleShell({ kind, highlighted = false, onPointerOver, onPointerOut, onPointerUp }: Props) {
+export function ModuleShell({
+  kind,
+  highlighted = false,
+  onPointerOver,
+  onPointerOut,
+  onClick,
+}: Props) {
   const template = useModuleGltf(kind);
   const rootRef = useRef<Object3D>(null);
   const hitRef = useRef<Mesh>(null);
@@ -74,9 +80,9 @@ export function ModuleShell({ kind, highlighted = false, onPointerOver, onPointe
         renderOrder={4}
         onPointerOver={onPointerOver}
         onPointerOut={onPointerOut}
-        onPointerUp={onPointerUp}
+        onClick={onClick}
       >
-        <boxGeometry args={[size.width * 1.2, size.height * 1.08, size.depth * 1.08]} />
+        <boxGeometry args={[size.width * 0.98, size.height * 1.02, size.depth * 1.02]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
     </group>

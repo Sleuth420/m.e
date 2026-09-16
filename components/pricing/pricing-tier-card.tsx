@@ -26,7 +26,7 @@ export function PricingTierCard({ tier, delay = 0, compact = false }: PricingTie
       {tier.highlighted && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2">
           <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-            Most Popular
+            Featured package
           </div>
         </div>
       )}
@@ -38,12 +38,10 @@ export function PricingTierCard({ tier, delay = 0, compact = false }: PricingTie
         <div className={`font-bold text-primary mb-2 ${compact ? 'text-2xl' : 'text-4xl'}`}>
           {tier.price}
         </div>
-      {!tier.priceNote && tier.subtitle && (
+        {!tier.priceNote && tier.subtitle && (
           <p className="text-muted-foreground">{tier.subtitle}</p>
         )}
-        {tier.priceNote && (
-          <p className="text-sm text-muted-foreground">{tier.priceNote}</p>
-        )}
+        {tier.priceNote && <p className="text-sm text-muted-foreground">{tier.priceNote}</p>}
       </div>
 
       <ul className={`space-y-3 ${compact ? 'mb-6 text-sm' : 'mb-8'}`}>
@@ -59,7 +57,7 @@ export function PricingTierCard({ tier, delay = 0, compact = false }: PricingTie
         className={`w-full bg-primary hover:bg-primary/90 text-primary-foreground ${compact ? 'text-sm' : ''}`}
         asChild
       >
-        <Link href="/contact">Get Started</Link>
+        <Link href="/contact">Request a quote</Link>
       </Button>
     </motion.div>
   );

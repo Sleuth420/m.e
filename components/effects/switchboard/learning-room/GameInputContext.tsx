@@ -6,11 +6,18 @@ import {
   useContext,
   useMemo,
   useRef,
+  useReducer,
   useState,
   type ReactNode,
 } from 'react';
 import type { RoomInteractId } from './room-layout';
 import type { PromptTone, RoomActionPrompt } from './room-prompt';
+import {
+  INITIAL_ROOM_PLAY,
+  roomPlayReducer,
+  type RoomPlayState,
+  type RoomPlayAction,
+} from './room-play';
 
 export type MobileKeys = {
   forward: boolean;
@@ -25,6 +32,14 @@ export type MobileKeys = {
 };
 
 export type GameInputApi = {
+  lowDetail: boolean;
+  setLowDetail: (value: boolean) => void;
+  pointerHint: string | null;
+  setPointerHint: (value: string | null) => void;
+  play: RoomPlayState;
+  dispatchRoom: React.Dispatch<RoomPlayAction>;
+  wiringView: boolean;
+  setWiringView: (value: boolean) => void;
   mobileKeys: React.RefObject<MobileKeys>;
   pulseInteract: () => void;
   consumeInteract: () => boolean;
@@ -55,6 +70,10 @@ const defaultKeys = (): MobileKeys => ({
 const GameInputContext = createContext<GameInputApi | null>(null);
 
 export function GameInputProvider({ children }: { children: ReactNode }) {
+  const [lowDetail, setLowDetail] = useState(false);
+  const [pointerHint, setPointerHint] = useState<string | null>(null);
+  const [play, dispatchRoom] = useReducer(roomPlayReducer, INITIAL_ROOM_PLAY);
+  const [wiringView, setWiringView] = useState(false);
   const mobileKeys = useRef<MobileKeys>(defaultKeys());
   const interactQueued = useRef(false);
   const stunUntil = useRef(0);
@@ -90,6 +109,14 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
+      lowDetail,
+      setLowDetail,
+      pointerHint,
+      setPointerHint,
+      wiringView,
+      setWiringView,
+      play,
+      dispatchRoom,
       mobileKeys,
       pulseInteract,
       consumeInteract,
@@ -105,6 +132,10 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
       dismissEntryHint,
     }),
     [
+      lowDetail,
+      pointerHint,
+      wiringView,
+      play,
       pulseInteract,
       consumeInteract,
       setStunned,

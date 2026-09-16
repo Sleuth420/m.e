@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 
 type Props = {
@@ -13,16 +13,17 @@ type Props = {
  */
 export function CanvasPointerGate({ controlsEnabled }: Props) {
   const { gl } = useThree();
+  const canvasRef = useRef(gl.domElement);
 
   useEffect(() => {
-    const el = gl.domElement;
+    const el = canvasRef.current;
     el.style.pointerEvents = controlsEnabled ? 'auto' : 'none';
     el.style.touchAction = controlsEnabled ? 'none' : 'pan-y';
     return () => {
       el.style.pointerEvents = 'none';
       el.style.touchAction = 'pan-y';
     };
-  }, [gl, controlsEnabled]);
+  }, [controlsEnabled]);
 
   return null;
 }

@@ -4,13 +4,7 @@ import { useMemo } from 'react';
 import { MeshStandardMaterial } from 'three';
 import type { Vec3 } from '../circuit-data';
 import { PathWire } from '../wiring/PathWire';
-import {
-  FIXTURES,
-  HEIGHTS,
-  KITCHEN,
-  ROOM_LOADS,
-  worldGland,
-} from './room-layout';
+import { FIXTURES, HEIGHTS, KITCHEN, ROOM_LOADS, worldGland } from './room-layout';
 
 function join(...segs: Vec3[][]): Vec3[] {
   const out: Vec3[] = [];
@@ -26,15 +20,17 @@ function join(...segs: Vec3[][]): Vec3[] {
 type Props = {
   liveById: Record<string, boolean>;
   isolatorOn: boolean;
+  kitchenLightsOn: boolean;
+  loungeLevel: number;
 };
 
 const OVAL = 0.36;
 
 /** In-wall TPS: lighting on the board wall; kitchen circuits on z=0 at staggered heights. */
-export function RoomWiring({ liveById, isolatorOn }: Props) {
+export function RoomWiring({ liveById, isolatorOn, kitchenLightsOn, loungeLevel }: Props) {
   const sheath = useMemo(
     () => new MeshStandardMaterial({ color: '#f3f0e8', roughness: 0.55, metalness: 0.03 }),
-    [],
+    []
   );
 
   const cx = HEIGHTS.cavityX;
@@ -142,16 +138,114 @@ export function RoomWiring({ liveById, isolatorOn }: Props) {
 
   return (
     <group>
-      <PathWire points={lightingSheath} radius={0.0085} material={sheath} live={lightingLive} segments={48} {...tps} />
-      <PathWire points={light1Stub} radius={0.0075} material={sheath} live={lightingLive} segments={8} oval={OVAL} soft={false} />
-      <PathWire points={light2Stub} radius={0.0075} material={sheath} live={lightingLive} segments={8} oval={OVAL} soft={false} />
-      <PathWire points={powerSheath} radius={0.01} material={sheath} live={powerLive} segments={56} {...tps} />
-      <PathWire points={hoodTee} radius={0.009} material={sheath} live={powerLive} segments={12} oval={OVAL} soft={false} />
-      <PathWire points={dwDrop} radius={0.009} material={sheath} live={powerLive} segments={12} oval={OVAL} soft={false} />
-      <PathWire points={inductionToIsolator} radius={0.011} material={sheath} live={inductionLive} segments={48} {...tps} />
-      <PathWire points={isolatorFeed} radius={0.011} material={sheath} live={hobLive} segments={20} oval={OVAL} sag soft={false} />
-      <PathWire points={ovenSheath} radius={0.01} material={sheath} live={ovenLive} segments={48} {...tps} />
-      <PathWire points={fridgeSheath} radius={0.01} material={sheath} live={fridgeLive} segments={52} {...tps} />
+      {/* Ceiling branches revealed with the wall installation. */}
+      {[
+        { z: 1.5, fromZ: FIXTURES.wallLight1.z, on: kitchenLightsOn },
+        { z: 5.5, fromZ: FIXTURES.loungeDimmerA.z, on: loungeLightLive && loungeLevel > 0 },
+      ].map(({ z, fromZ, on }) => (
+        <PathWire
+          key={z}
+          points={[
+            [cx, HEIGHTS.light, fromZ],
+            [cx, 2.65, fromZ],
+            [cx, 2.65, z],
+            [2, 2.65, z],
+            [4.4, 2.65, z],
+          ]}
+          radius={0.0075}
+          material={sheath}
+          live={on}
+          segments={36}
+          oval={OVAL}
+          soft={false}
+        />
+      ))}
+      <PathWire
+        points={lightingSheath}
+        radius={0.0085}
+        material={sheath}
+        live={lightingLive}
+        segments={48}
+        {...tps}
+      />
+      <PathWire
+        points={light1Stub}
+        radius={0.0075}
+        material={sheath}
+        live={lightingLive}
+        segments={8}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={light2Stub}
+        radius={0.0075}
+        material={sheath}
+        live={lightingLive}
+        segments={8}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={powerSheath}
+        radius={0.01}
+        material={sheath}
+        live={powerLive}
+        segments={56}
+        {...tps}
+      />
+      <PathWire
+        points={hoodTee}
+        radius={0.009}
+        material={sheath}
+        live={powerLive}
+        segments={12}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={dwDrop}
+        radius={0.009}
+        material={sheath}
+        live={powerLive}
+        segments={12}
+        oval={OVAL}
+        soft={false}
+      />
+      <PathWire
+        points={inductionToIsolator}
+        radius={0.011}
+        material={sheath}
+        live={inductionLive}
+        segments={48}
+        {...tps}
+      />
+      <PathWire
+        points={isolatorFeed}
+        radius={0.011}
+        material={sheath}
+        live={hobLive}
+        segments={20}
+        oval={OVAL}
+        sag
+        soft={false}
+      />
+      <PathWire
+        points={ovenSheath}
+        radius={0.01}
+        material={sheath}
+        live={ovenLive}
+        segments={48}
+        {...tps}
+      />
+      <PathWire
+        points={fridgeSheath}
+        radius={0.01}
+        material={sheath}
+        live={fridgeLive}
+        segments={52}
+        {...tps}
+      />
 
       <PathWire
         points={[

@@ -28,13 +28,22 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         description={content.intro}
       >
         <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
-          <Button asChild size="lg" className="gradient-bg text-primary-foreground w-full sm:w-auto min-h-11">
+          <Button
+            asChild
+            size="lg"
+            className="gradient-bg text-primary-foreground w-full sm:w-auto min-h-11"
+          >
             <Link href="/contact">
               Request a quote
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="chrome-border w-full sm:w-auto min-h-11">
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="chrome-border w-full sm:w-auto min-h-11"
+          >
             <Link href="/pricing">View pricing</Link>
           </Button>
         </div>
@@ -44,7 +53,10 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         <section className="py-12 md:py-16 border-b border-border/40">
           <div className="container max-w-3xl prose prose-neutral dark:prose-invert">
             {paragraphs.map((paragraph, index) => (
-              <p key={index} className="text-lg text-muted-foreground leading-relaxed mb-4 last:mb-0">
+              <p
+                key={index}
+                className="text-lg text-muted-foreground leading-relaxed mb-4 last:mb-0"
+              >
                 {paragraph}
               </p>
             ))}
@@ -115,9 +127,7 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
                     <Link
                       href={item.href}
                       className="block h-full group"
-                      {...(item.external
-                        ? { target: '_blank', rel: 'noopener noreferrer' }
-                        : {})}
+                      {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     >
                       {card}
                     </Link>
@@ -132,7 +142,9 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
       {commonJobs.length > 0 && (
         <section className="py-16 md:py-24 bg-surface-1/50">
           <div className="container max-w-4xl">
-            <h2 className="font-display text-3xl font-bold text-center mb-10 gradient-text">Common jobs</h2>
+            <h2 className="font-display text-3xl font-bold text-center mb-10 gradient-text">
+              Common jobs
+            </h2>
             <ul className="grid sm:grid-cols-2 gap-3">
               {commonJobs.map((job, index) => (
                 <li key={index} className="flex items-start gap-2 text-muted-foreground">
@@ -147,7 +159,9 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
 
       <section className="py-16 md:py-24 bg-surface-1/50">
         <div className="container">
-          <h2 className="font-display text-3xl font-bold text-center mb-12 gradient-text">What I offer</h2>
+          <h2 className="font-display text-3xl font-bold text-center mb-12 gradient-text">
+            What I offer
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {content.features.map((feature, index) => (
               <DepthCard key={index} className="p-5">
@@ -178,7 +192,9 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
       {faqs.length > 0 && (
         <section className="py-16 md:py-24 bg-surface-1/50 border-y border-border/50">
           <div className="container max-w-3xl">
-            <h2 className="font-display text-3xl font-bold text-center mb-10">Questions</h2>
+            <h2 className="font-display text-3xl font-bold text-center mb-10">
+              Frequently asked questions
+            </h2>
             <dl className="space-y-6">
               {faqs.map((faq, index) => (
                 <DepthCard key={index} className="p-6">
@@ -195,10 +211,14 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         <div className="container max-w-3xl text-center">
           <h2 className="font-display text-3xl font-bold mb-6">Ready to start?</h2>
           <p className="text-lg text-muted-foreground mb-8">{content.cta}</p>
-          <Button asChild size="lg" className="gradient-bg text-primary-foreground w-full sm:w-auto min-h-11">
+          <Button
+            asChild
+            size="lg"
+            className="gradient-bg text-primary-foreground w-full sm:w-auto min-h-11"
+          >
             <Link href="/contact">
               <MessageSquare className="mr-2 h-5 w-5" />
-              Contact via form
+              Discuss your project
             </Link>
           </Button>
         </div>
@@ -208,7 +228,7 @@ export function ServicePageLayout({ serviceData, relatedServices }: ServicePageL
         <div className="container max-w-6xl">
           <h2 className="font-display text-3xl font-bold mb-4 text-center">More services</h2>
           <p className="text-muted-foreground mb-10 text-center">
-            Electrical, websites, apps, cybersecurity, marketing, and related work across Melbourne.
+            Explore related services for your property, website or business.
           </p>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-10">
             {relatedServices.map(({ slug: relatedSlug, data: related }) => (

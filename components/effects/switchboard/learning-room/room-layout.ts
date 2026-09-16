@@ -101,8 +101,8 @@ export const HEIGHTS = {
 } as const;
 
 export const IDLE_CAMERA = {
-  position: [6.15, 1.62, 4.35] as Vec3,
-  target: [2.55, 0.92, 0.42] as Vec3,
+  position: [6.65, 1.68, 5.75] as Vec3,
+  target: [2.5, 1.12, 1.15] as Vec3,
 };
 
 /**
@@ -204,24 +204,186 @@ type InteractSpot<T extends string> = {
 export type { InteractSpot };
 
 export const KITCHEN_INTERACTS: InteractSpot<KitchenInteractId>[] = [
-  { id: 'switch', x: FIXTURES.lightSwitch.x, y: FIXTURES.lightSwitch.y, z: FIXTURES.lightSwitch.z, r: 0.7, priority: 2, promptOpen: 'F · Lights on', promptClose: 'F · Lights off' },
-  { id: 'sink', x: FIXTURES.sink.x, y: FIXTURES.sink.y + 0.2, z: 0.55, r: 0.95, priority: 2, promptOpen: 'F · Run the tap', promptClose: 'F · Stop tap' },
-  { id: 'gpoDouble', x: FIXTURES.gpoDouble.x, y: FIXTURES.gpoDouble.y, z: 0.55, r: 0.85, priority: 2, promptOpen: 'F · Plug / toast', promptClose: 'F · Pop toaster' },
-  { id: 'toaster', x: FIXTURES.toaster.x, y: FIXTURES.toaster.y, z: FIXTURES.toaster.z, r: 0.9, priority: 2, promptOpen: 'F · Toast', promptClose: 'F · Pop toaster' },
-  { id: 'cookIsolator', x: FIXTURES.cookIsolator.x, y: FIXTURES.cookIsolator.y, z: 0.55, r: 1.0, priority: 2, promptOpen: 'F · Cooktop isolator', promptClose: 'F · Cooktop isolator' },
-  { id: 'cooktop', x: FIXTURES.cooktop.x, y: FIXTURES.cooktop.y, z: 0.55, r: 0.75, priority: 2, promptOpen: 'F · Boil the pot', promptClose: 'F · Take pot off' },
-  { id: 'oven', x: FIXTURES.oven.x, y: 0.48, z: 0.58, r: 0.85, priority: 2, promptOpen: 'F · Open oven', promptClose: 'F · Close oven' },
-  { id: 'dishwasher', x: FIXTURES.dishwasher.x, y: 0.42, z: 0.58, r: 0.95, priority: 2, promptOpen: 'F · Open dishwasher', promptClose: 'F · Close dishwasher' },
-  { id: 'fridge', x: FIXTURES.fridge.x, y: 0.95, z: FIXTURES.fridge.z, r: 1.3, priority: 1, promptOpen: 'F · Open fridge', promptClose: 'F · Close fridge' },
-  { id: 'sink-base', x: 0.68, y: 0.48, z: 0.58, r: 0.85, priority: 0, promptOpen: 'F · Open cupboard', promptClose: 'F · Close cupboard' },
-  { id: 'cabA-base', x: 1.3, y: 0.48, z: 0.58, r: 0.55, priority: 1, promptOpen: 'F · Open drawers', promptClose: 'F · Close drawers' },
-  { id: 'cabL-base', x: 2.58, y: 0.48, z: 0.58, r: 1.05, priority: 0, promptOpen: 'F · Open cupboard', promptClose: 'F · Close cupboard' },
-  { id: 'cabR-base', x: 4.08, y: 0.48, z: 0.58, r: 1.05, priority: 0, promptOpen: 'F · Open cupboard', promptClose: 'F · Close cupboard' },
-  { id: 'sink-upper', x: 0.68, y: 1.78, z: 0.4, r: 0.85, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
-  { id: 'cabA-upper', x: 1.3, y: 1.78, z: 0.4, r: 0.8, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
-  { id: 'cabL-upper', x: 2.58, y: 1.78, z: 0.4, r: 1.05, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
-  { id: 'dw-upper', x: 3.33, y: 1.78, z: 0.4, r: 0.75, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
-  { id: 'cabR-upper', x: 4.08, y: 1.78, z: 0.4, r: 1.05, priority: 0, promptOpen: 'F · Open overhead', promptClose: 'F · Close overhead' },
+  {
+    id: 'switch',
+    x: FIXTURES.lightSwitch.x,
+    y: FIXTURES.lightSwitch.y,
+    z: FIXTURES.lightSwitch.z,
+    r: 0.7,
+    priority: 2,
+    promptOpen: 'F · Lights on',
+    promptClose: 'F · Lights off',
+  },
+  {
+    id: 'sink',
+    x: FIXTURES.sink.x,
+    y: FIXTURES.sink.y + 0.2,
+    z: 0.55,
+    r: 0.95,
+    priority: 2,
+    promptOpen: 'F · Run the tap',
+    promptClose: 'F · Stop tap',
+  },
+  {
+    id: 'gpoDouble',
+    x: FIXTURES.gpoDouble.x,
+    y: FIXTURES.gpoDouble.y,
+    z: 0.55,
+    r: 0.85,
+    priority: 2,
+    promptOpen: 'F · Plug / toast',
+    promptClose: 'F · Pop toaster',
+  },
+  {
+    id: 'toaster',
+    x: FIXTURES.toaster.x,
+    y: FIXTURES.toaster.y,
+    z: FIXTURES.toaster.z,
+    r: 0.9,
+    priority: 2,
+    promptOpen: 'F · Toast',
+    promptClose: 'F · Pop toaster',
+  },
+  {
+    id: 'cookIsolator',
+    x: FIXTURES.cookIsolator.x,
+    y: FIXTURES.cookIsolator.y,
+    z: 0.55,
+    r: 1.0,
+    priority: 2,
+    promptOpen: 'F · Cooktop isolator',
+    promptClose: 'F · Cooktop isolator',
+  },
+  {
+    id: 'cooktop',
+    x: FIXTURES.cooktop.x,
+    y: FIXTURES.cooktop.y,
+    z: 0.55,
+    r: 0.75,
+    priority: 2,
+    promptOpen: 'F · Boil the pot',
+    promptClose: 'F · Take pot off',
+  },
+  {
+    id: 'oven',
+    x: FIXTURES.oven.x,
+    y: 0.48,
+    z: 0.58,
+    r: 0.85,
+    priority: 2,
+    promptOpen: 'F · Open oven',
+    promptClose: 'F · Close oven',
+  },
+  {
+    id: 'dishwasher',
+    x: FIXTURES.dishwasher.x,
+    y: 0.42,
+    z: 0.58,
+    r: 0.95,
+    priority: 2,
+    promptOpen: 'F · Open dishwasher',
+    promptClose: 'F · Close dishwasher',
+  },
+  {
+    id: 'fridge',
+    x: FIXTURES.fridge.x,
+    y: 0.95,
+    z: FIXTURES.fridge.z,
+    r: 1.3,
+    priority: 1,
+    promptOpen: 'F · Open fridge',
+    promptClose: 'F · Close fridge',
+  },
+  {
+    id: 'sink-base',
+    x: 0.68,
+    y: 0.48,
+    z: 0.58,
+    r: 0.85,
+    priority: 0,
+    promptOpen: 'F · Open cupboard',
+    promptClose: 'F · Close cupboard',
+  },
+  {
+    id: 'cabA-base',
+    x: 1.3,
+    y: 0.48,
+    z: 0.58,
+    r: 0.55,
+    priority: 1,
+    promptOpen: 'F · Open drawers',
+    promptClose: 'F · Close drawers',
+  },
+  {
+    id: 'cabL-base',
+    x: 2.58,
+    y: 0.48,
+    z: 0.58,
+    r: 1.05,
+    priority: 0,
+    promptOpen: 'F · Open cupboard',
+    promptClose: 'F · Close cupboard',
+  },
+  {
+    id: 'cabR-base',
+    x: 4.08,
+    y: 0.48,
+    z: 0.58,
+    r: 1.05,
+    priority: 0,
+    promptOpen: 'F · Open cupboard',
+    promptClose: 'F · Close cupboard',
+  },
+  {
+    id: 'sink-upper',
+    x: 0.68,
+    y: 1.78,
+    z: 0.4,
+    r: 0.85,
+    priority: 0,
+    promptOpen: 'F · Open overhead',
+    promptClose: 'F · Close overhead',
+  },
+  {
+    id: 'cabA-upper',
+    x: 1.3,
+    y: 1.78,
+    z: 0.4,
+    r: 0.8,
+    priority: 0,
+    promptOpen: 'F · Open overhead',
+    promptClose: 'F · Close overhead',
+  },
+  {
+    id: 'cabL-upper',
+    x: 2.58,
+    y: 1.78,
+    z: 0.4,
+    r: 1.05,
+    priority: 0,
+    promptOpen: 'F · Open overhead',
+    promptClose: 'F · Close overhead',
+  },
+  {
+    id: 'dw-upper',
+    x: 3.33,
+    y: 1.78,
+    z: 0.4,
+    r: 0.75,
+    priority: 0,
+    promptOpen: 'F · Open overhead',
+    promptClose: 'F · Close overhead',
+  },
+  {
+    id: 'cabR-upper',
+    x: 4.08,
+    y: 1.78,
+    z: 0.4,
+    r: 1.05,
+    priority: 0,
+    promptOpen: 'F · Open overhead',
+    promptClose: 'F · Close overhead',
+  },
 ];
 
 const cabFrontZ = ROOM.depth - LOUNGE.cab.depth;
@@ -269,7 +431,10 @@ export const LOUNGE_INTERACTS: InteractSpot<LoungeInteractId>[] = [
   },
 ];
 
-const ROOM_INTERACTS: InteractSpot<RoomInteractId>[] = [...KITCHEN_INTERACTS, ...LOUNGE_INTERACTS];
+export const ROOM_INTERACTS: InteractSpot<RoomInteractId>[] = [
+  ...KITCHEN_INTERACTS,
+  ...LOUNGE_INTERACTS,
+];
 
 /** 1 = looking straight at (ox, oz), -1 = looking directly away. */
 export function facingDot(px: number, pz: number, yaw: number, ox: number, oz: number): number {
@@ -385,9 +550,9 @@ export function boardLookHint(px: number, pz: number, yaw: number): boolean {
 }
 
 export const PLAYER_SPAWN = {
-  x: 3.4,
+  x: 5.8,
   y: 0,
-  z: 2.6,
+  z: 3.8,
   /** Face the kitchen wall (z=0). */
   yaw: Math.PI,
 } as const;
@@ -395,10 +560,10 @@ export const PLAYER_SPAWN = {
 export const PLAYER = {
   radius: 0.24,
   height: 1.62,
-  speed: 2.4,
+  speed: 1.8,
   turnSpeed: 2.2,
-  pitchMin: -0.62,
-  pitchMax: 0.78,
+  pitchMin: -1.15,
+  pitchMax: 1.1,
 } as const;
 
 export function boardWallStudZs(): number[] {
@@ -487,7 +652,16 @@ export function resolveSolidPosition(x: number, z: number, pad: number): { x: nu
   }
 
   const cabZ0 = ROOM.depth - LOUNGE.cab.depth;
-  ({ x: nx, z: nz } = pushAabb(nx, nz, LOUNGE.cab.x, LOUNGE.cab.x + LOUNGE.cab.w, cabZ0, ROOM.depth, pad * 0.35));
+  ({ x: nx, z: nz } = pushAabb(nx, nz, 6.15, 7.55, 1.55, 3.65, pad));
+  ({ x: nx, z: nz } = pushAabb(
+    nx,
+    nz,
+    LOUNGE.cab.x,
+    LOUNGE.cab.x + LOUNGE.cab.w,
+    cabZ0,
+    ROOM.depth,
+    pad * 0.35
+  ));
   ({ x: nx, z: nz } = pushAabb(
     nx,
     nz,
@@ -520,7 +694,7 @@ export function resolveOpenDoors(
   z: number,
   open: { dishwasher?: boolean; fridge?: boolean }
 ): { x: number; z: number } {
-  let nx = x;
+  const nx = x;
   let nz = z;
   const pad = PLAYER.radius;
   if (open.dishwasher && Math.abs(nx - FIXTURES.dishwasher.x) < 0.36 + pad && nz < 1.28) {

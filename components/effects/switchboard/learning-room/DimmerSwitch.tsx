@@ -2,8 +2,16 @@
 
 import { useFrame } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import { CanvasTexture, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, SRGBColorSpace } from 'three';
-import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
+import {
+  CanvasTexture,
+  Group,
+  MathUtils,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  SRGBColorSpace,
+} from 'three';
+import { RoomHit } from './RoomHit';
 import { ROOM_GLB } from './room-assets';
 import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
 import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
@@ -12,7 +20,6 @@ type Props = {
   position: [number, number, number];
   wall: 'board' | 'kitchen' | 'lounge';
   level: number;
-  live: boolean;
   onCycle: () => void;
 };
 
@@ -57,7 +64,7 @@ const KNOB_OFF = 0.55;
 const KNOB_ON = -1.85;
 
 /** C2000 rotary dimmer — click/Use cycles off, 35%, 70%, 100%. */
-export function DimmerSwitch({ position, wall, level, live, onCycle }: Props) {
+export function DimmerSwitch({ position, wall, level, onCycle }: Props) {
   const { scene } = useKeptGltf(ROOM_GLB.dimmer);
   const typeI = useTypeIPlateMaterial();
   const label = useDimLabel();
@@ -87,25 +94,18 @@ export function DimmerSwitch({ position, wall, level, live, onCycle }: Props) {
     wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0];
 
   return (
-    <group
-      position={position}
-      rotation={rot}
-      onPointerOver={(e) => onInteractiveEnter(e)}
-      onPointerOut={() => onInteractiveLeave()}
-      onPointerUp={(e) => onInteractiveClick(e, onCycle)}
-    >
+    <group position={position} rotation={rot}>
       <primitive object={root} />
       <mesh position={[0, -0.044, 0.0102]} receiveShadow>
         <planeGeometry args={[0.042, 0.011]} />
         <meshStandardMaterial map={label} roughness={0.55} metalness={0.02} />
       </mesh>
-      {live && level > 0.04 && (
-        <pointLight position={[0, 0.01, 0.04]} intensity={0.08 + level * 0.12} distance={0.35} color="#fde68a" />
-      )}
-      <mesh>
-        <boxGeometry args={[0.22, 0.28, 0.16]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
+      <RoomHit
+        hitId={wall === 'board' ? 'loungeDimmerA' : 'loungeDimmerB'}
+        onToggle={onCycle}
+        position={[0, 0, 0.025]}
+        size={[0.11, 0.15, 0.055]}
+      />
     </group>
   );
 }

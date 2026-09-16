@@ -67,7 +67,7 @@ describe('roomActionPrompt', () => {
 
   it('uses tap wording on mobile at the board', () => {
     expect(roomActionPrompt(null, true, INITIAL_ROOM_PLAY, { ...live, coarse: true })).toEqual({
-      text: 'Tap the cover · licensed only',
+      text: 'Tap to open the switchboard',
       tone: 'caution',
     });
   });

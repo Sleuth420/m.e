@@ -25,7 +25,7 @@ export const projects: Project[] = [
   {
     title: 'Electrician Management App',
     description:
-      'A complete job tracking and management tool for electricians. Handles quotes, tasks, and site calculations in a custom Vue/Nuxt frontend with a Django backend.',
+      'A job management app for electricians with quotes, tasks and site calculations. Built with Vue, Nuxt and a Django backend.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
@@ -35,13 +35,27 @@ export const projects: Project[] = [
         nofollow: true,
       },
     ],
-    technologies: ['Vue.js', 'Nuxt.js', "Tailwind CSS", 'Django', 'Python', 'PostgreSQL', 'Stripe', 'Clerk', 'Cloudflare', 'Sentry', 'AWS', 'Nginx', 'Docker'  ],
+    technologies: [
+      'Vue.js',
+      'Nuxt.js',
+      'Tailwind CSS',
+      'Django',
+      'Python',
+      'PostgreSQL',
+      'Stripe',
+      'Clerk',
+      'Cloudflare',
+      'Sentry',
+      'AWS',
+      'Nginx',
+      'Docker',
+    ],
     category: 'web',
   },
   {
     title: 'Reaching Out In The Inner West',
     description:
-      'A custom WordPress site built for a local Melbourne non-profit. It features easy donation handling, event schedules, and volunteer information.',
+      'A WordPress website for a Melbourne non-profit, bringing together donation information, event schedules and ways to volunteer.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       {
@@ -56,7 +70,7 @@ export const projects: Project[] = [
   {
     title: 'GlazeyJewellery.com',
     description:
-      'A sleek, mobile-friendly Shopify store I built for a jewellery brand to showcase products and handle secure checkouts.',
+      'A Shopify store for a jewellery brand, with product browsing and checkout designed for mobile and desktop.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Visit Site', url: 'https://glazeyjewellery.com' }],
     technologies: ['Shopify'],
@@ -65,9 +79,11 @@ export const projects: Project[] = [
   {
     title: 'Electrovision Australia',
     description:
-      'A professional WordPress site for an electrical contractor, designed to showcase their services and make it easy for clients to request quotes.',
+      'A WordPress website for an electrical contractor, with service information and forms for quote requests.',
     image: PROJECT_IMAGE_PLACEHOLDER,
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://electrovisionaustralia.com.au' }],
+    links: [
+      { type: 'external', label: 'Visit Site', url: 'https://electrovisionaustralia.com.au' },
+    ],
     technologies: ['WordPress'],
     category: 'web',
   },
@@ -83,7 +99,7 @@ export const projects: Project[] = [
   {
     title: 'Wedding & RSVP Website',
     description:
-      'A custom wedding website with a private login system to help guests RSVP, track attendance, and view event details.',
+      'A private wedding website where guests can view event details and RSVP, and the organisers can track attendance.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'Private Project', url: '#' }],
     technologies: ['WordPress'],
@@ -92,9 +108,11 @@ export const projects: Project[] = [
   {
     title: 'Max Trans Portable Homes',
     description:
-      'A product-focused WordPress site for a portable homes business, featuring detailed specs, a gallery, and lead-generation forms.',
+      'A WordPress website for a portable homes business, with product specifications, a gallery and enquiry forms.',
     image: PROJECT_IMAGE_PLACEHOLDER,
-    links: [{ type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au', nofollow: true }],
+    links: [
+      { type: 'external', label: 'Visit Site', url: 'https://maxtrans.com.au', nofollow: true },
+    ],
     technologies: ['WordPress', 'Elementor'],
     category: 'web',
   },
@@ -112,7 +130,7 @@ export const projects: Project[] = [
   {
     title: 'Perfect Circle',
     description:
-      'A fun, interactive circle-drawing game with precision challenges and a real-time scoring system built from scratch.',
+      'A browser game that scores how closely a hand-drawn shape matches a circle, with feedback as you play.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [
       { type: 'external', label: 'Visit Site', url: 'https://sleuth420.github.io/perfect-circle/' },
@@ -123,7 +141,7 @@ export const projects: Project[] = [
   {
     title: 'Grow-y',
     description:
-      'A web app for gardening enthusiasts to track plant growth in real-time, get care reminders, and monitor species-specific timelines.',
+      'A gardening app in development for tracking plants, organising care reminders and following growth over time.',
     image: PROJECT_IMAGE_PLACEHOLDER,
     links: [{ type: 'external', label: 'In Progress', url: 'https://growy.xyz' }],
     technologies: ['React', 'Tailwind CSS', 'JavaScript', 'Vercel'],
@@ -147,7 +165,7 @@ export const skills: Skill[] = [
   {
     title: 'Cybersecurity',
     icon: Shield,
-    description: 'Network Security, Penetration Testing, Secure Coding, OWASP Top 10',
+    description: 'Website security reviews, access controls, backups and secure development',
   },
   {
     title: 'IoT and Embedded Systems',
@@ -157,7 +175,8 @@ export const skills: Skill[] = [
   {
     title: 'Electrical',
     icon: Wrench,
-    description: 'Fully qualified A-Grade electrician handling residential, commercial, and industrial projects.',
+    description:
+      'Fully qualified A-Grade electrician handling residential, commercial, and industrial projects.',
   },
 ];
 
@@ -174,13 +193,14 @@ export interface HomeServiceTeaser {
 export const homeServiceTeasers: HomeServiceTeaser[] = [
   {
     title: 'Electrical Services',
-    description: 'Licensed residential, commercial, and industrial electrical work across Melbourne.',
+    description:
+      'Licensed residential, commercial, and industrial electrical work across Melbourne.',
     slug: 'electrician-melbourne',
     category: 'electrical',
   },
   {
     title: 'Custom Websites',
-    description: 'Modern, responsive websites for businesses that need more than a template.',
+    description: 'Custom websites with layouts and features built around your business.',
     slug: 'web-developer-melbourne',
     category: 'web-dev',
   },
@@ -198,7 +218,7 @@ export const homeServiceTeasers: HomeServiceTeaser[] = [
   },
   {
     title: 'IoT & Hardware',
-    description: 'Sensors, Raspberry Pi, and other hardware projects.',
+    description: 'Sensors, Raspberry Pi projects and dashboards for connected devices.',
     slug: 'iot-solutions-melbourne',
     category: 'app-dev',
   },

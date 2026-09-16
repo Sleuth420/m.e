@@ -1,8 +1,8 @@
 'use client';
 
-import { AdaptiveDpr, ContactShadows, Environment } from '@react-three/drei';
+import { ContactShadows, Environment } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { Suspense, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { MeshStandardMaterial } from 'three';
 import { useMediaQuery } from '@/lib/hooks';
 import { Switchboard } from '../Switchboard';
@@ -16,20 +16,17 @@ import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
 import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type RoomInteractId } from './room-layout';
 import { POLYHAVEN } from './room-assets';
-import { INITIAL_ROOM_PLAY, roomPlayReducer, type RoomLive } from './room-play';
+import type { RoomLive } from './room-play';
+import { useGameInput } from './GameInputContext';
+import { CeilingLights } from './FinishedInterior';
+import { ScenePerformance } from './ScenePerformance';
 
 type Props = {
   controlsEnabled: boolean;
   onExit: () => void;
 };
 
-function LedBatten({
-  position,
-  pulse,
-}: {
-  position: [number, number, number];
-  pulse: boolean;
-}) {
+function LedBatten({ position, pulse }: { position: [number, number, number]; pulse: boolean }) {
   const len = BOARD_OPENING.z1 - BOARD_OPENING.z0 - 0.1;
   const matRef = useRef<MeshStandardMaterial>(null);
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -67,23 +64,36 @@ function LedBatten({
           <meshStandardMaterial color="#9aa0a6" metalness={0.55} roughness={0.35} />
         </mesh>
       ))}
-      <pointLight position={[0.22, -0.02, 0]} intensity={1.25} distance={2.6} decay={2} color="#fff1d4" />
-      <pointLight position={[0.08, -0.01, 0]} intensity={0.4} distance={1.2} decay={2} color="#f7f0e4" />
+      <pointLight
+        position={[0.22, -0.02, 0]}
+        intensity={1.25}
+        distance={2.6}
+        decay={2}
+        color="#fff1d4"
+      />
+      <pointLight
+        position={[0.08, -0.01, 0]}
+        intensity={0.4}
+        distance={1.2}
+        decay={2}
+        color="#f7f0e4"
+      />
     </group>
   );
 }
 
 function GalleryLighting({ playing }: { playing: boolean }) {
-  const shadowMap = playing ? 512 : 1024;
+  const { lowDetail } = useGameInput();
+  const shadowMap = playing ? 1024 : 2048;
   return (
     <>
       <color attach="background" args={['#c5c2bb']} />
       <fog attach="fog" args={['#c5c2bb', 18, 42]} />
-      <ambientLight intensity={0.22} />
-      <hemisphereLight args={['#f5f0e8', '#6b6560', 0.42]} />
+      <ambientLight intensity={0.14} />
+      <hemisphereLight args={['#e9f1f5', '#73604c', 0.4]} />
       <directionalLight
-        position={[6.2, 8.4, 6.4]}
-        intensity={1.05}
+        position={[7.8, 2.3, 3.5]}
+        intensity={1.65}
         castShadow
         shadow-mapSize={[shadowMap, shadowMap]}
         shadow-camera-near={1}
@@ -95,18 +105,19 @@ function GalleryLighting({ playing }: { playing: boolean }) {
         shadow-bias={-0.0002}
         color="#fff6ea"
       />
-      <directionalLight position={[2.4, 3.4, 9]} intensity={0.28} color="#e8eef5" />
-      <Suspense fallback={null}>
-        <Environment files={POLYHAVEN.hdri} environmentIntensity={0.9} />
-      </Suspense>
+      <directionalLight position={[5.4, 2.4, 5]} intensity={0.2} color="#e8eef5" />
+      {!lowDetail && (
+        <Suspense fallback={null}>
+          <Environment files={POLYHAVEN.hdri} environmentIntensity={0.4} />
+        </Suspense>
+      )}
     </>
   );
 }
 
 function LearningSceneInner({ controlsEnabled, onExit }: Props) {
   const { liveById, coverOpen } = useSwitchboard();
-  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
-  const [play, dispatch] = useReducer(roomPlayReducer, INITIAL_ROOM_PLAY);
+  const { play, dispatchRoom: dispatch, wiringView } = useGameInput();
 
   const lightingLive = liveById[ROOM_LOADS.lighting] ?? false;
   const powerLive = liveById[ROOM_LOADS.power] ?? false;
@@ -124,28 +135,28 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
 
   useEffect(() => {
     if (!powerLive) dispatch({ type: 'power-cut' });
-  }, [powerLive]);
+  }, [powerLive, dispatch]);
 
   useEffect(() => {
     if (!hobLive) dispatch({ type: 'hob-cut' });
-  }, [hobLive]);
+  }, [hobLive, dispatch]);
 
   useEffect(() => {
     if (!loungePowerLive) dispatch({ type: 'lounge-power-cut' });
-  }, [loungePowerLive]);
+  }, [loungePowerLive, dispatch]);
 
   const onInteract = useCallback(
     (id: RoomInteractId) => {
       dispatch({ type: 'interact', id, live });
     },
-    [live]
+    [live, dispatch]
   );
 
   const toggleOpen = (id: RoomInteractId) => onInteract(id);
 
   return (
     <>
-      {controlsEnabled && !reducedMotion && <AdaptiveDpr />}
+      <ScenePerformance />
       <GalleryLighting playing={controlsEnabled} />
       <LearningRoom />
       <group
@@ -158,11 +169,21 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         </Suspense>
       </group>
       {/* LED batten over the board — always-on so the enclosure stays readable. */}
-      <LedBatten
-        position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]}
-        pulse={controlsEnabled && !coverOpen}
-      />
-      <RoomWiring liveById={liveById} isolatorOn={play.isolatorOn} />
+      {wiringView && (
+        <LedBatten
+          position={[BOARD_MOUNT.x + 0.06, BOARD_OPENING.y1 + 0.048, BOARD_MOUNT.z]}
+          pulse={controlsEnabled && !coverOpen}
+        />
+      )}
+      <group visible={wiringView}>
+        <RoomWiring
+          liveById={liveById}
+          isolatorOn={play.isolatorOn}
+          kitchenLightsOn={lightsOn}
+          loungeLevel={play.loungeDimmer}
+        />
+      </group>
+      <CeilingLights kitchenOn={lightsOn} loungeLevel={loungeLightLive ? play.loungeDimmer : 0} />
       <Suspense fallback={null}>
         <Fixtures
           lightsOn={lightsOn}
@@ -173,6 +194,9 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
       <Suspense fallback={null}>
         <KitchenRun
           powerLive={powerLive}
+          socketOn={play.kitchenSocketOn}
+          onToggleSocket={() => onInteract('gpoDouble')}
+          lightsOn={lightsOn}
           fridgeLive={fridgeLive}
           ovenLive={ovenLive}
           hobLive={hobLive}
@@ -193,6 +217,8 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
       <Suspense fallback={null}>
         <LoungeRun
           powerLive={loungePowerLive}
+          socketOn={play.loungeSocketOn}
+          onToggleSocket={() => onInteract('tvGpo')}
           lightLive={loungeLightLive}
           dimmer={play.loungeDimmer}
           tvOn={play.tvOn}
@@ -211,8 +237,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         loungePowerLive={loungePowerLive}
         loungeLightLive={loungeLightLive}
       />
-      {!controlsEnabled && (
+      {
         <ContactShadows
+          frames={1}
+          resolution={512}
           position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
           opacity={0.48}
           scale={16}
@@ -220,7 +248,7 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           far={6}
           color="#3f3f46"
         />
-      )}
+      }
     </>
   );
 }

@@ -2,8 +2,16 @@
 
 import { useFrame } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import { CanvasTexture, Group, MathUtils, Mesh, MeshStandardMaterial, Object3D, SRGBColorSpace } from 'three';
-import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
+import {
+  CanvasTexture,
+  Group,
+  MathUtils,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  SRGBColorSpace,
+} from 'three';
+import { RoomHit } from './RoomHit';
 import { ROOM_GLB } from './room-assets';
 import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
 import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
@@ -106,10 +114,9 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
   return (
     <group
       position={position}
-      rotation={wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0]}
-      onPointerOver={(e) => onInteractiveEnter(e)}
-      onPointerOut={() => onInteractiveLeave()}
-      onPointerUp={(e) => onInteractiveClick(e, onToggle)}
+      rotation={
+        wall === 'board' ? [0, Math.PI / 2, 0] : wall === 'lounge' ? [0, Math.PI, 0] : [0, 0, 0]
+      }
     >
       <primitive object={root} />
       {isolator && (
@@ -118,10 +125,12 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
           <meshStandardMaterial map={label} roughness={0.55} metalness={0.02} />
         </mesh>
       )}
-      <mesh>
-        <boxGeometry args={[0.22, 0.28, 0.16]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
+      <RoomHit
+        hitId={isolator ? 'cookIsolator' : 'switch'}
+        onToggle={onToggle}
+        position={[0, 0, 0.025]}
+        size={[0.11, 0.15, 0.045]}
+      />
     </group>
   );
 }

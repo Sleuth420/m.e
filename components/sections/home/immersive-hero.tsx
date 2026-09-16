@@ -32,8 +32,8 @@ export default function ImmersiveHero() {
           transition={{ delay: 0.15, duration: 0.5 }}
           className="max-w-2xl text-base text-muted-foreground sm:text-lg"
         >
-          Residential, Commercial, and Industrial Electrical work including data, comms, and smart
-          home. I also build websites and IoT devices.
+          I’m Ricky, a Melbourne electrician and developer. I work on homes, businesses and
+          industrial sites, and build websites, web apps and connected devices.
         </motion.p>
 
         <motion.div
@@ -49,7 +49,7 @@ export default function ImmersiveHero() {
           >
             <Link href="/services/electrician-melbourne">
               <Zap className="mr-2 h-4 w-4" />
-              Electrical
+              Electrical services
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -61,7 +61,7 @@ export default function ImmersiveHero() {
           >
             <Link href="/services/web-developer-melbourne">
               <Code className="mr-2 h-4 w-4" />
-              Digital
+              Web development
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

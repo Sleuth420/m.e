@@ -57,16 +57,16 @@ export const BOARD = {
 export const CIRCUITS: CircuitPole[] = [
   { id: 'hot-plates', label: 'PROTECTED INDUCTION', rating: 'C32', index: 0 },
   { id: 'wall-oven', label: 'PROTECTED OVEN', rating: 'C16', index: 1 },
-  { id: 'heat-bank', label: 'PROTECTED HEAT BANK', rating: 'C20', index: 2 },
+  { id: 'heat-bank', label: 'SPARE', rating: 'C20', index: 2 },
   { id: 'power-1', label: 'PROTECTED KITCHEN POWER', rating: 'C20', index: 3 },
   { id: 'power-2', label: 'PROTECTED LOUNGE POWER', rating: 'C20', index: 4 },
-  { id: 'power-3', label: 'PROTECTED POWER', rating: 'C16', index: 5 },
-  { id: 'power-4', label: 'PROTECTED POWER', rating: 'C16', index: 6 },
-  { id: 'light-1', label: 'PROTECTED LIGHT', rating: 'C10', index: 7 },
+  { id: 'power-3', label: 'SPARE', rating: 'C16', index: 5 },
+  { id: 'power-4', label: 'SPARE', rating: 'C16', index: 6 },
+  { id: 'light-1', label: 'PROTECTED KITCHEN LIGHT', rating: 'C10', index: 7 },
   { id: 'light-2', label: 'PROTECTED LOUNGE LIGHT', rating: 'C10', index: 8 },
-  { id: 'light-3', label: 'PROTECTED LIGHT', rating: 'C10', index: 9 },
+  { id: 'light-3', label: 'SPARE', rating: 'C10', index: 9 },
   { id: 'fridge', label: 'PROTECTED FRIDGE', rating: 'C16', index: 10 },
-  { id: 'ac', label: 'PROTECTED AIR CON', rating: 'C20', index: 11 },
+  { id: 'ac', label: 'SPARE', rating: 'C20', index: 11 },
 ];
 
 /** Circuits that actually leave this board into the room. Spare poles stay capped. */

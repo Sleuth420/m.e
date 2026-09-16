@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { PCFShadowMap } from 'three';
+import { ACESFilmicToneMapping, PCFShadowMap } from 'three';
 import { preloadModulePaths } from './switchboard/assets/module-assets';
 import { SwitchboardProvider } from './switchboard/SwitchboardContext';
 import { CanvasPointerGate } from './switchboard/scene/CanvasPointerGate';
@@ -56,7 +56,7 @@ export default function HeroSceneCanvas({
         <Canvas
           camera={{
             position: [...IDLE_CAMERA.position],
-            fov: 46,
+            fov: 64,
             near: 0.04,
             far: 60,
           }}
@@ -78,6 +78,8 @@ export default function HeroSceneCanvas({
           onCreated={({ gl, camera }) => {
             gl.setClearColor(0xb8b8be, 1);
             gl.shadowMap.type = PCFShadowMap;
+            gl.toneMapping = ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.05;
             gl.domElement.style.pointerEvents = 'none';
             gl.domElement.style.touchAction = 'pan-y';
             gl.domElement.style.display = 'block';

@@ -185,7 +185,9 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
               className="space-y-4"
             >
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-1">Name *</label>
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Name *
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -197,7 +199,9 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">Email *</label>
+                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                  Email *
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -209,7 +213,9 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
                 />
               </div>
               <div>
-                <label htmlFor="urgency" className="block text-sm font-medium mb-1">Urgency</label>
+                <label htmlFor="urgency" className="block text-sm font-medium mb-1">
+                  Preferred timing
+                </label>
                 <select
                   id="urgency"
                   name="urgency"
@@ -217,9 +223,9 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
                   onChange={handleInputChange}
                   className={inputClass}
                 >
-                  <option value="normal">Normal - within a few days</option>
-                  <option value="soon">Soon - within 24 hours</option>
-                  <option value="emergency">Emergency - electrical urgent</option>
+                  <option value="normal">Flexible — happy to discuss timing</option>
+                  <option value="soon">Soon — please confirm availability</option>
+                  <option value="emergency">Urgent electrical job — subject to availability</option>
                 </select>
               </div>
             </motion.div>
@@ -234,7 +240,9 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
               className="space-y-4"
             >
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-1">Message *</label>
+                <label htmlFor="message" className="block text-sm font-medium mb-1">
+                  Message *
+                </label>
                 <textarea
                   id="message"
                   name="message"
@@ -242,7 +250,7 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
                   onChange={handleInputChange}
                   rows={5}
                   className={`${inputClass} resize-vertical`}
-                  placeholder="Tell me about your project..."
+                  placeholder="What do you need done? Include your suburb or website address and any deadline."
                 />
               </div>
             </motion.div>
@@ -252,7 +260,7 @@ export function ContactForm({ onSuccess, onError }: ContactFormProps) {
         {submitStatus === 'success' && (
           <div className="mt-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
             <p className="text-sm text-green-600 dark:text-green-400">
-              Message sent successfully! I&apos;ll get back to you soon.
+              Thanks, your enquiry has been sent. I’ll reply to the email address you provided.
             </p>
           </div>
         )}

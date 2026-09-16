@@ -2,7 +2,7 @@
 
 import { useEffect, type MutableRefObject, type RefObject } from 'react';
 import { MathUtils, type WebGLRenderer } from 'three';
-import { markInteract, setLookDragActive, wasRecentInteract } from '../interaction';
+import { setLookDragActive } from '../interaction';
 import { PLAYER, type RoomInteractId } from './room-layout';
 import type { PlayerPose } from './player-motion';
 import { tryRoomInteract } from './room-interact';
@@ -59,7 +59,7 @@ function applyKey(keys: Keys, zoom: Zoom, code: string, down: boolean) {
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'KeyZ') zoom.hold = down;
 }
 
-/** Keyboard, wheel zoom, look-drag (touch + mouse), and mobile tap-nearest. */
+/** Keyboard, wheel zoom and look-drag. Object clicks are handled by the scene. */
 export function usePlayerInput({
   enabled,
   gl,
@@ -84,6 +84,12 @@ export function usePlayerInput({
     }
 
     const onDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (e.code !== 'Escape') {
+        if (target?.closest('input, select, textarea, [contenteditable="true"]')) return;
+        // Preserve native button activation without trapping movement after navigation.
+        if (target?.closest('button') && (e.code === 'Enter' || e.code === 'Space')) return;
+      }
       if (e.code === 'Escape') {
         e.preventDefault();
         if (coverPromptOpen) {
@@ -172,8 +178,8 @@ export function usePlayerInput({
     canvas.addEventListener('contextmenu', onContext);
 
     const look = { id: -1, x: 0, y: 0, dragging: false, canLook: false };
-    const TAP_PX = 18;
-    let nearestTimer = 0;
+    const TAP_PX = 5;
+
     function onPointerMove(e: PointerEvent) {
       if (look.id !== e.pointerId || !look.canLook) return;
       const dx = e.clientX - look.x;
@@ -183,13 +189,17 @@ export function usePlayerInput({
         look.dragging = true;
         dismissEntryHint();
         setLookDragActive(true);
+        if (coverOpen) {
+          closeCover();
+          return;
+        }
         try {
           canvas.setPointerCapture(e.pointerId);
         } catch {
           /* capture is optional — window listeners still track */
         }
       }
-      const sens = e.pointerType === 'touch' ? 0.0056 : 0.0042;
+      const sens = e.pointerType === 'touch' ? 0.004 : 0.0028;
       pose.current.yaw -= dx * sens;
       pose.current.pitch = MathUtils.clamp(
         pose.current.pitch - dy * sens,
@@ -222,29 +232,9 @@ export function usePlayerInput({
         window.setTimeout(() => setLookDragActive(false), 0);
         return;
       }
-      if (coarseRef.current) {
-        window.clearTimeout(nearestTimer);
-        nearestTimer = window.setTimeout(useNearest, 48);
-      }
+      // A missed tap must not operate an unrelated nearby fitting.
       window.setTimeout(() => setLookDragActive(false), 0);
     }
-    const useNearest = () => {
-      if (coverPromptOpen || wasRecentInteract()) return;
-      if (
-        tryRoomInteract(
-          pose.current.x,
-          pose.current.z,
-          false,
-          coverOpen,
-          onInteract,
-          requestCoverOpen,
-          pose.current.yaw,
-          closeCover
-        )
-      ) {
-        markInteract();
-      }
-    };
     const onPointerDown = (e: PointerEvent) => {
       if (coverPromptOpen) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
@@ -252,7 +242,7 @@ export function usePlayerInput({
       look.x = e.clientX;
       look.y = e.clientY;
       look.dragging = false;
-      look.canLook = !coverOpen;
+      look.canLook = true;
       setLookDragActive(false);
       window.addEventListener('pointermove', onPointerMove);
       window.addEventListener('pointerup', onPointerUp, true);
@@ -273,7 +263,6 @@ export function usePlayerInput({
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      window.clearTimeout(nearestTimer);
       unbindLookWindow();
       window.removeEventListener('keydown', onDown, true);
       window.removeEventListener('keyup', onUp);

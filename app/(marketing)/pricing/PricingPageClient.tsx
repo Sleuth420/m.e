@@ -67,8 +67,8 @@ export default function PricingPageClient() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 px-2"
           >
-            Transparent pricing for all my services. From simple WordPress sites to complex custom
-            applications, I offer flexible solutions that fit your budget and timeline.
+            Compare website packages and hourly rates for development, electrical work and related
+            services. All prices are in AUD. I’ll confirm the scope, cost and timing in your quote.
           </motion.p>
 
           <motion.div
@@ -119,9 +119,16 @@ export default function PricingPageClient() {
                 className="text-center mt-12"
               >
                 <div className="inline-block bg-gradient-to-r from-primary/5 to-amber-500/10 dark:from-primary/10 dark:to-primary/5 rounded-2xl p-8 border border-border">
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{section.callout.title}</h3>
-                  <p className="text-lg text-muted-foreground mb-6">{section.callout.description}</p>
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">
+                    {section.callout.title}
+                  </h3>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    {section.callout.description}
+                  </p>
+                  <Button
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                    asChild
+                  >
                     <Link href="/contact">{section.callout.ctaLabel}</Link>
                   </Button>
                 </div>
@@ -137,7 +144,10 @@ export default function PricingPageClient() {
                 className="mt-12 grid md:grid-cols-2 gap-6"
               >
                 {section.infoCards.map((card) => (
-                  <div key={card.title} className="surface-card rounded-2xl p-6 border border-border">
+                  <div
+                    key={card.title}
+                    className="surface-card rounded-2xl p-6 border border-border"
+                  >
                     <h4 className="text-lg font-semibold text-foreground mb-3">{card.title}</h4>
                     <ul className="space-y-2 text-muted-foreground">
                       {card.items.map((item) => (
@@ -192,7 +202,9 @@ export default function PricingPageClient() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="surface-card rounded-2xl p-8 border border-border shadow-lg"
             >
-              <h3 className="text-2xl font-bold text-foreground mb-6 text-center">Services Offered</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
+                Services Offered
+              </h3>
               <ul className="space-y-3 mb-8">
                 {electricalServicesList.map((service) => (
                   <li key={service} className="flex items-center text-muted-foreground">
@@ -203,7 +215,7 @@ export default function PricingPageClient() {
               </ul>
               <div className="text-center">
                 <p className="text-muted-foreground mb-4">
-                  Every job is unique. Get a personalized quote for your specific needs.
+                  Include your suburb and a description of the work so I can prepare a quote.
                 </p>
                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" asChild>
                   <Link href="/contact">Request Electrical Quote</Link>
@@ -218,8 +230,8 @@ export default function PricingPageClient() {
         <div className="container mx-auto">
           <SectionHeading
             badge="Additional Services"
-            title="Other Professional Services"
-            description="Comprehensive solutions beyond web development and electrical work."
+            title="Marketing, design & technical support"
+            description="Starting rates for content, CAD, security, IT setup and connected hardware. The scope is agreed before work begins."
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 px-4 sm:px-0">
@@ -249,7 +261,7 @@ export default function PricingPageClient() {
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm"
                     asChild
                   >
-                    <Link href="/contact">Get Started</Link>
+                    <Link href="/contact">Request a quote</Link>
                   </Button>
                 </motion.div>
               );
@@ -267,13 +279,18 @@ export default function PricingPageClient() {
             transition={{ duration: 0.6 }}
             className="bg-gradient-to-r from-primary/5 to-amber-500/10 dark:from-primary/10 dark:to-primary/5 rounded-3xl p-12 border border-border"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Ready to Get Started?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              Ready to Get Started?
+            </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Whether you need a simple website, custom development, or electrical work, I&apos;m here
-              to help bring your vision to life.
+              Send a brief description of the work, your preferred timing and any budget you have in
+              mind. I’ll help you work out a suitable scope and provide a quote.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3" asChild>
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-3"
+                asChild
+              >
                 <Link href="/contact" className="flex items-center">
                   Contact Me <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

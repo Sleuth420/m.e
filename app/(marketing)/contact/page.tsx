@@ -33,7 +33,7 @@ export default function ContactPage() {
       <PageHero
         badge="Contact"
         title="Get in Touch"
-        description="Whether you are looking for an electrician, a web developer, or someone who can handle both, just fill out the form below and I will get back to you. I do not publish a public email address to avoid spam."
+        description="Tell me what you need help with, your preferred timing and any useful details. For electrical work, include your suburb. For a website or app, include a link if you have one."
       />
       <section className="py-16 md:py-24">
         <div className="container max-w-4xl">
@@ -53,7 +53,9 @@ export default function ContactPage() {
           </div>
           <div className="neumorphic rounded-2xl p-6 md:p-10">
             <p className="text-sm text-muted-foreground mb-6">
-              I usually reply within 24 to 48 hours. If you have an electrical emergency, please make sure to mention that in your message.
+              I usually reply within 24 to 48 hours. This form is not monitored continuously and is
+              not an emergency service. If supporting photos or documents are needed, I’ll arrange
+              how to share them after your enquiry.
             </p>
             <ContactForm />
           </div>

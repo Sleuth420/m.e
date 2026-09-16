@@ -39,7 +39,12 @@ export function Wiring({
   return (
     <group>
       {/* Incoming mains TPS — one thick sheath, then peeled cores */}
-      <PathWire points={paths.tpsSheath} radius={0.05} material={materials.sheathGrey} segments={48} />
+      <PathWire
+        points={paths.tpsSheath}
+        radius={0.05}
+        material={materials.sheathGrey}
+        segments={48}
+      />
       {/* Sheath cut collar where the cores peel */}
       <mesh position={paths.tpsStrip} material={materials.sheathGrey} castShadow={false}>
         <cylinderGeometry args={[0.054, 0.05, 0.05, 12]} />
@@ -48,7 +53,7 @@ export function Wiring({
         points={paths.tpsActiveCore}
         radius={0.014}
         material={materials.wireActive}
-        live={mainLive}
+        live={true}
         segments={56}
         circuitId="main"
         shockable={shockable}
@@ -73,7 +78,12 @@ export function Wiring({
         shockable={shockable}
         onShock={onShockMains}
       />
-      <PathWire points={paths.barToNeutComb} radius={0.011} material={materials.wireNeutral} live={mainLive} />
+      <PathWire
+        points={paths.barToNeutComb}
+        radius={0.011}
+        material={materials.wireNeutral}
+        live={mainLive}
+      />
 
       {/* Per-circuit cores: short runs into each TPS join */}
       {paths.outgoingActive.map((pts, i) => (
@@ -110,9 +120,15 @@ export function Wiring({
             <mesh position={pts[0]} material={materials.sheathGrey} castShadow={false}>
               <sphereGeometry args={[0.024, 10, 10]} />
             </mesh>
-            <PathWire points={pts} radius={0.022} material={materials.sheathGrey} segments={24} soft={false} />
+            <PathWire
+              points={pts}
+              radius={0.022}
+              material={materials.sheathGrey}
+              segments={24}
+              soft={false}
+            />
           </group>
-        ),
+        )
       )}
     </group>
   );

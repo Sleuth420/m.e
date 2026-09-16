@@ -5,89 +5,81 @@ export const servicePagesContent = {
     slug: 'electrician-melbourne',
     title: 'A-Grade Electrician Melbourne | Residential, Commercial & Industrial',
     description:
-      'Licensed A-Grade electrician across Melbourne: homes, commercial, industrial, data and smart home. Quote from photos. CBD apartments have their own page.',
+      'Electrical installations, repairs and maintenance for Melbourne homes, businesses and industrial sites. A-Grade electrician. Request a written quote.',
     keywords: ['electrician melbourne', 'licensed electrician melbourne', 'a-grade electrician'],
     category: 'electrical',
     content: {
-      heading: 'Licensed Electrician in Melbourne',
+      heading: 'Electrical Services in Melbourne',
       intro:
-        'A-Grade licensed electrician for residential, commercial, and industrial work across Melbourne — including data, comms, and smart home. One person on site, quote in writing, tidy handover.',
+        'I’m Ricky, an A-Grade electrician working across Melbourne. I help homeowners and businesses with electrical repairs, new installations, switchboard upgrades and ongoing maintenance.',
       paragraphs: [
-        'This page is for metro Melbourne: houses, shops, offices, warehouses, and light industrial. Switchboards, three-phase, structured cabling, and smart home wiring sit in the same licence. High-rise CBD apartments and office towers have a separate page because access and body corporate rules change how the job is booked.',
-        'I do not publish a before-and-after photo dump of client switchboards. What I can show is how I think about an install (walk the 3D room on the home page) and how I quote (photos of your board, then a written price). Urgent work is booked when the schedule and safety allow it — not a 24-hour call centre.',
+        'Whether you need extra power points at home, lighting for a shop fit-out or power for workshop equipment, I start by understanding the job and checking what the existing installation can support.',
+        'Tell me your suburb, the type of property and what you need done. I’ll confirm availability and whether a site visit is needed, then provide a written quote before work starts.',
       ],
       commonJobs: [
-        'Switchboard upgrades and safety switch installation',
-        'Data, comms, and structured cabling',
-        'Commercial and industrial fit-out power and lighting',
-        'Three-phase supply checks and small industrial installs',
-        'Warehouse and workshop power, lighting, and maintenance',
-        'Power loss fault finding in homes, offices, and sites',
-        'Oven, cooktop, and air-con circuit installs',
-        'LED lighting retrofits and dimmer circuits',
-        'Pre-purchase and rental compliance checks',
-        'Smart home and low-voltage wiring for switches, sensors, and cameras',
+        'Switchboard upgrades and safety switches',
+        'Fault finding for power loss and tripping circuits',
+        'Power points and dedicated appliance circuits',
+        'LED lighting and dimmer installation',
+        'Office, shop and warehouse fit-outs',
+        'Three-phase power for workshops and equipment',
+        'Data cabling and smart home wiring',
+        'Electrical safety checks and repairs',
       ],
       features: [
-        'Residential, commercial, and industrial electrical work',
-        'Data, communications, and smart home wiring',
-        'Switchboard upgrades and RCD protection',
-        'Fit-outs, maintenance, and fault finding',
-        'Three-phase and light industrial installs',
-        'Lighting and power point installs',
-        'Compliance and safety inspections',
+        'Installation and upgrades',
+        'Repairs and fault finding',
+        'Scheduled maintenance',
+        'Residential electrical work',
+        'Commercial fit-outs',
+        'Industrial electrical work',
       ],
       benefits: [
-        'A-Grade licensed and insured (Victoria)',
-        'Work quoted before I start',
-        'Clear communication, no jargon where avoidable',
-        'Same person who can also build the site, app, or security around the job',
+        'Work carried out by an A-Grade electrician',
+        'Scope and pricing agreed before work starts',
+        'Clear explanations of the work your property needs',
+        'Direct contact with the person doing the job',
       ],
       faqs: [
         {
-          question: 'Are you licensed to do all electrical work in Victoria?',
+          question: 'What areas do you service?',
           answer:
-            'Yes. I hold an A-Grade electrician licence in Victoria, which covers residential, commercial, and industrial work listed on this site. I do not perform illegal DIY work or sign off other people\'s unlicensed installs.',
+            'I work across metropolitan Melbourne. Include your suburb in the enquiry so I can confirm availability and any travel costs.',
         },
         {
-          question: 'How do I book an urgent electrical job?',
+          question: 'Can you quote without visiting?',
           answer:
-            'Use the contact form on this site, describe the issue, and mark it urgent. I will respond as soon as I can with the next available appointment. If there is immediate danger, call 000 and your electricity distributor first.',
+            'Some straightforward jobs can be assessed from a description and photos. Fault finding, larger installations and work with unclear access may need a site visit. I’ll let you know what is needed after your enquiry.',
         },
         {
-          question: 'Do you service all Melbourne suburbs?',
+          question: 'Can I book an urgent job?',
           answer:
-            'Yes. CBD apartments and offices have a dedicated page. The rest of metro Melbourne — west, north, inner, and south — is quoted from this page. Travel is in the quote; if you are on the fringe I will say so before you book.',
+            'Urgent appointments depend on availability. The contact form is not monitored continuously, so please do not rely on it for an emergency.',
         },
       ],
-      proofHeading: 'What you can check',
+      proofHeading: 'Before you book',
       proofItems: [
         {
-          title: 'Walk the 3D electrical installation',
+          title: 'Electrical licence guide',
           detail:
-            'A walkable model of a real-style install on the home page — circuits, fittings, and how the room is wired. It is a demonstration of how I think, not a gallery of other people\'s jobs.',
-          href: '/#switchboard-showcase',
-        },
-        {
-          title: 'What A-Grade covers in Victoria',
-          detail:
-            'Plain-English notes on the licence, certificates, and what I will not sign off. No marketing badge — Energy Safe Victoria sets the rules.',
+            'Read about A-Grade licences, contractor registration and electrical safety certificates in Victoria.',
           href: '/blog/a-grade-electrician-victoria',
         },
         {
-          title: 'Quote from your photos',
+          title: 'Apartment and CBD work',
           detail:
-            'Send the switchboard, the fault, and the meter location. I reply with a written price or the next questions. Larger industrial or fit-out work still needs a site visit.',
+            'Planning a job in a city building? See how access, building management and permitted work hours affect the booking.',
+          href: '/services/electrician-melbourne-cbd',
         },
       ],
-      cta: 'Tell me about the job through the contact form and I will send a quote or ask for photos if that is enough to price it.',
+      cta: 'Tell me what needs fixing or installing, your suburb and your preferred timing. I’ll reply with the next steps for a quote.',
     },
   },
   'electrician-melbourne-cbd': {
     slug: 'electrician-melbourne-cbd',
     title: 'Electrician Melbourne CBD | A-Grade Apartments & Offices',
     description:
-      'Licensed electrician for Melbourne CBD apartments, offices and retail. Body corporate welcome. Written quote from photos — not a 24-hour call centre.',
+      'Electrical repairs, switchboard upgrades, lighting and power for Melbourne CBD apartments, offices and shops, with building access planned before the visit.',
     keywords: [
       'electrician melbourne cbd',
       'electricians melbourne cbd',
@@ -99,230 +91,235 @@ export const servicePagesContent = {
     category: 'electrical',
     location: 'Melbourne CBD',
     content: {
-      heading: 'A-Grade electrician',
+      heading: 'Electrical Services',
       intro:
-        'Licensed A-Grade electrician for Melbourne CBD apartments, offices, and retail. Building access, body corporate rules, and after-hours lift bookings are part of the job — not extras I pretend not to know about.',
+        'Electrical repairs and installations for Melbourne CBD apartments, offices and shops. I plan the work around building access, permitted hours and any approvals needed from your building manager.',
       paragraphs: [
-        'CBD work is mostly towers and tenancies: apartment switchboards and RCDs in older blocks, extra circuits for home offices, nuisance tripping, office power, and shop lighting. Warehouses and industrial sites are quoted from the metro electrician page, not here.',
-        'I quote from the contact form. Photos of the switchboard, the fault, and the meter location speed things up. For body corporate work I need the manager\'s approval in writing before I book a date. Parking is usually the client\'s problem; loading-zone time is in the quote.',
+        'City properties often need a little more planning. Lift bookings, shared switchboard access, parking and shutdown windows can all affect when work can happen. We confirm these details before booking the visit.',
+        'I handle apartment lighting and power, tripping circuits, switchboard upgrades and small commercial fit-outs. Include your building type and any access requirements when you enquire.',
       ],
       commonJobs: [
-        'Apartment switchboard and RCD upgrades',
-        'Residential power points and appliance circuits in high-rise kitchens',
-        'Office power and data point installs',
-        'Shop lighting and emergency exit checks',
-        'After-hours work when building access requires it',
-        'Compliance fixes flagged in rental reports',
+        'Apartment switchboard and safety switch upgrades',
+        'Oven, cooktop and other appliance circuits',
+        'Power points and data outlets for offices',
+        'Lighting for shops and commercial tenancies',
+        'Fault finding for tripping circuits',
+        'Repairs identified in electrical safety reports',
       ],
       features: [
-        'Local electrician for Melbourne CBD apartments and suites',
-        'Residential and commercial electrical work in towers',
-        'Office power upgrades with building access',
-        'Retail and hospitality lighting',
-        'Fault finding for tripping circuits',
-        'Coordination with body corporate where required',
+        'Apartment electrical repairs',
+        'Office and retail installations',
+        'Lighting and power upgrades',
+        'Switchboard work',
+        'Coordination with building management',
+        'After-hours appointments when available',
       ],
       benefits: [
-        'A-Grade licensed electrician (Victoria)',
-        'Experience with CBD access and timing constraints',
-        'Quotes in writing before work starts',
-        'Contact via form; no phone tag',
+        'A-Grade electrician based in Melbourne',
+        'Access requirements discussed before the visit',
+        'Written quotes with the scope clearly set out',
+        'Work scheduled around your building’s requirements',
       ],
       faqs: [
         {
-          question: 'Do you work as an electrician in Melbourne CBD apartments?',
+          question: 'Do I need building manager approval?',
           answer:
-            'Yes. Many of my Melbourne CBD jobs are residential apartments and small commercial suites. I need building access arranged and, where required, body corporate approval before I attend.',
+            'That depends on the building and the work. Shared areas, planned power interruptions and restricted work hours may require approval. Check with your building manager and include their requirements in your enquiry.',
         },
         {
-          question: 'Are you a residential electrician for Melbourne CBD?',
+          question: 'Can you work after hours?',
           answer:
-            'Yes. Residential work covers apartment switchboards, RCDs, oven and appliance circuits, lighting, and rental compliance fixes across the CBD and nearby towers.',
+            'After-hours appointments may be possible where building rules require them. Let me know the permitted times so I can confirm availability and the applicable rate.',
         },
         {
-          question: 'Can you do after-hours electrical work in the city?',
+          question: 'What should I include in my enquiry?',
           answer:
-            'Sometimes, when access and safety allow it. After-hours rates apply and I need confirmed building access. Submit the form with your preferred window and I will confirm availability.',
-        },
-        {
-          question: 'How fast can you quote a CBD electrical job?',
-          answer:
-            'If you send clear photos of the switchboard and describe the fault, I can often quote the same business day. Larger fit-outs need a site visit, which we book through the form.',
+            'Describe the work, the type of property, your preferred timing and any access restrictions. If photos would help, I’ll arrange how to share them after your enquiry.',
         },
       ],
-      proofHeading: 'How CBD jobs actually run',
+      proofHeading: 'Planning your visit',
       proofItems: [
         {
-          title: 'Access before tools',
+          title: 'Confirm access',
           detail:
-            'Lift bookings, loading zones, and after-hours windows get confirmed before I attend. If the building manager has not signed off, I will not guess my way in.',
+            'Arrange access to the apartment or tenancy and any shared electrical areas. Include lift booking and parking details where relevant.',
         },
         {
-          title: 'Quote from photos',
+          title: 'Agree the scope',
           detail:
-            'A clear photo of the apartment or tenancy board is usually enough for a written price. I will say so if I still need to walk the site.',
+            'I’ll confirm whether the job can be quoted from your description or needs an inspection first.',
         },
         {
-          title: 'Metro and industrial work',
+          title: 'Work across Melbourne',
           detail:
-            'Houses, warehouses, and light industrial are quoted from the Melbourne electrician page — this URL stays for the city grid.',
+            'I also work on houses, warehouses and industrial premises throughout metropolitan Melbourne.',
           href: '/services/electrician-melbourne',
         },
       ],
-      cta: 'Describe your Melbourne CBD job on the contact form. Include building type, access notes, and photos if you have them.',
+      cta: 'Send a brief description of the job, your building type and any access restrictions. I’ll confirm what is needed to book the work.',
     },
   },
   'wordpress-developer-melbourne': {
     slug: 'wordpress-developer-melbourne',
     title: 'WordPress Developer Melbourne | Custom Themes & WooCommerce',
     description:
-      'WordPress developer in Melbourne. Custom themes, Elementor, and owner-editable trade sites. Live examples: Perri Electrics and Electrovision. Quote via the form.',
+      'WordPress websites, redesigns and WooCommerce stores for Melbourne businesses. Easy content editing, mobile layouts and support after launch.',
     keywords: ['wordpress developer melbourne', 'woocommerce developer melbourne'],
     category: 'web-dev',
     content: {
-      heading: 'WordPress Developer in Melbourne',
+      heading: 'WordPress Development in Melbourne',
       intro:
-        'I build WordPress sites that owners can actually update: trade businesses, directories, and small shops. Not cookie-cutter templates unless that is what your budget needs.',
+        'I build WordPress websites that make your services easy to understand and your content easy to update. From a small business site to an online shop, the design starts with what your customers need to do.',
       paragraphs: [
-        'Client WordPress work includes perrielectrics.com and electrovisionaustralia.com.au (trade sites), reachingoutintheinnerwestofmelbourne.com.au (non-profit), and maxtrans.com.au (product site). Custom Next.js and logged-in apps are not quoted from this page.',
-        'I write clean theme code when Elementor is not the right tool, and I am honest when a static Next.js site would be cheaper to host and faster to load.',
+        'My WordPress work includes sites for Perri Electrics, Electrovision Australia, Reaching Out in the Inner West of Melbourne and Max Trans. Each has a different purpose, from explaining trade services to sharing community information and displaying products.',
+        'I can build a new site, improve an existing one or add features such as product listings and online payments. We agree on the pages, functionality and content before the build, with a handover so you can manage everyday updates.',
       ],
       commonJobs: [
-        'New business websites on WordPress',
-        'WooCommerce store setup and payment gateways',
-        'Elementor redesigns without breaking SEO',
-        'Custom plugins and CPT directories',
-        'Malware cleanup and hosting migration',
-        'Speed and Core Web Vitals fixes',
+        'New small business websites',
+        'Redesigns of existing WordPress sites',
+        'WooCommerce shops and payment setup',
+        'Custom themes and plugins',
+        'Business directories and product listings',
+        'Hosting moves, maintenance and speed improvements',
       ],
       features: [
-        'Custom WordPress themes',
-        'Elementor and WooCommerce',
-        'Directory and listing sites',
-        'Hosting migration and hardening',
-        'SEO-friendly structure',
-        'Training handover for your team',
+        'Layouts for phones, tablets and desktops',
+        'Content editing with WordPress or Elementor',
+        'Contact forms and enquiry paths',
+        'Search-friendly page structure',
+        'Site updates, backups and access settings',
+        'Training and site handover',
       ],
       benefits: [
-        'You deal with the developer, not an account manager',
-        'Trade business experience (I am an electrician too)',
-        'Fixed-scope quotes where possible',
-        'Melbourne-based, same timezone',
+        'Direct contact with your developer',
+        'Experience building sites for trade businesses',
+        'Scope and milestones agreed upfront',
+        'Support available after launch',
       ],
       faqs: [
         {
-          question: 'WordPress or custom code for my business?',
-          answer: 'WordPress if you need frequent content changes and a moderate budget. Custom Next.js if you need speed, unique apps, or long-term scale. I will recommend one in the quote.',
+          question: 'Is WordPress right for my business?',
+          answer:
+            'WordPress can be a good fit if you want to update pages, publish articles or manage products yourself. I’ll discuss your editing needs, budget and required features before recommending an approach.',
         },
         {
-          question: 'Do you maintain sites after launch?',
-          answer: 'Yes, on monthly care plans or ad-hoc hourly work. See the pricing page or ask in the form.',
+          question: 'Can you maintain the site after launch?',
+          answer:
+            'Yes. Ongoing maintenance or occasional updates can be arranged. We’ll agree on what is covered and how it is billed.',
         },
         {
-          question: 'Can you rebuild my old WordPress site without losing rankings?',
-          answer: 'Usually yes, with proper redirects and URL mapping. Send your current site URL in the form.',
+          question: 'Can you redesign my site and keep its existing search traffic?',
+          answer:
+            'I plan redirects and retain useful content where appropriate to reduce disruption. Rankings can still change after a redesign, so the plan includes checking important pages and links.',
         },
       ],
-      proofHeading: 'WordPress sites I have shipped',
+      proofHeading: 'WordPress projects',
       proofItems: [
         {
           title: 'Perri Electrics',
-          detail: 'Melbourne electrician site: services, licence trust, and a contact path the owner can edit in Elementor.',
+          detail:
+            'A Melbourne electrician’s website with service information and content the owner can update through Elementor.',
           href: 'https://perrielectrics.com',
           external: true,
         },
         {
           title: 'Electrovision Australia',
-          detail: 'Electrical contractor WordPress site built to show services and take quote requests.',
+          detail:
+            'A WordPress website presenting an electrical contractor’s services and giving visitors a way to request a quote.',
           href: 'https://electrovisionaustralia.com.au',
           external: true,
         },
         {
-          title: 'How that Perri build was scoped',
-          detail: 'Case notes: what a trade site needed, why WordPress, and what I would skip next time.',
+          title: 'Building the Perri Electrics website',
+          detail:
+            'A closer look at the content, layout and editing choices behind a trade business website.',
           href: '/blog/perri-electrics-website-tradie-developer',
         },
       ],
-      cta: 'WordPress projects start with the contact form or the pricing page packages.',
+      cta: 'Share your current website, or describe the site you want to build. Include the pages and features you need and whether you’ll be updating the content yourself.',
     },
   },
   'web-developer-melbourne': {
     slug: 'web-developer-melbourne',
     title: 'Web Developer Melbourne | Custom Next.js & React Sites',
     description:
-      'Melbourne web developer for custom Next.js and React sites. This portfolio is one of mine. WordPress, apps, and IoT have their own pages. Quote via the form.',
-    keywords: ['web developer melbourne', 'custom web development melbourne', 'javascript developer melbourne'],
+      'Custom websites for Melbourne businesses, built with React and Next.js. Responsive design, clear navigation, hosting setup and a practical handover.',
+    keywords: [
+      'web developer melbourne',
+      'custom web development melbourne',
+      'javascript developer melbourne',
+    ],
     category: 'web-dev',
     content: {
-      heading: 'Web Developer in Melbourne',
+      heading: 'Custom Web Development in Melbourne',
       intro:
-        'I build custom marketing sites in Next.js and React. You are looking at one of those builds. WordPress, web apps, and IoT hardware are quoted from their own pages so the copy is not copied three times.',
+        'I build custom websites for businesses that need a tailored design or functionality. The focus is on clear content, straightforward navigation and a good experience on phones and desktops.',
       paragraphs: [
-        'Custom code is the right call when you need performance, a design that is not a page-builder theme, or a site you will grow in Git. This site is Next.js 16, TypeScript, and structured data I actually maintain.',
-        'I do not sell unlimited revisions. We agree milestones, you see working pages early, and we change scope in writing. If you need daily content edits by staff who will never open a terminal, use the WordPress page instead.',
+        'A custom website gives you control over the layout, interactions and connections to other tools. I use React and Next.js for these builds and choose the approach around your requirements and how you plan to maintain the site.',
+        'We start with your audience, the pages they need and the actions you want them to take. You review working pages during the build, and we agree on changes as they come up. Hosting, analytics and handover are included in the project plan.',
       ],
       commonJobs: [
-        'Custom marketing sites in Next.js',
-        'React front ends with TypeScript',
-        'Performance and accessibility passes',
-        'Hosting on Vercel, Cloudflare, or similar',
-        'Analytics and Search Console wired up',
-        'Moving off a slow page-builder theme',
+        'Business and marketing websites',
+        'Landing pages for a product or service',
+        'Custom React interfaces',
+        'Website rebuilds and migrations',
+        'Performance and accessibility improvements',
+        'Contact forms and third-party integrations',
       ],
       features: [
-        'Next.js and React development',
-        'TypeScript end to end',
-        'Accessible, mobile-first UI',
-        'Hosting and deploys',
-        'Metadata, sitemap, and schema',
-        'Hand-off you can keep running',
+        'Responsive page layouts',
+        'Custom design and interactions',
+        'React, Next.js and TypeScript development',
+        'Page titles, sitemaps and structured data',
+        'Hosting and deployment setup',
+        'Analytics setup and project handover',
       ],
       benefits: [
-        'You deal with the person who writes the code',
-        'Melbourne-based, same timezone',
-        'Transparent milestones',
-        'Honest when WordPress or an app is a better fit',
+        'Work directly with the developer building your site',
+        'An approach chosen around your content and features',
+        'Working pages to review before launch',
+        'Clear milestones and an agreed scope',
       ],
       faqs: [
         {
-          question: 'Is this a web design page or a software page?',
+          question: 'Do I need a custom website or WordPress?',
           answer:
-            'This URL is custom websites: layout, performance, and content you can rank. Logged-in tools live on the app development page. IoT and sensors live on the IoT page.',
+            'It depends on the design, features and how you want to edit content. WordPress is often useful for regular updates by non-technical staff. A custom build offers more control over how the site looks and works.',
         },
         {
-          question: 'What stack do you recommend in 2026?',
+          question: 'Can you build booking tools or customer accounts?',
           answer:
-            'Next.js for most custom marketing sites. WordPress when non-technical staff must edit daily. I pick based on your team, not hype.',
+            'Yes. If the project includes accounts, stored customer data or business workflows, we’ll scope it as a web application. That helps account for the extra development and ongoing support it needs.',
         },
         {
-          question: 'How long does a custom site take?',
+          question: 'How long does a custom website take?',
           answer:
-            'Small marketing site: often 3–6 weeks. The form and pricing page are the starting point for a realistic timeline.',
+            'A small marketing site often takes around three to six weeks. The timeline depends on the number of pages, functionality, content readiness and review times. I’ll provide an estimate with the scope.',
         },
       ],
-      proofHeading: "What's already live",
+      proofHeading: 'Explore my web work',
       proofItems: [
         {
-          title: 'This site',
+          title: 'OakCodeAndTechSolutions',
           detail:
-            'oakcodeandtechsolutions.com — Next.js 16, the 3D electrical room, and the service pages you are reading. It is the custom-web proof, not a mock.',
+            'This website combines custom page layouts with an interactive 3D room, built using Next.js and React.',
           href: '/',
         },
         {
-          title: 'WordPress client sites',
+          title: 'Project portfolio',
           detail:
-            'Perri Electrics, Electrovision, and other owner-editable builds live on the WordPress page so this one stays about custom code.',
-          href: '/services/wordpress-developer-melbourne',
+            'Browse business websites, online shops and other projects to see the range of work I take on.',
+          href: '/projects',
         },
       ],
-      cta: 'Describe the site you need on the contact form, or start from the pricing page.',
+      cta: 'Tell me who the website is for, what visitors should be able to do and whether you have an existing site. I’ll help define the scope and next steps.',
     },
   },
   'app-development-melbourne': {
     slug: 'app-development-melbourne',
     title: 'App Development Melbourne | Web Apps & Trade Tools',
     description:
-      'Custom web apps in Melbourne. Live build: electrician job management (quotes, tasks, site calcs). Native iOS is not the default. Quote via the form.',
+      'Custom web apps for Melbourne businesses: quoting tools, customer portals, dashboards and integrations. Plan, build and improve the tools your team uses.',
     keywords: [
       'app development melbourne',
       'app development in melbourne',
@@ -333,82 +330,77 @@ export const servicePagesContent = {
     ],
     category: 'app-dev',
     content: {
-      heading: 'App Development Melbourne',
+      heading: 'Web App Development in Melbourne',
       intro:
-        'I build logged-in web apps: dashboards, quoting tools, and small SaaS products. Brochure sites and IoT hardware are quoted elsewhere.',
+        'I build web applications that help businesses manage work, serve customers and reduce repetitive tasks. Projects include quoting tools, dashboards, customer portals and subscription products.',
       paragraphs: [
-        'Most products ship faster as a responsive web app than as App Store binaries. Native iOS or Android is not the default. If you only need a marketing site, use the web developer page.',
-        'We start with the smallest version that solves one real problem, ship it, then iterate. Application work here means portals, billing, and role-based access — not another brochure.',
+        'If your team relies on scattered spreadsheets, repeated data entry or tools that don’t work together, a custom app may help. We start by mapping the task and identifying the smallest useful version to build.',
+        'I develop the interface, server and database, with account permissions and integrations scoped around your workflow. You can try the app as it develops, then use that feedback to decide what comes next.',
       ],
       commonJobs: [
+        'Job tracking and quoting tools',
+        'Customer portals and booking systems',
         'Internal dashboards and admin tools',
-        'Customer booking and quote portals',
-        'Subscription billing with Stripe',
-        'Auth and role-based access',
-        'Integrations with Xero, email, SMS APIs',
-        'MVPs for startup validation',
+        'Subscription billing and payments',
+        'Connections to accounting, email and SMS services',
+        'First versions of new software products',
       ],
       features: [
-        'React, Vue, and Next.js front ends',
-        'Django and Node backends',
-        'Database design (Postgres, Convex)',
-        'Stripe billing',
-        'Auth (Clerk, custom JWT)',
-        'Deployment and monitoring',
+        'Interfaces for desktop and mobile browsers',
+        'User accounts and access permissions',
+        'Database and server development',
+        'Payment and API integrations',
+        'Deployment and monitoring setup',
+        'Further development and support by agreement',
       ],
       benefits: [
-        'Pragmatic MVP scope',
-        'One developer accountable for the stack',
-        'Electrical trade domain knowledge for trade apps',
+        'One developer across the interface and backend',
+        'Firsthand knowledge of trade business workflows',
+        'A focused first release you can put to use',
         'Written milestones and deliverables',
       ],
       faqs: [
         {
-          question: 'Do you offer app development in Melbourne?',
+          question: 'Do you build mobile apps?',
           answer:
-            'Yes. I am based in Melbourne and build web apps, internal tools, and SaaS MVPs. Contact the form with the problem you need solved and I will reply with scope and pricing options.',
+            'My focus is web apps that work in a browser on phones, tablets and computers. If you need an App Store release or device-specific features, mention that early so we can assess the right approach.',
         },
         {
-          question: 'Web app or mobile app?',
+          question: 'Do you build software for electricians?',
           answer:
-            'Web app unless you truly need app-store presence. It is faster and cheaper to iterate. We can wrap a web app later if required.',
+            'Yes. My electrician management app includes job tracking, quotes, tasks and site calculations. My trade background helps me understand how these tools are used on site.',
         },
         {
-          question: 'Do you build electrician software?',
+          question: 'Can you work on an existing app?',
           answer:
-            'Yes. I build tools for the trade I also work in — useful for electrical job apps and trade SaaS, not a generic agency pitch.',
-        },
-        {
-          question: 'Can you take over an existing codebase?',
-          answer:
-            'Sometimes. Send repo access or an architecture summary in the form and I will do a paid discovery block first.',
+            'Potentially. Send a summary of what the app does, the technology it uses and what needs changing. I’ll arrange a code review before estimating the work.',
         },
       ],
-      proofHeading: 'Shipped apps',
+      proofHeading: 'App projects',
       proofItems: [
         {
-          title: 'Electrician management app',
+          title: 'Electrician Management App',
           detail:
-            'Job tracking for electricians: quotes, tasks, and site calculations. Vue/Nuxt front end, Django backend. This is a product, not a concept deck.',
+            'A job management tool for electricians with quotes, tasks and site calculations, built with Vue, Nuxt and Django.',
           href: 'https://electricianapp.com.au',
           external: true,
         },
         {
-          title: 'Grow-y',
+          title: 'Grow-y — in development',
           detail:
-            'Plant-tracking web app (React). In progress — listed because it is a real URL, not because it is finished.',
+            'A React gardening app for tracking plants and organising care reminders. Development is ongoing.',
           href: 'https://growy.xyz',
           external: true,
         },
       ],
-      cta: 'App projects: use the contact form with the problem you are solving, not a feature wishlist.',
+      cta: 'Describe the task you want to improve, who will use the app and the tools you use now. That gives us a starting point for the first version.',
     },
   },
   'iot-solutions-melbourne': {
     slug: 'iot-solutions-melbourne',
     title: 'IoT Melbourne | Sensors, Raspberry Pi & Connected Hardware',
     description:
-      'IoT in Melbourne: sensors, Raspberry Pi, and hardware that reports to a dashboard. Built by an A-Grade electrician who also writes the code. Quote via the form.',
+      'Connected hardware, sensors and Raspberry Pi projects in Melbourne. Prototype devices, collect readings and build dashboards for monitoring and control.',
     keywords: [
       'iot solutions melbourne',
       'iot development melbourne',
@@ -417,350 +409,362 @@ export const servicePagesContent = {
     ],
     category: 'other',
     content: {
-      heading: 'IoT in Melbourne',
+      heading: 'Connected Hardware & IoT in Melbourne',
       intro:
-        'IoT here means a device that measures something and a view you can actually use. I wire the enclosure and write the code. Marketing sites and logged-in SaaS are not this page.',
+        'I build connected devices that measure, monitor or control something in the physical world. That can mean a temperature sensor, an equipment monitor or a Raspberry Pi display with a custom interface.',
       paragraphs: [
-        'Typical jobs: temperature or run-hour logs, door or tank status, Pi kiosks, GPIO automation, and small factory or home monitoring. Security defaults matter: no open MQTT on the public internet, passwords rotated, updates planned.',
-        'Mains-powered enclosures follow the same electrical rules as any other install I sign. Mass manufacturing and CE marking for a consumer product line are out of scope; prototypes and small runs are in.',
+        'The hardware and software need to work together. I help choose the sensors and controller, write the code and build a way to view readings or receive alerts. My electrical background is useful when a project also needs installation work.',
+        'Projects start with what you need to measure or control, where the device will be used and how it will connect. Power, connectivity, access settings and future updates are part of that plan. I focus on prototypes and small runs.',
       ],
       commonJobs: [
-        'Environmental monitoring (temp, humidity)',
-        'Raspberry Pi kiosk and display systems',
-        'GPIO automation and relays',
-        'Alerting via email or SMS',
-        'Data logging for compliance',
-        'Safe mains isolation for powered enclosures',
+        'Temperature and humidity monitoring',
+        'Equipment status and operating-hour logs',
+        'Raspberry Pi displays and kiosks',
+        'Sensor data collection and dashboards',
+        'Email or SMS alerts',
+        'Custom controllers and hardware prototypes',
       ],
       features: [
-        'Sensor hardware selection',
-        'Raspberry Pi, Arduino, and Linux embedded',
-        'Edge Python or firmware',
-        'Dashboards and alerting',
-        'Electrical safety for powered boxes',
-        'Handover notes you can maintain',
+        'Sensor and controller selection',
+        'Raspberry Pi, Arduino and embedded Linux',
+        'Device software and hardware integration',
+        'Dashboards and alert setup',
+        'Power and enclosure planning',
+        'Documentation and handover',
       ],
       benefits: [
-        'A-Grade electrician plus developer on the same job',
-        'Safety-first on anything with mains power',
-        'Prototype to small batch',
-        'Plain-language specs',
+        'Electrical and software experience on the same project',
+        'Hardware chosen for the operating environment',
+        'Prototypes you can test before expanding',
+        'Clear documentation for future maintenance',
       ],
       faqs: [
         {
-          question: 'Arduino or Raspberry Pi?',
+          question: 'Which controller should I use?',
           answer:
-            'Arduino for simple sensing and MCU tasks. Pi when you need Linux, networking, or a local UI.',
+            'That depends on the job. A microcontroller such as an Arduino may suit simple sensing and control. A Raspberry Pi can suit projects that need Linux, a screen or more complex software.',
         },
         {
-          question: 'Can you retrofit existing equipment?',
+          question: 'Can you add monitoring to existing equipment?',
           answer:
-            'Often yes, with clamp sensors or dry contacts. Photos and manuals help the quote.',
+            'Often, but the approach depends on the equipment and available connections. A model number, manual and description of the readings you need will help me assess it.',
         },
         {
-          question: 'Do you build production hardware?',
+          question: 'Do you manufacture products at scale?',
           answer:
-            'Small runs and prototypes, yes. Mass manufacturing is out of scope; I can get you to a demo a factory can understand.',
+            'I focus on prototypes and small runs. If your goal is mass production, we’ll discuss the specialist design, testing and manufacturing work needed beyond the prototype.',
         },
         {
-          question: 'Do you support devices after install?',
-          answer: 'Yes, on a support retainer or hourly basis.',
+          question: 'Can you support devices after installation?',
+          answer:
+            'Yes. Updates, troubleshooting and ongoing support can be arranged as part of the project or as separate work.',
         },
       ],
-      proofHeading: 'Hardware I have actually built',
+      proofHeading: 'Hardware and software projects',
       proofItems: [
         {
           title: 'ZegaMame Pokédex',
           detail:
-            'Pokédex UI on custom embedded Linux: search, filters, and detail views in Python/Tkinter. Source is public.',
+            'A searchable Pokédex interface built with Python and Tkinter for embedded Linux hardware. The source code is available on GitHub.',
           href: 'https://github.com/Sleuth420/Python-Tkinter-Pokedex',
           external: true,
         },
         {
-          title: 'Mains on the same ticket',
+          title: 'Electrical installation',
           detail:
-            'If the box takes 230 V, the electrical side is licensed work, not a hobbyist PSU shoved in a project case. That is the IoT difference on this site.',
+            'For projects that also need electrical work, the installation can be discussed alongside the device and software requirements.',
+          href: '/services/electrician-melbourne',
         },
       ],
-      cta: 'IoT quotes start with the contact form: what you need measured or controlled, and whether the enclosure is mains-powered.',
+      cta: 'Tell me what you want to measure or control, where the device will operate and what power or internet connection is available.',
     },
   },
   'digital-marketing-melbourne': {
     slug: 'digital-marketing-melbourne',
     title: 'Digital Marketing Melbourne | Content, Directories & Analytics',
     description:
-      'Digital marketing in Melbourne: content, directory SEO, and analytics on sites I actually operate. Technical crawl work lives on the SEO page. Quote via the form.',
+      'Content planning, website copy and analytics for Melbourne small businesses. Help customers understand your services and measure how they find your website.',
     keywords: ['digital marketing melbourne', 'seo melbourne small business'],
     category: 'other',
     content: {
       heading: 'Digital Marketing in Melbourne',
       intro:
-        'I am not an ads agency. I plan content, structure local pages, and measure what ranks — using the same methods I use on directories I operate. Technical crawl fixes are the SEO page.',
+        'I help small businesses explain their services online and understand how people find their website. My focus is content planning, useful landing pages and analytics that support practical decisions.',
       paragraphs: [
-        'The proof is properties I run, not a client logo wall. Op Shops Hub, Dog Grooming Australia, and The Granny Flat Guide are live. I know where programmatic SEO stops being useful and starts looking like doorway spam.',
-        'For a business site, that usually means a content plan, honest titles, and analytics you can read. I do not run large Google Ads accounts.',
+        'Good content answers the questions customers ask before they get in touch. I review your services, audience and existing pages, then help plan or improve the content that supports an enquiry or purchase.',
+        'I also build and maintain directories and guides, including Op Shops Hub and The Granny Flat Guide. That work informs how I organise information, plan location pages and track search performance.',
       ],
       commonJobs: [
-        'Content plans for local service sites',
-        'Landing page copy (human-written)',
-        'Analytics and Search Console for non-technical owners',
-        'Advice on directory vs brochure structure',
-        'Competitor gap notes (what they publish, not fake reviews)',
+        'Content plans for small business websites',
+        'Service page and landing page copy',
+        'Page title and description updates',
+        'Analytics and Search Console setup',
+        'Reviews of competing websites and content gaps',
+        'Directory and guide content planning',
       ],
       features: [
-        'Content strategy',
-        'On-page copy and titles',
-        'Analytics setup',
-        'Local landing page advice',
-        'Directory architecture (when it is warranted)',
-        'Honest limits on what marketing cannot fix',
+        'Audience and content review',
+        'A prioritised publishing plan',
+        'Clear service descriptions',
+        'Local content planning',
+        'Traffic and enquiry measurement',
+        'Reporting explained in plain English',
       ],
       benefits: [
-        'Practitioner who publishes his own sites',
-        'No long-term lock-in by default',
-        'Works alongside a site build, not against it',
-        'Will say no to doorway suburb clones',
+        'Experience running my own directories and guides',
+        'Content planned around real customer questions',
+        'Website changes and content work can be coordinated',
+        'A defined scope with progress you can review',
       ],
       faqs: [
         {
-          question: 'Do you run Google Ads?',
+          question: 'Do you manage paid advertising?',
           answer:
-            'Limited. I focus on organic and site quality. I can refer PPC specialists if you need heavy ad spend managed.',
+            'My main focus is organic search, website content and analytics. If you need ongoing management of a large advertising account, a dedicated paid advertising specialist is a better fit.',
         },
         {
-          question: 'How long until results?',
+          question: 'How long does it take to see results?',
           answer:
-            'Usually months, not days. I will tell you if your niche is too competitive for a quick win.',
+            'Content and search work usually need time to take effect. Results depend on your starting point, competition and what you publish. We’ll agree on what to measure and review progress over time.',
         },
         {
-          question: 'Is this the same as your SEO page?',
+          question: 'How does this differ from technical SEO?',
           answer:
-            'No. This page is content and properties I operate. The SEO page is crawl, schema, and Core Web Vitals on a site you already have.',
+            'Content work helps visitors understand your business and find useful answers. Technical SEO addresses how search engines access and interpret the site, along with issues such as speed and broken links. Some projects need both.',
         },
       ],
-      proofHeading: 'Sites I operate',
+      proofHeading: 'Directories and guides I run',
       proofItems: [
         {
           title: 'The Granny Flat Guide',
-          detail: 'Independent granny-flat costs and rules content — not a builder lead mill.',
+          detail: 'An Australian guide to granny flat costs, planning considerations and builders.',
           href: 'https://thegrannyflatguide.com',
           external: true,
         },
         {
           title: 'Op Shops Hub',
-          detail: 'Charity-store directory with suburb-level discovery. A live example of directory SEO done as a product.',
+          detail:
+            'A directory that helps readers find op shops, charity retailers and donation information by location.',
           href: 'https://opshopshub.com',
           external: true,
         },
         {
-          title: 'All publications',
-          detail: 'The rest of the operated directories and guides, listed in one place.',
+          title: 'More publications',
+          detail: 'Explore the other directories and guides I build and maintain.',
           href: '/publications',
         },
       ],
-      cta: 'Marketing help via the contact form. Include your site URL and who you actually compete with.',
+      cta: 'Share your website, the customers you want to reach and what you want them to do. I’ll suggest where content and measurement could help.',
     },
   },
   'seo-services-melbourne': {
     slug: 'seo-services-melbourne',
     title: 'SEO Services Melbourne | Technical & Local SEO',
     description:
-      'Technical SEO in Melbourne: crawl issues, schema, Core Web Vitals, and titles that earn clicks. Content and directories live on the marketing page.',
+      'Technical and local SEO for Melbourne businesses. Website audits, search visibility checks, page improvements and implementation by a web developer.',
     keywords: ['seo services melbourne', 'search engine optimization melbourne'],
     category: 'other',
     content: {
       heading: 'SEO Services in Melbourne',
       intro:
-        'SEO for me is crawl issues, Core Web Vitals, schema, and titles that earn the click. Content calendars and directories I operate live on the marketing page.',
+        'I find and fix website issues that make it harder for search engines to understand your pages or for visitors to use them. The work can include technical repairs, clearer page titles and improvements to speed and structure.',
       paragraphs: [
-        'This site is the technical example: Next.js metadata, FAQ and service schema, a sitemap that only lists URLs that should rank, and human-written pages. That is the standard I apply when I get access to yours.',
-        'I do not buy links or ship AI blog farms. If your problem is thin location clones, I will say so — I have already redirected those on this domain.',
+        'An SEO review starts with your current website and the searches that matter to your business. I check which pages can be found, how they are organised and whether technical problems are getting in the way.',
+        'You get a prioritised list of changes with an explanation of why each matters. As a developer, I can also implement the agreed fixes and use Search Console and analytics to review the effect over time.',
       ],
       commonJobs: [
-        'Technical SEO audits',
-        'Core Web Vitals improvements',
-        'Schema and sitemap fixes',
-        'Title and snippet rewrites for CTR',
-        'Search Console monitoring',
+        'Website audits and search visibility checks',
+        'Broken link and redirect repairs',
+        'Page title and description improvements',
+        'Sitemap and indexing fixes',
+        'Structured data setup and corrections',
+        'Page speed and Core Web Vitals improvements',
       ],
       features: [
-        'Site audits',
-        'On-page optimization',
-        'Structured data',
-        'Content recommendations',
-        'Performance tuning',
-        'Monthly reporting',
+        'Technical website review',
+        'Prioritised recommendations',
+        'On-page content and structure checks',
+        'Implementation of agreed fixes',
+        'Search Console setup and review',
+        'Progress reporting',
       ],
       benefits: [
-        'Developer-led SEO (fixes actually get implemented)',
-        'Experience with local trade keywords',
-        'White-hat methods only',
-        'Clear task lists, not vague retainers',
+        'A developer who can carry out the recommended changes',
+        'Experience with trade and local business websites',
+        'Findings explained in plain language',
+        'Work scoped around specific problems',
       ],
       faqs: [
         {
-          question: 'Do you guarantee page one?',
-          answer: 'No. Anyone who guarantees that is lying. I guarantee actionable work and measurable fixes.',
-        },
-        {
-          question: 'Do you need access to my site?',
-          answer: 'Yes, for implementation. Read-only Search Console access is enough for audits-only work.',
-        },
-        {
-          question: 'Can you fix a penalty?',
-          answer: 'Maybe, depending on cause. Send Search Console messages in the form.',
-        },
-        {
-          question: 'Is this the same as digital marketing?',
+          question: 'Can you guarantee a first-page ranking?',
           answer:
-            'No. Marketing is content and properties I operate. This page is technical SEO on a site you already have.',
+            'No. Rankings depend on factors beyond any one website. I can define the work, explain the expected benefit and report on the changes and results.',
+        },
+        {
+          question: 'What access do you need?',
+          answer:
+            'An initial review can start with your website address. Search Console and analytics access help with a deeper review. Website or hosting access is needed to implement changes; we’ll arrange that separately.',
+        },
+        {
+          question: 'Can you investigate a sudden drop in traffic?',
+          answer:
+            'Yes. Include when the drop started and whether the site changed around that time. Search Console messages and traffic data can help identify what needs investigating.',
         },
       ],
-      proofHeading: 'Technical proof on this domain',
+      proofHeading: 'Related work',
       proofItems: [
         {
-          title: 'This site\'s metadata and schema',
+          title: 'Website projects',
           detail:
-            'Service titles, FAQ schema, and a sitemap that dropped nine suburb clones. The work is in the repo you are browsing, not a PDF audit of someone else.',
-          href: '/sitemap.xml',
+            'Browse the business websites and directories I’ve built to see the types of sites I work with.',
+          href: '/projects',
         },
         {
-          title: 'Content and directories',
+          title: 'Content and digital marketing',
           detail:
-            'If you want the publishing side (guides, directories), that is the marketing page — not copied here.',
+            'If your site also needs clearer service pages or a publishing plan, content work can be scoped alongside technical fixes.',
           href: '/services/digital-marketing-melbourne',
         },
       ],
-      cta: 'SEO enquiries via the contact form with your domain attached.',
+      cta: 'Send your website address and describe the issue: low visibility, a traffic drop, slow pages or uncertainty about what to improve first.',
     },
   },
   'cybersecurity-melbourne': {
     slug: 'cybersecurity-melbourne',
     title: 'Cybersecurity Melbourne | Audits & Hardening for Small Business',
     description:
-      'Small-business cybersecurity in Melbourne: WordPress hardening, headers, backups, and malware cleanup. No invented case studies. Quote via the form.',
+      'Website security reviews and fixes for Melbourne small businesses, including WordPress updates, access controls, backups and malware recovery.',
     keywords: ['cybersecurity melbourne', 'penetration testing melbourne small business'],
     category: 'other',
     content: {
-      heading: 'Cybersecurity in Melbourne',
+      heading: 'Website Security for Melbourne Businesses',
       intro:
-        'Small businesses get hit because defaults stay unchanged. I harden WordPress and custom sites, review cloud configs, and fix what I find. I do not publish other people\'s breach reports.',
+        'I help small businesses improve the security of their websites and web apps. Typical work includes reviewing access, applying updates, checking backups and fixing vulnerabilities in the site or its configuration.',
       paragraphs: [
-        'There is no public client security case study on this site, and I will not invent one. What I can show is how this domain is locked down, and that hardening is part of WordPress and custom sites I ship — implemented, not a PDF left on your desk.',
-        'I am not a mega-corp SOC. Typical work: admin hardening, missing updates, open buckets, headers, backups you have actually restored from, and malware cleanup after a hit.',
+        'A review looks at how the site is hosted, who can access it and how it is maintained. I explain the findings, prioritise the work and implement the fixes we agree on.',
+        'If a site has been compromised, I can help investigate, clean it up and plan recovery. The scope depends on the affected systems and available backups. Ongoing monitoring and larger security engagements may need a specialist provider.',
       ],
       commonJobs: [
-        'WordPress malware removal and hardening',
-        'SSL and header configuration',
-        'Backup and restore drills',
-        'Basic vulnerability scans',
-        'Security training for staff',
+        'WordPress security reviews and updates',
+        'Malware cleanup and recovery',
+        'Administrator and account access reviews',
+        'HTTPS and security header configuration',
+        'Backup and restore checks',
+        'Application vulnerability reviews',
       ],
       features: [
-        'Site hardening',
-        'Malware cleanup',
-        'Access review',
-        'Backup strategy',
-        'OWASP-aware dev fixes',
-        'Incident response planning',
+        'Website and configuration review',
+        'Prioritised security findings',
+        'Implementation of agreed fixes',
+        'Backup and recovery planning',
+        'Staff guidance on account security',
+        'Maintenance recommendations',
       ],
       benefits: [
-        'Developer who implements fixes, not just PDF reports',
-        'Trade business empathy (you cannot afford downtime)',
-        'Plain English findings',
-        'Proportionate to your business size',
+        'Findings and fixes handled by a developer',
+        'Advice suited to the size of your business',
+        'Clear explanations of risks and priorities',
+        'Scope and access agreed before testing',
       ],
       faqs: [
         {
-          question: 'Do you do formal penetration tests?',
-          answer: 'Lightweight app and site testing for SMBs, yes. Red-team engagements for enterprises are not my market.',
+          question: 'Do you offer penetration testing?',
+          answer:
+            'I can carry out scoped testing of small business websites and apps with the owner’s permission. If you need a formal assessment for a contract or compliance requirement, share those requirements before booking.',
         },
         {
-          question: 'Can you help after a hack?',
-          answer: 'Yes. Priority is contain, restore from clean backup, patch, then review logs.',
+          question: 'Can you help with a hacked website?',
+          answer:
+            'Yes, subject to availability and the systems involved. Describe what happened and when you noticed it. We’ll arrange access securely and assess the recovery options.',
         },
         {
-          question: 'Do you sell security software?',
-          answer: 'No commission products. I recommend tools that fit your stack.',
+          question: 'Do I need to buy new security software?',
+          answer:
+            'Not necessarily. Updates, access controls and reliable backups may address some of the immediate gaps. Any additional tools should fit your existing site and maintenance needs.',
         },
       ],
-      proofHeading: 'What I can show instead of a case study',
+      proofHeading: 'Security as part of site maintenance',
       proofItems: [
         {
-          title: 'Headers on this site',
+          title: 'WordPress support',
           detail:
-            'HSTS, nosniff, and a Content-Security-Policy are set in the Next.js config for oakcodeandtechsolutions.com. That is production config, not a slide.',
-          href: '/',
-        },
-        {
-          title: 'Hardening on WordPress I ship',
-          detail:
-            'Admin, backups, and updates are part of handover on sites like Perri Electrics. I implement the fixes; I do not publish their security reports.',
+            'Updates, access settings and backups can be included in a WordPress maintenance scope.',
           href: '/services/wordpress-developer-melbourne',
         },
+        {
+          title: 'Web application development',
+          detail:
+            'Account permissions and ongoing maintenance are also considered when planning custom applications.',
+          href: '/services/app-development-melbourne',
+        },
       ],
-      cta: 'Security work starts with the contact form and your site or app URL.',
+      cta: 'Describe the website or app and the issue you want reviewed. Please leave passwords and other sensitive access details out of the form; we’ll arrange access separately.',
     },
   },
   'cad-design-melbourne': {
     slug: 'cad-design-melbourne',
     title: 'CAD Design Melbourne | Technical Drawings & 3D Models',
     description:
-      'CAD and 3D modeling in Melbourne: technical drawings, Blender visuals, and design files for web and print. Quote via contact form.',
+      'CAD drawings, 3D models and product visuals in Melbourne. Communicate a concept, document dimensions or create assets for a website or presentation.',
     keywords: ['cad design melbourne', '3d modeling melbourne'],
     category: 'other',
     content: {
       heading: 'CAD & 3D Design in Melbourne',
       intro:
-        'I produce technical drawings and 3D visuals for trades, product mock-ups, and website assets. Blender for renders, CAD for anything that needs dimensions on paper.',
+        'I create technical drawings and 3D models to help explain a design, show a product or plan a prototype. Deliverables can include dimensioned drawings, rendered images and interactive website assets.',
       paragraphs: [
-        'Useful when you need a granny flat concept visual, a product hero image, or documentation for a custom enclosure before fabrication.',
+        'The starting point is how the model or drawing will be used. A product image for a website needs different detail from an enclosure model or a diagram for a manual. We agree on dimensions, visual detail and file formats before work begins.',
+        'My work focuses on concept development, technical communication and visual assets. For certified engineering drawings or plans for building approval, you’ll need an appropriately qualified specialist.',
       ],
       commonJobs: [
-        '3D product renders for websites',
-        'Concept models for approvals',
+        'Product renders for websites',
+        'Concept models and prototype enclosures',
         'Technical diagrams for manuals',
-        'Blender assets for marketing',
-        'Simple CAD for makers and trades',
+        'Dimensioned drawings for discussion and planning',
+        '3D assets for interactive web experiences',
+        'Model preparation for 3D printing',
       ],
       features: [
-        'Blender 3D modeling',
-        'Technical CAD drawings',
-        'Export for web and print',
+        'CAD drawings and 3D modelling',
+        'Blender rendering',
+        'Dimensions and annotations',
+        'Exports for web and print',
         'Revision rounds agreed upfront',
-        'File handover (STEP, STL, PNG)',
-        'Electrical layout sketches where needed',
+        'Source files and exports as scoped',
       ],
       benefits: [
-        'Same person can build the site that shows the model',
-        'Trade-aware dimensions and labels',
-        'Fast iteration on visuals',
-        'Melbourne based',
+        'Electrical trade experience for technical projects',
+        'Visual detail matched to the intended use',
+        'Models and website development can be coordinated',
+        'File formats agreed before the work starts',
       ],
       faqs: [
         {
-          question: 'Do you do architectural CAD?',
-          answer: 'Concept and communication drawings, not stamped architectural plans for council. I will refer you to a draftsperson when needed.',
+          question: 'Do you provide architectural or engineering approval drawings?',
+          answer:
+            'I provide concept and communication drawings. Certified engineering work and plans for building approval need the appropriate qualified professional.',
         },
         {
-          question: 'What files do I get?',
-          answer: 'Agreed in the quote: usually source files plus PNG/PDF exports.',
+          question: 'What files will I receive?',
+          answer:
+            'That depends on how you plan to use the work. We’ll agree on source files and formats such as STEP, STL, PNG or PDF in the quote.',
         },
         {
-          question: 'Can you 3D print models?',
-          answer: 'I can prepare STL files. Printing is optional depending on equipment availability.',
+          question: 'Can you prepare a model for 3D printing?',
+          answer:
+            'Yes. I can prepare STL files for suitable projects. Let me know the intended printer or printing service and any size or material requirements.',
         },
       ],
-      proofHeading: '3D I have already shipped',
+      proofHeading: 'Explore a 3D project',
       proofItems: [
         {
-          title: 'Walkable electrical room',
+          title: 'Interactive electrical room',
           detail:
-            'The 3D installation on the home page is a model I built — fittings, layout, and interaction. It is the public CAD/3D proof, not a client drawing set.',
+            'Explore the room on the homepage to see 3D models, fittings and interactive controls working together in a browser.',
           href: '/#switchboard-showcase',
         },
       ],
-      cta: 'CAD and 3D enquiries via the contact form with reference images if you have them.',
+      cta: 'Describe the object or drawing you need, how it will be used and any required dimensions or file formats. Reference links are helpful if you have them.',
     },
   },
 } satisfies Record<string, ServicePageData>;

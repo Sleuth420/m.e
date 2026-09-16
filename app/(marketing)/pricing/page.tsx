@@ -5,7 +5,8 @@ import { BASE_URL } from '@/lib/site';
 
 export const metadata: Metadata = generateSeoMetadata({
   title: 'Pricing & Packages | Web Development & Electrical Services Melbourne',
-  description: 'Transparent pricing for web development, WordPress, custom applications, and licensed electrical services in Melbourne. Get quotes for your project today.',
+  description:
+    'Compare WordPress packages and hourly rates for web development, electrical work and technical services in Melbourne. Request a quote for your project.',
   type: 'website',
   canonical: `${BASE_URL}/pricing`,
 });

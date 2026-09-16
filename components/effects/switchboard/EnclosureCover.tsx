@@ -6,17 +6,21 @@ import { CanvasTexture, MathUtils, SRGBColorSpace, type Group } from 'three';
 import { BOARD } from './circuit-data';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from './interaction';
 import type { SwitchboardMaterials } from './materials';
+import { useGameInput } from './learning-room/GameInputContext';
+import { INTERACTION_REACH } from './interaction';
 
 type Props = {
   materials: SwitchboardMaterials;
   open: boolean;
   onRequestOpen: () => void;
+  onClose: () => void;
 };
 
-/** Hinged switchboard door — click to request license before opening. */
-export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
+/** Outer access door. The fixed escutcheon remains behind it. */
+export function EnclosureCover({ materials, open, onRequestOpen, onClose }: Props) {
+  const { setPointerHint } = useGameInput();
   const hingeRef = useRef<Group>(null);
-  const angle = useRef(open ? -1.62 : 0);
+  const angle = useRef(open ? -1.9 : 0);
 
   const { width: w, height: h } = BOARD;
   const coverZ = 0.62;
@@ -24,7 +28,7 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
   const panelH = h - 0.18;
 
   useFrame((_, delta) => {
-    const target = open ? -1.62 : 0;
+    const target = open ? -1.9 : 0;
     angle.current = MathUtils.damp(angle.current, target, 6, delta);
     if (hingeRef.current) hingeRef.current.rotation.y = angle.current;
   });
@@ -33,43 +37,51 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
     <group position={[-w / 2 + 0.07, 0, coverZ]}>
       <group ref={hingeRef}>
         <mesh
+          name="interact:board-door"
           position={[panelW / 2, 0, 0.018]}
           castShadow
           receiveShadow
-          raycast={open ? () => undefined : undefined}
-          onPointerUp={
-            open
-              ? undefined
-              : (e) => {
-                  onInteractiveClick(e, onRequestOpen);
-                }
-          }
-          onPointerOver={
-            open
-              ? undefined
-              : (e) => {
-                  onInteractiveEnter(e);
-                }
-          }
-          onPointerOut={open ? undefined : () => onInteractiveLeave()}
+          onClick={(e) => onInteractiveClick(e, open ? onClose : onRequestOpen)}
+          onPointerOver={(e) => {
+            onInteractiveEnter(e);
+            setPointerHint(
+              e.distance > INTERACTION_REACH
+                ? 'Walk closer to the switchboard'
+                : open
+                  ? 'Close switchboard'
+                  : 'Open switchboard'
+            );
+          }}
+          onPointerOut={() => {
+            onInteractiveLeave();
+            setPointerHint(null);
+          }}
         >
           <boxGeometry args={[panelW, panelH, 0.034]} />
-          <meshStandardMaterial
-            color="#eceae4"
-            roughness={0.48}
-            metalness={0.12}
-            transparent={open}
-            opacity={open ? 0.08 : 1}
-          />
+          <meshStandardMaterial color="#eceae4" roughness={0.48} metalness={0.12} />
         </mesh>
 
         {/* Generous tap target for mobile */}
         {!open && (
           <mesh
             position={[panelW / 2, 0, 0.06]}
-            onPointerUp={(e) => onInteractiveClick(e, onRequestOpen)}
-            onPointerOver={(e) => onInteractiveEnter(e)}
-            onPointerOut={() => onInteractiveLeave()}
+            name="interact:board-open"
+            onClick={(e) => {
+              onInteractiveClick(e, onRequestOpen);
+              setPointerHint(null);
+            }}
+            onPointerOver={(e) => {
+              onInteractiveEnter(e);
+              setPointerHint(
+                e.distance > INTERACTION_REACH
+                  ? 'Walk closer to the switchboard'
+                  : 'Open switchboard'
+              );
+            }}
+            onPointerOut={() => {
+              onInteractiveLeave();
+              setPointerHint(null);
+            }}
           >
             <boxGeometry args={[panelW + 0.08, panelH + 0.08, 0.12]} />
             <meshBasicMaterial transparent opacity={0} depthWrite={false} />
@@ -100,11 +112,15 @@ export function EnclosureCover({ materials, open, onRequestOpen }: Props) {
             [panelW - 0.14, -panelH / 2 + 0.12],
           ] as [number, number][]
         ).map(([x, y], i) => (
-          <mesh key={i} position={[x, y, 0.024]} rotation={[0, 0, Math.PI / 2]} material={materials.screw}>
+          <mesh
+            key={i}
+            position={[x, y, 0.024]}
+            rotation={[0, 0, Math.PI / 2]}
+            material={materials.screw}
+          >
             <cylinderGeometry args={[0.022, 0.022, 0.008, 10]} />
           </mesh>
         ))}
-
       </group>
     </group>
   );
@@ -118,7 +134,7 @@ function DangerSticker({ x }: { x: number }) {
     canvas.height = 256;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('2D context unavailable');
-    ctx.fillStyle = '#eab308';
+    ctx.fillStyle = '#f1eee6';
     ctx.fillRect(0, 0, 512, 256);
     ctx.strokeStyle = '#18181b';
     ctx.lineWidth = 14;
@@ -126,11 +142,11 @@ function DangerSticker({ x }: { x: number }) {
     ctx.fillStyle = '#18181b';
     ctx.textAlign = 'center';
     ctx.font = '800 52px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('DANGER', 256, 88);
+    ctx.fillText('SWITCHBOARD', 256, 88);
     ctx.font = '700 36px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('LIVE PARTS', 256, 140);
+    ctx.fillText('230 V ~ 50 Hz', 256, 140);
     ctx.font = '600 22px "Segoe UI", system-ui, sans-serif';
-    ctx.fillText('Authorised persons only', 256, 198);
+    ctx.fillText('Main switch & circuit protection', 256, 198);
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
     texture.needsUpdate = true;

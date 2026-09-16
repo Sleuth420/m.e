@@ -40,15 +40,24 @@ function promptForHit(
 ): RoomActionPrompt {
   switch (hit.id) {
     case 'toaster':
+      return !play.kitchenSocketOn
+        ? { text: 'Switch the kitchen power point on', tone: 'caution' }
+        : !live.powerLive
+          ? { text: 'Kitchen power is off', tone: 'caution' }
+          : { text: play.toasterPop ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'gpoDouble':
-      return !live.powerLive
-        ? { text: 'Kitchen power is off', tone: 'caution' }
-        : { text: play.toasterPop ? hit.promptClose : hit.promptOpen, tone: 'default' };
+      return {
+        text: play.kitchenSocketOn ? 'F · Power point off' : 'F · Power point on',
+        tone: 'default',
+      };
     case 'cookIsolator':
       return { text: play.isolatorOn ? 'F · Isolator off' : 'F · Isolator on', tone: 'caution' };
     case 'cooktop':
       return !live.hobLive
-        ? { text: 'Turn the isolator on', tone: 'caution' }
+        ? {
+            text: play.isolatorOn ? 'Cooktop circuit is off at the board' : 'Turn the isolator on',
+            tone: 'caution',
+          }
         : { text: play.boiling ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'sink':
       return { text: play.sinkOn ? hit.promptClose : hit.promptOpen, tone: 'default' };
@@ -58,10 +67,16 @@ function promptForHit(
       return { text, tone: live.loungeLightLive ? 'default' : 'caution' };
     }
     case 'tv':
+      return !play.loungeSocketOn
+        ? { text: 'Switch the lounge power point on', tone: 'caution' }
+        : !live.loungePowerLive
+          ? { text: 'Lounge power is off', tone: 'caution' }
+          : { text: play.tvOn ? hit.promptClose : hit.promptOpen, tone: 'default' };
     case 'tvGpo':
-      return !live.loungePowerLive
-        ? { text: 'Lounge power is off', tone: 'caution' }
-        : { text: play.tvOn ? hit.promptClose : hit.promptOpen, tone: 'default' };
+      return {
+        text: play.loungeSocketOn ? 'F · Power point off' : 'F · Power point on',
+        tone: 'default',
+      };
     default: {
       const isOpen =
         hit.id === 'fridge'
@@ -100,7 +115,7 @@ export function roomActionPrompt(
   if (nearTheBoard) {
     return withVerb(
       {
-        text: live.coarse ? 'Tap the cover · licensed only' : 'Tap the cover or F · licensed only',
+        text: live.coarse ? 'Tap to open the switchboard' : 'F · Open switchboard',
         tone: 'caution',
       },
       live.coarse

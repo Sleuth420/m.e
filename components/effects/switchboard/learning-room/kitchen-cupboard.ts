@@ -1,12 +1,4 @@
-import {
-  Box3,
-  Group,
-  Mesh,
-  MeshStandardMaterial,
-  Object3D,
-  Quaternion,
-  Vector3,
-} from 'three';
+import { Box3, Group, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { extractTriangles } from './mesh-extract';
 import { findNamed } from './scene-graph';
 
@@ -213,8 +205,10 @@ function splitShakerDoors(root: Object3D) {
   });
   const leftHandle = handles[0];
   const rightHandle = handles[handles.length - 1];
-  const leftParts = [leftMesh, leftHandle].filter((p, i, arr) => p && arr.indexOf(p) === i) as Object3D[];
-  const rightParts = [rightMesh, rightHandle].filter((p, i, arr) => p && p !== leftHandle) as Object3D[];
+  const leftParts = [leftMesh, leftHandle].filter(
+    (p, i, arr) => p && arr.indexOf(p) === i
+  ) as Object3D[];
+  const rightParts = [rightMesh, rightHandle].filter((p) => p && p !== leftHandle) as Object3D[];
   hingeGroup(leftParts, 'door_l', 'left');
   hingeGroup(rightParts, 'door_r', 'right');
 }

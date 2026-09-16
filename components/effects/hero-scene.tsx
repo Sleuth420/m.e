@@ -54,7 +54,11 @@ export function HeroScene({
       style={{ pointerEvents: controlsEnabled ? 'auto' : 'none' }}
     >
       <Suspense fallback={<HeroSceneFallback />}>
-        <HeroSceneCanvas active={visible} controlsEnabled={controlsEnabled} onExit={onExit} />
+        <HeroSceneCanvas
+          active={controlsEnabled || visible}
+          controlsEnabled={controlsEnabled}
+          onExit={onExit}
+        />
       </Suspense>
     </div>
   );

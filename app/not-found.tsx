@@ -14,7 +14,8 @@ export default function NotFound() {
             Page not found
           </h1>
           <p className="text-muted-foreground">
-            That URL does not exist. Try the services hub, pricing page, or contact form instead.
+            This page may have moved, or the link may be incorrect. Head back to the homepage,
+            browse the services or get in touch.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild className="gradient-bg text-primary-foreground">

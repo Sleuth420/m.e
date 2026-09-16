@@ -91,37 +91,37 @@ describe('stepPlayerPose', () => {
 });
 
 describe('playingCameraAnchor', () => {
-  it('sits behind the player looking along yaw', () => {
+  it('puts the eye at the player position looking along yaw', () => {
     const pose = spawn();
     const cam = playingCameraAnchor(pose, 0);
-    expect(cam.posZ).toBeGreaterThan(pose.z);
+    expect(cam.posZ).toBe(pose.z);
+    expect(cam.posX).toBe(pose.x);
     expect(cam.lookZ).toBeLessThan(pose.z);
   });
 
-  it('does not lock look or boom to the board when standing in front of it', () => {
+  it('does not steal aim when standing in front of the board', () => {
     const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
     const cam = playingCameraAnchor(pose, 0);
     expect(cam.lookZ).toBeGreaterThan(pose.z);
     expect(cam.lookX).toBeCloseTo(pose.x, 1);
-    expect(cam.posZ).toBeLessThan(pose.z);
+    expect(cam.posZ).toBe(pose.z);
     expect(Math.abs(cam.lookX - (BOARD_MOUNT.x + 0.12))).toBeGreaterThan(0.2);
-    expect(Math.abs(cam.posZ - BOARD_MOUNT.z)).toBeGreaterThan(0.15);
   });
 
-  it('keeps a long boom when at the board but looking away', () => {
+  it('keeps the eye still when inspecting through the lens', () => {
     const pose: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
-    const cam = playingCameraAnchor(pose, 0);
-    expect(pose.z - cam.posZ).toBeGreaterThan(1.6);
+    expect(playingCameraAnchor(pose, 1)).toEqual(playingCameraAnchor(pose, 0));
   });
 
-  it('shortens the boom only when looking at the board', () => {
+  it('turns without moving the eye into nearby furniture', () => {
     const away: PlayerPose = { x: 0.7, z: 5.35, yaw: 0, pitch: 0, moving: false };
     const at: PlayerPose = { x: 0.7, z: 5.35, yaw: -Math.PI / 2, pitch: 0, moving: false };
     const camAway = playingCameraAnchor(away, 0);
     const camAt = playingCameraAnchor(at, 0);
     const boomAway = Math.hypot(camAway.posX - away.x, camAway.posZ - away.z);
     const boomAt = Math.hypot(camAt.posX - at.x, camAt.posZ - at.z);
-    expect(boomAt).toBeLessThan(boomAway - 0.4);
+    expect(boomAt).toBe(0);
+    expect(boomAway).toBe(0);
   });
 
   it('aims lower when the player pitches down', () => {

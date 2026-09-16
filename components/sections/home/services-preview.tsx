@@ -26,10 +26,13 @@ export default function ServicesPreview() {
     <section className="py-16 sm:py-20 md:py-28 relative">
       <div className="container">
         <div className="text-center mb-14">
-          <span className="text-xs font-medium text-primary uppercase tracking-wider">What I Do</span>
+          <span className="text-xs font-medium text-primary uppercase tracking-wider">
+            What I Do
+          </span>
           <h2 className="display-md font-display font-bold mt-3 sm:mt-4 gradient-text">Services</h2>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-            Professional electrical services and custom web development, all handled by one person right here in Melbourne.
+            Electrical work, websites, apps and connected hardware. Explore the services below to
+            find the help you need.
           </p>
         </div>
 
@@ -41,7 +44,9 @@ export default function ServicesPreview() {
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {categories.map((cat) => {
-            const catServices = homeServiceTeasers.filter((s) => s.category === cat.key).slice(0, 2);
+            const catServices = homeServiceTeasers
+              .filter((s) => s.category === cat.key)
+              .slice(0, 2);
             if (catServices.length === 0) return null;
             const Icon = categoryIcons[cat.key];
             return (
@@ -54,7 +59,10 @@ export default function ServicesPreview() {
                   <ul className="space-y-3 mb-6">
                     {catServices.map((s) => (
                       <li key={s.slug} className="text-sm text-muted-foreground">
-                        <Link href={`/services/${s.slug}`} className="hover:text-primary transition-colors">
+                        <Link
+                          href={`/services/${s.slug}`}
+                          className="hover:text-primary transition-colors"
+                        >
                           {s.title}
                         </Link>
                       </li>

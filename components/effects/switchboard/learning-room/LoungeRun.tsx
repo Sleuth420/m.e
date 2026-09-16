@@ -8,6 +8,7 @@ import { FittedGltf } from './FittedGltf';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { FIXTURES, LOUNGE, ROOM } from './room-layout';
 import { RoomHit } from './RoomHit';
+import { SwitchedPowerPoint } from './SwitchedPowerPoint';
 import { useRepeatingPbr } from './room-textures';
 import { cloneGltfScene, setNamedEmissive } from './scene-graph';
 import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
@@ -82,7 +83,12 @@ function LoungeTelevision({ on }: { on: boolean }) {
       >
         <group position={[TV_SCREEN.x, TV_SCREEN.y, TV_SCREEN.z]}>
           <TvScreen on={on} width={TV_SCREEN.w} height={TV_SCREEN.h} />
-          {on && <pointLight position={[0, 0, 0.18]} intensity={0.55} distance={2.4} color="#9ec9e0" />}
+          <pointLight
+            position={[0, 0, 0.18]}
+            intensity={on ? 0.55 : 0}
+            distance={2.4}
+            color="#9ec9e0"
+          />
         </group>
       </FittedGltf>
     </group>
@@ -171,17 +177,27 @@ function LoungeSconces({ lightsOn, dimmer }: { lightsOn: boolean; dimmer: number
     <group>
       <primitive object={a} position={[s1.x, s1.y, s1.z]} rotation={[0, Math.PI, 0]} scale={1.18} />
       <primitive object={b} position={[s2.x, s2.y, s2.z]} rotation={[0, Math.PI, 0]} scale={1.18} />
-      {lightsOn && (
-        <>
-          <pointLight position={[s1.x, s1.y - 0.02, s1.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
-          <pointLight position={[s2.x, s2.y - 0.02, s2.z - 0.28]} intensity={intensity} distance={5.2} color="#fff4d6" />
-        </>
-      )}
+      <>
+        <pointLight
+          position={[s1.x, s1.y - 0.02, s1.z - 0.28]}
+          intensity={intensity}
+          distance={5.2}
+          color="#fff4d6"
+        />
+        <pointLight
+          position={[s2.x, s2.y - 0.02, s2.z - 0.28]}
+          intensity={intensity}
+          distance={5.2}
+          color="#fff4d6"
+        />
+      </>
     </group>
   );
 }
 
 type Props = {
+  socketOn: boolean;
+  onToggleSocket: () => void;
   powerLive: boolean;
   lightLive: boolean;
   dimmer: number;
@@ -190,13 +206,22 @@ type Props = {
   onToggleTv: () => void;
 };
 
-export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, onToggleTv }: Props) {
+export function LoungeRun({
+  powerLive,
+  socketOn,
+  onToggleSocket,
+  lightLive,
+  dimmer,
+  tvOn,
+  onCycleDimmer,
+  onToggleTv,
+}: Props) {
   const flex = useMemo(
     () => new MeshStandardMaterial({ color: '#1c1d20', roughness: 0.64, metalness: 0.06 }),
-    [],
+    []
   );
   const lightsOn = lightLive && dimmer > 0.04;
-  const screenOn = powerLive && tvOn;
+  const screenOn = powerLive && socketOn && tvOn;
   const cab = LOUNGE.cab;
   const zFront = ROOM.depth - cab.depth;
   const gpo = FIXTURES.loungeGpo;
@@ -210,17 +235,9 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
       <TvUnit />
       <LoungeTelevision on={screenOn} />
 
-      <FittedGltf
-        url={ROOM_GLB.gpoDouble}
-        maxSize={[0.155, 0.1, 0.032]}
-        position={[gpo.x, gpo.y, gpo.z]}
-        rotation={[0, Math.PI, 0]}
-        align="center"
-        pin="front"
-        share
-        shadows={false}
-        envIntensity={powerLive ? 1.15 : 1.05}
-      />
+      <group position={[gpo.x, gpo.y, gpo.z]} rotation={[0, Math.PI, 0]}>
+        <SwitchedPowerPoint on={socketOn} onToggle={onToggleSocket} hitId="tvGpo" />
+      </group>
       <PathWire
         points={[
           [tv.x + 0.56, cab.h + 0.2, ROOM.depth - 0.07],
@@ -233,7 +250,7 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         ]}
         radius={0.006}
         material={flex}
-        live={powerLive}
+        live={powerLive && socketOn}
         segments={24}
         oval={1}
         soft={false}
@@ -243,14 +260,12 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         position={[FIXTURES.loungeDimmerA.x, FIXTURES.loungeDimmerA.y, FIXTURES.loungeDimmerA.z]}
         wall="board"
         level={dimmer}
-        live={lightsOn}
         onCycle={onCycleDimmer}
       />
       <DimmerSwitch
         position={[FIXTURES.loungeDimmerB.x, FIXTURES.loungeDimmerB.y, FIXTURES.loungeDimmerB.z]}
         wall="lounge"
         level={dimmer}
-        live={lightsOn}
         onCycle={onCycleDimmer}
       />
 
@@ -261,12 +276,6 @@ export function LoungeRun({ powerLive, lightLive, dimmer, tvOn, onCycleDimmer, o
         hitId="tv"
         size={[LOUNGE.tv.w + 0.06, LOUNGE.tv.h + 0.04, 0.22]}
         position={[tv.x, cab.h + LOUNGE.tv.h / 2, zFront - 0.1]}
-      />
-      <RoomHit
-        onToggle={onToggleTv}
-        hitId="tvGpo"
-        size={[0.24, 0.18, 0.14]}
-        position={[gpo.x, gpo.y, gpo.z - 0.08]}
       />
     </group>
   );

@@ -19,6 +19,32 @@ describe('nextDimmer', () => {
 });
 
 describe('roomPlayReducer', () => {
+  it('socket isolation stops the appliance without changing its circuit or restarting the load', () => {
+    const running = { ...INITIAL_ROOM_PLAY, toasterPop: true, tvOn: true };
+    const kitchenOff = roomPlayReducer(running, { type: 'interact', id: 'gpoDouble', live });
+    expect(kitchenOff.toasterPop).toBe(false);
+    expect(kitchenOff.tvOn).toBe(true);
+    expect(roomPlayReducer(kitchenOff, { type: 'interact', id: 'toaster', live })).toBe(kitchenOff);
+    const kitchenOn = roomPlayReducer(kitchenOff, { type: 'interact', id: 'gpoDouble', live });
+    expect(kitchenOn.kitchenSocketOn).toBe(true);
+    expect(kitchenOn.toasterPop).toBe(false);
+    const loungeOff = roomPlayReducer(running, { type: 'interact', id: 'tvGpo', live });
+    expect(loungeOff.tvOn).toBe(false);
+    expect(loungeOff.toasterPop).toBe(true);
+    expect(roomPlayReducer(loungeOff, { type: 'interact', id: 'tv', live })).toBe(loungeOff);
+  });
+
+  it('mechanical socket switches can be operated without supply', () => {
+    const dead = { powerLive: false, hobLive: false, loungePowerLive: false };
+    expect(
+      roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'gpoDouble', live: dead })
+        .kitchenSocketOn
+    ).toBe(false);
+    expect(
+      roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'tvGpo', live: dead })
+        .loungeSocketOn
+    ).toBe(false);
+  });
   it('toggles the fridge and cupboard independently', () => {
     const fridge = roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'fridge', live });
     expect(fridge.fridgeOpen).toBe(true);
@@ -29,15 +55,15 @@ describe('roomPlayReducer', () => {
 
   it('ignores toaster and TV when their circuits are dead', () => {
     const dead = { powerLive: false, hobLive: false, loungePowerLive: false };
-    expect(roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'toaster', live: dead })).toBe(
-      INITIAL_ROOM_PLAY
-    );
+    expect(
+      roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'toaster', live: dead })
+    ).toBe(INITIAL_ROOM_PLAY);
     expect(roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'tv', live: dead })).toBe(
       INITIAL_ROOM_PLAY
     );
-    expect(roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'cooktop', live: dead })).toBe(
-      INITIAL_ROOM_PLAY
-    );
+    expect(
+      roomPlayReducer(INITIAL_ROOM_PLAY, { type: 'interact', id: 'cooktop', live: dead })
+    ).toBe(INITIAL_ROOM_PLAY);
   });
 
   it('pops the toaster when kitchen power is live', () => {

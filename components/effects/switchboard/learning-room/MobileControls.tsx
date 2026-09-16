@@ -13,7 +13,7 @@ type Props = {
 export function MobileControls({ visible }: Props) {
   const { coarse } = useCoarsePointer();
   const { coverOpen } = useSwitchboard();
-  const { mobileKeys } = useGameInput();
+  const { mobileKeys: mobileKeysRef } = useGameInput();
   const stickRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const pointerId = useRef<number | null>(null);
@@ -21,7 +21,7 @@ export function MobileControls({ visible }: Props) {
 
   useEffect(() => {
     if (!visible) {
-      Object.assign(mobileKeys.current, {
+      Object.assign(mobileKeysRef.current, {
         forward: false,
         back: false,
         left: false,
@@ -33,7 +33,7 @@ export function MobileControls({ visible }: Props) {
         stickY: 0,
       });
     }
-  }, [visible, mobileKeys]);
+  }, [visible, mobileKeysRef]);
 
   if (!visible || !coarse) return null;
 
@@ -41,7 +41,7 @@ export function MobileControls({ visible }: Props) {
     if (knobRef.current) {
       knobRef.current.style.transform = 'translate(-50%, -50%)';
     }
-    Object.assign(mobileKeys.current, {
+    Object.assign(mobileKeysRef.current, {
       forward: false,
       back: false,
       left: false,
@@ -54,8 +54,8 @@ export function MobileControls({ visible }: Props) {
   const applyStick = (clientX: number, clientY: number) => {
     const max = 42;
     const analog = analogFromDelta(clientX - origin.current.x, clientY - origin.current.y, max);
-    mobileKeys.current.stickX = analog.x;
-    mobileKeys.current.stickY = analog.y;
+    mobileKeysRef.current.stickX = analog.x;
+    mobileKeysRef.current.stickY = analog.y;
     if (knobRef.current) {
       knobRef.current.style.transform = `translate(calc(-50% + ${analog.x * max}px), calc(-50% + ${analog.y * max}px))`;
     }
@@ -95,7 +95,7 @@ export function MobileControls({ visible }: Props) {
     <div className="pointer-events-none absolute inset-0 z-40">
       <div
         ref={stickRef}
-        className="pointer-events-auto absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] left-[max(0.75rem,env(safe-area-inset-left))] h-[5.5rem] w-[5.5rem] touch-none"
+        className="pointer-events-auto absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] h-[5.5rem] w-[5.5rem] touch-none"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -111,7 +111,7 @@ export function MobileControls({ visible }: Props) {
         </span>
       </div>
       <p className="pointer-events-none absolute bottom-[max(1.35rem,calc(env(safe-area-inset-bottom)+0.5rem))] right-[max(0.75rem,env(safe-area-inset-right))] max-w-[7.5rem] text-right text-[9px] font-medium leading-snug tracking-wider text-white/75">
-        {coverOpen ? 'Tap a breaker' : 'Drag to look'}
+        {coverOpen ? 'Move to step back' : 'Drag to look'}
       </p>
     </div>
   );

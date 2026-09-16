@@ -23,7 +23,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         description={
           tag
             ? `Posts tagged with "${tag}"`
-            : 'Articles about web development, electrical services, and technology'
+            : 'Project stories, electrical service guides and notes on building websites and software.'
         }
       />
       <section className="py-16 md:py-24">
@@ -31,7 +31,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           <BlogPostList posts={posts} />
           {posts.length === 0 && (
             <p className="text-center text-muted-foreground py-12">
-              No posts found. Check back soon for new content!
+              No articles match this selection. Visit the blog without a tag filter to see all
+              articles.
             </p>
           )}
         </div>

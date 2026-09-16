@@ -1,6 +1,7 @@
 'use client';
 
 import { useTexture } from '@react-three/drei';
+import { useEffect, useMemo } from 'react';
 import { SRGBColorSpace } from 'three';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 
@@ -24,9 +25,15 @@ export function PhotoPlate({
   interactive,
   onToggle,
 }: PlateProps) {
-  const tex = useTexture(map);
-  tex.colorSpace = SRGBColorSpace;
-  tex.anisotropy = 8;
+  const source = useTexture(map);
+  const tex = useMemo(() => {
+    const texture = source.clone();
+    texture.colorSpace = SRGBColorSpace;
+    texture.anisotropy = 8;
+    texture.needsUpdate = true;
+    return texture;
+  }, [source]);
+  useEffect(() => () => tex.dispose(), [tex]);
 
   return (
     <group
@@ -34,11 +41,7 @@ export function PhotoPlate({
       rotation={rotation}
       onPointerOver={interactive ? (e) => onInteractiveEnter(e) : undefined}
       onPointerOut={interactive ? () => onInteractiveLeave() : undefined}
-      onPointerUp={
-        interactive && onToggle
-          ? (e) => onInteractiveClick(e, onToggle)
-          : undefined
-      }
+      onPointerUp={interactive && onToggle ? (e) => onInteractiveClick(e, onToggle) : undefined}
     >
       <mesh castShadow receiveShadow position={[0, 0, 0.004]}>
         <boxGeometry args={[width, height, 0.008]} />

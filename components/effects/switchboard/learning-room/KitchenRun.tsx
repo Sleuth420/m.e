@@ -37,6 +37,7 @@ import { loadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type RoomInteractId } from './room-layout';
 import { RoomHit } from './RoomHit';
+import { SwitchedPowerPoint } from './SwitchedPowerPoint';
 
 const BENCH_T = 0.03;
 const BENCH_Y = KITCHEN.benchH + BENCH_T / 2;
@@ -161,12 +162,7 @@ function TiledSplash({ x, w, h, z }: { x: number; w: number; h: number; z: numbe
   return (
     <mesh position={[x + w / 2, KITCHEN.benchH + BENCH_T + h / 2, z - t / 2]} receiveShadow>
       <boxGeometry args={[w, h, t]} />
-      <meshStandardMaterial
-        map={map}
-        roughness={0.58}
-        metalness={0.02}
-        envMapIntensity={0.72}
-      />
+      <meshStandardMaterial map={map} roughness={0.58} metalness={0.02} envMapIntensity={0.72} />
     </mesh>
   );
 }
@@ -176,7 +172,11 @@ function SplashUpstand({ x0, x1 }: { x0: number; x1: number }) {
   const maps = useRepeatingPbr(POLYHAVEN.marbleSlab, [Math.max(1.2, w / 2.1), 0.12]);
   return (
     <group>
-      <mesh position={[(x0 + x1) / 2, KITCHEN.benchH + BENCH_T + 0.012, 0.022]} castShadow receiveShadow>
+      <mesh
+        position={[(x0 + x1) / 2, KITCHEN.benchH + BENCH_T + 0.012, 0.022]}
+        castShadow
+        receiveShadow
+      >
         <boxGeometry args={[w, 0.024, 0.018]} />
         <meshStandardMaterial
           map={maps.map}
@@ -223,7 +223,7 @@ function UnderCabinetLed({ x0, x1, live }: { x0: number; x1: number; live: boole
 function ToasterFlex({ live }: { live: boolean }) {
   const mat = useMemo(
     () => new MeshStandardMaterial({ color: '#1c1d20', roughness: 0.64, metalness: 0.06 }),
-    [],
+    []
   );
   const t = FIXTURES.toaster;
   const g = FIXTURES.gpoDouble;
@@ -362,8 +362,15 @@ function FrenchFridge({
   const left = useRef<Group | null>(null);
   const right = useRef<Group | null>(null);
   useFrame((_, delta) => {
-    if (left.current) left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? -1.22 : 0, 8, delta);
-    if (right.current) right.current.rotation.y = MathUtils.damp(right.current.rotation.y, open ? 1.22 : 0, 8, delta);
+    if (left.current)
+      left.current.rotation.y = MathUtils.damp(left.current.rotation.y, open ? -1.22 : 0, 8, delta);
+    if (right.current)
+      right.current.rotation.y = MathUtils.damp(
+        right.current.rotation.y,
+        open ? 1.22 : 0,
+        8,
+        delta
+      );
   });
   return (
     <FittedGltf
@@ -456,7 +463,13 @@ function CookPot({ boiling, position }: { boiling: boolean; position: [number, n
         {Array.from({ length: 5 }, (_, i) => (
           <mesh key={i} position={[0, 0.08, 0]} scale={[0.65, 1.7, 0.65]}>
             <sphereGeometry args={[0.012, 8, 8]} />
-            <meshStandardMaterial color="#eef2f6" transparent opacity={0.2} roughness={1} depthWrite={false} />
+            <meshStandardMaterial
+              color="#eef2f6"
+              transparent
+              opacity={0.2}
+              roughness={1}
+              depthWrite={false}
+            />
           </mesh>
         ))}
       </group>
@@ -545,16 +558,27 @@ function TapWater({ x, y, z }: { x: number; y: number; z: number }) {
   return (
     <mesh position={[x, y + 0.02, z]}>
       <cylinderGeometry args={[0.004, 0.006, 0.22, 8]} />
-      <meshStandardMaterial color="#9ec9de" transparent opacity={0.38} roughness={0.08} metalness={0.05} />
+      <meshStandardMaterial
+        color="#9ec9de"
+        transparent
+        opacity={0.38}
+        roughness={0.08}
+        metalness={0.05}
+      />
     </mesh>
   );
 }
 
-function FridgeInterior({ position }: { position: [number, number, number] }) {
-  return <pointLight position={position} intensity={0.85} distance={1.6} color="#f3efe6" />;
+function FridgeInterior({ position, on }: { position: [number, number, number]; on: boolean }) {
+  return (
+    <pointLight position={position} intensity={on ? 0.85 : 0} distance={1.6} color="#f3efe6" />
+  );
 }
 
 type KitchenProps = {
+  socketOn: boolean;
+  onToggleSocket: () => void;
+  lightsOn: boolean;
   powerLive: boolean;
   fridgeLive: boolean;
   ovenLive: boolean;
@@ -574,6 +598,9 @@ type KitchenProps = {
 };
 
 export function KitchenRun({
+  socketOn,
+  onToggleSocket,
+  lightsOn,
   powerLive,
   fridgeLive,
   ovenLive,
@@ -642,8 +669,8 @@ export function KitchenRun({
       />
       <TiledSplash x={KITCHEN.startX} w={joineryEnd - KITCHEN.startX} h={splashH} z={splashZ} />
       <SplashUpstand x0={KITCHEN.startX} x1={joineryEnd} />
-      <UnderCabinetLed x0={sink.x} x1={cook.x} live={powerLive} />
-      <UnderCabinetLed x0={cabL.x} x1={fridge.x} live={powerLive} />
+      <UnderCabinetLed x0={sink.x} x1={cook.x} live={lightsOn} />
+      <UnderCabinetLed x0={cabL.x} x1={fridge.x} live={lightsOn} />
 
       <JoineryBay
         x={sink.x}
@@ -777,7 +804,12 @@ export function KitchenRun({
       />
       <JoineryPacker x={cook.x} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
       <JoineryPacker x={cook.x + cook.w - 0.007} y={ovenY} h={OVEN_H} depth={KITCHEN.benchDepth} />
-      <JoineryFascia x={cook.x + PACK} w={cook.w - PACK * 2} y={KITCHEN.benchH - RAIL_H} h={RAIL_H} />
+      <JoineryFascia
+        x={cook.x + PACK}
+        w={cook.w - PACK * 2}
+        y={KITCHEN.benchH - RAIL_H}
+        h={RAIL_H}
+      />
       <FittedGltf
         url={ROOM_GLB.hood}
         maxSize={[cook.w, KITCHEN.upperH + 0.04, KITCHEN.upperDepth + 0.24]}
@@ -825,23 +857,101 @@ export function KitchenRun({
         envIntensity={1}
       />
 
-      <RoomHit onToggle={onToggleSink} hitId="sink" size={[0.55, 0.24, 0.4]} position={[FIXTURES.sink.x, benchY + 0.12, 0.55]} />
-      <RoomHit onToggle={onToggleBoil} hitId="cooktop" size={[0.56, 0.1, 0.48]} position={[cookX, benchY + 0.08, benchZ]} />
-      <RoomHit onToggle={() => onToggle('oven')} hitId="oven" size={[cook.w - 0.04, OVEN_H, 0.28]} position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.78]} />
-      <RoomHit onToggle={() => onToggle('dishwasher')} hitId="dishwasher" size={[dw.w - 0.04, DW_H, 0.28]} position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.78]} />
-      <RoomHit onToggle={onToggleFridge} hitId="fridge" size={[FRIDGE_W, FRIDGE_H, 0.32]} position={[fridgeMid, FRIDGE_H / 2, 0.86]} />
-      <RoomHit onToggle={() => onToggle('sink-base')} hitId="sink-base" size={[0.7, 0.55, 0.22]} position={[0.68, 0.42, 0.74]} />
-      <RoomHit onToggle={() => onToggle('cabA-base')} hitId="cabA-base" size={[0.4, 0.55, 0.22]} position={[1.3, 0.42, 0.74]} />
-      <RoomHit onToggle={() => onToggle('cabL-base')} hitId="cabL-base" size={[0.8, 0.55, 0.22]} position={[2.58, 0.42, 0.74]} />
-      <RoomHit onToggle={() => onToggle('cabR-base')} hitId="cabR-base" size={[0.8, 0.55, 0.22]} position={[4.08, 0.42, 0.74]} />
-      <RoomHit onToggle={() => onToggle('sink-upper')} hitId="sink-upper" size={[0.7, 0.45, 0.16]} position={[0.68, 1.78, 0.48]} />
-      <RoomHit onToggle={() => onToggle('cabA-upper')} hitId="cabA-upper" size={[0.4, 0.45, 0.16]} position={[1.3, 1.78, 0.48]} />
-      <RoomHit onToggle={() => onToggle('cabL-upper')} hitId="cabL-upper" size={[0.8, 0.45, 0.16]} position={[2.58, 1.78, 0.48]} />
-      <RoomHit onToggle={() => onToggle('dw-upper')} hitId="dw-upper" size={[0.52, 0.45, 0.16]} position={[3.33, 1.78, 0.48]} />
-      <RoomHit onToggle={() => onToggle('cabR-upper')} hitId="cabR-upper" size={[0.8, 0.45, 0.16]} position={[4.08, 1.78, 0.48]} />
-      <RoomHit onToggle={onToggleToaster} hitId="toaster" size={[0.32, 0.22, 0.2]} position={[toasterX, benchY + 0.14, benchZ]} />
+      <RoomHit
+        onToggle={onToggleSink}
+        hitId="sink"
+        size={[0.55, 0.24, 0.4]}
+        position={[FIXTURES.sink.x, benchY + 0.12, 0.55]}
+      />
+      <RoomHit
+        onToggle={onToggleBoil}
+        hitId="cooktop"
+        size={[0.56, 0.1, 0.48]}
+        position={[cookX, benchY + 0.08, benchZ]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('oven')}
+        hitId="oven"
+        size={[cook.w - 0.04, OVEN_H, 0.28]}
+        position={[FIXTURES.oven.x, ovenY + OVEN_H / 2, 0.78]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('dishwasher')}
+        hitId="dishwasher"
+        size={[dw.w - 0.04, DW_H, 0.28]}
+        position={[FIXTURES.dishwasher.x, KITCHEN.kickH + DW_H / 2, 0.78]}
+      />
+      <RoomHit
+        onToggle={onToggleFridge}
+        hitId="fridge"
+        size={[FRIDGE_W, FRIDGE_H, 0.32]}
+        position={[fridgeMid, FRIDGE_H / 2, 0.86]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('sink-base')}
+        hitId="sink-base"
+        size={[0.7, 0.55, 0.22]}
+        position={[0.68, 0.42, 0.74]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabA-base')}
+        hitId="cabA-base"
+        size={[0.4, 0.55, 0.22]}
+        position={[1.3, 0.42, 0.74]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabL-base')}
+        hitId="cabL-base"
+        size={[0.8, 0.55, 0.22]}
+        position={[2.58, 0.42, 0.74]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabR-base')}
+        hitId="cabR-base"
+        size={[0.8, 0.55, 0.22]}
+        position={[4.08, 0.42, 0.74]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('sink-upper')}
+        hitId="sink-upper"
+        size={[0.7, 0.45, 0.16]}
+        position={[0.68, 1.78, 0.48]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabA-upper')}
+        hitId="cabA-upper"
+        size={[0.4, 0.45, 0.16]}
+        position={[1.3, 1.78, 0.48]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabL-upper')}
+        hitId="cabL-upper"
+        size={[0.8, 0.45, 0.16]}
+        position={[2.58, 1.78, 0.48]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('dw-upper')}
+        hitId="dw-upper"
+        size={[0.52, 0.45, 0.16]}
+        position={[3.33, 1.78, 0.48]}
+      />
+      <RoomHit
+        onToggle={() => onToggle('cabR-upper')}
+        hitId="cabR-upper"
+        size={[0.8, 0.45, 0.16]}
+        position={[4.08, 1.78, 0.48]}
+      />
+      <RoomHit
+        onToggle={onToggleToaster}
+        hitId="toaster"
+        size={[0.32, 0.22, 0.2]}
+        position={[toasterX, benchY + 0.14, benchZ]}
+      />
 
-      <CookPot boiling={hobLive && boiling} position={[cookX, benchTop + 0.01, FIXTURES.cooktop.z]} />
+      <CookPot
+        boiling={hobLive && boiling}
+        position={[cookX, benchTop + 0.01, FIXTURES.cooktop.z]}
+      />
       {sinkOn && <TapWater x={FIXTURES.sink.x} y={benchTop + 0.14} z={0.28} />}
       {ovenOpen && ovenLive && (
         <FittedGltf
@@ -852,23 +962,33 @@ export function KitchenRun({
           envIntensity={1}
         />
       )}
-      {fridgeOpen && <FridgeInterior position={[fridgeMid, 1.05, 0.52]} />}
+      <FridgeInterior on={fridgeOpen && fridgeLive} position={[fridgeMid, 1.05, 0.52]} />
       {toasterPop && (
         <>
-          <RoundedBox args={[0.062, 0.08, 0.014]} radius={0.004} smoothness={3} position={[toasterX - 0.038, benchY + 0.24, 0.34]} castShadow>
+          <RoundedBox
+            args={[0.062, 0.08, 0.014]}
+            radius={0.004}
+            smoothness={3}
+            position={[toasterX - 0.038, benchY + 0.24, 0.34]}
+            castShadow
+          >
             <meshStandardMaterial color="#c4a06a" roughness={0.88} metalness={0.02} />
           </RoundedBox>
-          <RoundedBox args={[0.062, 0.08, 0.014]} radius={0.004} smoothness={3} position={[toasterX + 0.038, benchY + 0.24, 0.34]} castShadow>
+          <RoundedBox
+            args={[0.062, 0.08, 0.014]}
+            radius={0.004}
+            smoothness={3}
+            position={[toasterX + 0.038, benchY + 0.24, 0.34]}
+            castShadow
+          >
             <meshStandardMaterial color="#b08958" roughness={0.88} metalness={0.02} />
           </RoundedBox>
         </>
       )}
 
-      <WallGpo
-        position={[FIXTURES.gpoDouble.x, splashY, splashZ]}
-        live={powerLive}
-        onToggle={powerLive ? onToggleToaster : undefined}
-      />
+      <group position={[FIXTURES.gpoDouble.x, splashY, splashZ]}>
+        <SwitchedPowerPoint on={socketOn} onToggle={onToggleSocket} hitId="gpoDouble" />
+      </group>
       <WallGpo position={[FIXTURES.gpoSingle.x, splashY, splashZ]} live={powerLive} />
       <WallGpo position={[FIXTURES.dwGpo.x, HEIGHTS.gpo, splashZ]} live={powerLive} />
       <WallGpo position={[FIXTURES.fridgeGpo.x, splashY, splashZ]} live={fridgeLive} />
@@ -877,19 +997,38 @@ export function KitchenRun({
         on={isolatorOn}
         onToggle={onToggleIsolator}
       />
-      <ToasterFlex live={powerLive} />
+      <ToasterFlex live={powerLive && socketOn} />
 
-      {hobLive && boiling && (
-        <pointLight position={[cookX, benchY + 0.18, 0.3]} intensity={0.18} distance={0.5} color="#fdba74" />
-      )}
-      {powerLive && <pointLight position={[hood.x, 1.48, 0.28]} intensity={0.28} distance={2.6} color="#f4f1ea" />}
-      {powerLive && toasterPop && (
-        <pointLight position={[toasterX, benchY + 0.26, 0.34]} intensity={0.35} distance={1.1} color="#fde68a" />
-      )}
-      {ovenOpen && ovenLive && (
-        <pointLight position={[FIXTURES.oven.x, 0.48, 0.4]} intensity={0.35} distance={0.8} color="#fdba74" />
-      )}
-      {dwOpen && <pointLight position={[dw.x + dw.w / 2, 0.46, 0.42]} intensity={0.22} distance={0.7} color="#e8eef5" />}
+      <pointLight
+        position={[cookX, benchY + 0.18, 0.3]}
+        intensity={hobLive && boiling ? 0.18 : 0}
+        distance={0.5}
+        color="#fdba74"
+      />
+      <pointLight
+        position={[hood.x, 1.48, 0.28]}
+        intensity={powerLive ? 0.28 : 0}
+        distance={2.6}
+        color="#f4f1ea"
+      />
+      <pointLight
+        position={[toasterX, benchY + 0.26, 0.34]}
+        intensity={powerLive && socketOn && toasterPop ? 0.35 : 0}
+        distance={1.1}
+        color="#fde68a"
+      />
+      <pointLight
+        position={[FIXTURES.oven.x, 0.48, 0.4]}
+        intensity={ovenOpen && ovenLive ? 0.35 : 0}
+        distance={0.8}
+        color="#fdba74"
+      />
+      <pointLight
+        position={[dw.x + dw.w / 2, 0.46, 0.42]}
+        intensity={dwOpen && powerLive ? 0.22 : 0}
+        distance={0.7}
+        color="#e8eef5"
+      />
     </group>
   );
 }
