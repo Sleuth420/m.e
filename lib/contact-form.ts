@@ -31,11 +31,11 @@ export function validateContactStep(data: ContactFormData, stepIndex: number): s
   if (stepIndex === 1) {
     if (!data.name.trim()) return 'Name is required';
     if (!data.email.trim()) return 'Email is required';
-    if (!EMAIL_REGEX.test(data.email)) return 'Please enter a valid email';
+    if (!EMAIL_REGEX.test(data.email.trim())) return 'Please enter a valid email';
   }
   if (stepIndex === 2) {
     if (!data.message.trim()) return 'Message is required';
-    if (data.message.length < 10) return 'Message must be at least 10 characters';
+    if (data.message.trim().length < 10) return 'Message must be at least 10 characters';
   }
   return null;
 }
@@ -53,6 +53,9 @@ export function mapSubmissionError(error: unknown): string {
   const rawMessage =
     error instanceof Error ? error.message : 'Failed to send message. Please try again.';
   const normalized = rawMessage.toLowerCase();
+  if (normalized.includes('recaptcha') || normalized.includes('not configured')) {
+    return 'The form is temporarily unavailable. Your message has not been sent. Please try again later.';
+  }
   if (
     normalized.includes('gmail_api') ||
     normalized.includes('invalid grant') ||
@@ -103,8 +106,8 @@ export async function submitContactForm(data: ContactFormData): Promise<void> {
     process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
     process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
     {
-      name: data.name,
-      email: data.email,
+      name: data.name.trim(),
+      email: data.email.trim(),
       project_type: data.project_type,
       message: `[Urgency: ${data.urgency}]\n\n${data.message}`,
       time: new Date().toLocaleString(),

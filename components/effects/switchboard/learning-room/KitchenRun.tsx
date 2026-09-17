@@ -33,7 +33,7 @@ import {
 } from './KitchenJoinery';
 import { POLYHAVEN, ROOM_GLB } from './room-assets';
 import { useRepeatingPbr } from './room-textures';
-import { loadKeptGltf } from './useKeptGltf';
+import { preloadKeptGltf } from './useKeptGltf';
 import { WallSwitch } from './WallSwitch';
 import { FIXTURES, HEIGHTS, KITCHEN, KITCHEN_BAYS, type RoomInteractId } from './room-layout';
 import { RoomHit } from './RoomHit';
@@ -569,12 +569,6 @@ function TapWater({ x, y, z }: { x: number; y: number; z: number }) {
   );
 }
 
-function FridgeInterior({ position, on }: { position: [number, number, number]; on: boolean }) {
-  return (
-    <pointLight position={position} intensity={on ? 0.85 : 0} distance={1.6} color="#f3efe6" />
-  );
-}
-
 type KitchenProps = {
   socketOn: boolean;
   onToggleSocket: () => void;
@@ -646,6 +640,38 @@ export function KitchenRun({
   const ovenY = KITCHEN.kickH + OVEN_DRAWER_H;
   const gableDepth = KITCHEN.benchDepth + 0.018;
   const kickEnd = fridge.x;
+  // Keep one appliance accent in the shader rather than five mostly dark lights.
+  // Appliance surfaces retain their own powered/emissive state.
+  const glow =
+    fridgeOpen && fridgeLive
+      ? { position: [fridgeMid, 1.05, 0.52], intensity: 0.85, distance: 1.6, color: '#f3efe6' }
+      : ovenOpen && ovenLive
+        ? {
+            position: [FIXTURES.oven.x, 0.48, 0.4],
+            intensity: 0.35,
+            distance: 0.8,
+            color: '#fdba74',
+          }
+        : dwOpen && powerLive
+          ? {
+              position: [dw.x + dw.w / 2, 0.46, 0.42],
+              intensity: 0.22,
+              distance: 0.7,
+              color: '#e8eef5',
+            }
+          : powerLive && socketOn && toasterPop
+            ? {
+                position: [toasterX, benchY + 0.26, 0.34],
+                intensity: 0.35,
+                distance: 1.1,
+                color: '#fde68a',
+              }
+            : {
+                position: [cookX, benchY + 0.18, 0.3],
+                intensity: hobLive && boiling ? 0.18 : 0,
+                distance: 0.5,
+                color: '#fdba74',
+              };
 
   return (
     <group>
@@ -962,7 +988,6 @@ export function KitchenRun({
           envIntensity={1}
         />
       )}
-      <FridgeInterior on={fridgeOpen && fridgeLive} position={[fridgeMid, 1.05, 0.52]} />
       {toasterPop && (
         <>
           <RoundedBox
@@ -1000,10 +1025,10 @@ export function KitchenRun({
       <ToasterFlex live={powerLive && socketOn} />
 
       <pointLight
-        position={[cookX, benchY + 0.18, 0.3]}
-        intensity={hobLive && boiling ? 0.18 : 0}
-        distance={0.5}
-        color="#fdba74"
+        position={glow.position as [number, number, number]}
+        intensity={glow.intensity}
+        distance={glow.distance}
+        color={glow.color}
       />
       <pointLight
         position={[hood.x, 1.48, 0.28]}
@@ -1011,36 +1036,18 @@ export function KitchenRun({
         distance={2.6}
         color="#f4f1ea"
       />
-      <pointLight
-        position={[toasterX, benchY + 0.26, 0.34]}
-        intensity={powerLive && socketOn && toasterPop ? 0.35 : 0}
-        distance={1.1}
-        color="#fde68a"
-      />
-      <pointLight
-        position={[FIXTURES.oven.x, 0.48, 0.4]}
-        intensity={ovenOpen && ovenLive ? 0.35 : 0}
-        distance={0.8}
-        color="#fdba74"
-      />
-      <pointLight
-        position={[dw.x + dw.w / 2, 0.46, 0.42]}
-        intensity={dwOpen && powerLive ? 0.22 : 0}
-        distance={0.7}
-        color="#e8eef5"
-      />
     </group>
   );
 }
 
-loadKeptGltf(ROOM_GLB.fridge);
-loadKeptGltf(ROOM_GLB.oven);
-loadKeptGltf(ROOM_GLB.cooktop);
-loadKeptGltf(ROOM_GLB.toaster);
-loadKeptGltf(ROOM_GLB.sink);
-loadKeptGltf(ROOM_GLB.tap);
-loadKeptGltf(ROOM_GLB.gpoDouble);
-loadKeptGltf(ROOM_GLB.dishwasher);
-loadKeptGltf(ROOM_GLB.hood);
-loadKeptGltf(ROOM_GLB.pot);
-loadKeptGltf(ROOM_GLB.roast);
+preloadKeptGltf(ROOM_GLB.fridge);
+preloadKeptGltf(ROOM_GLB.oven);
+preloadKeptGltf(ROOM_GLB.cooktop);
+preloadKeptGltf(ROOM_GLB.toaster);
+preloadKeptGltf(ROOM_GLB.sink);
+preloadKeptGltf(ROOM_GLB.tap);
+preloadKeptGltf(ROOM_GLB.gpoDouble);
+preloadKeptGltf(ROOM_GLB.dishwasher);
+preloadKeptGltf(ROOM_GLB.hood);
+preloadKeptGltf(ROOM_GLB.pot);
+preloadKeptGltf(ROOM_GLB.roast);

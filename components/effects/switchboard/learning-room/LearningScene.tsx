@@ -1,6 +1,6 @@
 'use client';
 
-import { ContactShadows, Environment } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { MeshStandardMaterial } from 'three';
@@ -14,7 +14,7 @@ import { LearningRoom } from './LearningRoom';
 import { LoungeRun } from './LoungeRun';
 import { Player } from './Player';
 import { RoomWiring } from './RoomWiring';
-import { BOARD_MOUNT, BOARD_OPENING, ROOM, ROOM_LOADS, type RoomInteractId } from './room-layout';
+import { BOARD_MOUNT, BOARD_OPENING, ROOM_LOADS, type RoomInteractId } from './room-layout';
 import { POLYHAVEN } from './room-assets';
 import type { RoomLive } from './room-play';
 import { useGameInput } from './GameInputContext';
@@ -24,6 +24,7 @@ import { ScenePerformance } from './ScenePerformance';
 type Props = {
   controlsEnabled: boolean;
   onExit: () => void;
+  onDprChange: (dpr: number) => void;
 };
 
 function LedBatten({ position, pulse }: { position: [number, number, number]; pulse: boolean }) {
@@ -82,9 +83,7 @@ function LedBatten({ position, pulse }: { position: [number, number, number]; pu
   );
 }
 
-function GalleryLighting({ playing }: { playing: boolean }) {
-  const { lowDetail } = useGameInput();
-  const shadowMap = playing ? 1024 : 2048;
+function GalleryLighting() {
   return (
     <>
       <color attach="background" args={['#c5c2bb']} />
@@ -95,7 +94,7 @@ function GalleryLighting({ playing }: { playing: boolean }) {
         position={[7.8, 2.3, 3.5]}
         intensity={1.65}
         castShadow
-        shadow-mapSize={[shadowMap, shadowMap]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-near={1}
         shadow-camera-far={22}
         shadow-camera-left={-8}
@@ -106,16 +105,14 @@ function GalleryLighting({ playing }: { playing: boolean }) {
         color="#fff6ea"
       />
       <directionalLight position={[5.4, 2.4, 5]} intensity={0.2} color="#e8eef5" />
-      {!lowDetail && (
-        <Suspense fallback={null}>
-          <Environment files={POLYHAVEN.hdri} environmentIntensity={0.4} />
-        </Suspense>
-      )}
+      <Suspense fallback={null}>
+        <Environment files={POLYHAVEN.hdri} environmentIntensity={0.4} />
+      </Suspense>
     </>
   );
 }
 
-function LearningSceneInner({ controlsEnabled, onExit }: Props) {
+function LearningSceneInner({ controlsEnabled, onExit, onDprChange }: Props) {
   const { liveById, coverOpen } = useSwitchboard();
   const { play, dispatchRoom: dispatch, wiringView } = useGameInput();
 
@@ -156,8 +153,8 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
 
   return (
     <>
-      <ScenePerformance />
-      <GalleryLighting playing={controlsEnabled} />
+      <ScenePerformance onDprChange={onDprChange} />
+      <GalleryLighting />
       <LearningRoom />
       <group
         position={[BOARD_MOUNT.x, BOARD_MOUNT.y, BOARD_MOUNT.z]}
@@ -175,14 +172,16 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
           pulse={controlsEnabled && !coverOpen}
         />
       )}
-      <group visible={wiringView}>
-        <RoomWiring
-          liveById={liveById}
-          isolatorOn={play.isolatorOn}
-          kitchenLightsOn={lightsOn}
-          loungeLevel={play.loungeDimmer}
-        />
-      </group>
+      {wiringView && (
+        <group>
+          <RoomWiring
+            liveById={liveById}
+            isolatorOn={play.isolatorOn}
+            kitchenLightsOn={lightsOn}
+            loungeLevel={play.loungeDimmer}
+          />
+        </group>
+      )}
       <CeilingLights kitchenOn={lightsOn} loungeLevel={loungeLightLive ? play.loungeDimmer : 0} />
       <Suspense fallback={null}>
         <Fixtures
@@ -237,22 +236,10 @@ function LearningSceneInner({ controlsEnabled, onExit }: Props) {
         loungePowerLive={loungePowerLive}
         loungeLightLive={loungeLightLive}
       />
-      {
-        <ContactShadows
-          frames={1}
-          resolution={512}
-          position={[ROOM.width / 2, 0.015, ROOM.depth / 2]}
-          opacity={0.48}
-          scale={16}
-          blur={2.4}
-          far={6}
-          color="#3f3f46"
-        />
-      }
     </>
   );
 }
 
-export function LearningScene({ controlsEnabled, onExit }: Props) {
-  return <LearningSceneInner controlsEnabled={controlsEnabled} onExit={onExit} />;
+export function LearningScene(props: Props) {
+  return <LearningSceneInner {...props} />;
 }

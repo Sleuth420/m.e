@@ -18,14 +18,20 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="touch-target opacity-0" aria-hidden>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="touch-target opacity-0"
+        aria-hidden
+        disabled
+        tabIndex={-1}
+      >
         <Sun className="h-5 w-5" />
       </Button>
     );
   }
 
-  const itemClass = (active: boolean) =>
-    cn(active && 'bg-muted text-foreground font-medium');
+  const itemClass = (active: boolean) => cn(active && 'bg-muted text-foreground font-medium');
 
   return (
     <DropdownMenu>
@@ -37,7 +43,10 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-popover text-popover-foreground border-border">
-        <DropdownMenuItem onClick={() => setTheme('light')} className={itemClass(theme === 'light')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          className={itemClass(theme === 'light')}
+        >
           <Sun className="mr-2 h-4 w-4" />
           Light
         </DropdownMenuItem>
@@ -45,7 +54,10 @@ export function ThemeToggle() {
           <Moon className="mr-2 h-4 w-4" />
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')} className={itemClass(theme === 'system')}>
+        <DropdownMenuItem
+          onClick={() => setTheme('system')}
+          className={itemClass(theme === 'system')}
+        >
           <Monitor className="mr-2 h-4 w-4" />
           System
         </DropdownMenuItem>

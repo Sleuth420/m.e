@@ -1,7 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
-import { CatmullRomCurve3, ExtrudeGeometry, MeshStandardMaterial, Shape, TubeGeometry, Vector3 } from 'three';
+import { useEffect, useMemo } from 'react';
+import {
+  CatmullRomCurve3,
+  ExtrudeGeometry,
+  MeshStandardMaterial,
+  Shape,
+  TubeGeometry,
+  Vector3,
+} from 'three';
 import type { Vec3 } from '../circuit-data';
 import { onInteractiveClick, onInteractiveEnter, onInteractiveLeave } from '../interaction';
 import { sanitize, withSag, withSoftMids } from './path-utils';
@@ -70,13 +77,16 @@ export function PathWire({
   shockable = false,
   onShock,
 }: Props) {
+  // Paths are often inline arrays; toggling a circuit must not rebuild its tubes.
+  const pathKey = JSON.stringify(points);
   const geometry = useMemo(() => {
     try {
-      return makeGeometry(points, radius, segments, soft, sag, oval);
+      return makeGeometry(JSON.parse(pathKey) as Vec3[], radius, segments, soft, sag, oval);
     } catch {
       return null;
     }
-  }, [points, radius, segments, soft, sag, oval]);
+  }, [pathKey, radius, segments, soft, sag, oval]);
+  useEffect(() => () => geometry?.dispose(), [geometry]);
 
   const mat = useMemo(() => {
     const m = material.clone();
@@ -90,6 +100,7 @@ export function PathWire({
     m.needsUpdate = true;
     return m;
   }, [material, live, shockable]);
+  useEffect(() => () => mat.dispose(), [mat]);
 
   const canShock = shockable && live && circuitId && onShock;
 

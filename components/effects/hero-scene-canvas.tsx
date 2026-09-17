@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { ACESFilmicToneMapping, PCFShadowMap } from 'three';
@@ -14,14 +14,14 @@ import { LearningScene } from './switchboard/learning-room/LearningScene';
 import { MobileControls } from './switchboard/learning-room/MobileControls';
 import { ShockOverlay } from './switchboard/learning-room/ShockOverlay';
 import { preloadRoomModelPaths } from './switchboard/learning-room/room-assets';
-import { loadKeptGltf } from './switchboard/learning-room/useKeptGltf';
+import { preloadKeptGltf } from './switchboard/learning-room/useKeptGltf';
 import { IDLE_CAMERA } from './switchboard/learning-room/room-layout';
 
 for (const path of preloadModulePaths()) {
   useGLTF.preload(path);
 }
 for (const path of preloadRoomModelPaths()) {
-  void loadKeptGltf(path);
+  preloadKeptGltf(path);
 }
 
 interface HeroSceneCanvasProps {
@@ -33,14 +33,19 @@ interface HeroSceneCanvasProps {
 function LearningCanvasScene({
   controlsEnabled,
   onExit,
+  onReady,
+  onDprChange,
 }: {
   controlsEnabled: boolean;
   onExit: () => void;
+  onReady: () => void;
+  onDprChange: (dpr: number) => void;
 }) {
+  useEffect(onReady, [onReady]);
   return (
     <>
       <CanvasPointerGate controlsEnabled={controlsEnabled} />
-      <LearningScene controlsEnabled={controlsEnabled} onExit={onExit} />
+      <LearningScene controlsEnabled={controlsEnabled} onExit={onExit} onDprChange={onDprChange} />
     </>
   );
 }
@@ -50,6 +55,9 @@ export default function HeroSceneCanvas({
   controlsEnabled = false,
   onExit,
 }: HeroSceneCanvasProps) {
+  const [ready, setReady] = useState(false);
+  const [dpr, setDpr] = useState(() => Math.min(window.devicePixelRatio, 1.25));
+  const onReady = useCallback(() => setReady(true), []);
   return (
     <SwitchboardProvider>
       <GameInputProvider>
@@ -60,8 +68,8 @@ export default function HeroSceneCanvas({
             near: 0.04,
             far: 60,
           }}
-          dpr={[1, 1.5]}
-          frameloop={active ? 'always' : 'demand'}
+          dpr={dpr}
+          frameloop={!active ? 'never' : controlsEnabled ? 'always' : 'demand'}
           className={`!absolute inset-0 !h-full !w-full !max-w-full ${
             controlsEnabled ? 'cursor-pointer' : ''
           }`}
@@ -92,9 +100,19 @@ export default function HeroSceneCanvas({
             <LearningCanvasScene
               controlsEnabled={controlsEnabled}
               onExit={onExit ?? (() => undefined)}
+              onReady={onReady}
+              onDprChange={setDpr}
             />
           </Suspense>
         </Canvas>
+        {!ready && (
+          <div
+            role="status"
+            className="absolute inset-0 grid place-content-center bg-zinc-200 text-sm text-zinc-700"
+          >
+            Preparing the room…
+          </div>
+        )}
         <LearningHud visible={controlsEnabled} />
         <MobileControls visible={controlsEnabled} />
         <CoverLicensePrompt />

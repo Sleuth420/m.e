@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { ProjectCard } from '@/components/ui/project-card';
 import { projects } from '@/lib/data';
 import { motion } from 'framer-motion';
@@ -14,15 +15,13 @@ const categories = [
   { key: 'iot', label: 'IoT' },
 ] as const;
 
-type CategoryKey = (typeof categories)[number]['key'];
-
 export function ProjectsGrid() {
   const searchParams = useSearchParams();
-  const category = (searchParams.get('category') as CategoryKey) || 'all';
+  const category =
+    categories.find((item) => item.key === searchParams.get('category'))?.key ?? 'all';
 
   const filtered = useMemo(
-    () =>
-      projects.filter((p) => category === 'all' || p.category === category),
+    () => projects.filter((p) => category === 'all' || p.category === category),
     [category]
   );
 
@@ -30,21 +29,24 @@ export function ProjectsGrid() {
     <>
       <div className="flex flex-wrap gap-2 justify-center mb-12">
         {categories.map((cat) => (
-          <a
+          <Link
             key={cat.key}
             href={cat.key === 'all' ? '/projects' : `/projects?category=${cat.key}`}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors chrome-border ${
+            scroll={false}
+            aria-current={category === cat.key ? 'true' : undefined}
+            className={`inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-medium transition-colors chrome-border ${
               category === cat.key
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-muted/50 text-muted-foreground hover:text-primary'
             }`}
           >
             {cat.label}
-          </a>
+          </Link>
         ))}
       </div>
 
       <motion.div
+        key={category}
         variants={staggerContainer}
         initial="hidden"
         animate="show"

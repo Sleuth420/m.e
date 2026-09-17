@@ -1,6 +1,5 @@
 'use client';
 
-import { Clone } from '@react-three/drei';
 import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
 import { Box3, Euler, Group, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { keepNamed, pruneHidden } from './kitchen-cupboard';
@@ -224,10 +223,15 @@ export function FittedGltf({
     );
   }, [source, width, height, depth, align, pin, pinPad, fit, preScale, rx, ry, rz]);
 
+  // Keep the imported hierarchy outside React's per-mesh reconciliation. Only
+  // transforms/materials are local; immutable geometry and image data are shared.
+  const instance = useMemo(() => source.clone(true), [source]);
+
   useLayoutEffect(() => {
     const g = wrap.current;
     if (!g) return;
-    g.traverse((obj) => {
+    const ownedMaterials: MeshStandardMaterial[] = [];
+    instance.traverse((obj) => {
       const mesh = obj as Mesh;
       if (!mesh.isMesh) return;
       mesh.castShadow = shadows;
@@ -238,7 +242,8 @@ export function FittedGltf({
       const next = mats.map((mat) => {
         const src = mat as MeshStandardMaterial;
         if (!src) return mat;
-        const m = finish ? src.clone() : src;
+        const m = src.clone();
+        ownedMaterials.push(m);
         if ('envMapIntensity' in m) m.envMapIntensity = envIntensity;
         if (finish === 'black-steel') {
           const n = `${m.name ?? ''} ${mesh.name ?? ''}`.toLowerCase();
@@ -266,14 +271,17 @@ export function FittedGltf({
     });
     g.updateWorldMatrix(true, true);
     onReadyRef.current?.(g);
-  }, [source, fitResult, envIntensity, finish, shadows]);
+    return () => {
+      for (const material of ownedMaterials) material.dispose();
+    };
+  }, [instance, fitResult, envIntensity, finish, shadows]);
 
   return (
     <group position={position}>
       <group position={fitResult.worldShift}>
         <group rotation={rotation}>
           <group ref={wrap} position={fitResult.localOffset} scale={fitResult.scale}>
-            <Clone object={source} castShadow={shadows} receiveShadow={shadows} />
+            <primitive object={instance} dispose={null} />
             {/* Children share the fitted model frame (scale + pin + rotation). */}
             {children}
           </group>

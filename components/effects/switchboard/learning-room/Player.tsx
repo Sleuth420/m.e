@@ -2,7 +2,7 @@
 
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
-import { Group, MathUtils, PerspectiveCamera } from 'three';
+import { Group, MathUtils, PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { useCoarsePointer, useMediaQuery } from '@/lib/hooks';
 import {
   BOARD_INSPECT,
@@ -56,7 +56,7 @@ export function Player({
   loungePowerLive,
   loungeLightLive,
 }: Props) {
-  const { gl, events } = useThree();
+  const { gl, events, invalidate } = useThree();
   const { coverOpen, coverPromptOpen, requestCoverOpen, denyCoverOpen, closeCover } =
     useSwitchboard();
   const {
@@ -89,6 +89,15 @@ export function Player({
   const highlightRef = useRef<RoomInteractId | null>(null);
   const shake = useRef(0);
   const hoverRefresh = useRef(0);
+  const promptRefresh = useRef(0);
+  const cameraTransition = useRef(0);
+  const lastPickPosition = useRef(new Vector3(Infinity, Infinity, Infinity));
+  const lastPickRotation = useRef(new Quaternion());
+  const hintDismissed = useRef(false);
+
+  useEffect(() => {
+    cameraTransition.current = 0.8;
+  }, [enabled, coverOpen]);
 
   useEffect(() => {
     if (!enabled) {
@@ -123,6 +132,9 @@ export function Player({
   });
 
   useFrame(({ camera, clock }, delta) => {
+    // A tab resume or shader compilation must not fling the camera across the room.
+    delta = Math.min(delta, 0.1);
+    cameraTransition.current = Math.max(0, cameraTransition.current - delta);
     const dummy = dummyRef.current;
     const persp = camera as PerspectiveCamera;
     const stunned = isStunned();
@@ -144,7 +156,10 @@ export function Player({
         { dishwasher: !!play.openById.dishwasher, fridge: play.fridgeOpen }
       );
       pose.current = next;
-      if (next.moving || isLookDragActive()) dismissEntryHint();
+      if (!hintDismissed.current && (next.moving || isLookDragActive())) {
+        hintDismissed.current = true;
+        dismissEntryHint();
+      }
       if (stunned && !reducedMotion) shake.current = Math.max(shake.current, 0.35);
 
       if (!coverPromptOpen && consumeInteract()) {
@@ -160,31 +175,37 @@ export function Player({
         );
       }
 
-      const hit = coverOpen ? null : nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
-      const hint = hit || coverOpen ? null : nearestRoomHint(next.x, next.z, next.yaw);
-      const nextPrompt = roomActionPrompt(
-        hit,
-        nearBoard(next.x, next.z),
-        play,
-        {
-          powerLive,
-          hobLive,
-          loungePowerLive,
-          loungeLightLive,
-          coverOpen,
-          coarse: coarseRef.current,
-        },
-        hint,
-        boardLookHint(next.x, next.z, next.yaw)
-      );
-      if (nextPrompt.text !== promptRef.current) {
-        promptRef.current = nextPrompt.text;
-        setActionPrompt(nextPrompt);
-      }
-      const nextHighlight = hit?.id ?? null;
-      if (nextHighlight !== highlightRef.current) {
-        highlightRef.current = nextHighlight;
-        setHighlightedId(nextHighlight);
+      promptRefresh.current += delta;
+      if (promptRefresh.current >= 0.1) {
+        promptRefresh.current = 0;
+        const hit = coverOpen
+          ? null
+          : nearestRoomInteract(next.x, next.z, [], inspecting, next.yaw);
+        const hint = hit || coverOpen ? null : nearestRoomHint(next.x, next.z, next.yaw);
+        const nextPrompt = roomActionPrompt(
+          hit,
+          nearBoard(next.x, next.z),
+          play,
+          {
+            powerLive,
+            hobLive,
+            loungePowerLive,
+            loungeLightLive,
+            coverOpen,
+            coarse: coarseRef.current,
+          },
+          hint,
+          boardLookHint(next.x, next.z, next.yaw)
+        );
+        if (nextPrompt.text !== promptRef.current) {
+          promptRef.current = nextPrompt.text;
+          setActionPrompt(nextPrompt);
+        }
+        const nextHighlight = hit?.id ?? null;
+        if (nextHighlight !== highlightRef.current) {
+          highlightRef.current = nextHighlight;
+          setHighlightedId(nextHighlight);
+        }
       }
     }
 
@@ -204,10 +225,18 @@ export function Player({
     if (!enabled) {
       dummy.position.set(IDLE_CAMERA.position[0], IDLE_CAMERA.position[1], IDLE_CAMERA.position[2]);
       camera.position.lerp(dummy.position, 1 - Math.pow(0.04, delta));
-      look.current.x = MathUtils.lerp(look.current.x, IDLE_CAMERA.target[0], 0.08);
-      look.current.y = MathUtils.lerp(look.current.y, IDLE_CAMERA.target[1], 0.08);
-      look.current.z = MathUtils.lerp(look.current.z, IDLE_CAMERA.target[2], 0.08);
+      look.current.x = MathUtils.damp(look.current.x, IDLE_CAMERA.target[0], 5, delta);
+      look.current.y = MathUtils.damp(look.current.y, IDLE_CAMERA.target[1], 5, delta);
+      look.current.z = MathUtils.damp(look.current.z, IDLE_CAMERA.target[2], 5, delta);
       camera.lookAt(look.current.x, look.current.y, look.current.z);
+      if (
+        camera.position.distanceToSquared(dummy.position) > 0.000001 ||
+        Math.abs(look.current.x - IDLE_CAMERA.target[0]) +
+          Math.abs(look.current.y - IDLE_CAMERA.target[1]) +
+          Math.abs(look.current.z - IDLE_CAMERA.target[2]) >
+          0.001
+      )
+        invalidate();
       return;
     }
 
@@ -227,7 +256,7 @@ export function Player({
 
     const turning =
       keysRef.current.turnLeft || keysRef.current.turnRight || m.turnLeft || m.turnRight;
-    if (isLookDragActive() && !coverOpen) {
+    if (!coverOpen && (isLookDragActive() || cameraTransition.current === 0)) {
       camera.position.copy(dummy.position);
       look.current.x = anchor.lookX;
       look.current.y = anchor.lookY;
@@ -245,9 +274,18 @@ export function Player({
     camera.lookAt(look.current.x, look.current.y, look.current.z);
     // Re-pick as the camera moves, even if the mouse stays still.
     hoverRefresh.current += delta;
-    if (hoverRefresh.current > 0.08) {
+    if (hoverRefresh.current > 0.1 && !isLookDragActive()) {
       hoverRefresh.current = 0;
-      events.update?.();
+      if (
+        camera.position.distanceToSquared(lastPickPosition.current) > 0.000001 ||
+        camera.quaternion.angleTo(lastPickRotation.current) > 0.001
+      ) {
+        // The event raycaster reads matrixWorld, which the renderer updates later.
+        camera.updateMatrixWorld();
+        events.update?.();
+        lastPickPosition.current.copy(camera.position);
+        lastPickRotation.current.copy(camera.quaternion);
+      }
     }
   });
 

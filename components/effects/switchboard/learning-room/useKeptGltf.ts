@@ -40,3 +40,8 @@ export function useKeptGltf(url: string): GLTF {
   if (hit) return hit;
   return use(loadKeptGltf(url));
 }
+
+/** Preload failures are retried by the mounted consumer and handled by its boundary. */
+export function preloadKeptGltf(url: string): void {
+  void loadKeptGltf(url).catch(() => undefined);
+}

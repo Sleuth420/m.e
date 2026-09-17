@@ -1,48 +1,83 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useProgress } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSwitchboard } from '../SwitchboardContext';
 import { useGameInput } from './GameInputContext';
+import { createFrameBudget, sampleFrameBudget } from './frame-budget';
 
-/** Keep expensive shadows static while walking; adapt resolution to actual frame time. */
-export function ScenePerformance() {
-  const { gl, setDpr, invalidate } = useThree();
-  const rendererRef = useRef(gl);
-  const { play, wiringView, setLowDetail } = useGameInput();
+/** Static shadows while walking; refresh when geometry arrives or a door moves. */
+export function ScenePerformance({ onDprChange }: { onDprChange: (dpr: number) => void }) {
+  const { gl, invalidate } = useThree();
+  const renderer = useRef(gl);
+  const { play, wiringView } = useGameInput();
   const { coverOpen } = useSwitchboard();
-  const sample = useRef({ elapsed: 0, frames: 0, slowWindows: 0, reduced: false });
+  // Poll the loader store from the frame loop. Subscribing here would synchronously
+  // set React state when a newly revealed useTexture starts loading during render.
+  const loaded = useRef(0);
+  const refreshAt = useRef(0);
+  const sample = useRef(createFrameBudget(Math.min(window.devicePixelRatio, 1.25)));
+  const settleUntil = useRef(0);
+  const statsAt = useRef(0);
 
   useEffect(() => {
-    rendererRef.current.shadowMap.autoUpdate = false;
-    rendererRef.current.shadowMap.needsUpdate = true;
+    const shadowMap = renderer.current.shadowMap;
+    const previous = shadowMap.autoUpdate;
+    shadowMap.autoUpdate = false;
+    return () => {
+      shadowMap.autoUpdate = previous;
+    };
+  }, [gl]);
+
+  useEffect(() => {
+    settleUntil.current = performance.now() + 1000;
     invalidate();
-    // Refresh again after hinged doors settle, not on every camera frame.
-    const settled = window.setTimeout(() => {
-      rendererRef.current.shadowMap.needsUpdate = true;
+    const refresh = window.setTimeout(() => {
+      renderer.current.shadowMap.needsUpdate = true;
       invalidate();
-    }, 650);
-    return () => window.clearTimeout(settled);
+    }, 100);
+    const settled = window.setTimeout(() => {
+      renderer.current.shadowMap.needsUpdate = true;
+      invalidate();
+    }, 1000);
+    return () => {
+      window.clearTimeout(refresh);
+      window.clearTimeout(settled);
+    };
   }, [gl, invalidate, play, wiringView, coverOpen]);
 
-  useFrame((_, delta) => {
-    const s = sample.current;
-    if (s.reduced) return;
-    s.elapsed += delta;
-    s.frames++;
-    if (s.elapsed < 3) return;
-    if (s.frames / s.elapsed < 24) s.slowWindows++;
-    else s.slowWindows = 0;
-    s.elapsed = 0;
-    s.frames = 0;
-    // Ignore a single compilation/loading window. Don't oscillate quality.
-    if (s.slowWindows >= 2) {
-      s.reduced = true;
-      setLowDetail(true);
-      setDpr(0.75);
-      rendererRef.current.shadowMap.enabled = false;
-      invalidate();
+  useFrame((state, delta) => {
+    const now = performance.now();
+    const progress = useProgress.getState();
+    if (process.env.NODE_ENV === 'development' && now - statsAt.current > 1000) {
+      statsAt.current = now;
+      renderer.current.domElement.dataset.roomPerformance = JSON.stringify({
+        loading: progress.active,
+        loop: state.frameloop,
+        qualityLevel: sample.current.level,
+        dpr: renderer.current.getPixelRatio(),
+        calls: renderer.current.info.render.calls,
+        triangles: renderer.current.info.render.triangles,
+        geometries: renderer.current.info.memory.geometries,
+        textures: renderer.current.info.memory.textures,
+      });
     }
+    if (progress.loaded !== loaded.current) {
+      loaded.current = progress.loaded;
+      refreshAt.current = now + 100;
+      settleUntil.current = now + 1000;
+    }
+    if (refreshAt.current && now >= refreshAt.current) {
+      renderer.current.shadowMap.needsUpdate = true;
+      refreshAt.current = 0;
+    }
+    if (now < settleUntil.current) invalidate();
+    if (progress.active || state.frameloop !== 'always' || document.hidden) return;
+    const dpr = sampleFrameBudget(sample.current, delta);
+    // Keep Canvas's prop in sync: imperative setDpr alone is overwritten on resize
+    // and context updates, silently undoing adaptation while leaving the sample reduced.
+    if (dpr !== null) onDprChange(Math.min(window.devicePixelRatio, dpr));
   });
   return null;
 }
