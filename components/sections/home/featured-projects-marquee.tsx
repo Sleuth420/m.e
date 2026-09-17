@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { projects } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 
@@ -21,10 +20,11 @@ function MarqueeProjectTeaser({ project }: { project: (typeof featured)[number] 
     <Link
       href={href}
       {...(isExternal ? { target: '_blank', rel } : {})}
-      className="flex-shrink-0 w-[min(85vw,20rem)] sm:w-72 md:w-80 rounded-xl border border-border/50 bg-card/80 backdrop-blur-sm p-5 sm:p-6 chrome-border snap-start transition-colors hover:border-primary/40"
+      className="min-w-0 rounded-xl border border-border/50 bg-card/80 p-5 sm:p-6 chrome-border transition-colors hover:border-primary/40"
     >
       <h3 className="font-display font-semibold text-foreground mb-2 text-balance">
         {project.title}
+        {isExternal && <span className="sr-only"> (opens in a new tab)</span>}
       </h3>
       <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{project.description}</p>
       <div className="flex flex-wrap gap-1.5">
@@ -53,24 +53,10 @@ export default function FeaturedProjectsMarquee() {
         </Button>
       </div>
 
-      {/* Mobile: horizontal scroll, single set */}
-      <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-none">
-        <div className="flex gap-4 w-max">
-          {featured.map((project) => (
-            <MarqueeProjectTeaser key={project.title} project={project} />
-          ))}
-        </div>
-      </div>
-
-      {/* Desktop: infinite marquee */}
-      <div className="hidden md:block relative">
-        <div className="overflow-hidden">
-          <motion.div className="marquee-track gap-6 px-4" aria-label="Featured projects">
-            {[...featured, ...featured].map((project, i) => (
-              <MarqueeProjectTeaser key={`${project.title}-${i}`} project={project} />
-            ))}
-          </motion.div>
-        </div>
+      <div className="container grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {featured.map((project) => (
+          <MarqueeProjectTeaser key={project.title} project={project} />
+        ))}
       </div>
     </section>
   );

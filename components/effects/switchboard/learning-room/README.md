@@ -45,3 +45,18 @@ Public references checked for the representation:
 Existing CC-BY product models and CC0 textures retain their credits under
 `public/models/learning-room/CREDITS.md`. New interior and switched socket geometry
 is procedural; no additional asset downloads are required.
+
+## Rendering and assets
+
+The preview renders on demand; walking renders continuously, and hidden pages pause.
+Entering fullscreen moves a persistent portal host rather than recreating WebGL.
+HUD hints have a separate context so they do not reconcile the house while walking.
+Shadow maps refresh after asset arrivals and door changes. Sustained slow frames
+gradually lower pixel density without replacing the lighting or recompiling the scene.
+
+`node scripts/optimize-room-assets.mjs` generates the runtime copies under
+`public/models/learning-room/optimized/`. It requires the installed `sharp` image
+library (also used by Next.js). Textures are capped at 1024px, the environment is
+512px, and unused GLB buffer data is stripped. Geometry, names and hinge coordinates
+are preserved. Original assets and attribution stay in their existing locations.
+Wiring-only wall textures load when the cutaway is first requested.

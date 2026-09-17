@@ -13,7 +13,7 @@ import {
 } from 'three';
 import { RoomHit } from './RoomHit';
 import { ROOM_GLB } from './room-assets';
-import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
+import { preloadKeptGltf, useKeptGltf } from './useKeptGltf';
 import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 
 type Props = {
@@ -110,4 +110,4 @@ export function DimmerSwitch({ position, wall, level, onCycle }: Props) {
   );
 }
 
-loadKeptGltf(ROOM_GLB.dimmer);
+preloadKeptGltf(ROOM_GLB.dimmer);

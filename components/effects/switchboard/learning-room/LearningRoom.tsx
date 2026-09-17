@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { POLYHAVEN } from './room-assets';
 import { ROOM } from './room-layout';
 import { useRepeatingPbr } from './room-textures';
@@ -48,9 +49,11 @@ export function LearningRoom() {
         />
       </mesh>
 
-      <group visible={wiringView}>
-        <FramedWalls />
-      </group>
+      {wiringView && (
+        <Suspense fallback={null}>
+          <FramedWalls />
+        </Suspense>
+      )}
       <FinishedInterior />
     </group>
   );

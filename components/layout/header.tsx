@@ -6,12 +6,8 @@ import { Menu, X, Code, Wrench, Building2, Globe } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { BrandMark } from '@/components/layout/brand-mark';
 import { useScrollPosition } from '@/lib/hooks';
-import {
-  mainNav,
-  megaMenuSections,
-  megaMenuAllLinks,
-} from '@/lib/navigation';
-import { useState } from 'react';
+import { mainNav, megaMenuSections, megaMenuAllLinks } from '@/lib/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const megaMenuIcons = {
@@ -25,6 +21,37 @@ export default function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
+  const megaToggleRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenus = () => {
+    setIsMobileMenuOpen(false);
+    setIsMegaOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isMobileMenuOpen && !isMegaOpen) return;
+    const onPointer = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) closeMenus();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      (isMobileMenuOpen ? mobileToggleRef : megaToggleRef).current?.focus();
+      closeMenus();
+    };
+    const breakpoint = window.matchMedia('(min-width: 1024px)');
+    document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('popstate', closeMenus);
+    breakpoint.addEventListener('change', closeMenus);
+    return () => {
+      document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('popstate', closeMenus);
+      breakpoint.removeEventListener('change', closeMenus);
+    };
+  }, [isMobileMenuOpen, isMegaOpen]);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -33,6 +60,13 @@ export default function Header() {
 
   return (
     <header
+      ref={headerRef}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) closeMenus();
+      }}
+      onClick={(event) => {
+        if ((event.target as HTMLElement).closest('a')) closeMenus();
+      }}
       className={cn(
         'sticky top-0 z-40 w-full border-b border-border/50 bg-background/90 backdrop-blur-md transition-shadow duration-300 pt-[env(safe-area-inset-top)]',
         isScrolled && 'shadow-glow'
@@ -56,6 +90,7 @@ export default function Header() {
             </Link>
           ))}
           <button
+            ref={megaToggleRef}
             type="button"
             onClick={() => setIsMegaOpen(!isMegaOpen)}
             className={cn(
@@ -74,11 +109,13 @@ export default function Header() {
         <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <button
+            ref={mobileToggleRef}
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="rounded-md p-2.5 text-foreground hover:bg-muted transition-colors touch-target min-h-11 min-w-11"
             aria-label="Toggle mobile menu"
             aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -136,7 +173,10 @@ export default function Header() {
       )}
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-border/50 bg-background/98 backdrop-blur-md max-h-[80vh] overflow-y-auto">
+        <div
+          id="mobile-menu"
+          className="absolute inset-x-0 lg:hidden border-b border-t border-border/50 bg-background shadow-xl max-h-[calc(100dvh-4rem-env(safe-area-inset-top))] overflow-y-auto overscroll-contain"
+        >
           <nav className="container py-4 space-y-1" aria-label="Mobile navigation">
             {mainNav.map((item) => (
               <Link

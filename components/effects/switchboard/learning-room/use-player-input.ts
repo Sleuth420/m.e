@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type MutableRefObject, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, type MutableRefObject, type RefObject } from 'react';
 import { MathUtils, type WebGLRenderer } from 'three';
 import { setLookDragActive } from '../interaction';
 import { PLAYER, type RoomInteractId } from './room-layout';
@@ -76,6 +76,29 @@ export function usePlayerInput({
   closeCover,
   dismissEntryHint,
 }: Args) {
+  // Read current scene state without tearing down a captured drag or held keys.
+  const latest = useRef({
+    coverOpen,
+    coverPromptOpen,
+    onExit,
+    onInteract,
+    requestCoverOpen,
+    denyCoverOpen,
+    closeCover,
+    dismissEntryHint,
+  });
+  useLayoutEffect(() => {
+    latest.current = {
+      coverOpen,
+      coverPromptOpen,
+      onExit,
+      onInteract,
+      requestCoverOpen,
+      denyCoverOpen,
+      closeCover,
+      dismissEntryHint,
+    };
+  });
   useEffect(() => {
     if (!enabled) {
       keysRef.current = emptyKeys();
@@ -84,6 +107,16 @@ export function usePlayerInput({
     }
 
     const onDown = (e: KeyboardEvent) => {
+      const {
+        coverOpen,
+        coverPromptOpen,
+        onExit,
+        onInteract,
+        requestCoverOpen,
+        denyCoverOpen,
+        closeCover,
+        dismissEntryHint,
+      } = latest.current;
       const target = e.target as HTMLElement | null;
       if (e.code !== 'Escape') {
         if (target?.closest('input, select, textarea, [contenteditable="true"]')) return;
@@ -187,12 +220,9 @@ export function usePlayerInput({
       if (!look.dragging && dx * dx + dy * dy < TAP_PX * TAP_PX) return;
       if (!look.dragging) {
         look.dragging = true;
-        dismissEntryHint();
+        latest.current.dismissEntryHint();
         setLookDragActive(true);
-        if (coverOpen) {
-          closeCover();
-          return;
-        }
+        if (latest.current.coverOpen) latest.current.closeCover();
         try {
           canvas.setPointerCapture(e.pointerId);
         } catch {
@@ -236,7 +266,7 @@ export function usePlayerInput({
       window.setTimeout(() => setLookDragActive(false), 0);
     }
     const onPointerDown = (e: PointerEvent) => {
-      if (coverPromptOpen) return;
+      if (latest.current.coverPromptOpen || look.id !== -1) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       look.id = e.pointerId;
       look.x = e.clientX;
@@ -263,6 +293,7 @@ export function usePlayerInput({
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
+      clearHeld();
       unbindLookWindow();
       window.removeEventListener('keydown', onDown, true);
       window.removeEventListener('keyup', onUp);
@@ -275,20 +306,5 @@ export function usePlayerInput({
       canvas.removeEventListener('pointerdown', onPointerDown);
       setLookDragActive(false);
     };
-  }, [
-    enabled,
-    gl,
-    onExit,
-    onInteract,
-    coverOpen,
-    coverPromptOpen,
-    requestCoverOpen,
-    denyCoverOpen,
-    closeCover,
-    dismissEntryHint,
-    pose,
-    keysRef,
-    zoomRef,
-    coarseRef,
-  ]);
+  }, [enabled, gl, pose, keysRef, zoomRef, coarseRef]);
 }

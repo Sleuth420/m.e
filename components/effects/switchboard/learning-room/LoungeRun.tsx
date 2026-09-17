@@ -11,7 +11,7 @@ import { RoomHit } from './RoomHit';
 import { SwitchedPowerPoint } from './SwitchedPowerPoint';
 import { useRepeatingPbr } from './room-textures';
 import { cloneGltfScene, setNamedEmissive } from './scene-graph';
-import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
+import { preloadKeptGltf, useKeptGltf } from './useKeptGltf';
 
 function TvScreen({ on, width, height }: { on: boolean; width: number; height: number }) {
   const map = useMemo(() => {
@@ -281,9 +281,9 @@ export function LoungeRun({
   );
 }
 
-loadKeptGltf(ROOM_GLB.gpoDouble);
-loadKeptGltf(ROOM_GLB.sconce);
-loadKeptGltf(ROOM_GLB.sofa);
-loadKeptGltf(ROOM_GLB.coffeeTable);
-loadKeptGltf(ROOM_GLB.television);
-loadKeptGltf(ROOM_GLB.tvCabinet);
+preloadKeptGltf(ROOM_GLB.gpoDouble);
+preloadKeptGltf(ROOM_GLB.sconce);
+preloadKeptGltf(ROOM_GLB.sofa);
+preloadKeptGltf(ROOM_GLB.coffeeTable);
+preloadKeptGltf(ROOM_GLB.television);
+preloadKeptGltf(ROOM_GLB.tvCabinet);

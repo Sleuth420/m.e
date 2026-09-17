@@ -107,19 +107,21 @@ export function Switchboard() {
     <group>
       <Enclosure materials={materials} />
       <group visible={boardUnlocked}>
-        <group visible={wiringView}>
-          <DinRail materials={materials} />
-          <TerminalBars materials={materials} />
-          <CombBus materials={materials} />
-          <Wiring
-            materials={materials}
-            liveById={liveById}
-            mainLive={mainOn}
-            coverOpen={false}
-            onShockWire={shockOnWire}
-            onShockMains={shockOnMains}
-          />
-        </group>
+        {wiringView && (
+          <group>
+            <DinRail materials={materials} />
+            <TerminalBars materials={materials} />
+            <CombBus materials={materials} />
+            <Wiring
+              materials={materials}
+              liveById={liveById}
+              mainLive={mainOn}
+              coverOpen={false}
+              onShockWire={shockOnWire}
+              onShockMains={shockOnMains}
+            />
+          </group>
+        )}
 
         {/* Fixed escutcheon: ordinary operation never exposes terminals. */}
         {!wiringView && (

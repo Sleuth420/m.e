@@ -20,7 +20,9 @@ export function MobileControls({ visible }: Props) {
   const origin = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (!visible) {
+    const reset = () => {
+      pointerId.current = null;
+      if (knobRef.current) knobRef.current.style.transform = 'translate(-50%, -50%)';
       Object.assign(mobileKeysRef.current, {
         forward: false,
         back: false,
@@ -32,7 +34,18 @@ export function MobileControls({ visible }: Props) {
         stickX: 0,
         stickY: 0,
       });
-    }
+    };
+    const onVisibility = () => {
+      if (document.hidden) reset();
+    };
+    if (!visible) reset();
+    window.addEventListener('blur', reset);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      reset();
+      window.removeEventListener('blur', reset);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [visible, mobileKeysRef]);
 
   if (!visible || !coarse) return null;
@@ -100,6 +113,7 @@ export function MobileControls({ visible }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
+        onLostPointerCapture={onPointerUp}
       >
         <div className="absolute inset-0 rounded-full border border-white/20 bg-black/35 backdrop-blur-sm" />
         <div

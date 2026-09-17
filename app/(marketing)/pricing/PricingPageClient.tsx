@@ -41,10 +41,6 @@ const offeringIcons: Record<OtherServiceOffering['icon'], LucideIcon> = {
   microchip: Microchip,
 };
 
-function scrollToSection(sectionId: string) {
-  document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-}
-
 export default function PricingPageClient() {
   return (
     <div className="min-h-screen bg-surface-0">
@@ -80,14 +76,11 @@ export default function PricingPageClient() {
             {pricingNavItems.map((item) => {
               const Icon = navIcons[item.id] ?? Code;
               return (
-                <Button
-                  key={item.id}
-                  variant="outline"
-                  className="outline-brand"
-                  onClick={() => scrollToSection(item.id)}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {item.label}
+                <Button key={item.id} variant="outline" className="outline-brand" asChild>
+                  <a href={`#${item.id}`}>
+                    <Icon className="w-4 h-4 mr-2" />
+                    {item.label}
+                  </a>
                 </Button>
               );
             })}
@@ -176,14 +169,14 @@ export default function PricingPageClient() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="surface-card rounded-2xl p-8 border border-border shadow-lg"
+              className="surface-card rounded-2xl p-5 sm:p-8 border border-border shadow-lg"
             >
               <h3 className="text-2xl font-bold text-foreground mb-6 text-center">Hourly Rates</h3>
               <div className="space-y-4">
                 {electricalRates.map((rate) => (
                   <div
                     key={rate.label}
-                    className="flex justify-between items-center p-4 bg-primary/10 rounded-lg"
+                    className="flex flex-wrap gap-2 justify-between items-center p-4 bg-primary/10 rounded-lg"
                   >
                     <span className="font-medium text-muted-foreground">{rate.label}</span>
                     <span className="text-lg font-bold text-primary">{rate.rate}</span>
@@ -200,7 +193,7 @@ export default function PricingPageClient() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="surface-card rounded-2xl p-8 border border-border shadow-lg"
+              className="surface-card rounded-2xl p-5 sm:p-8 border border-border shadow-lg"
             >
               <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
                 Services Offered
@@ -277,7 +270,7 @@ export default function PricingPageClient() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-primary/5 to-amber-500/10 dark:from-primary/10 dark:to-primary/5 rounded-3xl p-12 border border-border"
+            className="bg-gradient-to-r from-primary/5 to-amber-500/10 dark:from-primary/10 dark:to-primary/5 rounded-3xl p-6 sm:p-12 border border-border"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
               Ready to Get Started?

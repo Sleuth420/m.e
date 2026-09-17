@@ -13,7 +13,7 @@ import {
 } from 'three';
 import { RoomHit } from './RoomHit';
 import { ROOM_GLB } from './room-assets';
-import { loadKeptGltf, useKeptGltf } from './useKeptGltf';
+import { preloadKeptGltf, useKeptGltf } from './useKeptGltf';
 import { paintPlatesFromTypeI, useTypeIPlateMaterial } from './type-i-plastic';
 
 type Props = {
@@ -135,5 +135,5 @@ export function WallSwitch({ position, wall, on, onToggle, isolator = false }: P
   );
 }
 
-loadKeptGltf(ROOM_GLB.switch);
-loadKeptGltf(ROOM_GLB.isolator);
+preloadKeptGltf(ROOM_GLB.switch);
+preloadKeptGltf(ROOM_GLB.isolator);

@@ -106,18 +106,6 @@ export function FinishedInterior() {
         </group>
       ))}
 
-      {/* Flush internal door, architraves and a brushed lever handle. */}
-      <group position={[0.018, 0, 1.75]} rotation={[0, Math.PI / 2, 0]}>
-        <Block at={[0, 1.025, 0]} size={[0.82, 2.05, 0.032]} color="#d2c4ad" />
-        {[-0.45, 0.45].map((x) => (
-          <Block key={x} at={[x, 1.075, 0.025]} size={[0.07, 2.15, 0.035]} color="#f0ece4" />
-        ))}
-        <Block at={[0, 2.115, 0.025]} size={[0.97, 0.07, 0.035]} color="#f0ece4" />
-        <mesh position={[0.3, 1.02, 0.075]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.013, 0.013, 0.13, 12]} />
-          <meshStandardMaterial color="#97958e" metalness={0.85} roughness={0.3} />
-        </mesh>
-      </group>
       <DiningCorner />
     </group>
   );
@@ -233,15 +221,23 @@ export function CeilingLights({
               emissiveIntensity={level * 2.5}
             />
           </mesh>
-          <pointLight
-            position={[0, -0.15, 0]}
-            intensity={level * 3.2}
-            distance={6}
-            decay={2}
-            color="#ffdfb5"
-          />
         </group>
       ))}
+      {/* One shared pool per room; each downlight keeps its own emissive lens. */}
+      <pointLight
+        position={[3.2, ROOM.height - 0.25, 1.5]}
+        intensity={kitchenOn ? 6.4 : 0}
+        distance={6}
+        decay={2}
+        color="#ffdfb5"
+      />
+      <pointLight
+        position={[3.2, ROOM.height - 0.25, 5.5]}
+        intensity={loungeLevel * 6.4}
+        distance={6}
+        decay={2}
+        color="#ffdfb5"
+      />
     </group>
   );
 }

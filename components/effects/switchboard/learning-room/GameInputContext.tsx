@@ -67,7 +67,13 @@ const defaultKeys = (): MobileKeys => ({
   stickY: 0,
 });
 
-const GameInputContext = createContext<GameInputApi | null>(null);
+type HudState = Pick<
+  GameInputApi,
+  'pointerHint' | 'actionPrompt' | 'actionTone' | 'highlightedId' | 'entryHint'
+>;
+type SceneInput = Omit<GameInputApi, keyof HudState>;
+const GameInputContext = createContext<SceneInput | null>(null);
+const GameHudContext = createContext<HudState | null>(null);
 
 export function GameInputProvider({ children }: { children: ReactNode }) {
   const [lowDetail, setLowDetail] = useState(false);
@@ -111,7 +117,6 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
     () => ({
       lowDetail,
       setLowDetail,
-      pointerHint,
       setPointerHint,
       wiringView,
       setWiringView,
@@ -123,37 +128,43 @@ export function GameInputProvider({ children }: { children: ReactNode }) {
       stunUntil,
       setStunned,
       isStunned,
-      actionPrompt,
-      actionTone,
       setActionPrompt,
-      highlightedId,
       setHighlightedId,
-      entryHint,
       dismissEntryHint,
     }),
     [
       lowDetail,
-      pointerHint,
       wiringView,
       play,
       pulseInteract,
       consumeInteract,
       setStunned,
       isStunned,
-      actionPrompt,
-      actionTone,
       setActionPrompt,
-      highlightedId,
-      entryHint,
       dismissEntryHint,
     ]
   );
 
-  return <GameInputContext.Provider value={value}>{children}</GameInputContext.Provider>;
+  const hud = useMemo(
+    () => ({ pointerHint, actionPrompt, actionTone, highlightedId, entryHint }),
+    [pointerHint, actionPrompt, actionTone, highlightedId, entryHint]
+  );
+  return (
+    <GameInputContext.Provider value={value}>
+      <GameHudContext.Provider value={hud}>{children}</GameHudContext.Provider>
+    </GameInputContext.Provider>
+  );
 }
 
 export function useGameInput() {
   const ctx = useContext(GameInputContext);
   if (!ctx) throw new Error('useGameInput must be used inside GameInputProvider');
+  return ctx;
+}
+
+/** Only the DOM HUD subscribes to transient hints; meshes keep their scene state. */
+export function useGameHud() {
+  const ctx = useContext(GameHudContext);
+  if (!ctx) throw new Error('useGameHud must be used inside GameInputProvider');
   return ctx;
 }

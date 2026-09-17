@@ -2,7 +2,7 @@
 
 import { useTexture } from '@react-three/drei';
 import { useLayoutEffect, useMemo } from 'react';
-import { LinearSRGBColorSpace, RepeatWrapping, SRGBColorSpace, Texture } from 'three';
+import { NoColorSpace, RepeatWrapping, SRGBColorSpace, Texture } from 'three';
 
 export type PbrMaps = {
   map: Texture;
@@ -14,40 +14,52 @@ function prepColor(tex: Texture, repeat: [number, number]) {
   tex.colorSpace = SRGBColorSpace;
   tex.wrapS = tex.wrapT = RepeatWrapping;
   tex.repeat.set(repeat[0], repeat[1]);
-  tex.anisotropy = 8;
+  tex.anisotropy = 4;
   tex.needsUpdate = true;
 }
 
 function prepData(tex: Texture, repeat: [number, number]) {
-  tex.colorSpace = LinearSRGBColorSpace;
+  tex.colorSpace = NoColorSpace;
   tex.wrapS = tex.wrapT = RepeatWrapping;
   tex.repeat.set(repeat[0], repeat[1]);
-  tex.anisotropy = 8;
+  tex.anisotropy = 4;
   tex.needsUpdate = true;
 }
 
 /** PBR (diff + OpenGL normal + roughness). Poly Haven ARM uses the green channel as roughness. */
 export function useRepeatingPbr(
   urls: { diff: string; nor: string; arm?: string; rough?: string },
-  repeat: [number, number],
+  repeat: [number, number]
 ): PbrMaps {
   const rx = repeat[0];
   const ry = repeat[1];
   const third = urls.arm ?? urls.rough;
   if (!third) throw new Error('PBR maps need arm or rough');
   const [map, normalMap, roughnessMap] = useTexture([urls.diff, urls.nor, third]);
+  const clones = useMemo(
+    () => ({ map: map.clone(), normalMap: normalMap.clone(), roughnessMap: roughnessMap.clone() }),
+    [map, normalMap, roughnessMap]
+  );
   useLayoutEffect(() => {
-    prepColor(map, [rx, ry]);
-    prepData(normalMap, [rx, ry]);
-    prepData(roughnessMap, [rx, ry]);
-  }, [map, normalMap, roughnessMap, rx, ry]);
-  return { map, normalMap, roughnessMap };
+    prepColor(clones.map, [rx, ry]);
+    prepData(clones.normalMap, [rx, ry]);
+    prepData(clones.roughnessMap, [rx, ry]);
+  }, [clones, rx, ry]);
+  useLayoutEffect(
+    () => () => {
+      clones.map.dispose();
+      clones.normalMap.dispose();
+      clones.roughnessMap.dispose();
+    },
+    [clones]
+  );
+  return clones;
 }
 
 /** PBR with a metalness map (foil sarking). Clones so each sheet can repeat differently. */
 export function useRepeatingPbrMetal(
   urls: { diff: string; nor: string; rough: string; metal: string },
-  repeat: [number, number],
+  repeat: [number, number]
 ): PbrMaps & { metalnessMap: Texture } {
   const rx = repeat[0];
   const ry = repeat[1];
@@ -64,7 +76,7 @@ export function useRepeatingPbrMetal(
       roughnessMap: roughnessMap.clone(),
       metalnessMap: metalnessMap.clone(),
     }),
-    [map, normalMap, roughnessMap, metalnessMap],
+    [map, normalMap, roughnessMap, metalnessMap]
   );
   useLayoutEffect(() => {
     prepColor(clones.map, [rx, ry]);
@@ -79,7 +91,7 @@ export function useRepeatingPbrMetal(
       clones.roughnessMap.dispose();
       clones.metalnessMap.dispose();
     },
-    [clones],
+    [clones]
   );
   return clones;
 }
@@ -89,7 +101,7 @@ export function useSizedPbr(
   size: [number, number],
   tileMeters = 0.2,
   rotation = 0,
-  minRepeat = 0.35,
+  minRepeat = 0.35
 ): PbrMaps {
   const third = urls.arm ?? urls.rough;
   if (!third) throw new Error('PBR maps need arm or rough');
@@ -100,7 +112,7 @@ export function useSizedPbr(
       normalMap: normalMap.clone(),
       roughnessMap: roughnessMap.clone(),
     }),
-    [map, normalMap, roughnessMap],
+    [map, normalMap, roughnessMap]
   );
   const rx = Math.max(minRepeat, size[0] / tileMeters);
   const ry = Math.max(minRepeat, size[1] / tileMeters);
@@ -119,7 +131,7 @@ export function useSizedPbr(
       clones.normalMap.dispose();
       clones.roughnessMap.dispose();
     },
-    [clones],
+    [clones]
   );
   return clones;
 }

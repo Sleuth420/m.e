@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Component, Suspense, useEffect, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +20,27 @@ function HeroSceneFallback() {
   );
 }
 
+class SceneErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div
+        className="absolute inset-0 grid place-content-center bg-zinc-200 p-6 text-center text-zinc-800"
+        role="status"
+      >
+        <p>The room could not load.</p>
+        <button type="button" className="mt-3 underline" onClick={() => window.location.reload()}>
+          Reload page
+        </button>
+      </div>
+    );
+  }
+}
+
 interface HeroSceneProps {
   className?: string;
   observeId?: string;
@@ -33,7 +54,16 @@ export function HeroScene({
   controlsEnabled = false,
   onExit,
 }: HeroSceneProps) {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [requested, setRequested] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+
+  useEffect(() => {
+    const sync = () => setPageVisible(!document.hidden);
+    sync();
+    document.addEventListener('visibilitychange', sync);
+    return () => document.removeEventListener('visibilitychange', sync);
+  }, []);
 
   useEffect(() => {
     const el = document.getElementById(observeId);
@@ -44,7 +74,20 @@ export function HeroScene({
       { threshold: 0.05 }
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    const preload = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setRequested(true);
+          preload.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+    preload.observe(el);
+    return () => {
+      observer.disconnect();
+      preload.disconnect();
+    };
   }, [observeId]);
 
   return (
@@ -53,13 +96,19 @@ export function HeroScene({
       aria-hidden={!controlsEnabled}
       style={{ pointerEvents: controlsEnabled ? 'auto' : 'none' }}
     >
-      <Suspense fallback={<HeroSceneFallback />}>
-        <HeroSceneCanvas
-          active={controlsEnabled || visible}
-          controlsEnabled={controlsEnabled}
-          onExit={onExit}
-        />
-      </Suspense>
+      <SceneErrorBoundary>
+        <Suspense fallback={<HeroSceneFallback />}>
+          {requested || controlsEnabled ? (
+            <HeroSceneCanvas
+              active={pageVisible && (controlsEnabled || visible)}
+              controlsEnabled={controlsEnabled}
+              onExit={onExit}
+            />
+          ) : (
+            <HeroSceneFallback />
+          )}
+        </Suspense>
+      </SceneErrorBoundary>
     </div>
   );
 }
